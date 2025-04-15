@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import argan from "../assets/argan.png";
+import Ministry from "../assets/Ministry.png";
 
 export default function Footer({ schoolInfo }) {
   const { name, ministry, address, phone, email, currentYear } = schoolInfo;
@@ -9,8 +11,8 @@ export default function Footer({ schoolInfo }) {
         <div className="grid md:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8">
-                <img src="/argan.jpg" alt="Argan High School" className="w-full h-full object-contain" />
+              <div className="w-20 h-20">
+                <img src={argan} alt="Argan High School" className="w-full h-full object-contain" />
               </div>
               <h3 className="font-bold">{name}</h3>
             </div>
@@ -62,8 +64,8 @@ export default function Footer({ schoolInfo }) {
         
         <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400 text-sm">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-6 h-6">
-              <img src="/Ministry.jpg" alt="Ministry Logo" className="w-full h-full object-contain" />
+            <div className="w-29 h-20">
+              <img src={Ministry} alt="Ministry Logo" className="w-full h-full object-contain" />
             </div>
             <span className="text-xs text-gray-400">Accredited by the {ministry}</span>
           </div>

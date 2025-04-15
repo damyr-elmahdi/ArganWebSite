@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import argan from "../assets/argan.jpg";
-import Ministry from "../assets/Ministry.jpg";
+import argan from "../assets/argan.png";
+import Ministry from "../assets/Ministry.png";
 
 export default function Header({ schoolName, ministry, tagline }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,8 +14,8 @@ export default function Header({ schoolName, ministry, tagline }) {
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          {/* School Logo */}
-          <div className="flex items-center justify-center w-12 h-12">
+          {/* School Logo - INCREASED SIZE */}
+          <div className="flex items-center justify-center w-20 h-20">
             <img src={argan} alt="Argan High School" className="w-full h-full object-contain" />
           </div>
           <div>
@@ -24,10 +24,10 @@ export default function Header({ schoolName, ministry, tagline }) {
           </div>
         </div>
         
-        {/* Ministry Logo (Mobile: Hidden, Desktop: Visible) */}
+        {/* Ministry Logo - INCREASED SIZE */}
         <div className="hidden md:flex items-center space-x-2">
-          <div className="flex items-center justify-center w-10 h-10">
-            <img src={Ministry} alt="Ministry Logo" className="w-80 h-full object-contain" />
+          <div className="flex items-center justify-center w-16 h-16">
+            <img src={Ministry} alt="Ministry Logo" className="w-full h-full object-contain" />
           </div>
           <span className="text-xs text-gray-600">{ministry}</span>
         </div>
@@ -74,10 +74,10 @@ export default function Header({ schoolName, ministry, tagline }) {
               <Link to="/login" className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition text-center">Login</Link>
             </nav>
             
-            {/* Ministry Logo (Mobile) */}
+            {/* Ministry Logo (Mobile) - INCREASED SIZE */}
             <div className="flex items-center space-x-2 mt-4 pt-3 border-t border-gray-200">
-              <div className="w-8 h-8">
-                <img src="/Ministry.jpg" alt="Ministry Logo" className="w-full h-full object-contain" />
+              <div className="w-12 h-12">
+                <img src={Ministry} alt="Ministry Logo" className="w-full h-full object-contain" />
               </div>
               <span className="text-xs text-gray-600">{ministry}</span>
             </div>

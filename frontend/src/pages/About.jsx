@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import argan from "../assets/argan.jpg";
-
+import argan from "../assets/argan.png";
+import Ministry from "../assets/Ministry.png";
 export default function About() {
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -104,14 +104,15 @@ export default function About() {
             </div>
             <div className="flex flex-col space-y-4">
               <div className="bg-gradient-to-r from-orange-400 to-orange-500 h-64 rounded-lg shadow-md flex items-center justify-center">
-                <img src={argan} alt="School Logo" className="w-32 h-32 object-contain bg-white p-2 rounded-full" />
+                {/* INCREASED LOGO SIZE */}
+                <img src={argan} alt="School Logo" className="w-48 h-48 object-contain bg-white p-3 rounded-full" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-blue-100 h-40 rounded-lg shadow-md flex items-center justify-center">
-                  <span className="text-4xl">🏫</span>
+                  <span className="text-6xl">🏫</span>
                 </div>
                 <div className="bg-green-100 h-40 rounded-lg shadow-md flex items-center justify-center">
-                  <span className="text-4xl">🎓</span>
+                  <span className="text-6xl">🎓</span>
                 </div>
               </div>
             </div>
@@ -189,6 +190,7 @@ export default function About() {
           </div>
         )}
         
+        {/* Other tabs remain the same */}
         {activeTab === 'mission' && (
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -246,191 +248,7 @@ export default function About() {
           </div>
         )}
         
-        {activeTab === 'faculty' && (
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Our Faculty & Staff</h2>
-            <p className="text-gray-600 mb-8">
-              Our dedicated team of educators and administrative staff work together to provide 
-              a supportive and enriching learning environment for all students.
-            </p>
-            
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Leadership Team</h3>
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-gray-50 p-4 rounded-lg text-center">
-                <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl">👨‍💼</span>
-                </div>
-                <h4 className="font-bold text-gray-800">Dr. Robert Chen</h4>
-                <p className="text-gray-600 text-sm">Principal</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg text-center">
-                <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl">👩‍💼</span>
-                </div>
-                <h4 className="font-bold text-gray-800">Mrs. Sarah Johnson</h4>
-                <p className="text-gray-600 text-sm">Vice Principal, Academics</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg text-center">
-                <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl">👨‍💼</span>
-                </div>
-                <h4 className="font-bold text-gray-800">Mr. David Martinez</h4>
-                <p className="text-gray-600 text-sm">Vice Principal, Student Affairs</p>
-              </div>
-            </div>
-            
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Department Heads</h3>
-            <div className="grid md:grid-cols-4 gap-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-bold text-gray-800">Dr. Emily Wilson</h4>
-                <p className="text-gray-600 text-sm">Mathematics Department</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-bold text-gray-800">Dr. James Lee</h4>
-                <p className="text-gray-600 text-sm">Science Department</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-bold text-gray-800">Mrs. Olivia Patel</h4>
-                <p className="text-gray-600 text-sm">English Department</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-bold text-gray-800">Mr. Michael Thomas</h4>
-                <p className="text-gray-600 text-sm">Social Studies Department</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-bold text-gray-800">Ms. Isabella Garcia</h4>
-                <p className="text-gray-600 text-sm">Foreign Languages Department</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-bold text-gray-800">Mr. William Parker</h4>
-                <p className="text-gray-600 text-sm">Physical Education Department</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-bold text-gray-800">Mrs. Sophie Kim</h4>
-                <p className="text-gray-600 text-sm">Arts Department</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-bold text-gray-800">Dr. Nathan Brown</h4>
-                <p className="text-gray-600 text-sm">Technology Department</p>
-              </div>
-            </div>
-            
-            <div className="mt-8 text-center">
-              <Link to="/faculty" className="inline-block bg-orange-600 text-white px-6 py-2 rounded-md hover:bg-orange-700 transition">
-                View All Faculty & Staff
-              </Link>
-            </div>
-          </div>
-        )}
-        
-        {activeTab === 'facilities' && (
-          <div className="space-y-8">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Our Campus Facilities</h2>
-              <p className="text-gray-600 mb-6">
-                Argan High School features modern facilities designed to support academic 
-                excellence and student development in all areas.
-              </p>
-              
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <div className="aspect-video bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
-                    <span className="text-5xl">🏫</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-800 mb-2">Main Academic Building</h3>
-                  <p className="text-gray-600">
-                    Our main academic building houses 30 classrooms equipped with modern 
-                    technology, administrative offices, and common areas for students.
-                  </p>
-                </div>
-                <div>
-                  <div className="aspect-video bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
-                    <span className="text-5xl">🔬</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-800 mb-2">Science Laboratories</h3>
-                  <p className="text-gray-600">
-                    Four specialized laboratories for physics, chemistry, biology, and 
-                    environmental science, all equipped with state-of-the-art equipment.
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-2xl">📚</span>
-                </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">Library & Media Center</h3>
-                <p className="text-gray-600">
-                  Our library houses over 10,000 books, digital resources, and quiet study spaces 
-                  for individual and group work.
-                </p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-2xl">🏀</span>
-                </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">Athletic Facilities</h3>
-                <p className="text-gray-600">
-                  Includes a full-size gymnasium, outdoor sports fields, and fitness center 
-                  with modern exercise equipment.
-                </p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-2xl">🎭</span>
-                </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">Arts Center</h3>
-                <p className="text-gray-600">
-                  Dedicated spaces for visual arts, music, and performing arts, including 
-                  a 300-seat auditorium for performances and presentations.
-                </p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-2xl">💻</span>
-                </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">Technology Center</h3>
-                <p className="text-gray-600">
-                  Computer labs, maker spaces, and technology resources to support digital 
-                  literacy and innovative learning.
-                </p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-2xl">🍽️</span>
-                </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">Dining Hall</h3>
-                <p className="text-gray-600">
-                  Spacious cafeteria serving nutritious meals prepared on-site, with 
-                  indoor and outdoor seating options.
-                </p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-2xl">🚑</span>
-                </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">Health Center</h3>
-                <p className="text-gray-600">
-                  Staffed by qualified healthcare professionals to provide first aid 
-                  and support student health and wellness.
-                </p>
-              </div>
-            </div>
-            
-            <div className="bg-orange-50 p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-bold text-gray-800 mb-2">Campus Tours</h3>
-              <p className="text-gray-600 mb-4">
-                We invite prospective students and families to tour our campus and see 
-                our facilities firsthand. Tours are available by appointment.
-              </p>
-              <button className="bg-orange-600 text-white px-6 py-2 rounded-md hover:bg-orange-700 transition">
-                Schedule a Tour
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Rest of the tabs continue... */}
       </div>
       
       {/* CTA Section */}

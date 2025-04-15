@@ -3,7 +3,7 @@ import NewsSection from '../components/NewsSection';
 import EventsSection from '../components/EventsSection';
 import ResourcesSection from '../components/ResourcesSection';
 import RegistrationCTA from '../components/RegistrationCTA'; 
-import argan from "../assets/argan.jpg";
+import argan from "../assets/argan.png";
 
 
 import { useState, useEffect } from 'react';
@@ -55,7 +55,7 @@ export default function Home({ schoolInfo }) {
               <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden shadow-md">
                 {/* This would be a school video or image */}
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-orange-100 to-orange-200">
-                  <img src={argan} alt="Argan High School" className="w-32 h-32 object-contain" />
+                  <img src={argan} alt="Argan High School" className="w-90 h-80 object-contain" />
                 </div>
               </div>
             </div>
@@ -187,26 +187,6 @@ export default function Home({ schoolInfo }) {
       
       {/* Registration CTA */}
       <RegistrationCTA schoolName={schoolInfo.name} />
-      
-      {/* Newsletter signup */}
-      <section className="py-12 bg-gray-800 text-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-xl mx-auto text-center">
-            <h2 className="text-2xl font-bold mb-4">Stay Updated</h2>
-            <p className="mb-6">Subscribe to our newsletter for the latest news and events.</p>
-            <form className="flex flex-col md:flex-row gap-2">
-              <input 
-                type="email" 
-                placeholder="Your email address" 
-                className="flex-grow px-4 py-2 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <button type="submit" className="bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-md transition">
-                Subscribe
-              </button>
-            </form>
-          </div>
-        </div>
-      </section>
     </main>
   );
 }
