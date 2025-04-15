@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import argan from "../assets/argan.jpg";
 
 export default function About() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -103,7 +104,7 @@ export default function About() {
             </div>
             <div className="flex flex-col space-y-4">
               <div className="bg-gradient-to-r from-orange-400 to-orange-500 h-64 rounded-lg shadow-md flex items-center justify-center">
-                <img src="/argan.jpg" alt="School Logo" className="w-32 h-32 object-contain bg-white p-2 rounded-full" />
+                <img src={argan} alt="School Logo" className="w-32 h-32 object-contain bg-white p-2 rounded-full" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-blue-100 h-40 rounded-lg shadow-md flex items-center justify-center">

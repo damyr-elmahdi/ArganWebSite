@@ -2,7 +2,10 @@ import Hero from '../components/Hero';
 import NewsSection from '../components/NewsSection';
 import EventsSection from '../components/EventsSection';
 import ResourcesSection from '../components/ResourcesSection';
-import RegistrationCTA from '../components/RegistrationCTA';
+import RegistrationCTA from '../components/RegistrationCTA'; 
+import argan from "../assets/argan.jpg";
+
+
 import { useState, useEffect } from 'react';
 
 export default function Home({ schoolInfo }) {
@@ -21,7 +24,7 @@ export default function Home({ schoolInfo }) {
       <div className="flex-grow flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4">
-            <img src="/argan.jpg" alt="Argan High School" className="w-full h-full object-contain animate-pulse" />
+            <img src={argan} alt="Argan High School" className="w-full h-full object-contain animate-pulse" />
           </div>
           <h2 className="text-xl font-semibold text-gray-700">Loading...</h2>
         </div>
@@ -52,7 +55,7 @@ export default function Home({ schoolInfo }) {
               <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden shadow-md">
                 {/* This would be a school video or image */}
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-orange-100 to-orange-200">
-                  <img src="/argan.jpg" alt="Argan High School" className="w-32 h-32 object-contain" />
+                  <img src={argan} alt="Argan High School" className="w-32 h-32 object-contain" />
                 </div>
               </div>
             </div>

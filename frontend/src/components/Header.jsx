@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import argan from "../assets/argan.jpg";
+import Ministry from "../assets/Ministry.jpg";
 
 export default function Header({ schoolName, ministry, tagline }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,7 +16,7 @@ export default function Header({ schoolName, ministry, tagline }) {
         <div className="flex items-center space-x-4">
           {/* School Logo */}
           <div className="flex items-center justify-center w-12 h-12">
-            <img src="/argan.jpg" alt="Argan High School" className="w-full h-full object-contain" />
+            <img src={argan} alt="Argan High School" className="w-full h-full object-contain" />
           </div>
           <div>
             <h1 className="text-xl font-bold text-gray-800">{schoolName}</h1>
@@ -25,7 +27,7 @@ export default function Header({ schoolName, ministry, tagline }) {
         {/* Ministry Logo (Mobile: Hidden, Desktop: Visible) */}
         <div className="hidden md:flex items-center space-x-2">
           <div className="flex items-center justify-center w-10 h-10">
-            <img src="/Ministry.jpg" alt="Ministry Logo" className="w-full h-full object-contain" />
+            <img src={Ministry} alt="Ministry Logo" className="w-80 h-full object-contain" />
           </div>
           <span className="text-xs text-gray-600">{ministry}</span>
         </div>
