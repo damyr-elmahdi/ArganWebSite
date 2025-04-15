@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
-import Hero from './components/Hero';
-import NewsSection from './components/NewsSection';
-import EventsSection from './components/EventsSection';
-import ResourcesSection from './components/ResourcesSection';
-import RegistrationCTA from './components/RegistrationCTA';
 import Footer from './components/Footer';
+import Home from './pages/Home';
+import About from './pages/About';
+import Academics from './pages/Academics';
+import News from './pages/News';
+import Events from './pages/Events';
+import Library from './pages/Library';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 export default function App() {
   // School information as a central source of truth
@@ -22,16 +25,21 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header schoolName={schoolInfo.name} ministry={schoolInfo.ministry} tagline={schoolInfo.tagline} />
-      <Hero schoolName={schoolInfo.name} foundedYear={schoolInfo.foundedYear} />
-      <main className="flex-grow">
-        <NewsSection />
-        <EventsSection />
-        <ResourcesSection />
-        <RegistrationCTA schoolName={schoolInfo.name} />
-      </main>
-      <Footer schoolInfo={schoolInfo} />
-    </div>
+    <BrowserRouter>
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header schoolName={schoolInfo.name} ministry={schoolInfo.ministry} tagline={schoolInfo.tagline} />
+        <Routes>
+          <Route path="/" element={<Home schoolInfo={schoolInfo} />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/academics" element={<Academics />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/library" element={<Library />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+        <Footer schoolInfo={schoolInfo} />
+      </div>
+    </BrowserRouter>
   );
 }
