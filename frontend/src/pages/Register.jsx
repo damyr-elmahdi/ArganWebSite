@@ -1,14 +1,19 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    role: 'student', // Default role
+    password_confirmation: '',
+    role: 'student',
+    grade: '',
   });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,10 +23,46 @@ export default function Register() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Registration form submitted:', formData);
-    // Here you would typically make an API call to your backend
+    setError('');
+    setIsLoading(true);
+    
+    try {
+      const response = await axios.post('/api/register', formData);
+      
+      // Store the token in localStorage
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      
+      // Set default Authorization header for future requests
+      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+      
+      // Redirect based on user role
+      const { role } = response.data.user;
+      if (role === 'student') {
+        navigate('/student-dashboard');
+      } else if (role === 'teacher') {
+        navigate('/teacher-dashboard');
+      } else if (role === 'administrator') {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/dashboard');
+      }
+      
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else if (err.response && err.response.data && err.response.data.errors) {
+        // Handle validation errors
+        const firstError = Object.values(err.response.data.errors)[0][0];
+        setError(firstError);
+      } else {
+        setError('An error occurred during registration. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -32,19 +73,26 @@ export default function Register() {
           <p className="mt-2 text-gray-600">Create your Argan High School account</p>
         </div>
         
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4">
+            <p className="text-red-700">{error}</p>
+          </div>
+        )}
+        
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name</label>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
               <input
-                id="fullName"
-                name="fullName"
+                id="name"
+                name="name"
                 type="text"
                 required
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                 placeholder="John Doe"
-                value={formData.fullName}
+                value={formData.name}
                 onChange={handleChange}
+                disabled={isLoading}
               />
             </div>
             
@@ -59,6 +107,7 @@ export default function Register() {
                 placeholder="email@example.com"
                 value={formData.email}
                 onChange={handleChange}
+                disabled={isLoading}
               />
             </div>
             
@@ -73,20 +122,22 @@ export default function Register() {
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
+                disabled={isLoading}
               />
             </div>
             
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+              <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700">Confirm Password</label>
               <input
-                id="confirmPassword"
-                name="confirmPassword"
+                id="password_confirmation"
+                name="password_confirmation"
                 type="password"
                 required
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                 placeholder="••••••••"
-                value={formData.confirmPassword}
+                value={formData.password_confirmation}
                 onChange={handleChange}
+                disabled={isLoading}
               />
             </div>
             
@@ -98,12 +149,33 @@ export default function Register() {
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                 value={formData.role}
                 onChange={handleChange}
+                disabled={isLoading}
               >
                 <option value="student">Student</option>
                 <option value="teacher">Teacher</option>
-                <option value="parent">Parent/Guardian</option>
+                <option value="administrator">Administrator</option>
               </select>
             </div>
+            
+            {formData.role === 'student' && (
+              <div>
+                <label htmlFor="grade" className="block text-sm font-medium text-gray-700">Grade</label>
+                <select
+                  id="grade"
+                  name="grade"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                  value={formData.grade}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                >
+                  <option value="">Select Grade</option>
+                  <option value="9">9th Grade</option>
+                  <option value="10">10th Grade</option>
+                  <option value="11">11th Grade</option>
+                  <option value="12">12th Grade</option>
+                </select>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center">
@@ -123,8 +195,9 @@ export default function Register() {
             <button
               type="submit"
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+              disabled={isLoading}
             >
-              Register
+              {isLoading ? 'Registering...' : 'Register'}
             </button>
           </div>
         </form>

@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Login() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,10 +19,46 @@ export default function Login() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login form submitted:', formData);
-    // Here you would typically make an API call to your backend
+    setError('');
+    setIsLoading(true);
+    
+    try {
+      const response = await axios.post('/api/login', formData);
+      
+      // Store the token in localStorage
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      
+      // Set default Authorization header for future requests
+      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+      
+      // Redirect based on user role
+      const { role } = response.data.user;
+      if (role === 'student') {
+        navigate('/student-dashboard');
+      } else if (role === 'teacher') {
+        navigate('/teacher-dashboard');
+      } else if (role === 'administrator') {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/dashboard');
+      }
+      
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else if (err.response && err.response.data && err.response.data.errors) {
+        // Handle validation errors
+        const firstError = Object.values(err.response.data.errors)[0][0];
+        setError(firstError);
+      } else {
+        setError('An error occurred during login. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -28,6 +68,12 @@ export default function Login() {
           <h2 className="text-3xl font-bold text-gray-800">Login</h2>
           <p className="mt-2 text-gray-600">Access your Argan High School account</p>
         </div>
+        
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4">
+            <p className="text-red-700">{error}</p>
+          </div>
+        )}
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
@@ -42,6 +88,7 @@ export default function Login() {
                 placeholder="email@example.com"
                 value={formData.email}
                 onChange={handleChange}
+                disabled={isLoading}
               />
             </div>
             
@@ -56,6 +103,7 @@ export default function Login() {
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -84,8 +132,9 @@ export default function Login() {
             <button
               type="submit"
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+              disabled={isLoading}
             >
-              Sign in
+              {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
         </form>

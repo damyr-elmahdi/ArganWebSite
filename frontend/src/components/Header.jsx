@@ -14,17 +14,17 @@ export default function Header({ schoolName, ministry, tagline }) {
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          {/* School Logo - INCREASED SIZE */}
-          <div className="flex items-center justify-center w-20 h-20">
+          {/* School Logo - Made clickable with Link */}
+          <Link to="/" className="flex items-center justify-center w-20 h-20">
             <img src={argan} alt="Argan High School" className="w-full h-full object-contain" />
-          </div>
+          </Link>
           <div>
             <h1 className="text-xl font-bold text-gray-800">{schoolName}</h1>
             <p className="text-sm text-gray-600">{tagline}</p>
           </div>
         </div>
         
-        {/* Ministry Logo - INCREASED SIZE */}
+        {/* Ministry Logo - KEPT IN ORIGINAL POSITION */}
         <div className="hidden md:flex items-center space-x-2">
           <div className="flex items-center justify-center w-16 h-16">
             <img src={Ministry} alt="Ministry Logo" className="w-full h-full object-contain" />
@@ -74,7 +74,7 @@ export default function Header({ schoolName, ministry, tagline }) {
               <Link to="/login" className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition text-center">Login</Link>
             </nav>
             
-            {/* Ministry Logo (Mobile) - INCREASED SIZE */}
+            {/* Ministry Logo (Mobile) - KEPT AS ORIGINAL */}
             <div className="flex items-center space-x-2 mt-4 pt-3 border-t border-gray-200">
               <div className="w-12 h-12">
                 <img src={Ministry} alt="Ministry Logo" className="w-full h-full object-contain" />

@@ -9,10 +9,63 @@ use App\Models\Administrator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', 'confirmed', Password::defaults()],
+            'role' => 'required|in:student,teacher,administrator',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => $request->role,
+            ]);
+            
+            // Create role-specific entry
+            if ($request->role === 'student') {
+                Student::create([
+                    'user_id' => $user->id,
+                    'student_id' => 'S' . date('Y') . str_pad($user->id, 4, '0', STR_PAD_LEFT),
+                    'grade' => $request->grade ?? null,
+                ]);
+            } elseif ($request->role === 'teacher') {
+                Teacher::create([
+                    'user_id' => $user->id,
+                    'employee_id' => 'T' . date('Y') . str_pad($user->id, 4, '0', STR_PAD_LEFT),
+                ]);
+            } elseif ($request->role === 'administrator') {
+                Administrator::create([
+                    'user_id' => $user->id,
+                    'admin_level' => $request->admin_level ?? 'basic',
+                    'department' => $request->department ?? 'general',
+                ]);
+            }
+            
+            DB::commit();
+            
+            return response()->json([
+                'message' => 'User registered successfully',
+                'user' => $user,
+                'token' => $user->createToken('api-token')->plainTextToken,
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['message' => 'Registration failed: ' . $e->getMessage()], 500);
+        }
+    }
+
     public function login(Request $request)
     {
         $request->validate([
