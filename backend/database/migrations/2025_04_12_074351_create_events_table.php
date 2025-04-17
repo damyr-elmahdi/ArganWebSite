@@ -11,8 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // backend/database/migrations/2025_04_12_074351_create_events_table.php
         Schema::create('events', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->dateTime('start_time');
+            $table->dateTime('end_time');
+            $table->string('location')->nullable();
+            $table->foreignId('creator_id')->constrained('users');
             $table->timestamps();
         });
     }

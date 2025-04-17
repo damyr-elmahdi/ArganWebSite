@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // backend/database/migrations/2025_04_12_074317_create_news_table.php
         Schema::create('news', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('content');
+            $table->foreignId('author_id')->constrained('users');
+            $table->boolean('is_published')->default(false);
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });
     }
