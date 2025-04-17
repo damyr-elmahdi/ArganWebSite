@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-// Set the base URL for all axios requests
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// In Vite, use import.meta.env instead of process.env
+// If we're using a proxy in development, we can just use relative URLs
+axios.defaults.baseURL = '/';  // This will work with the Vite proxy configuration
 
 // Initialize token from localStorage if available
 const token = localStorage.getItem('token');

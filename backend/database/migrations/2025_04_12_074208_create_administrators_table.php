@@ -8,19 +8,17 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('events', function (Blueprint $table) {
+        Schema::create('administrators', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->dateTime('start_time');
-            $table->dateTime('end_time');
-            $table->string('location')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('admin_level')->default('basic');
+            $table->string('department')->default('general');
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('events');
+        Schema::dropIfExists('administrators');
     }
 };

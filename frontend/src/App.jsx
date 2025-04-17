@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import Register from './pages/Register';
 import StudentDashboard from './pages/StudentDashboard';
-import TeacherDashboard from './pages/TeasherDashboard'
+import TeacherDashboard from './pages/TeacherDashboard'; // Fixed the typo (was TeasherDashboard)
 import AdminDashboard from './pages/AdminDashboard';
 import './services/axios'; // Import axios config
 
