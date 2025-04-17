@@ -1,13 +1,67 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import argan from "../assets/argan.png";
 import Ministry from "../assets/Ministry.png";
 
 export default function Header({ schoolName, ministry, tagline }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Check if user is logged in on component mount and when localStorage changes
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem('token');
+      const userData = localStorage.getItem('user');
+      
+      if (token && userData) {
+        setIsLoggedIn(true);
+        setUser(JSON.parse(userData));
+      } else {
+        setIsLoggedIn(false);
+        setUser(null);
+      }
+    };
+
+    // Initial check
+    checkLoginStatus();
+
+    // Setup event listener for localStorage changes
+    window.addEventListener('storage', checkLoginStatus);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleLogout = () => {
+    // Clear localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    // Clear authorization header if using axios
+    if (window.axios && window.axios.defaults && window.axios.defaults.headers) {
+      window.axios.defaults.headers.common['Authorization'] = null;
+    }
+    
+    // Update state
+    setIsLoggedIn(false);
+    setUser(null);
+    setIsDropdownOpen(false);
+    
+    // Navigate to home page
+    navigate('/');
   };
 
   return (
@@ -49,14 +103,43 @@ export default function Header({ schoolName, ministry, tagline }) {
         </button>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-6">
+        <nav className="hidden md:flex space-x-6 items-center">
           <Link to="/" className="text-gray-800 hover:text-orange-600 font-medium">Home</Link>
           <Link to="/about" className="text-gray-800 hover:text-orange-600 font-medium">About</Link>
           <Link to="/academics" className="text-gray-800 hover:text-orange-600 font-medium">Academics</Link>
           <Link to="/news" className="text-gray-800 hover:text-orange-600 font-medium">News</Link>
           <Link to="/events" className="text-gray-800 hover:text-orange-600 font-medium">Events</Link>
           <Link to="/library" className="text-gray-800 hover:text-orange-600 font-medium">Library</Link>
-          <Link to="/login" className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition">Login</Link>
+          
+          {/* Conditional rendering based on login status */}
+          {isLoggedIn ? (
+            <div className="relative">
+              <button 
+                onClick={toggleDropdown}
+                className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition flex items-center"
+              >
+                Welcome {user.name.split(' ')[0]}
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isDropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}></path>
+                </svg>
+              </button>
+              
+              {/* Dropdown menu */}
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                  <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-100">Dashboard</Link>
+                  <button 
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-orange-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link to="/login" className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition">Login</Link>
+          )}
         </nav>
       </div>
 
@@ -71,7 +154,21 @@ export default function Header({ schoolName, ministry, tagline }) {
               <Link to="/news" className="text-gray-800 hover:text-orange-600 font-medium py-1">News</Link>
               <Link to="/events" className="text-gray-800 hover:text-orange-600 font-medium py-1">Events</Link>
               <Link to="/library" className="text-gray-800 hover:text-orange-600 font-medium py-1">Library</Link>
-              <Link to="/login" className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition text-center">Login</Link>
+              
+              {/* Conditional rendering for mobile menu */}
+              {isLoggedIn ? (
+                <>
+                  <Link to="/dashboard" className="text-gray-800 hover:text-orange-600 font-medium py-1">Dashboard</Link>
+                  <button 
+                    onClick={handleLogout}
+                    className="text-left text-gray-800 hover:text-orange-600 font-medium py-1"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link to="/login" className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition text-center">Login</Link>
+              )}
             </nav>
             
             {/* Ministry Logo (Mobile) - KEPT AS ORIGINAL */}
