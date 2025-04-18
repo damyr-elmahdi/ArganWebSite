@@ -9,13 +9,13 @@ class Event extends Model
 {
     use HasFactory;
 
-    // backend/app/Models/Event.php
     protected $fillable = [
         'title',
         'description',
         'start_time',
         'end_time',
         'location',
+        'image_path',
         'creator_id',
     ];
 

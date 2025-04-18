@@ -19,6 +19,7 @@ return new class extends Migration
             $table->dateTime('start_time');
             $table->dateTime('end_time');
             $table->string('location')->nullable();
+            $table->string('image_path')->nullable()->after('location');
             $table->foreignId('creator_id')->constrained('users');
             $table->timestamps();
         });

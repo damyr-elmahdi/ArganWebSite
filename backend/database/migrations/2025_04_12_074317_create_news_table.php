@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('author_id')->constrained('users');
             $table->boolean('is_published')->default(false);
             $table->timestamp('published_at')->nullable();
+            $table->string('image_path')->nullable()->after('content');
             $table->timestamps();
         });
     }
