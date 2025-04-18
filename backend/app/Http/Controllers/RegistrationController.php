@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use App\Services\PDFService;
+use Illuminate\Support\Facades\Storage; // Add this import
 
 class RegistrationController extends Controller
 {

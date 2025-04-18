@@ -36,7 +36,17 @@ export default function AdminDashboard() {
         // Get registrations
         try {
           const registrationsResponse = await axios.get('/api/registrations');
-          setRegistrations(registrationsResponse.data.data || []);
+          // Handle both pagination format and direct array format
+          if (registrationsResponse.data && registrationsResponse.data.data) {
+            // Pagination object response
+            setRegistrations(registrationsResponse.data.data);
+          } else if (Array.isArray(registrationsResponse.data)) {
+            // Direct array response
+            setRegistrations(registrationsResponse.data);
+          } else {
+            // Empty response
+            setRegistrations([]);
+          }
         } catch (registrationsError) {
           console.error('Error fetching registrations:', registrationsError);
           // We don't redirect here, just show the error in the registrations section
