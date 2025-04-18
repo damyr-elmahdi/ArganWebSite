@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getNews, getNewsItem } from '../services/newsService';
 import { format } from 'date-fns';
 import { useParams, Link } from 'react-router-dom';
+import { getImageUrl } from '../utils/imageUtils';
 
 export default function News() {
   const [newsItems, setNewsItems] = useState([]);
@@ -56,7 +57,15 @@ export default function News() {
     
     return (
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="bg-orange-100 h-64 w-full"></div>
+        {currentNews.image_path ? (
+          <img 
+            src={getImageUrl(currentNews.image_path)} 
+            alt={currentNews.title}
+            className="w-full h-64 object-cover"
+          />
+        ) : (
+          <div className="bg-orange-100 h-64 w-full"></div>
+        )}
         <div className="p-6">
           <div className="flex items-center mb-4">
             <span className="text-sm text-gray-500">
@@ -103,7 +112,15 @@ export default function News() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {newsItems.map(news => (
               <div key={news.id} className="bg-white rounded-lg overflow-hidden shadow-md">
-                <div className="bg-orange-100 h-48"></div>
+                {news.image_path ? (
+                  <img 
+                    src={getImageUrl(news.image_path)} 
+                    alt={news.title}
+                    className="h-48 w-full object-cover"
+                  />
+                ) : (
+                  <div className="bg-orange-100 h-48"></div>
+                )}
                 <div className="p-4">
                   <span className="text-sm text-gray-500">
                     {format(new Date(news.published_at), 'MMMM d, yyyy')}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getEvents } from '../services/eventService';
 import { format } from 'date-fns';
 import { CalendarIcon, MapPinIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { getImageUrl } from '../utils/imageUtils';
 
 export default function Events() {
   const [events, setEvents] = useState([]);
@@ -123,6 +124,15 @@ export default function Events() {
             const { date, time } = formatEventDate(event.start_time, event.end_time);
             return (
               <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow-md">
+                {event.image_path ? (
+                  <img 
+                    src={getImageUrl(event.image_path)} 
+                    alt={event.title}
+                    className="w-full h-48 object-cover"
+                  />
+                ) : (
+                  <div className="bg-orange-100 h-48"></div>
+                )}
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-800 mb-3">{event.title}</h3>
                   

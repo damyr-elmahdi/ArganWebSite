@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getNews } from '../services/newsService';
 import { format } from 'date-fns';
+import { getImageUrl } from '../utils/imageUtils';
 
 export default function NewsSection() {
   const [newsItems, setNewsItems] = useState([]);
@@ -34,19 +35,22 @@ export default function NewsSection() {
       id: 1,
       title: "New Science Lab Equipment Arrives",
       content: "Our science department received state-of-the-art equipment to enhance student learning experiences in physics and chemistry.",
-      published_at: "2025-04-10T09:30:00"
+      published_at: "2025-04-10T09:30:00",
+      image_path: null // No image for fallback
     },
     {
       id: 2,
       title: "Higher Education Fair Next Month",
       content: "Representatives from top universities will be on campus to discuss admission requirements and scholarship opportunities.",
-      published_at: "2025-04-05T14:00:00"
+      published_at: "2025-04-05T14:00:00",
+      image_path: null
     },
     {
       id: 3,
       title: "Student Achievement Award Winners",
       content: "Congratulations to all students recognized at this year's Achievement Awards ceremony for their outstanding academic performance.",
-      published_at: "2025-03-28T16:45:00"
+      published_at: "2025-03-28T16:45:00",
+      image_path: null
     }
   ];
 
@@ -75,7 +79,15 @@ export default function NewsSection() {
           <div className="grid md:grid-cols-3 gap-6">
             {newsToDisplay.map(news => (
               <div key={news.id} className="bg-gray-50 rounded-lg overflow-hidden shadow-md h-full flex flex-col">
-                <div className="bg-orange-100 h-40"></div>
+                {news.image_path ? (
+                  <img 
+                    src={getImageUrl(news.image_path)} 
+                    alt={news.title}
+                    className="h-40 w-full object-cover"
+                  />
+                ) : (
+                  <div className="bg-orange-100 h-40"></div>
+                )}
                 <div className="p-4 flex-grow flex flex-col">
                   <span className="text-sm text-gray-500">
                     {format(new Date(news.published_at), 'MMMM d, yyyy')}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getEvents } from '../services/eventService';
 import { format } from 'date-fns';
 import { CalendarIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { getImageUrl } from '../utils/imageUtils';
 
 export default function EventsSection() {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
@@ -40,21 +41,24 @@ export default function EventsSection() {
       title: "Parent-Teacher Conferences",
       start_time: "2025-04-20T15:00:00",
       end_time: "2025-04-20T19:00:00",
-      location: "Main Hall"
+      location: "Main Hall",
+      image_path: null
     },
     {
       id: 2,
       title: "Science Fair",
       start_time: "2025-04-25T10:00:00",
       end_time: "2025-04-25T14:00:00",
-      location: "Gymnasium"
+      location: "Gymnasium",
+      image_path: null
     },
     {
       id: 3,
       title: "Higher Education Workshop",
       start_time: "2025-05-10T13:00:00",
       end_time: "2025-05-10T16:00:00",
-      location: "Auditorium"
+      location: "Auditorium",
+      image_path: null
     }
   ];
 
@@ -77,20 +81,27 @@ export default function EventsSection() {
           <div className="grid md:grid-cols-3 gap-6">
             {eventsToDisplay.map(event => {
               const startDate = new Date(event.start_time);
-              const monthDay = format(startDate, 'MMM d');
               const eventTime = `${format(new Date(event.start_time), 'h:mm a')} - ${format(new Date(event.end_time), 'h:mm a')}`;
               
               return (
                 <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow-md p-4">
                   <div className="flex items-start mb-3">
-                    <div className="bg-orange-600 text-white rounded p-2 mr-4 text-center min-w-[60px]">
-                      <div className="text-sm font-bold">
-                        {format(startDate, 'MMM')}
+                    {event.image_path ? (
+                      <img 
+                        src={getImageUrl(event.image_path)} 
+                        alt={event.title}
+                        className="h-16 w-16 object-cover rounded-md mr-4" 
+                      />
+                    ) : (
+                      <div className="bg-orange-600 text-white rounded p-2 mr-4 text-center min-w-[60px]">
+                        <div className="text-sm font-bold">
+                          {format(startDate, 'MMM')}
+                        </div>
+                        <div className="text-xl font-bold">
+                          {format(startDate, 'd')}
+                        </div>
                       </div>
-                      <div className="text-xl font-bold">
-                        {format(startDate, 'd')}
-                      </div>
-                    </div>
+                    )}
                     <div>
                       <h3 className="text-lg font-bold text-gray-800">{event.title}</h3>
                       <p className="text-gray-600 text-sm mt-1 flex items-center">
