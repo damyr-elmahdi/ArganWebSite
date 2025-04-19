@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\News;
 use App\Models\Registration;
+use App\Policies\NewsPolicy;
 use App\Policies\RegistrationPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -16,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Registration::class => RegistrationPolicy::class,
+        News::class => NewsPolicy::class,
     ];
 
     /**
