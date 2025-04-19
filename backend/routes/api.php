@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RegistrationController;
@@ -17,6 +18,9 @@ Route::get('/registrations/{registration}/download-packet', [RegistrationControl
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/news/{news}/comments', [CommentController::class, 'store']);
+    Route::put('/news/{news}/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/news/{news}/comments/{comment}', [CommentController::class, 'destroy']);
 
     // Admin routes
     Route::middleware('role:administrator')->group(function () {
@@ -41,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // News routes
 Route::get('/news', [NewsController::class, 'index']);
 Route::get('/news/{news}', [NewsController::class, 'show']);
-
+Route::get('/news/{news}/comments', [CommentController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     // Existing routes...
 

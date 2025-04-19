@@ -3,6 +3,7 @@ import { getNews, getNewsItem } from '../services/newsService';
 import { format } from 'date-fns';
 import { useParams, Link } from 'react-router-dom';
 import { getImageUrl } from '../utils/imageUtils';
+import CommentSection from '../components/CommentSection';
 
 export default function News() {
   const [newsItems, setNewsItems] = useState([]);
@@ -59,7 +60,7 @@ export default function News() {
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         {currentNews.image_path ? (
           <img 
-            src={getImageUrl(currentNews.image_path)} 
+            src={currentNews.image_url || getImageUrl(currentNews.image_path)} 
             alt={currentNews.title}
             className="w-full h-64 object-cover"
           />
@@ -86,6 +87,9 @@ export default function News() {
               <p key={idx} className="mb-4">{paragraph}</p>
             ))}
           </div>
+          
+          {/* Comment Section */}
+          <CommentSection newsId={currentNews.id} />
           
           <div className="mt-8 pt-4 border-t border-gray-200">
             <Link to="/news" className="text-orange-600 hover:underline">
@@ -114,7 +118,7 @@ export default function News() {
               <div key={news.id} className="bg-white rounded-lg overflow-hidden shadow-md">
                 {news.image_path ? (
                   <img 
-                    src={getImageUrl(news.image_path)} 
+                    src={news.image_url || getImageUrl(news.image_path)} 
                     alt={news.title}
                     className="h-48 w-full object-cover"
                   />

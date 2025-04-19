@@ -30,6 +30,11 @@ class News extends Model
         return $this->belongsTo(User::class, 'author_id');
     }
     
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+    
     public function publish()
     {
         $this->is_published = true;

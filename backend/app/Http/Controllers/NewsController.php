@@ -30,6 +30,21 @@ class NewsController extends Controller
 
         $news->load('author:id,name');
 
+        // Add full image URL
+        if ($news->image_path) {
+            $news->image_url = url('storage/' . $news->image_path);
+        }
+
+        // Load top 5 comments by default
+        $news->load(['comments' => function ($query) {
+            $query->with('user:id,name')
+                ->orderBy('created_at', 'desc')
+                ->limit(5);
+        }]);
+
+        // Add comment count
+        $news->comments_count = $news->comments()->count();
+
         return response()->json($news);
     }
 

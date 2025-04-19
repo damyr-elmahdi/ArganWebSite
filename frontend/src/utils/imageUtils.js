@@ -1,5 +1,6 @@
 export const getImageUrl = (imagePath) => {
   if (!imagePath) return null;
-  // Change from process.env to import.meta.env for Vite
-  return `${import.meta.env.VITE_API_URL}/storage/${imagePath}`;
+  const url = `${import.meta.env.VITE_API_URL}/storage/${imagePath}`;
+  console.log("Image URL:", url); // Add this to see what URL is being generated
+  return url;
 };
