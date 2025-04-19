@@ -27,6 +27,13 @@ export const createNews = async (newsData) => {
     return response.data;
   } catch (error) {
     console.error('Error creating news:', error);
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    }
     throw error;
   }
 };

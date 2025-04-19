@@ -113,7 +113,7 @@ export default function EventsManagement() {
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
-    return `${process.env.REACT_APP_API_URL}/storage/${imagePath}`;
+    return `${import.meta.env.VITE_API_URL}/storage/${imagePath}`;
   };
 
   if (loading) {
@@ -155,7 +155,7 @@ export default function EventsManagement() {
                 value={formData.title}
                 onChange={handleInputChange}
                 required
-                className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full h-8 sm:text-sm border-gray-300 rounded-md"
               />
             </div>
             <div className="mb-4">

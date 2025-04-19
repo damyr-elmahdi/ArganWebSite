@@ -1,16 +1,22 @@
-import { useState, useEffect } from 'react';
-import { getNews, createNews, deleteNews, publishNews, archiveNews } from '../services/newsService';
+import { useState, useEffect } from "react";
+import {
+  getNews,
+  createNews,
+  deleteNews,
+  publishNews,
+  archiveNews,
+} from "../services/newsService";
 
 export default function NewsManagement() {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
+    title: "",
+    content: "",
     is_published: false,
-    image: null
+    image: null,
   });
   const [imagePreview, setImagePreview] = useState(null);
 
@@ -23,9 +29,9 @@ export default function NewsManagement() {
       setLoading(true);
       const data = await getNews();
       setNews(data.data || []);
-      setError('');
+      setError("");
     } catch (err) {
-      setError('Failed to load news items');
+      setError("Failed to load news items");
       console.error(err);
     } finally {
       setLoading(false);
@@ -34,15 +40,15 @@ export default function NewsManagement() {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked, files } = e.target;
-    
-    if (type === 'file') {
+
+    if (type === "file") {
       // Handle file input
       if (files && files[0]) {
         setFormData({
           ...formData,
-          [name]: files[0]
+          [name]: files[0],
         });
-        
+
         // Create preview URL for the image
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -54,17 +60,17 @@ export default function NewsManagement() {
       // Handle other inputs
       setFormData({
         ...formData,
-        [name]: type === 'checkbox' ? checked : value
+        [name]: type === "checkbox" ? checked : value,
       });
     }
   };
 
   const resetForm = () => {
     setFormData({
-      title: '',
-      content: '',
+      title: "",
+      content: "",
       is_published: false,
-      image: null
+      image: null,
     });
     setImagePreview(null);
     setShowForm(false);
@@ -73,30 +79,45 @@ export default function NewsManagement() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Create form data for file upload
       const newsFormData = new FormData();
-      for (const key in formData) {
-        if (formData[key] !== null) {
-          newsFormData.append(key, formData[key]);
-        }
+
+      // Always include these required fields
+      newsFormData.append("title", formData.title);
+      newsFormData.append("content", formData.content);
+      newsFormData.append("is_published", formData.is_published ? 1 : 0);
+
+      // Only include image if it exists
+      if (formData.image) {
+        newsFormData.append("image", formData.image);
       }
-      
+
+      // Log what we're sending to help debug
+      console.log("Sending form data:", {
+        title: formData.title,
+        content: formData.content,
+        is_published: formData.is_published,
+        hasImage: !!formData.image,
+      });
+
       await createNews(newsFormData);
       resetForm();
       fetchNews();
     } catch (err) {
-      setError('Failed to create news item');
-      console.error(err);
+      setError("Failed to create news item");
+      console.error("Submission error:", err);
+      if (err.response && err.response.data) {
+        console.error("Server error details:", err.response.data);
+      }
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this news item?')) {
+    if (window.confirm("Are you sure you want to delete this news item?")) {
       try {
         await deleteNews(id);
         fetchNews();
       } catch (err) {
-        setError('Failed to delete news item');
+        setError("Failed to delete news item");
         console.error(err);
       }
     }
@@ -107,7 +128,7 @@ export default function NewsManagement() {
       await publishNews(id);
       fetchNews();
     } catch (err) {
-      setError('Failed to publish news item');
+      setError("Failed to publish news item");
       console.error(err);
     }
   };
@@ -117,14 +138,14 @@ export default function NewsManagement() {
       await archiveNews(id);
       fetchNews();
     } catch (err) {
-      setError('Failed to archive news item');
+      setError("Failed to archive news item");
       console.error(err);
     }
   };
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
-    return `${process.env.REACT_APP_API_URL}/storage/${imagePath}`;
+    return `${import.meta.env.VITE_API_URL}/storage/${imagePath}`;
   };
 
   if (loading) {
@@ -135,14 +156,18 @@ export default function NewsManagement() {
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
       <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
         <div>
-          <h3 className="text-lg leading-6 font-medium text-gray-900">News Management</h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">Create and manage school news.</p>
+          <h3 className="text-lg leading-6 font-medium text-gray-900">
+            News Management
+          </h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500">
+            Create and manage school news.
+          </p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
           className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700"
         >
-          {showForm ? 'Cancel' : 'Create News'}
+          {showForm ? "Cancel" : "Create News"}
         </button>
       </div>
 
@@ -156,7 +181,10 @@ export default function NewsManagement() {
         <div className="border-t border-gray-200 px-4 py-5">
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="mb-4">
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Title
               </label>
               <input
@@ -166,11 +194,14 @@ export default function NewsManagement() {
                 value={formData.title}
                 onChange={handleInputChange}
                 required
-                className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full h-8 sm:text-sm border-gray-300 rounded-md"
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="content"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Content
               </label>
               <textarea
@@ -184,7 +215,10 @@ export default function NewsManagement() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="image"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 News Image
               </label>
               <input
@@ -202,10 +236,10 @@ export default function NewsManagement() {
               />
               {imagePreview && (
                 <div className="mt-2">
-                  <img 
-                    src={imagePreview} 
-                    alt="Preview" 
-                    className="h-32 w-auto object-cover rounded-md" 
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="h-32 w-auto object-cover rounded-md"
                   />
                 </div>
               )}
@@ -219,7 +253,10 @@ export default function NewsManagement() {
                 onChange={handleInputChange}
                 className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
               />
-              <label htmlFor="is_published" className="ml-2 block text-sm text-gray-700">
+              <label
+                htmlFor="is_published"
+                className="ml-2 block text-sm text-gray-700"
+              >
                 Publish immediately
               </label>
             </div>
@@ -239,19 +276,34 @@ export default function NewsManagement() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Image
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Title
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Date
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Status
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Actions
                   </th>
                 </tr>
@@ -261,10 +313,10 @@ export default function NewsManagement() {
                   <tr key={item.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {item.image_path ? (
-                        <img 
-                          src={getImageUrl(item.image_path)} 
+                        <img
+                          src={getImageUrl(item.image_path)}
                           alt={item.title}
-                          className="h-12 w-12 object-cover rounded-md" 
+                          className="h-12 w-12 object-cover rounded-md"
                         />
                       ) : (
                         <div className="h-12 w-12 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
@@ -276,7 +328,9 @@ export default function NewsManagement() {
                       {item.title}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {item.published_at ? new Date(item.published_at).toLocaleDateString() : 'Not published'}
+                      {item.published_at
+                        ? new Date(item.published_at).toLocaleDateString()
+                        : "Not published"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {item.is_published ? (
