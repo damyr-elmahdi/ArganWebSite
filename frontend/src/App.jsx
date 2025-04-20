@@ -93,11 +93,12 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/academics" element={<Academics />} />
             <Route path="/news" element={<News />} />
+            <Route path="/news/:id" element={<News />} />{" "}
+            {/* Add this new route */}
             <Route path="/events" element={<Events />} />
             <Route path="/library" element={<Library />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-
             {/* Protected routes with role-based access */}
             <Route
               path="/student-dashboard"
@@ -107,7 +108,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="/teacher-dashboard"
               element={
@@ -116,7 +116,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="/admin-dashboard"
               element={
@@ -125,7 +124,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-
             {/* Redirect based on user role */}
             <Route path="/dashboard" element={<DashboardRedirect />} />
           </Routes>
