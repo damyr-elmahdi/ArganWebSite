@@ -1,41 +1,15 @@
-import { useState, useEffect } from 'react';
+// frontend/src/components/Header.jsx
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext'; // Import the auth context
 import argan from "../assets/argan.png";
 import Ministry from "../assets/Ministry.png";
 
 export default function Header({ schoolName, ministry, tagline }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth(); // Use the auth context
   const navigate = useNavigate();
-
-  // Check if user is logged in on component mount and when localStorage changes
-  useEffect(() => {
-    const checkLoginStatus = () => {
-      const token = localStorage.getItem('token');
-      const userData = localStorage.getItem('user');
-      
-      if (token && userData) {
-        setIsLoggedIn(true);
-        setUser(JSON.parse(userData));
-      } else {
-        setIsLoggedIn(false);
-        setUser(null);
-      }
-    };
-
-    // Initial check
-    checkLoginStatus();
-
-    // Setup event listener for localStorage changes
-    window.addEventListener('storage', checkLoginStatus);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('storage', checkLoginStatus);
-    };
-  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -45,22 +19,9 @@ export default function Header({ schoolName, ministry, tagline }) {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleLogout = () => {
-    // Clear localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    
-    // Clear authorization header if using axios
-    if (window.axios && window.axios.defaults && window.axios.defaults.headers) {
-      window.axios.defaults.headers.common['Authorization'] = null;
-    }
-    
-    // Update state
-    setIsLoggedIn(false);
-    setUser(null);
+  const handleLogout = async () => {
+    await logout();
     setIsDropdownOpen(false);
-    
-    // Navigate to home page
     navigate('/');
   };
 
@@ -78,7 +39,7 @@ export default function Header({ schoolName, ministry, tagline }) {
           </div>
         </div>
         
-        {/* Ministry Logo - KEPT IN ORIGINAL POSITION */}
+        {/* Ministry Logo */}
         <div className="hidden md:flex items-center space-x-2">
           <div className="flex items-center justify-center w-16 h-16">
             <img src={Ministry} alt="Ministry Logo" className="w-full h-full object-contain" />
@@ -111,14 +72,14 @@ export default function Header({ schoolName, ministry, tagline }) {
           <Link to="/events" className="text-gray-800 hover:text-orange-600 font-medium">Events</Link>
           <Link to="/library" className="text-gray-800 hover:text-orange-600 font-medium">Library</Link>
           
-          {/* Conditional rendering based on login status */}
-          {isLoggedIn ? (
+          {/* Conditional rendering based on auth context */}
+          {isAuthenticated ? (
             <div className="relative">
               <button 
                 onClick={toggleDropdown}
                 className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition flex items-center"
               >
-                Welcome {user.name.split(' ')[0]}
+                Welcome {user?.name?.split(' ')[0]}
                 <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isDropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}></path>
                 </svg>
@@ -156,7 +117,7 @@ export default function Header({ schoolName, ministry, tagline }) {
               <Link to="/library" className="text-gray-800 hover:text-orange-600 font-medium py-1">Library</Link>
               
               {/* Conditional rendering for mobile menu */}
-              {isLoggedIn ? (
+              {isAuthenticated ? (
                 <>
                   <Link to="/dashboard" className="text-gray-800 hover:text-orange-600 font-medium py-1">Dashboard</Link>
                   <button 
@@ -171,7 +132,7 @@ export default function Header({ schoolName, ministry, tagline }) {
               )}
             </nav>
             
-            {/* Ministry Logo (Mobile) - KEPT AS ORIGINAL */}
+            {/* Ministry Logo (Mobile) */}
             <div className="flex items-center space-x-2 mt-4 pt-3 border-t border-gray-200">
               <div className="w-12 h-12">
                 <img src={Ministry} alt="Ministry Logo" className="w-full h-full object-contain" />
