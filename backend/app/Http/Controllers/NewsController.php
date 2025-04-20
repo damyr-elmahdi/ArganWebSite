@@ -56,6 +56,7 @@ class NewsController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'is_published' => 'boolean',
+            'scheduled_for' => 'nullable|date|after:now', // Add validation for scheduled date
             'image' => 'nullable|image|max:2048', // Allow image upload up to 2MB
         ]);
 
@@ -68,8 +69,14 @@ class NewsController extends Controller
         $news = new News($validated);
         $news->author_id = $request->user()->id;
 
+        // Handle publication status
         if ($validated['is_published'] ?? false) {
+            $news->is_published = true;
             $news->published_at = now();
+        }
+        // Handle scheduled publication
+        elseif (isset($validated['scheduled_for'])) {
+            $news->scheduled_publication = $validated['scheduled_for'];
         }
 
         $news->save();
@@ -77,6 +84,7 @@ class NewsController extends Controller
         return response()->json($news, 201);
     }
 
+    // Add this to the update method as well
     public function update(Request $request, News $news)
     {
         $this->authorize('update', $news);
@@ -85,7 +93,8 @@ class NewsController extends Controller
             'title' => 'string|max:255',
             'content' => 'string',
             'is_published' => 'boolean',
-            'image' => 'nullable|image|max:2048', // Allow image upload up to 2MB
+            'scheduled_for' => 'nullable|date|after:now', // Add validation for scheduled date
+            'image' => 'nullable|image|max:2048',
         ]);
 
         // Handle image upload
@@ -95,8 +104,16 @@ class NewsController extends Controller
         }
 
         // Handle publication status change
-        if (isset($validated['is_published']) && !$news->is_published && $validated['is_published']) {
-            $news->published_at = now();
+        if (isset($validated['is_published'])) {
+            if (!$news->is_published && $validated['is_published']) {
+                $news->published_at = now();
+                $news->scheduled_publication = null; // Clear any scheduled publication time
+            }
+        }
+
+        // Handle scheduled publication
+        if (isset($validated['scheduled_for']) && !($validated['is_published'] ?? $news->is_published)) {
+            $news->scheduled_publication = $validated['scheduled_for'];
         }
 
         $news->update($validated);

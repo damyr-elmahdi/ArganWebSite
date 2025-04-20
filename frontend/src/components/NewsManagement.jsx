@@ -16,6 +16,7 @@ export default function NewsManagement() {
     title: "",
     content: "",
     is_published: false,
+    scheduled_for: "", // Add field for scheduled publication
     image: null,
   });
   const [imagePreview, setImagePreview] = useState(null);
@@ -70,6 +71,7 @@ export default function NewsManagement() {
       title: "",
       content: "",
       is_published: false,
+      scheduled_for: "",
       image: null,
     });
     setImagePreview(null);
@@ -86,6 +88,11 @@ export default function NewsManagement() {
       newsFormData.append("content", formData.content);
       newsFormData.append("is_published", formData.is_published ? 1 : 0);
 
+      // Add scheduled publication date if provided and not publishing immediately
+      if (!formData.is_published && formData.scheduled_for) {
+        newsFormData.append("scheduled_for", formData.scheduled_for);
+      }
+
       // Only include image if it exists
       if (formData.image) {
         newsFormData.append("image", formData.image);
@@ -96,6 +103,7 @@ export default function NewsManagement() {
         title: formData.title,
         content: formData.content,
         is_published: formData.is_published,
+        scheduled_for: formData.scheduled_for,
         hasImage: !!formData.image,
       });
 
@@ -146,6 +154,18 @@ export default function NewsManagement() {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
     return `${import.meta.env.VITE_API_URL}/storage/${imagePath}`;
+  };
+
+  // Function to get the minimum allowed date-time (current time)
+  const getMinDateTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
   if (loading) {
@@ -260,6 +280,31 @@ export default function NewsManagement() {
                 Publish immediately
               </label>
             </div>
+            
+            {/* Scheduled publish time input - show when not publishing immediately */}
+            {!formData.is_published && (
+              <div className="mb-4">
+                <label
+                  htmlFor="scheduled_for"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Schedule Publication Time
+                </label>
+                <input
+                  type="datetime-local"
+                  id="scheduled_for"
+                  name="scheduled_for"
+                  value={formData.scheduled_for}
+                  onChange={handleInputChange}
+                  min={getMinDateTime()}
+                  className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Leave empty to save as draft without scheduling
+                </p>
+              </div>
+            )}
+            
             <button
               type="submit"
               className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
@@ -330,12 +375,18 @@ export default function NewsManagement() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {item.published_at
                         ? new Date(item.published_at).toLocaleDateString()
-                        : "Not published"}
+                        : item.scheduled_for 
+                          ? `Scheduled: ${new Date(item.scheduled_for).toLocaleString()}`
+                          : "Draft"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {item.is_published ? (
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                           Published
+                        </span>
+                      ) : item.scheduled_for ? (
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                          Scheduled
                         </span>
                       ) : (
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
@@ -349,7 +400,7 @@ export default function NewsManagement() {
                           onClick={() => handlePublish(item.id)}
                           className="text-green-600 hover:text-green-900 mr-3"
                         >
-                          Publish
+                          Publish Now
                         </button>
                       ) : (
                         <button

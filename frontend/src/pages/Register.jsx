@@ -10,17 +10,63 @@ export default function Register() {
     password_confirmation: '',
     role: 'student',
     grade: '',
+    stream: '',
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+
+  // Get the available streams based on the selected grade
+  const getStreamsForGrade = (grade) => {
+    switch (grade) {
+      case 'TC':
+        return [
+          { value: 'S', label: 'Sciences' },
+          { value: 'LSH', label: 'Lettres et Sciences Humaines' }
+        ];
+      case '1BAC':
+        return [
+          { value: 'SE', label: 'Sciences Expérimentales' },
+          { value: 'LSH', label: 'Lettres et Sciences Humaines' }
+        ];
+      case '2BAC':
+        return [
+          { value: 'PC', label: 'PC (Physique-Chimie)' },
+          { value: 'SVT', label: 'SVT (Sciences de la Vie et de la Terre)' },
+          { value: 'SH', label: 'Sciences Humaines' },
+          { value: 'L', label: 'Lettres' }
+        ];
+      default:
+        return [];
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    setFormData(prev => {
+      const newData = {
+        ...prev,
+        [name]: value
+      };
+      
+      // Reset stream when grade changes
+      if (name === 'grade') {
+        newData.stream = '';
+      }
+      
+      return newData;
+    });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   const handleSubmit = async (e) => {
@@ -28,8 +74,15 @@ export default function Register() {
     setError('');
     setIsLoading(true);
     
+    // Format grade field to include both grade and stream
+    const dataToSubmit = { ...formData };
+    if (formData.grade && formData.stream) {
+      dataToSubmit.grade = `${formData.grade}-${formData.stream}`;
+      delete dataToSubmit.stream;
+    }
+    
     try {
-      const response = await axios.post('/api/register', formData);
+      const response = await axios.post('/api/register', dataToSubmit);
       
       // Store the token in localStorage
       localStorage.setItem('token', response.data.token);
@@ -64,6 +117,8 @@ export default function Register() {
       setIsLoading(false);
     }
   };
+
+  const streams = getStreamsForGrade(formData.grade);
 
   return (
     <main className="flex-grow flex items-center justify-center py-12 px-4 bg-gray-50">
@@ -113,32 +168,70 @@ export default function Register() {
             
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
+              <div className="relative mt-1">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 px-3 flex items-center text-sm leading-5 text-gray-600 hover:text-gray-900"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd" />
+                      <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
             
             <div>
               <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700">Confirm Password</label>
-              <input
-                id="password_confirmation"
-                name="password_confirmation"
-                type="password"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="••••••••"
-                value={formData.password_confirmation}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
+              <div className="relative mt-1">
+                <input
+                  id="password_confirmation"
+                  name="password_confirmation"
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="••••••••"
+                  value={formData.password_confirmation}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 px-3 flex items-center text-sm leading-5 text-gray-600 hover:text-gray-900"
+                  onClick={toggleConfirmPasswordVisibility}
+                >
+                  {showConfirmPassword ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd" />
+                      <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
             
             <div>
@@ -158,23 +251,47 @@ export default function Register() {
             </div>
             
             {formData.role === 'student' && (
-              <div>
-                <label htmlFor="grade" className="block text-sm font-medium text-gray-700">Grade</label>
-                <select
-                  id="grade"
-                  name="grade"
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                  value={formData.grade}
-                  onChange={handleChange}
-                  disabled={isLoading}
-                >
-                  <option value="">Select Grade</option>
-                  <option value="9">9th Grade</option>
-                  <option value="10">10th Grade</option>
-                  <option value="11">11th Grade</option>
-                  <option value="12">12th Grade</option>
-                </select>
-              </div>
+              <>
+                <div>
+                  <label htmlFor="grade" className="block text-sm font-medium text-gray-700">Grade Level</label>
+                  <select
+                    id="grade"
+                    name="grade"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                    value={formData.grade}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                    required={formData.role === 'student'}
+                  >
+                    <option value="">Select Grade</option>
+                    <option value="TC">TC (Tronc Commun)</option>
+                    <option value="1BAC">1BAC (Première année Baccalauréat)</option>
+                    <option value="2BAC">2BAC (Deuxième année Baccalauréat)</option>
+                  </select>
+                </div>
+
+                {formData.grade && streams.length > 0 && (
+                  <div>
+                    <label htmlFor="stream" className="block text-sm font-medium text-gray-700">Stream</label>
+                    <select
+                      id="stream"
+                      name="stream"
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                      value={formData.stream}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                      required={formData.grade !== ''}
+                    >
+                      <option value="">Select Stream</option>
+                      {streams.map((stream) => (
+                        <option key={stream.value} value={stream.value}>
+                          {stream.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </>
             )}
           </div>
 

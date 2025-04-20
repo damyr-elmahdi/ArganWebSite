@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,11 +19,13 @@ class News extends Model
         'author_id',
         'is_published',
         'published_at',
+        'scheduled_publication', // Add this new field
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
         'published_at' => 'datetime',
+        'scheduled_publication' => 'datetime', // Add this new field
     ];
 
     public function author()
@@ -39,6 +42,7 @@ class News extends Model
     {
         $this->is_published = true;
         $this->published_at = now();
+        $this->scheduled_publication = null; // Clear scheduled publication date
         $this->save();
     }
     
