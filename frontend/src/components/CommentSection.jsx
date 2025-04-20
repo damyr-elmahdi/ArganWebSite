@@ -50,9 +50,9 @@ export default function CommentSection({ newsId }) {
     }
   };
 
-  // Check if current user is author of comment
-  const isCommentAuthor = (comment) => {
-    return user && comment.user_id === user.id;
+  // Check if current user is author of comment or an admin
+  const canDeleteComment = (comment) => {
+    return user && (comment.user_id === user.id || user.role === 'administrator');
   };
 
   return (
@@ -92,7 +92,7 @@ export default function CommentSection({ newsId }) {
                     {format(new Date(comment.created_at), 'MMMM d, yyyy • h:mm a')}
                   </p>
                 </div>
-                {isCommentAuthor(comment) && (
+                {canDeleteComment(comment) && (
                   <button 
                     onClick={() => handleDeleteComment(comment.id)}
                     className="text-red-600 hover:text-red-800 text-sm"

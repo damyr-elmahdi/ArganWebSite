@@ -79,14 +79,14 @@ class CommentController extends Controller
         if ($comment->news_id !== $news->id) {
             return response()->json(['error' => 'Comment does not belong to this news article'], 404);
         }
-
+    
         // Ensure the user owns this comment or is an admin
         if ($comment->user_id !== $request->user()->id && !$request->user()->hasRole('administrator')) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-
+    
         $comment->delete();
-
+    
         return response()->json(null, 204);
     }
 }
