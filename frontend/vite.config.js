@@ -7,12 +7,11 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000', // Laravel backend
+        target: 'http://localhost:8000',
         changeOrigin: true,
-        headers: {
-          Accept: 'application/json',
-        },
-      },
-    },
+        secure: false
+      }
+    }
   },
+  // other configuration...
 });

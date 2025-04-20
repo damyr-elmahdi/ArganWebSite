@@ -1,27 +1,34 @@
-import axios from "axios";
+import axios from 'axios';
 
-// In Vite, use import.meta.env instead of process.env
-// If we're using a proxy in development, we can just use relative URLs
-axios.defaults.baseURL = "/"; // This will work with the Vite proxy configuration
+// Use Vite environment variable for the base URL, with fallback options
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || '/'; // '/' works with Vite proxy configuration
 
-// Initialize token from localStorage if available
-const token = localStorage.getItem("token");
-if (token) {
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-}
+// Add a request interceptor to include the auth token
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-// Add request interceptor to handle errors
+// Add response interceptor to handle errors
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
     // Handle authentication errors
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
 
       // Redirect to login page only if not already there
-      if (!window.location.pathname.includes("/login")) {
-        window.location.href = "/login";
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
       }
     }
     return Promise.reject(error);
@@ -31,9 +38,9 @@ axios.interceptors.response.use(
 // Helper function to set authentication token
 export const setAuthToken = (token) => {
   if (token) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   } else {
-    delete axios.defaults.headers.common["Authorization"];
+    delete axios.defaults.headers.common['Authorization'];
   }
 };
 

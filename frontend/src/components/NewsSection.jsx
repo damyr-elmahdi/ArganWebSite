@@ -30,30 +30,7 @@ export default function NewsSection() {
   }, []);
 
   // Fallback data if API call fails or returns no news
-  const fallbackNews = [
-    {
-      id: 1,
-      title: "New Science Lab Equipment Arrives",
-      content: "Our science department received state-of-the-art equipment to enhance student learning experiences in physics and chemistry.",
-      published_at: "2025-04-10T09:30:00",
-      image_path: null // No image for fallback
-    },
-    {
-      id: 2,
-      title: "Higher Education Fair Next Month",
-      content: "Representatives from top universities will be on campus to discuss admission requirements and scholarship opportunities.",
-      published_at: "2025-04-05T14:00:00",
-      image_path: null
-    },
-    {
-      id: 3,
-      title: "Student Achievement Award Winners",
-      content: "Congratulations to all students recognized at this year's Achievement Awards ceremony for their outstanding academic performance.",
-      published_at: "2025-03-28T16:45:00",
-      image_path: null
-    }
-  ];
-
+  
   // Use fallback data if needed
   const newsToDisplay = newsItems.length > 0 ? newsItems : error ? fallbackNews : [];
 
