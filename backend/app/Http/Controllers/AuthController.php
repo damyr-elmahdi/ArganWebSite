@@ -39,6 +39,7 @@ class AuthController extends Controller
                     'user_id' => $user->id,
                     'student_id' => 'S' . date('Y') . str_pad($user->id, 4, '0', STR_PAD_LEFT),
                     'grade' => $request->grade ?? null,
+                    'recovery_email' => $request->recovery_email ?? null,
                 ]);
             } elseif ($request->role === 'teacher') {
                 Teacher::create([
@@ -71,6 +72,7 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+            'remember' => 'boolean',
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -81,9 +83,12 @@ class AuthController extends Controller
             ]);
         }
 
+        // Set expiration time based on remember me checkbox
+        $expiresAt = $request->remember ? null : now()->addMinutes(config('sanctum.expiration', 60));
+
         return response()->json([
             'user' => $user,
-            'token' => $user->createToken('api-token')->plainTextToken,
+            'token' => $user->createToken('api-token', ['*'], $expiresAt)->plainTextToken,
         ]);
     }
 
@@ -107,5 +112,30 @@ class AuthController extends Controller
         }
         
         return response()->json($userData);
+    }
+
+    /**
+     * Update recovery email for a student user
+     */
+    public function updateRecoveryEmail(Request $request)
+    {
+        $request->validate([
+            'recovery_email' => 'required|email',
+        ]);
+
+        $user = $request->user();
+        
+        if (!$user->isStudent()) {
+            return response()->json(['message' => 'Only student accounts can update recovery email'], 403);
+        }
+
+        $student = $user->student;
+        $student->recovery_email = $request->recovery_email;
+        $student->save();
+
+        return response()->json([
+            'message' => 'Recovery email updated successfully',
+            'student' => $student
+        ]);
     }
 }

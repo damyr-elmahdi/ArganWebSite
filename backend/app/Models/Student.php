@@ -13,6 +13,7 @@ class Student extends Model
         'user_id',
         'student_id',
         'grade',
+        'recovery_email',
     ];
 
     public function user()

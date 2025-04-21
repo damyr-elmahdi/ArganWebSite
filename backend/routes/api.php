@@ -7,12 +7,18 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ResetPasswordController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/registrations', [RegistrationController::class, 'store']);
 Route::get('/registrations/{registration}/download-packet', [RegistrationController::class, 'downloadInfoPacket']);
+
+// Password reset routes
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -21,6 +27,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/news/{news}/comments', [CommentController::class, 'store']);
     Route::put('/news/{news}/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/news/{news}/comments/{comment}', [CommentController::class, 'destroy']);
+    
+    // Add recovery email update route
+    Route::post('/update-recovery-email', [AuthController::class, 'updateRecoveryEmail']);
 
     // Admin routes
     Route::middleware('role:administrator')->group(function () {
@@ -39,8 +48,6 @@ Route::middleware('auth:sanctum')->group(function () {
         // Add teacher-specific routes here
     });
 });
-
-// backend/routes/api.php
 
 // News routes
 Route::get('/news', [NewsController::class, 'index']);

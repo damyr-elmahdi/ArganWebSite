@@ -1,4 +1,3 @@
-// frontend/src/pages/Login.jsx - Modified version
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -7,6 +6,7 @@ export default function Login() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    remember: false, // Add remember me state
   });
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -14,10 +14,10 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -30,27 +30,20 @@ export default function Login() {
     setError('');
     
     try {
-      // Use the login function from AuthContext
-      const userData = await login(formData.email, formData.password);
-      
-      // Store the user in localStorage for consistency
-      localStorage.setItem('user', JSON.stringify(userData.user));
+      // Pass remember flag to login function
+      const response = await login(formData.email, formData.password, formData.remember);
       
       // Redirect based on user role
-      const { role } = userData.user;
-      
-      // Small delay to ensure state is updated
-      setTimeout(() => {
-        if (role === 'student') {
-          navigate('/student-dashboard');
-        } else if (role === 'teacher') {
-          navigate('/teacher-dashboard');
-        } else if (role === 'administrator') {
-          navigate('/admin-dashboard');
-        } else {
-          navigate('/dashboard');
-        }
-      }, 100);
+      const { role } = response.user;
+      if (role === 'student') {
+        navigate('/student-dashboard');
+      } else if (role === 'teacher') {
+        navigate('/teacher-dashboard');
+      } else if (role === 'administrator') {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/dashboard');
+      }
       
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -64,6 +57,7 @@ export default function Login() {
       }
     }
   };
+
   return (
     <main className="flex-grow flex items-center justify-center py-12 px-4 bg-gray-50">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
@@ -132,20 +126,22 @@ export default function Login() {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <input
-                id="remember-me"
-                name="remember-me"
+                id="remember"
+                name="remember"
                 type="checkbox"
                 className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                checked={formData.remember}
+                onChange={handleChange}
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
                 Remember me
               </label>
             </div>
 
             <div className="text-sm">
-              <a href="#" className="font-medium text-orange-600 hover:text-orange-500">
+              <Link to="/forgot-password" className="font-medium text-orange-600 hover:text-orange-500">
                 Forgot your password?
-              </a>
+              </Link>
             </div>
           </div>
 
