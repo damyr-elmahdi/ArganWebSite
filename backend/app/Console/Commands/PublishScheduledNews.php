@@ -1,11 +1,11 @@
 <?php
-// Create a new command: php artisan make:command PublishScheduledNews
 
 namespace App\Console\Commands;
 
 use App\Models\News;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Console\Scheduling\Schedule;
 
 class PublishScheduledNews extends Command
 {
@@ -21,31 +21,45 @@ class PublishScheduledNews extends Command
      *
      * @var string
      */
-    protected $description = 'Publish news items that have reached their scheduled publication time';
+    protected $description = 'Publishes news items that are scheduled for publication';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
-        $now = now();
+        $this->info('Checking for scheduled news items...');
         
-        // Find all news that should be published now
         $scheduledNews = News::where('is_published', false)
             ->whereNotNull('scheduled_publication')
-            ->where('scheduled_publication', '<=', $now)
+            ->where('scheduled_publication', '<=', Carbon::now())
             ->get();
-            
+        
         $count = $scheduledNews->count();
         
-        foreach ($scheduledNews as $news) {
-            $news->is_published = true;
-            $news->published_at = $now;
-            $news->save();
-            
-            Log::info("Published scheduled news: {$news->id} - {$news->title}");
+        if ($count === 0) {
+            $this->info('No scheduled news items to publish.');
+            return 0;
         }
         
-        $this->info("Published {$count} scheduled news items.");
+        $this->info("Found {$count} scheduled news items to publish.");
+        
+        foreach ($scheduledNews as $news) {
+            $this->info("Publishing news item: {$news->id} - {$news->title}");
+            $news->publish();
+        }
+        
+        $this->info('Finished publishing scheduled news items.');
+        
+        return 0;
     }
+
+
+public function schedule(Schedule $schedule): void
+{
+    $schedule->command(static::class)
+             ->everyMinute()
+             ->timezone('Africa/Casablanca');
+}
+
 }
