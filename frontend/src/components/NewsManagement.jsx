@@ -21,6 +21,8 @@ export default function NewsManagement() {
     is_published: false,
     scheduled_for: "",
     image: null,
+    // Add this to track if we should keep the existing image
+    keep_existing_image: true
   });
   const [imagePreview, setImagePreview] = useState(null);
 
@@ -51,6 +53,8 @@ export default function NewsManagement() {
         setFormData({
           ...formData,
           [name]: files[0],
+          // When user selects a new file, set keep_existing_image to false
+          keep_existing_image: false
         });
 
         // Create preview URL for the image
@@ -76,6 +80,7 @@ export default function NewsManagement() {
       is_published: false,
       scheduled_for: "",
       image: null,
+      keep_existing_image: true
     });
     setImagePreview(null);
     setShowForm(false);
@@ -98,8 +103,8 @@ export default function NewsManagement() {
         newsFormData.append("scheduled_for", formData.scheduled_for);
       }
 
-      // Only include image if it exists
-      if (formData.image) {
+      // Only include image if it exists and we're not keeping the existing one
+      if (formData.image && !formData.keep_existing_image) {
         newsFormData.append("image", formData.image);
       }
 
@@ -109,7 +114,8 @@ export default function NewsManagement() {
         content: formData.content,
         is_published: formData.is_published,
         scheduled_for: formData.scheduled_for,
-        hasImage: !!formData.image,
+        hasImage: !!formData.image && !formData.keep_existing_image,
+        keepExistingImage: formData.keep_existing_image
       });
 
       if (isEditing) {
@@ -141,8 +147,9 @@ export default function NewsManagement() {
       title: item.title,
       content: item.content,
       is_published: item.is_published,
-      scheduled_for: item.scheduled_for || "",
+      scheduled_for: item.scheduled_publication || "",
       image: null, // Can't prefill file input, but we can show preview
+      keep_existing_image: true // Default to keeping existing image
     });
     
     // Set image preview if exists
@@ -311,7 +318,7 @@ export default function NewsManagement() {
                     className="h-32 w-auto object-cover rounded-md"
                   />
                   {isEditing && !formData.image && (
-                    <p className="text-xs text-gray-500 mt-1">Current image will be kept unless a new one is selected</p>
+                    <p className="text-xs text-gray-500 mt-1">Current image will be kept</p>
                   )}
                 </div>
               )}
@@ -427,8 +434,8 @@ export default function NewsManagement() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {item.published_at
                         ? new Date(item.published_at).toLocaleDateString()
-                        : item.scheduled_for 
-                          ? `Scheduled: ${new Date(item.scheduled_for).toLocaleString()}`
+                        : item.scheduled_publication 
+                          ? `Scheduled: ${new Date(item.scheduled_publication).toLocaleString()}`
                           : "Draft"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -436,7 +443,7 @@ export default function NewsManagement() {
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                           Published
                         </span>
-                      ) : item.scheduled_for ? (
+                      ) : item.scheduled_publication ? (
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                           Scheduled
                         </span>
