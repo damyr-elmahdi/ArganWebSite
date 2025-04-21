@@ -18,11 +18,14 @@ export default function ForgotPassword() {
       const response = await axios.post('/api/forgot-password', { email });
       setStatus(response.data.message);
     } catch (err) {
-      if (err.response?.data?.email) {
+      if (err.response?.data?.errors?.email) {
+        setError(err.response.data.errors.email[0]);
+      } else if (err.response?.data?.email) {
         setError(err.response.data.email);
       } else {
         setError('An error occurred. Please try again later.');
       }
+      console.error('Password reset error:', err);
     } finally {
       setLoading(false);
     }
