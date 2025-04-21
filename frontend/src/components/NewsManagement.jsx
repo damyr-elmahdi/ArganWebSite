@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import {
   getNews,
   createNews,
+  updateNews,
   deleteNews,
   publishNews,
   archiveNews,
@@ -12,11 +13,13 @@ export default function NewsManagement() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentNewsId, setCurrentNewsId] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     is_published: false,
-    scheduled_for: "", // Add field for scheduled publication
+    scheduled_for: "",
     image: null,
   });
   const [imagePreview, setImagePreview] = useState(null);
@@ -76,6 +79,8 @@ export default function NewsManagement() {
     });
     setImagePreview(null);
     setShowForm(false);
+    setIsEditing(false);
+    setCurrentNewsId(null);
   };
 
   const handleSubmit = async (e) => {
@@ -107,16 +112,51 @@ export default function NewsManagement() {
         hasImage: !!formData.image,
       });
 
-      await createNews(newsFormData);
+      if (isEditing) {
+        await updateNews(currentNewsId, newsFormData);
+      } else {
+        await createNews(newsFormData);
+      }
+      
       resetForm();
       fetchNews();
     } catch (err) {
-      setError("Failed to create news item");
+      const action = isEditing ? "update" : "create";
+      setError(`Failed to ${action} news item`);
       console.error("Submission error:", err);
       if (err.response && err.response.data) {
         console.error("Server error details:", err.response.data);
       }
     }
+  };
+
+  const handleEdit = (item) => {
+    // Set form to editing mode
+    setIsEditing(true);
+    setCurrentNewsId(item.id);
+    setShowForm(true);
+    
+    // Fill form with current news data
+    setFormData({
+      title: item.title,
+      content: item.content,
+      is_published: item.is_published,
+      scheduled_for: item.scheduled_for || "",
+      image: null, // Can't prefill file input, but we can show preview
+    });
+    
+    // Set image preview if exists
+    if (item.image_path) {
+      setImagePreview(getImageUrl(item.image_path));
+    } else {
+      setImagePreview(null);
+    }
+    
+    // Scroll to form
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   const handleDelete = async (id) => {
@@ -184,10 +224,19 @@ export default function NewsManagement() {
           </p>
         </div>
         <button
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => {
+            if (showForm && !isEditing) {
+              resetForm();
+            } else {
+              setShowForm(!showForm);
+              if (isEditing) {
+                resetForm();
+              }
+            }
+          }}
           className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700"
         >
-          {showForm ? "Cancel" : "Create News"}
+          {showForm ? (isEditing ? "Cancel Edit" : "Cancel") : "Create News"}
         </button>
       </div>
 
@@ -239,7 +288,7 @@ export default function NewsManagement() {
                 htmlFor="image"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                News Image
+                News Image {isEditing && "- Leave empty to keep current image"}
               </label>
               <input
                 type="file"
@@ -261,6 +310,9 @@ export default function NewsManagement() {
                     alt="Preview"
                     className="h-32 w-auto object-cover rounded-md"
                   />
+                  {isEditing && !formData.image && (
+                    <p className="text-xs text-gray-500 mt-1">Current image will be kept unless a new one is selected</p>
+                  )}
                 </div>
               )}
             </div>
@@ -309,7 +361,7 @@ export default function NewsManagement() {
               type="submit"
               className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
             >
-              Save News Item
+              {isEditing ? "Update News Item" : "Save News Item"}
             </button>
           </form>
         </div>
@@ -395,6 +447,12 @@ export default function NewsManagement() {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="text-blue-600 hover:text-blue-900 mr-3"
+                      >
+                        Edit
+                      </button>
                       {!item.is_published ? (
                         <button
                           onClick={() => handlePublish(item.id)}
