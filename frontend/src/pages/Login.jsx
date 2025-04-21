@@ -1,7 +1,7 @@
-// frontend/src/pages/Login.jsx
+// frontend/src/pages/Login.jsx - Modified version
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext'; // Import the auth context
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -9,8 +9,8 @@ export default function Login() {
     password: '',
   });
   const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // Add state for password visibility
-  const { login, loading } = useAuth(); // Use the auth context
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, loading } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -31,19 +31,26 @@ export default function Login() {
     
     try {
       // Use the login function from AuthContext
-      const response = await login(formData.email, formData.password);
+      const userData = await login(formData.email, formData.password);
+      
+      // Store the user in localStorage for consistency
+      localStorage.setItem('user', JSON.stringify(userData.user));
       
       // Redirect based on user role
-      const { role } = response.user;
-      if (role === 'student') {
-        navigate('/student-dashboard');
-      } else if (role === 'teacher') {
-        navigate('/teacher-dashboard');
-      } else if (role === 'administrator') {
-        navigate('/admin-dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+      const { role } = userData.user;
+      
+      // Small delay to ensure state is updated
+      setTimeout(() => {
+        if (role === 'student') {
+          navigate('/student-dashboard');
+        } else if (role === 'teacher') {
+          navigate('/teacher-dashboard');
+        } else if (role === 'administrator') {
+          navigate('/admin-dashboard');
+        } else {
+          navigate('/dashboard');
+        }
+      }, 100);
       
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -57,7 +64,6 @@ export default function Login() {
       }
     }
   };
-
   return (
     <main className="flex-grow flex items-center justify-center py-12 px-4 bg-gray-50">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
