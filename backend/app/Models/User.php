@@ -2,15 +2,29 @@
 // app/Models/User.php
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPassword
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    // Your existing code...
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $url = config('app.frontend_url', 'http://localhost:3000') . '/reset-password/' . $token . '?email=' . urlencode($this->email);
+        $this->notify(new \App\Notifications\ResetPassword($token, $url));
+    }
     protected $fillable = [
         'name',
         'email',
@@ -57,22 +71,22 @@ class User extends Authenticatable
     {
         return $this->role === 'administrator';
     }
-    
+
     public function createdQuizzes()
     {
         return $this->hasMany(Quiz::class, 'creator_id');
     }
-    
+
     public function completedQuizzes()
     {
         return $this->hasMany(CompletedQuiz::class, 'student_id');
     }
-    
+
     public function uploadedResources()
     {
         return $this->hasMany(Resource::class, 'uploaded_by');
     }
-    
+
     public function news()
     {
         return $this->hasMany(News::class, 'author_id');
