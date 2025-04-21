@@ -42,10 +42,14 @@ export function AuthProvider({ children }) {
     checkAuth();
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, remember = false) => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/login", { email, password });
+      const response = await axios.post("/api/login", {
+        email,
+        password,
+        remember,
+      });
 
       // Save token and user data
       localStorage.setItem("token", response.data.token);
@@ -67,7 +71,6 @@ export function AuthProvider({ children }) {
       setLoading(false);
     }
   };
-
   const logout = async () => {
     try {
       setLoading(true);

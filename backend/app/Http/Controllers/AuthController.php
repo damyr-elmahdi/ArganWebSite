@@ -32,7 +32,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => $request->role,
             ]);
-            
+
             // Create role-specific entry
             if ($request->role === 'student') {
                 Student::create([
@@ -53,9 +53,9 @@ class AuthController extends Controller
                     'department' => $request->department ?? 'general',
                 ]);
             }
-            
+
             DB::commit();
-            
+
             return response()->json([
                 'message' => 'User registered successfully',
                 'user' => $user,
@@ -67,6 +67,7 @@ class AuthController extends Controller
         }
     }
 
+    // backend/app/Http/Controllers/AuthController.php
     public function login(Request $request)
     {
         $request->validate([
@@ -102,7 +103,7 @@ class AuthController extends Controller
     {
         $user = $request->user();
         $userData = $user->toArray();
-        
+
         if ($user->isStudent()) {
             $userData['student'] = $user->student;
         } elseif ($user->isTeacher()) {
@@ -110,7 +111,7 @@ class AuthController extends Controller
         } elseif ($user->isAdministrator()) {
             $userData['administrator'] = $user->administrator;
         }
-        
+
         return response()->json($userData);
     }
 
@@ -124,7 +125,7 @@ class AuthController extends Controller
         ]);
 
         $user = $request->user();
-        
+
         if (!$user->isStudent()) {
             return response()->json(['message' => 'Only student accounts can update recovery email'], 403);
         }

@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import "./services/axios"; // Import axios config
-import { AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider, useAuth } from "./contexts/AuthContext"; // Add useAuth import here
 // Pages
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -25,7 +25,7 @@ import ResetPassword from "./components/ResetPassword";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-// Auth guard component
+
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -50,7 +50,6 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
   return children;
 };
-
 // Component to redirect to appropriate dashboard
 function DashboardRedirect() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -100,13 +99,10 @@ export default function App() {
             <Route path="/library" element={<Library />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-
             {/* Password reset routes */}
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
-
             {/* Protected routes with role-based access */}
-          
             <Route
               path="/student-dashboard"
               element={
