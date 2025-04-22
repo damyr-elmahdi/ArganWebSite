@@ -10,6 +10,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\TeacherAbsenceController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -42,11 +43,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/registrations', [RegistrationController::class, 'index']);
         Route::get('/registrations/{registration}', [RegistrationController::class, 'show']);
         Route::patch('/registrations/{registration}/mark-processed', [RegistrationController::class, 'markProcessed']);
+
+        // Teacher absence management
+        Route::get('/teachers', [TeacherAbsenceController::class, 'getTeachers']);
+        Route::get('/absences', [TeacherAbsenceController::class, 'index']);
+        Route::post('/absences', [TeacherAbsenceController::class, 'store']);
+        Route::put('/absences/{absence}', [TeacherAbsenceController::class, 'update']);
+        Route::delete('/absences/{absence}', [TeacherAbsenceController::class, 'destroy']);
     });
 
     // Student routes
     Route::middleware('role:student')->group(function () {
-        // Add student-specific routes here
+        // Absence notifications for students
+        Route::get('/absence-notifications', [TeacherAbsenceController::class, 'getStudentNotifications']);
+        Route::patch('/absence-notifications/{notification}/read', [TeacherAbsenceController::class, 'markAsRead']);
     });
 
     // Teacher routes

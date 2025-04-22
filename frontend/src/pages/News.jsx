@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { useParams, Link } from "react-router-dom";
 import { getImageUrl } from "../utils/imageUtils";
 import CommentSection from "../components/CommentSection";
+import ImageModal from "../components/ImageModal"; // Import the new component
 
 export default function News() {
   const [newsItems, setNewsItems] = useState([]);
@@ -14,6 +15,10 @@ export default function News() {
   const [totalPages, setTotalPages] = useState(1);
   const params = useParams();
   const newsId = params.id;
+  
+  // State for the image modal
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalImage, setModalImage] = useState("");
 
   useEffect(() => {
     if (newsId) {
@@ -51,6 +56,12 @@ export default function News() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+  
+  // Function to open the modal with the image
+  const openImageModal = (imageUrl) => {
+    setModalImage(imageUrl);
+    setModalOpen(true);
+  };
 
   // Renders a single news article view
   const renderNewsDetail = () => {
@@ -63,7 +74,8 @@ export default function News() {
             <img
               src={currentNews.image_url || getImageUrl(currentNews.image_path)}
               alt={currentNews.title}
-              className="max-w-full max-h-96 object-contain"
+              className="max-w-full max-h-96 object-contain cursor-pointer hover:opacity-90 transition-opacity"
+              onClick={() => openImageModal(currentNews.image_url || getImageUrl(currentNews.image_path))}
             />
           </div>
         ) : (
@@ -120,12 +132,21 @@ export default function News() {
             </Link>
           </div>
         </div>
+
+        {/* Image Modal */}
+        <ImageModal 
+          isOpen={modalOpen}
+          imageUrl={modalImage}
+          imageAlt={currentNews.title}
+          onClose={() => setModalOpen(false)}
+        />
       </div>
     );
   };
 
-  // Renders the news list view
+  // The rest of the News component remains unchanged
   const renderNewsList = () => {
+
     return (
       <>
         <h1 className="text-3xl font-bold text-gray-800 mb-6">School News</h1>
