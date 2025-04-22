@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/news/{news}/comments', [CommentController::class, 'store']);
     Route::put('/news/{news}/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/news/{news}/comments/{comment}', [CommentController::class, 'destroy']);
-    
+
     // Add recovery email update route
     Route::post('/update-recovery-email', [AuthController::class, 'updateRecoveryEmail']);
 
@@ -53,8 +53,13 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/news', [NewsController::class, 'index']);
 Route::get('/news/{news}', [NewsController::class, 'show']);
 Route::get('/news/{news}/comments', [CommentController::class, 'index']);
+
+// Public event routes
+Route::get('/events', [EventController::class, 'index']);
+Route::get('/events/{event}', [EventController::class, 'show']);
+
+// Protected routes
 Route::middleware('auth:sanctum')->group(function () {
-    // Existing routes...
 
     // News routes for authenticated users
     Route::post('/news', [NewsController::class, 'store']);
@@ -63,9 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/news/{news}/publish', [NewsController::class, 'publish']);
     Route::patch('/news/{news}/archive', [NewsController::class, 'archive']);
 
-    // Events routes
-    Route::get('/events', [EventController::class, 'index']);
-    Route::get('/events/{event}', [EventController::class, 'show']);
+    // Protected event routes
     Route::post('/events', [EventController::class, 'store']);
     Route::put('/events/{event}', [EventController::class, 'update']);
     Route::delete('/events/{event}', [EventController::class, 'destroy']);
