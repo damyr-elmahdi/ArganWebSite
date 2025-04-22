@@ -9,44 +9,6 @@ import {
   archiveNews,
 } from "../services/newsService";
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const newsFormData = new FormData();
-
-    // Always include these required fields
-    newsFormData.append("title", formData.title);
-    newsFormData.append("content", formData.content);
-    newsFormData.append("is_published", formData.is_published ? 1 : 0);
-
-    // Add scheduled publication date if provided and not publishing immediately
-    if (!formData.is_published && formData.scheduled_for) {
-      newsFormData.append("scheduled_for", formData.scheduled_for);
-    }
-
-    // Only include image if it exists and we're not keeping the existing one
-    if (formData.image && !formData.keep_existing_image) {
-      newsFormData.append("image", formData.image);
-    }
-
-    if (isEditing) {
-      // Use the updated service function instead of direct axios call
-      await updateNews(currentNewsId, newsFormData);
-    } else {
-      await createNews(newsFormData);
-    }
-
-    resetForm();
-    fetchNews();
-  } catch (err) {
-    const action = isEditing ? "update" : "create";
-    setError(`Failed to ${action} news item`);
-    console.error("Submission error:", err);
-    if (err.response && err.response.data) {
-      console.error("Server error details:", err.response.data);
-    }
-  }
-};
 export default function NewsManagement() {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -80,6 +42,49 @@ export default function NewsManagement() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const newsFormData = new FormData();
+
+      // Always include these required fields
+      newsFormData.append("title", formData.title);
+      newsFormData.append("content", formData.content);
+
+      // Only include is_published for new items, not when editing
+      if (!isEditing) {
+        newsFormData.append("is_published", formData.is_published ? 1 : 0);
+      }
+
+      // Add scheduled publication date if provided and not publishing immediately
+      if ((!isEditing || !formData.is_published) && formData.scheduled_for) {
+        newsFormData.append("scheduled_for", formData.scheduled_for);
+      }
+
+      // Only include image if it exists and we're not keeping the existing one
+      if (formData.image && !formData.keep_existing_image) {
+        newsFormData.append("image", formData.image);
+      }
+
+      if (isEditing) {
+        // Use the updated service function instead of direct axios call
+        await updateNews(currentNewsId, newsFormData);
+      } else {
+        await createNews(newsFormData);
+      }
+
+      resetForm();
+      fetchNews();
+    } catch (err) {
+      const action = isEditing ? "update" : "create";
+      setError(`Failed to ${action} news item`);
+      console.error("Submission error:", err);
+      if (err.response && err.response.data) {
+        console.error("Server error details:", err.response.data);
+      }
     }
   };
 
@@ -316,31 +321,35 @@ export default function NewsManagement() {
                 </div>
               )}
             </div>
-            <div className="mb-4 flex items-center">
-              <input
-                type="checkbox"
-                id="is_published"
-                name="is_published"
-                checked={formData.is_published}
-                onChange={handleInputChange}
-                className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
-              />
-              <label
-                htmlFor="is_published"
-                className="ml-2 block text-sm text-gray-700"
-              >
-                Publish immediately
-              </label>
-            </div>
+
+            {/* Only show publish immediately checkbox when creating a new item */}
+            {!isEditing && (
+              <div className="mb-4 flex items-center">
+                <input
+                  type="checkbox"
+                  id="is_published"
+                  name="is_published"
+                  checked={formData.is_published}
+                  onChange={handleInputChange}
+                  className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                />
+                <label
+                  htmlFor="is_published"
+                  className="ml-2 block text-sm text-gray-700"
+                >
+                  Publish immediately
+                </label>
+              </div>
+            )}
 
             {/* Scheduled publish time input - show when not publishing immediately */}
-            {!formData.is_published && (
+            {!formData.is_published && !isEditing && (
               <div className="mb-4">
                 <label
                   htmlFor="scheduled_for"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Schedule Publication Time
+                  Schedule Publication Time (if not publishing now)
                 </label>
                 <input
                   type="datetime-local"
