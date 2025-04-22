@@ -5,6 +5,7 @@ import { CalendarIcon, MapPinIcon, ClockIcon, ArrowLeftIcon } from '@heroicons/r
 import { getEvent } from '../services/eventService';
 import { getImageUrl } from '../utils/imageUtils';
 import CommentSection from '../components/CommentSection';
+import EventCommentSection from '../components/EventCommentSection';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function EventDetail() {
@@ -145,7 +146,7 @@ export default function EventDetail() {
 
       {/* Event Comments Section */}
       <div className="mt-8">
-        <CommentSection eventId={event.id} />
+      <EventCommentSection eventId={event.id} />
       </div>
     </main>
   );

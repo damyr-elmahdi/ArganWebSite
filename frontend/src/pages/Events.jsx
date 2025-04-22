@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { getEvents } from "../services/eventService";
 import { format } from "date-fns";
 import {
@@ -12,19 +13,24 @@ export default function Events() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filters, setFilters] = useState({
-    startDate: "",
-    endDate: "",
-  });
+  const [filterDate, setFilterDate] = useState("");
 
   useEffect(() => {
     fetchEvents();
   }, []);
 
-  const fetchEvents = async (filterParams = {}) => {
+  const fetchEvents = async (date = null) => {
     try {
       setLoading(true);
-      const response = await getEvents(filterParams);
+      const params = {};
+      
+      if (date) {
+        // Use the same date for both start_date and end_date to get events on a specific day
+        params.start_date = date;
+        params.end_date = date;
+      }
+      
+      const response = await getEvents(params);
       setEvents(response.data);
       setLoading(false);
     } catch (err) {
@@ -34,16 +40,17 @@ export default function Events() {
   };
 
   const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFilterDate(e.target.value);
   };
 
-  const applyFilters = (e) => {
+  const applyFilter = (e) => {
     e.preventDefault();
-    fetchEvents(filters);
+    fetchEvents(filterDate);
+  };
+
+  const resetFilter = () => {
+    setFilterDate("");
+    fetchEvents();
   };
 
   const formatEventDate = (startTime, endTime) => {
@@ -69,51 +76,44 @@ export default function Events() {
     <main className="flex-grow container mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">School Events</h1>
 
-      {/* Filters */}
+      {/* Simplified Filter */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-8">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Filter Events
+          Filter Events by Date
         </h2>
-        <form onSubmit={applyFilters} className="flex flex-wrap gap-4">
+        <form onSubmit={applyFilter} className="flex flex-wrap gap-4 items-end">
           <div className="flex flex-col flex-1 min-w-[200px]">
             <label
-              htmlFor="startDate"
+              htmlFor="filterDate"
               className="text-sm font-medium text-gray-700 mb-1"
             >
-              Start Date
+              Select Date
             </label>
             <input
               type="date"
-              id="startDate"
-              name="startDate"
-              value={filters.startDate}
+              id="filterDate"
+              name="filterDate"
+              value={filterDate}
               onChange={handleFilterChange}
               className="border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
-          <div className="flex flex-col flex-1 min-w-[200px]">
-            <label
-              htmlFor="endDate"
-              className="text-sm font-medium text-gray-700 mb-1"
-            >
-              End Date
-            </label>
-            <input
-              type="date"
-              id="endDate"
-              name="endDate"
-              value={filters.endDate}
-              onChange={handleFilterChange}
-              className="border border-gray-300 rounded-md px-3 py-2"
-            />
-          </div>
-          <div className="flex items-end">
+          <div className="flex gap-2">
             <button
               type="submit"
               className="bg-orange-600 text-white px-6 py-2 rounded-md hover:bg-orange-700 transition-colors"
             >
-              Apply Filters
+              Apply Filter
             </button>
+            {filterDate && (
+              <button
+                type="button"
+                onClick={resetFilter}
+                className="bg-gray-200 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Clear
+              </button>
+            )}
           </div>
         </form>
       </div>
@@ -131,7 +131,7 @@ export default function Events() {
             No events found
           </h3>
           <p className="text-gray-600 mt-2">
-            Try adjusting your filters or check back later.
+            {filterDate ? `No events on ${format(new Date(filterDate), "MMMM d, yyyy")}` : "Check back later for upcoming events."}
           </p>
         </div>
       ) : (
@@ -183,21 +183,15 @@ export default function Events() {
                     </p>
                   )}
 
-                  <div className="pt-2 border-t border-gray-200 mt-4 flex justify-between">
-                    <button className="text-orange-600 hover:underline flex items-center">
-                      Add to calendar
-                    </button>
-                    <button className="text-blue-600 hover:underline">
+                  <div className="pt-2 border-t border-gray-200 mt-4">
+                    <Link
+                      to={`/events/${event.id}`}
+                      className="text-blue-600 hover:underline"
+                    >
                       View details
-                    </button>
+                    </Link>
                   </div>
                 </div>
-                <Link
-                  to={`/events/${event.id}`}
-                  className="text-blue-600 hover:underline"
-                >
-                  View details
-                </Link>
               </div>
             );
           })}
