@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import {
   getNews,
@@ -8,6 +9,44 @@ import {
   archiveNews,
 } from "../services/newsService";
 
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const newsFormData = new FormData();
+
+    // Always include these required fields
+    newsFormData.append("title", formData.title);
+    newsFormData.append("content", formData.content);
+    newsFormData.append("is_published", formData.is_published ? 1 : 0);
+
+    // Add scheduled publication date if provided and not publishing immediately
+    if (!formData.is_published && formData.scheduled_for) {
+      newsFormData.append("scheduled_for", formData.scheduled_for);
+    }
+
+    // Only include image if it exists and we're not keeping the existing one
+    if (formData.image && !formData.keep_existing_image) {
+      newsFormData.append("image", formData.image);
+    }
+
+    if (isEditing) {
+      // Use the updated service function instead of direct axios call
+      await updateNews(currentNewsId, newsFormData);
+    } else {
+      await createNews(newsFormData);
+    }
+
+    resetForm();
+    fetchNews();
+  } catch (err) {
+    const action = isEditing ? "update" : "create";
+    setError(`Failed to ${action} news item`);
+    console.error("Submission error:", err);
+    if (err.response && err.response.data) {
+      console.error("Server error details:", err.response.data);
+    }
+  }
+};
 export default function NewsManagement() {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +61,7 @@ export default function NewsManagement() {
     scheduled_for: "",
     image: null,
     // Add this to track if we should keep the existing image
-    keep_existing_image: true
+    keep_existing_image: true,
   });
   const [imagePreview, setImagePreview] = useState(null);
 
@@ -54,7 +93,7 @@ export default function NewsManagement() {
           ...formData,
           [name]: files[0],
           // When user selects a new file, set keep_existing_image to false
-          keep_existing_image: false
+          keep_existing_image: false,
         });
 
         // Create preview URL for the image
@@ -80,7 +119,7 @@ export default function NewsManagement() {
       is_published: false,
       scheduled_for: "",
       image: null,
-      keep_existing_image: true
+      keep_existing_image: true,
     });
     setImagePreview(null);
     setShowForm(false);
@@ -88,60 +127,12 @@ export default function NewsManagement() {
     setCurrentNewsId(null);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const newsFormData = new FormData();
-
-      // Always include these required fields
-      newsFormData.append("title", formData.title);
-      newsFormData.append("content", formData.content);
-      newsFormData.append("is_published", formData.is_published ? 1 : 0);
-
-      // Add scheduled publication date if provided and not publishing immediately
-      if (!formData.is_published && formData.scheduled_for) {
-        newsFormData.append("scheduled_for", formData.scheduled_for);
-      }
-
-      // Only include image if it exists and we're not keeping the existing one
-      if (formData.image && !formData.keep_existing_image) {
-        newsFormData.append("image", formData.image);
-      }
-
-      // Log what we're sending to help debug
-      console.log("Sending form data:", {
-        title: formData.title,
-        content: formData.content,
-        is_published: formData.is_published,
-        scheduled_for: formData.scheduled_for,
-        hasImage: !!formData.image && !formData.keep_existing_image,
-        keepExistingImage: formData.keep_existing_image
-      });
-
-      if (isEditing) {
-        await updateNews(currentNewsId, newsFormData);
-      } else {
-        await createNews(newsFormData);
-      }
-      
-      resetForm();
-      fetchNews();
-    } catch (err) {
-      const action = isEditing ? "update" : "create";
-      setError(`Failed to ${action} news item`);
-      console.error("Submission error:", err);
-      if (err.response && err.response.data) {
-        console.error("Server error details:", err.response.data);
-      }
-    }
-  };
-
   const handleEdit = (item) => {
     // Set form to editing mode
     setIsEditing(true);
     setCurrentNewsId(item.id);
     setShowForm(true);
-    
+
     // Fill form with current news data
     setFormData({
       title: item.title,
@@ -149,16 +140,16 @@ export default function NewsManagement() {
       is_published: item.is_published,
       scheduled_for: item.scheduled_publication || "",
       image: null, // Can't prefill file input, but we can show preview
-      keep_existing_image: true // Default to keeping existing image
+      keep_existing_image: true, // Default to keeping existing image
     });
-    
+
     // Set image preview if exists
     if (item.image_path) {
       setImagePreview(getImageUrl(item.image_path));
     } else {
       setImagePreview(null);
     }
-    
+
     // Scroll to form
     window.scrollTo({
       top: 0,
@@ -211,7 +202,7 @@ export default function NewsManagement() {
     const day = String(now.getDate()).padStart(2, "0");
     const hours = String(now.getHours()).padStart(2, "0");
     const minutes = String(now.getMinutes()).padStart(2, "0");
-    
+
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
@@ -318,7 +309,9 @@ export default function NewsManagement() {
                     className="h-32 w-auto object-cover rounded-md"
                   />
                   {isEditing && !formData.image && (
-                    <p className="text-xs text-gray-500 mt-1">Current image will be kept</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Current image will be kept
+                    </p>
                   )}
                 </div>
               )}
@@ -339,7 +332,7 @@ export default function NewsManagement() {
                 Publish immediately
               </label>
             </div>
-            
+
             {/* Scheduled publish time input - show when not publishing immediately */}
             {!formData.is_published && (
               <div className="mb-4">
@@ -363,7 +356,7 @@ export default function NewsManagement() {
                 </p>
               </div>
             )}
-            
+
             <button
               type="submit"
               className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
@@ -434,9 +427,11 @@ export default function NewsManagement() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {item.published_at
                         ? new Date(item.published_at).toLocaleDateString()
-                        : item.scheduled_publication 
-                          ? `Scheduled: ${new Date(item.scheduled_publication).toLocaleString()}`
-                          : "Draft"}
+                        : item.scheduled_publication
+                        ? `Scheduled: ${new Date(
+                            item.scheduled_publication
+                          ).toLocaleString()}`
+                        : "Draft"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {item.is_published ? (
