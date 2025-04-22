@@ -96,11 +96,13 @@ export default function EventsSection() {
                 >
                   <div className="flex items-start mb-3">
                     {event.image_path ? (
-                      <img
-                        src={getImageUrl(event.image_path)}
-                        alt={event.title}
-                        className="h-16 w-16 object-cover rounded-md mr-4"
-                      />
+                      <div className="h-16 w-16 flex-shrink-0 mr-4 bg-white rounded-md overflow-hidden flex items-center justify-center">
+                        <img
+                          src={getImageUrl(event.image_path)}
+                          alt={event.title}
+                          className="max-h-16 max-w-16 object-contain"
+                        />
+                      </div>
                     ) : (
                       <div className="bg-orange-600 text-white rounded p-2 mr-4 text-center min-w-[60px]">
                         <div className="text-sm font-bold">
@@ -111,6 +113,7 @@ export default function EventsSection() {
                         </div>
                       </div>
                     )}
+
                     <div>
                       <h3 className="text-lg font-bold text-gray-800">
                         {event.title}

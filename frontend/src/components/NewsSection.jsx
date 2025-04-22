@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getNews } from '../services/newsService';
-import { format } from 'date-fns';
-import { getImageUrl } from '../utils/imageUtils';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { getNews } from "../services/newsService";
+import { format } from "date-fns";
+import { getImageUrl } from "../utils/imageUtils";
+
 
 export default function NewsSection() {
   const [newsItems, setNewsItems] = useState([]);
@@ -14,14 +15,14 @@ export default function NewsSection() {
       try {
         setLoading(true);
         const response = await getNews(1); // Get first page of news
-        
+
         // Extract only the first 3 news items
         const latestNews = response.data.slice(0, 3);
         setNewsItems(latestNews);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching latest news:', err);
-        setError('Failed to load news');
+        console.error("Error fetching latest news:", err);
+        setError("Failed to load news");
         setLoading(false);
       }
     };
@@ -30,12 +31,13 @@ export default function NewsSection() {
   }, []);
 
   // Fallback data if API call fails or returns no news
-  
+
   // Use fallback data if needed
-  const newsToDisplay = newsItems.length > 0 ? newsItems : error ? fallbackNews : [];
+  const newsToDisplay =
+    newsItems.length > 0 ? newsItems : error ? fallbackNews : [];
 
   const getExcerpt = (content, maxLength = 150) => {
-    if (!content) return '';
+    if (!content) return "";
     if (content.length <= maxLength) return content;
     return `${content.substring(0, maxLength)}...`;
   };
@@ -45,33 +47,53 @@ export default function NewsSection() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800">Latest News</h2>
-          <Link to="/news" className="text-orange-600 hover:underline">View All News</Link>
+          <Link to="/news" className="text-orange-600 hover:underline">
+            View All News
+          </Link>
         </div>
-        
+
         {loading ? (
           <div className="flex justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
           </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-6">
-            {newsToDisplay.map(news => (
-              <div key={news.id} className="bg-gray-50 rounded-lg overflow-hidden shadow-md h-full flex flex-col">
+            {newsToDisplay.map((news) => (
+              <div
+                key={news.id}
+                className="bg-gray-50 rounded-lg overflow-hidden shadow-md h-full flex flex-col"
+              >
                 {news.image_path ? (
-                  <img 
-                    src={getImageUrl(news.image_path)} 
-                    alt={news.title}
-                    className="h-40 w-full object-cover"
-                  />
+                  <div className="h-48 overflow-hidden rounded-t-lg">
+                    <img
+                      src={getImageUrl(news.image_path)}
+                      alt={news.title}
+                      className="w-full h-auto max-h-48 object-contain mx-auto bg-gray-50"
+                    />
+                  </div>
                 ) : (
-                  <div className="bg-orange-100 h-40"></div>
+                  <div className="bg-gradient-to-r from-orange-100 to-orange-200 h-48 rounded-t-lg flex items-center justify-center">
+                    <span className="text-orange-500 text-lg font-semibold">
+                      No Image Available
+                    </span>
+                  </div>
                 )}
                 <div className="p-4 flex-grow flex flex-col">
                   <span className="text-sm text-gray-500">
-                    {format(new Date(news.published_at), 'MMMM d, yyyy')}
+                    {format(new Date(news.published_at), "MMMM d, yyyy")}
                   </span>
-                  <h3 className="text-xl font-bold text-gray-800 mt-1 mb-2">{news.title}</h3>
-                  <p className="text-gray-600 mb-4 flex-grow">{getExcerpt(news.content)}</p>
-                  <Link to={`/news/${news.id}`} className="text-orange-600 hover:underline mt-auto">Read more</Link>
+                  <h3 className="text-xl font-bold text-gray-800 mt-1 mb-2">
+                    {news.title}
+                  </h3>
+                  <p className="text-gray-600 mb-4 flex-grow">
+                    {getExcerpt(news.content)}
+                  </p>
+                  <Link
+                    to={`/news/${news.id}`}
+                    className="text-orange-600 hover:underline mt-auto"
+                  >
+                    Read more
+                  </Link>
                 </div>
               </div>
             ))}

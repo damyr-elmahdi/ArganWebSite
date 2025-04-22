@@ -24,7 +24,7 @@ export default function Events() {
     try {
       setLoading(true);
       const params = { ...filters };
-      
+
       const response = await getEvents(params);
       setEvents(response.data);
       setLoading(false);
@@ -45,15 +45,15 @@ export default function Events() {
   const applyFilter = (e) => {
     e.preventDefault();
     const filters = {};
-    
+
     if (startDate) {
       filters.start_date = startDate;
     }
-    
+
     if (endDate) {
       filters.end_date = endDate;
     }
-    
+
     fetchEvents(filters);
   };
 
@@ -108,7 +108,7 @@ export default function Events() {
               className="border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
-          
+
           <div className="flex flex-col flex-1 min-w-[200px]">
             <label
               htmlFor="endDate"
@@ -125,7 +125,7 @@ export default function Events() {
               className="border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
-          
+
           <div className="flex gap-2">
             <button
               type="submit"
@@ -159,14 +159,19 @@ export default function Events() {
             No events found
           </h3>
           <p className="text-gray-600 mt-2">
-            {startDate && endDate 
-              ? `No events between ${format(new Date(startDate), "MMMM d, yyyy")} and ${format(new Date(endDate), "MMMM d, yyyy")}`
-              : startDate 
-                ? `No events from ${format(new Date(startDate), "MMMM d, yyyy")} onwards`
-                : endDate
-                  ? `No events until ${format(new Date(endDate), "MMMM d, yyyy")}`
-                  : "Check back later for upcoming events."
-            }
+            {startDate && endDate
+              ? `No events between ${format(
+                  new Date(startDate),
+                  "MMMM d, yyyy"
+                )} and ${format(new Date(endDate), "MMMM d, yyyy")}`
+              : startDate
+              ? `No events from ${format(
+                  new Date(startDate),
+                  "MMMM d, yyyy"
+                )} onwards`
+              : endDate
+              ? `No events until ${format(new Date(endDate), "MMMM d, yyyy")}`
+              : "Check back later for upcoming events."}
           </p>
         </div>
       ) : (
@@ -182,13 +187,18 @@ export default function Events() {
                 className="bg-white rounded-lg overflow-hidden shadow-md"
               >
                 {event.image_path ? (
-                  <img
-                    src={getImageUrl(event.image_path)}
-                    alt={event.title}
-                    className="w-full h-48 object-cover"
-                  />
+                  <div className="w-full h-48 overflow-hidden bg-gray-50 flex items-center justify-center">
+                    <img
+                      src={getImageUrl(event.image_path)}
+                      alt={event.title}
+                      className="max-h-48 max-w-full object-contain"
+                      loading="lazy"
+                    />
+                  </div>
                 ) : (
-                  <div className="bg-orange-100 h-48"></div>
+                  <div className="bg-orange-100 h-48 flex items-center justify-center">
+                    <CalendarIcon className="h-12 w-12 text-orange-500" />
+                  </div>
                 )}
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-800 mb-3">
