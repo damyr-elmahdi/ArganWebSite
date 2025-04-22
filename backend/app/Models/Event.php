@@ -23,6 +23,14 @@ class Event extends Model
     {
         return $this->belongsTo(User::class, 'creator_id');
     }
+    
+    /**
+     * Get the comments for this event.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 
     protected $casts = [
         'start_time' => 'datetime',

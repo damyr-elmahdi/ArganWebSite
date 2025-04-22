@@ -13,6 +13,7 @@ import About from "./pages/About";
 import Academics from "./pages/Academics";
 import News from "./pages/News";
 import Events from "./pages/Events";
+import EventDetail from "./pages/EventDetail";
 import Library from "./pages/Library";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -71,10 +72,10 @@ export default function App() {
     name: "Argan High School",
     ministry: "Ministry of Education and Early Childhood Education",
     tagline: "Nurturing Minds, Building Futures",
-    address: "123 Education Street, Anytown, ST 12345",
+    address: "Tiznit, Morocco",
     phone: "(555) 123-4567",
     email: "info@arganhighschool.edu",
-    foundedYear: 2010,
+    foundedYear: 2014,
     currentYear: new Date().getFullYear(),
   };
 
@@ -94,8 +95,8 @@ export default function App() {
             <Route path="/academics" element={<Academics />} />
             <Route path="/news" element={<News />} />
             <Route path="/news/:id" element={<News />} />{" "}
-            {/* Add this new route */}
             <Route path="/events" element={<Events />} />
+            <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/library" element={<Library />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

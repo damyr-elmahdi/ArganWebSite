@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\EventCommentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RegistrationController;
@@ -24,9 +25,14 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name(
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    // News Comments Routes
     Route::post('/news/{news}/comments', [CommentController::class, 'store']);
     Route::put('/news/{news}/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/news/{news}/comments/{comment}', [CommentController::class, 'destroy']);
+    // Event Comments Routes
+    Route::post('/events/{event}/comments', [EventCommentController::class, 'store']);
+    Route::put('/events/{event}/comments/{comment}', [EventCommentController::class, 'update']);
+    Route::delete('/events/{event}/comments/{comment}', [EventCommentController::class, 'destroy']);
 
     // Add recovery email update route
     Route::post('/update-recovery-email', [AuthController::class, 'updateRecoveryEmail']);
@@ -54,9 +60,11 @@ Route::get('/news', [NewsController::class, 'index']);
 Route::get('/news/{news}', [NewsController::class, 'show']);
 Route::get('/news/{news}/comments', [CommentController::class, 'index']);
 
+
 // Public event routes
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{event}', [EventController::class, 'show']);
+Route::get('/events/{event}/comments', [EventCommentController::class, 'index']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {

@@ -12,6 +12,7 @@ class Comment extends Model
     protected $fillable = [
         'content',
         'news_id',
+        'event_id',
         'user_id',
     ];
 
@@ -29,5 +30,13 @@ class Comment extends Model
     public function news()
     {
         return $this->belongsTo(News::class);
+    }
+    
+    /**
+     * Get the event that the comment belongs to.
+     */
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
     }
 }
