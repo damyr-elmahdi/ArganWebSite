@@ -13,22 +13,17 @@ export default function Events() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filterDate, setFilterDate] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     fetchEvents();
   }, []);
 
-  const fetchEvents = async (date = null) => {
+  const fetchEvents = async (filters = {}) => {
     try {
       setLoading(true);
-      const params = {};
-      
-      if (date) {
-        // Use the same date for both start_date and end_date to get events on a specific day
-        params.start_date = date;
-        params.end_date = date;
-      }
+      const params = { ...filters };
       
       const response = await getEvents(params);
       setEvents(response.data);
@@ -39,17 +34,32 @@ export default function Events() {
     }
   };
 
-  const handleFilterChange = (e) => {
-    setFilterDate(e.target.value);
+  const handleStartDateChange = (e) => {
+    setStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e) => {
+    setEndDate(e.target.value);
   };
 
   const applyFilter = (e) => {
     e.preventDefault();
-    fetchEvents(filterDate);
+    const filters = {};
+    
+    if (startDate) {
+      filters.start_date = startDate;
+    }
+    
+    if (endDate) {
+      filters.end_date = endDate;
+    }
+    
+    fetchEvents(filters);
   };
 
   const resetFilter = () => {
-    setFilterDate("");
+    setStartDate("");
+    setEndDate("");
     fetchEvents();
   };
 
@@ -76,28 +86,46 @@ export default function Events() {
     <main className="flex-grow container mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">School Events</h1>
 
-      {/* Simplified Filter */}
+      {/* Improved Date Range Filter */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-8">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Filter Events by Date
+          Filter Events by Date Range
         </h2>
         <form onSubmit={applyFilter} className="flex flex-wrap gap-4 items-end">
           <div className="flex flex-col flex-1 min-w-[200px]">
             <label
-              htmlFor="filterDate"
+              htmlFor="startDate"
               className="text-sm font-medium text-gray-700 mb-1"
             >
-              Select Date
+              Start Date
             </label>
             <input
               type="date"
-              id="filterDate"
-              name="filterDate"
-              value={filterDate}
-              onChange={handleFilterChange}
+              id="startDate"
+              name="startDate"
+              value={startDate}
+              onChange={handleStartDateChange}
               className="border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
+          
+          <div className="flex flex-col flex-1 min-w-[200px]">
+            <label
+              htmlFor="endDate"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              End Date
+            </label>
+            <input
+              type="date"
+              id="endDate"
+              name="endDate"
+              value={endDate}
+              onChange={handleEndDateChange}
+              className="border border-gray-300 rounded-md px-3 py-2"
+            />
+          </div>
+          
           <div className="flex gap-2">
             <button
               type="submit"
@@ -105,7 +133,7 @@ export default function Events() {
             >
               Apply Filter
             </button>
-            {filterDate && (
+            {(startDate || endDate) && (
               <button
                 type="button"
                 onClick={resetFilter}
@@ -131,7 +159,14 @@ export default function Events() {
             No events found
           </h3>
           <p className="text-gray-600 mt-2">
-            {filterDate ? `No events on ${format(new Date(filterDate), "MMMM d, yyyy")}` : "Check back later for upcoming events."}
+            {startDate && endDate 
+              ? `No events between ${format(new Date(startDate), "MMMM d, yyyy")} and ${format(new Date(endDate), "MMMM d, yyyy")}`
+              : startDate 
+                ? `No events from ${format(new Date(startDate), "MMMM d, yyyy")} onwards`
+                : endDate
+                  ? `No events until ${format(new Date(endDate), "MMMM d, yyyy")}`
+                  : "Check back later for upcoming events."
+            }
           </p>
         </div>
       ) : (
