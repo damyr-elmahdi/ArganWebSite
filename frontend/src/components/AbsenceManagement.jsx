@@ -57,8 +57,24 @@ export default function AbsenceManagement() {
       setLoading(true);
       const response = await axios.post("/api/absences", formData);
       
+      // Find teacher name for the new absence
+      const teacher = teachers.find(t => t.id === parseInt(formData.teacher_id));
+      const teacherName = teacher ? teacher.name : 'Unknown';
+      
       // Add the new absence to the list
-      setAbsences([response.data.absence, ...absences]);
+      const newAbsence = {
+        id: response.data.absence.id,
+        teacher_name: teacherName,
+        teacher_id: parseInt(formData.teacher_id),
+        start_date: formData.start_date,
+        end_date: formData.end_date,
+        reason: formData.reason,
+        announced_by: response.data.absence.announcer?.name || 'Unknown',
+        is_active: true,
+        created_at: new Date().toISOString(),
+      };
+      
+      setAbsences([newAbsence, ...absences]);
       
       // Reset form
       setFormData({
