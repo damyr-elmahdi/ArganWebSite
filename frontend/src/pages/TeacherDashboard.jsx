@@ -58,6 +58,16 @@ export default function TeacherDashboard() {
     }
   };
   
+  // Format date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Not specified';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+  
   if (loading) {
     return (
       <div className="flex-grow flex items-center justify-center">
@@ -86,12 +96,19 @@ export default function TeacherDashboard() {
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-900">Teacher Dashboard</h1>
-          <button 
-            onClick={handleLogout}
-            className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700"
-          >
-            Logout
-          </button>
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-gray-500">
+              Status: <span className={`font-medium ${user.teacher?.is_active ? 'text-green-600' : 'text-red-600'}`}>
+                {user.teacher?.is_active ? 'Active' : 'Inactive'}
+              </span>
+            </span>
+            <button 
+              onClick={handleLogout}
+              className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
@@ -155,9 +172,14 @@ export default function TeacherDashboard() {
           {/* Profile Tab */}
           {activeTab === 'profile' && (
             <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-              <div className="px-4 py-5 sm:px-6">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">Teacher Information</h3>
-                <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and professional information.</p>
+              <div className="px-4 py-5 sm:px-6 flex justify-between">
+                <div>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">Teacher Information</h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and professional information.</p>
+                </div>
+                <button className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700">
+                  Edit Profile
+                </button>
               </div>
               <div className="border-t border-gray-200">
                 <dl>
@@ -171,7 +193,31 @@ export default function TeacherDashboard() {
                   </div>
                   <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-500">Employee ID</dt>
-                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.teacher?.employee_id}</dd>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.teacher?.employee_id || 'Not assigned'}</dd>
+                  </div>
+                  <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-500">Department</dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.teacher?.department || 'Not assigned'}</dd>
+                  </div>
+                  <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-500">Position</dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.teacher?.position || 'Not specified'}</dd>
+                  </div>
+                  <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-500">Specialization</dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.teacher?.specialization || 'Not specified'}</dd>
+                  </div>
+                  <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-500">Hire Date</dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.teacher?.hire_date ? formatDate(user.teacher.hire_date) : 'Not specified'}</dd>
+                  </div>
+                  <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-500">Status</dt>
+                    <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.teacher?.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                        {user.teacher?.is_active ? 'Active' : 'Inactive'}
+                      </span>
+                    </dd>
                   </div>
                 </dl>
               </div>
