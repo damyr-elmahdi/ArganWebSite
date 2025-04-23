@@ -22,7 +22,7 @@ class User extends Authenticatable implements CanResetPassword
      */
     public function sendPasswordResetNotification($token)
     {
-        $url = config('app.frontend_url', 'http://localhost:3000') . '/reset-password/' . $token . '?email=' . urlencode($this->email);
+        $url = config('app.frontend_url', 'http://localhost:5173') . '/reset-password/' . $token . '?email=' . urlencode($this->email);
         $this->notify(new \App\Notifications\ResetPassword($token, $url));
     }
     protected $fillable = [
@@ -90,5 +90,18 @@ class User extends Authenticatable implements CanResetPassword
     public function news()
     {
         return $this->hasMany(News::class, 'author_id');
+    }
+
+    public function announcedAbsences()
+    {
+        return $this->hasMany(TeacherAbsence::class, 'announced_by');
+    }
+    
+    /**
+     * Get absence notifications for this user if they are a student.
+     */
+    public function absenceNotifications()
+    {
+        return $this->hasMany(AbsenceNotification::class, 'student_id');
     }
 }

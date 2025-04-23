@@ -8,7 +8,7 @@ use App\Models\TeacherAbsence;
 use App\Models\AbsenceNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 class TeacherAbsenceController extends Controller
 {
     /**
@@ -93,8 +93,12 @@ class TeacherAbsenceController extends Controller
                 'absence' => $absence->load('teacher.user'),
             ], 201);
         } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json(['message' => 'Failed to announce absence: ' . $e->getMessage()], 500);
+            \Log::error('Failed to announce absence: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            return response()->json([
+                'message' => 'Failed to announce absence: ' . $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
         }
     }
     

@@ -12,20 +12,25 @@ class Teacher extends Model
     protected $fillable = [
         'user_id',
         'employee_id',
+        'department',
+        'position',
+        'hire_date',
+        'specialization',
+        'is_active'
+    ];
+
+    protected $casts = [
+        'hire_date' => 'date',
+        'is_active' => 'boolean',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    
-    public function subjects()
+
+    public function absences()
     {
-        return $this->belongsToMany(Subject::class);
-    }
-    
-    public function quizzes()
-    {
-        return $this->user->createdQuizzes();
+        return $this->hasMany(TeacherAbsence::class);
     }
 }
