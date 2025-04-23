@@ -18,8 +18,11 @@ class CommentController extends Controller
      */
     public function index(News $news)
     {
+        // Add the replies relationship to the eager loading
+
         $comments = $news->comments()
-            ->with('user:id,name')
+            ->with(['user:id,name', 'replies.user:id,name'])
+            ->whereNull('parent_id')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -31,8 +34,10 @@ class CommentController extends Controller
      */
     public function store(Request $request, News $news)
     {
+        // In store method of both controllers
         $validated = $request->validate([
             'content' => 'required|string|max:1000',
+            'parent_id' => 'nullable|exists:comments,id',
         ]);
 
         $comment = new Comment($validated);
@@ -79,14 +84,14 @@ class CommentController extends Controller
         if ($comment->news_id !== $news->id) {
             return response()->json(['error' => 'Comment does not belong to this news article'], 404);
         }
-    
+
         // Ensure the user owns this comment or is an admin
         if ($comment->user_id !== $request->user()->id && !$request->user()->hasRole('administrator')) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-    
+
         $comment->delete();
-    
+
         return response()->json(null, 204);
     }
 }

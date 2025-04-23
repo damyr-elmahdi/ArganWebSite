@@ -1,14 +1,20 @@
-import { useState, useEffect } from 'react';
-import { getEventComments, createEventComment, deleteEventComment } from '../services/eventCommentService';
-import { format } from 'date-fns';
-import CommentForm from './CommentForm';
-import { useAuth } from '../contexts/AuthContext';
+import { useState, useEffect } from "react";
+import {
+  getComments,
+  createComment,
+  deleteComment,
+} from "../services/commentService";
+import { format } from "date-fns";
+import CommentForm from "./CommentForm";
+import ReplyForm from "./ReplyForm";
+import { useAuth } from "../contexts/AuthContext";
 
-export default function EventCommentSection({ eventId }) {
+export default function CommentSection({ newsId }) {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user, isAuthenticated } = useAuth();
+  const [replyingTo, setReplyingTo] = useState(null);
 
   useEffect(() => {
     fetchComments();
@@ -21,7 +27,7 @@ export default function EventCommentSection({ eventId }) {
       setComments(data);
       setError(null);
     } catch (err) {
-      setError('Failed to load comments');
+      setError("Failed to load comments");
       console.error(err);
     } finally {
       setLoading(false);
@@ -33,18 +39,18 @@ export default function EventCommentSection({ eventId }) {
       const newComment = await createEventComment(eventId, commentData);
       setComments([newComment, ...comments]);
     } catch (err) {
-      setError('Failed to add comment');
+      setError("Failed to add comment");
       console.error(err);
     }
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (window.confirm('Are you sure you want to delete this comment?')) {
+    if (window.confirm("Are you sure you want to delete this comment?")) {
       try {
         await deleteEventComment(eventId, commentId);
-        setComments(comments.filter(comment => comment.id !== commentId));
+        setComments(comments.filter((comment) => comment.id !== commentId));
       } catch (err) {
-        setError('Failed to delete comment');
+        setError("Failed to delete comment");
         console.error(err);
       }
     }
@@ -52,18 +58,126 @@ export default function EventCommentSection({ eventId }) {
 
   // Check if current user is author of comment or an admin
   const canDeleteComment = (comment) => {
-    return user && (comment.user_id === user.id || user.role === 'administrator');
+    return (
+      user && (comment.user_id === user.id || user.role === "administrator")
+    );
+  };
+  const handleAddReply = async (commentId, replyData) => {
+    try {
+      const newReply = await createComment(newsId, {
+        ...replyData,
+        parent_id: commentId,
+      });
+
+      // Update the comments state to include the new reply
+      setComments(
+        comments.map((comment) => {
+          if (comment.id === commentId) {
+            return {
+              ...comment,
+              replies: [newReply, ...(comment.replies || [])],
+            };
+          }
+          return comment;
+        })
+      );
+    } catch (err) {
+      setError("Failed to add reply");
+      console.error(err);
+    }
   };
 
+  // Render a single comment with its replies
+  const renderComment = (comment) => (
+    <div key={comment.id} className="bg-gray-50 p-4 rounded-lg">
+      <div className="flex justify-between items-start">
+        <div>
+          <p className="font-medium text-gray-800">
+            {comment.user?.name || "Anonymous"}
+          </p>
+          <p className="text-sm text-gray-500">
+            {format(new Date(comment.created_at), "MMMM d, yyyy • h:mm a")}
+          </p>
+        </div>
+        <div className="flex space-x-3">
+          {isAuthenticated && (
+            <button
+              onClick={() =>
+                setReplyingTo(replyingTo === comment.id ? null : comment.id)
+              }
+              className="text-orange-600 hover:text-orange-800 text-sm"
+            >
+              {replyingTo === comment.id ? "Cancel" : "Reply"}
+            </button>
+          )}
+          {canDeleteComment(comment) && (
+            <button
+              onClick={() => handleDeleteComment(comment.id)}
+              className="text-red-600 hover:text-red-800 text-sm"
+            >
+              Delete
+            </button>
+          )}
+        </div>
+      </div>
+      <p className="mt-2 text-gray-700">{comment.content}</p>
+
+      {/* Reply form */}
+      {replyingTo === comment.id && (
+        <ReplyForm
+          onAddReply={(data) => handleAddReply(comment.id, data)}
+          onCancel={() => setReplyingTo(null)}
+        />
+      )}
+
+      {/* Replies */}
+      {comment.replies && comment.replies.length > 0 && (
+        <div className="mt-4 space-y-3 pl-4 border-l-2 border-orange-100">
+          {comment.replies.map((reply) => (
+            <div key={reply.id} className="bg-gray-100 p-3 rounded-lg">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="font-medium text-gray-800">
+                    {reply.user?.name || "Anonymous"}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {format(
+                      new Date(reply.created_at),
+                      "MMMM d, yyyy • h:mm a"
+                    )}
+                  </p>
+                </div>
+                {canDeleteComment(reply) && (
+                  <button
+                    onClick={() => handleDeleteComment(reply.id)}
+                    className="text-red-600 hover:text-red-800 text-xs"
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+              <p className="mt-1 text-gray-700 text-sm">{reply.content}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
   return (
     <div className="mt-8 pt-8 border-t border-gray-200">
       <h3 className="text-xl font-bold text-gray-800 mb-6">Comments</h3>
-      
+
       {isAuthenticated ? (
         <CommentForm onAddComment={handleAddComment} />
       ) : (
         <div className="bg-gray-50 p-4 rounded-md mb-6">
-          <p className="text-gray-700">Please <a href="/login" className="text-orange-600 hover:underline">log in</a> to leave a comment.</p>
+          <p className="text-gray-700">
+            Please{" "}
+            <a href="/login" className="text-orange-600 hover:underline">
+              log in
+            </a>{" "}
+            to leave a comment.
+          </p>
         </div>
       )}
 
@@ -83,17 +197,22 @@ export default function EventCommentSection({ eventId }) {
         </div>
       ) : (
         <div className="space-y-6">
-          {comments.map(comment => (
+          {comments.map((comment) => (
             <div key={comment.id} className="bg-gray-50 p-4 rounded-lg">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="font-medium text-gray-800">{comment.user?.name || 'Anonymous'}</p>
+                  <p className="font-medium text-gray-800">
+                    {comment.user?.name || "Anonymous"}
+                  </p>
                   <p className="text-sm text-gray-500">
-                    {format(new Date(comment.created_at), 'MMMM d, yyyy • h:mm a')}
+                    {format(
+                      new Date(comment.created_at),
+                      "MMMM d, yyyy • h:mm a"
+                    )}
                   </p>
                 </div>
                 {canDeleteComment(comment) && (
-                  <button 
+                  <button
                     onClick={() => handleDeleteComment(comment.id)}
                     className="text-red-600 hover:text-red-800 text-sm"
                   >
@@ -104,6 +223,12 @@ export default function EventCommentSection({ eventId }) {
               <p className="mt-2 text-gray-700">{comment.content}</p>
             </div>
           ))}
+        </div>
+      )}
+      {/* Comment list */}
+      {!loading && comments.length > 0 && (
+        <div className="space-y-6">
+          {comments.map((comment) => renderComment(comment))}
         </div>
       )}
     </div>
