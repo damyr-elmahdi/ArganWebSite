@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookBorrowingController;
+use App\Http\Controllers\BookBorrowingStatsController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EventCommentController;
 use App\Http\Controllers\EventController;
@@ -33,23 +34,26 @@ Route::get('/library/{libraryItem}', [LibraryController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    
+
     // Library borrowing routes for students
     Route::post('/library/borrow', [BookBorrowingController::class, 'requestBook']);
     Route::get('/library/my-requests', [BookBorrowingController::class, 'myRequests']);
-    
+
     // Routes for librarians
     Route::middleware('role:librarian,administrator')->group(function () {
         // Library management
         Route::post('/library', [LibraryController::class, 'store']);
         Route::put('/library/{libraryItem}', [LibraryController::class, 'update']);
         Route::delete('/library/{libraryItem}', [LibraryController::class, 'destroy']);
-        
+
         // Borrowing request management
         Route::get('/library/borrowing-requests', [BookBorrowingController::class, 'index']);
         Route::post('/library/borrowing-requests/{request}/approve', [BookBorrowingController::class, 'approve']);
         Route::post('/library/borrowing-requests/{request}/reject', [BookBorrowingController::class, 'reject']);
         Route::post('/library/borrowing-requests/{request}/return', [BookBorrowingController::class, 'markReturned']);
+
+        // Add the new stats endpoint
+        Route::get('/library/borrowing-stats', [BookBorrowingStatsController::class, 'getStats']);
     });
 
     // Existing routes...
