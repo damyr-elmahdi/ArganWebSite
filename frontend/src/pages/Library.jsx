@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import BookCard from '../components/BookCard';
 import BookFilterBar from '../components/BookFilterBar';
-import LibrarianDashboard from '../components/LibrarianDashboard';
+import LibrarianDashboard from './LibrarianDashboard';
 import NewBookForm from '../components/NewBookForm';
 import StudentBorrowingsTable from '../components/StudentBorrowingsTable';
 

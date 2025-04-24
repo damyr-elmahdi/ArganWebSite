@@ -5,9 +5,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import "./App.css";
-import "./services/axios"; // Import axios config
-import { AuthProvider, useAuth } from "./contexts/AuthContext"; // Add useAuth import here
-// Pages
+import "./services/axios";
+import { AuthProvider, useAuth } from "./contexts/AuthContext"; 
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Academics from "./pages/Academics";
@@ -20,9 +19,9 @@ import Register from "./pages/Register";
 import StudentDashboard from "./pages/StudentDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import LibrarianDashboard from "./pages/LibrarianDashboard"; 
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
-// Components
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -35,7 +34,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // If roles are specified, check if user has allowed role
+
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     // Redirect to the appropriate dashboard
     if (user.role === "student") {
@@ -44,6 +43,8 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
       return <Navigate to="/teacher-dashboard" replace />;
     } else if (user.role === "administrator") {
       return <Navigate to="/admin-dashboard" replace />;
+    } else if (user.role === "librarian") {
+      return <Navigate to="/librarian-dashboard" replace />;
     } else {
       return <Navigate to="/login" replace />;
     }
@@ -61,6 +62,8 @@ function DashboardRedirect() {
     return <Navigate to="/teacher-dashboard" replace />;
   } else if (user.role === "administrator") {
     return <Navigate to="/admin-dashboard" replace />;
+  } else if (user.role === "librarian") {
+    return <Navigate to="/librarian-dashboard" replace />;
   } else {
     return <Navigate to="/login" replace />;
   }
@@ -125,6 +128,15 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={["administrator"]}>
                   <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            {/* Add route for Librarian Dashboard */}
+            <Route
+              path="/librarian-dashboard"
+              element={
+                <ProtectedRoute allowedRoles={["librarian", "administrator"]}>
+                  <LibrarianDashboard />
                 </ProtectedRoute>
               }
             />
