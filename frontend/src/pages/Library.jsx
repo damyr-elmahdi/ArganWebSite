@@ -3,9 +3,8 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import BookCard from '../components/BookCard';
 import BookFilterBar from '../components/BookFilterBar';
-import LibrarianPanel from '../components/LibrarianPanel';
+import LibrarianDashboard from '../components/LibrarianDashboard';
 import NewBookForm from '../components/NewBookForm';
-import BorrowingRequestsTable from '../components/BorrowingRequestsTable';
 import StudentBorrowingsTable from '../components/StudentBorrowingsTable';
 
 export default function Library() {
@@ -17,13 +16,14 @@ export default function Library() {
     search: '',
     category: ''
   });
-  const [showNewBookForm, setShowNewBookForm] = useState(false);
   const [activeTab, setActiveTab] = useState('catalog');
   
   useEffect(() => {
-    fetchBooks();
-    fetchCategories();
-  }, [filters]);
+    if (activeTab === 'catalog') {
+      fetchBooks();
+      fetchCategories();
+    }
+  }, [filters, activeTab]);
   
   const fetchBooks = async () => {
     try {
@@ -59,7 +59,7 @@ export default function Library() {
   
   const handleBookCreated = () => {
     fetchBooks();
-    setShowNewBookForm(false);
+    setActiveTab('catalog');
   };
   
   const handleBookDeleted = () => {
@@ -73,54 +73,46 @@ export default function Library() {
     <main className="flex-grow container mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Library</h1>
       
-      {isLibrarian && (
-        <div className="mb-6">
-          <div className="flex space-x-2 mb-4">
-            <button
-              onClick={() => setActiveTab('catalog')}
-              className={`px-4 py-2 rounded ${activeTab === 'catalog' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-            >
-              Book Catalog
-            </button>
-            <button
-              onClick={() => setActiveTab('requests')}
-              className={`px-4 py-2 rounded ${activeTab === 'requests' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-            >
-              Borrowing Requests
-            </button>
-            <button
-              onClick={() => setActiveTab('add')}
-              className={`px-4 py-2 rounded ${activeTab === 'add' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-            >
-              Add New Book
-            </button>
-          </div>
+      <div className="mb-6">
+        <div className="flex flex-wrap gap-2 mb-4">
+          <button
+            onClick={() => setActiveTab('catalog')}
+            className={`px-4 py-2 rounded ${activeTab === 'catalog' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+          >
+            Book Catalog
+          </button>
           
-          {activeTab === 'requests' && <BorrowingRequestsTable />}
-          {activeTab === 'add' && <NewBookForm onBookCreated={handleBookCreated} />}
-        </div>
-      )}
-      
-      {isStudent && (
-        <div className="mb-6">
-          <div className="flex space-x-2 mb-4">
-            <button
-              onClick={() => setActiveTab('catalog')}
-              className={`px-4 py-2 rounded ${activeTab === 'catalog' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-            >
-              Book Catalog
-            </button>
+          {isStudent && (
             <button
               onClick={() => setActiveTab('myBorrowings')}
               className={`px-4 py-2 rounded ${activeTab === 'myBorrowings' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
             >
               My Borrowings
             </button>
-          </div>
+          )}
           
-          {activeTab === 'myBorrowings' && <StudentBorrowingsTable />}
+          {isLibrarian && (
+            <>
+              <button
+                onClick={() => setActiveTab('dashboard')}
+                className={`px-4 py-2 rounded ${activeTab === 'dashboard' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+              >
+                Librarian Dashboard
+              </button>
+              <button
+                onClick={() => setActiveTab('add')}
+                className={`px-4 py-2 rounded ${activeTab === 'add' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+              >
+                Add New Book
+              </button>
+            </>
+          )}
         </div>
-      )}
+      </div>
+      
+      {activeTab === 'dashboard' && isLibrarian && <LibrarianDashboard />}
+      {activeTab === 'myBorrowings' && isStudent && <StudentBorrowingsTable />}
+      {activeTab === 'add' && isLibrarian && <NewBookForm onBookCreated={handleBookCreated} />}
       
       {activeTab === 'catalog' && (
         <>
@@ -132,7 +124,7 @@ export default function Library() {
           
           {loading ? (
             <div className="flex justify-center items-center py-12">
-              <div className="loader">Loading...</div>
+              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
