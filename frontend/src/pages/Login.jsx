@@ -1,170 +1,160 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
+import BookCard from '../components/BookCard';
+import BookFilterBar from '../components/BookFilterBar';
+import LibrarianPanel from '../components/LibrarianPanel';
+import NewBookForm from '../components/NewBookForm';
+import BorrowingRequestsTable from '../components/BorrowingRequestsTable';
+import StudentBorrowingsTable from '../components/StudentBorrowingsTable';
 
-export default function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    remember: false, // Add remember me state
+export default function Library() {
+  const { user } = useAuth();
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [filters, setFilters] = useState({
+    search: '',
+    category: ''
   });
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const { login, loading } = useAuth();
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    
+  const [showNewBookForm, setShowNewBookForm] = useState(false);
+  const [activeTab, setActiveTab] = useState('catalog');
+  
+  useEffect(() => {
+    fetchBooks();
+    fetchCategories();
+  }, [filters]);
+  
+  const fetchBooks = async () => {
     try {
-      // Pass remember flag to login function
-      const response = await login(formData.email, formData.password, formData.remember);
+      setLoading(true);
+      const params = {};
+      if (filters.search) params.search = filters.search;
+      if (filters.category) params.category = filters.category;
       
-      // Redirect based on user role
-      const { role } = response.user;
-      if (role === 'student') {
-        navigate('/student-dashboard');
-      } else if (role === 'teacher') {
-        navigate('/teacher-dashboard');
-      } else if (role === 'administrator') {
-        navigate('/admin-dashboard');
-      } else {
-        navigate('/dashboard');
-      }
-      
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else if (err.response && err.response.data && err.response.data.errors) {
-        // Handle validation errors
-        const firstError = Object.values(err.response.data.errors)[0][0];
-        setError(firstError);
-      } else {
-        setError('An error occurred during login. Please try again.');
-      }
+      const response = await axios.get('/api/library', { params });
+      setBooks(response.data.data);
+    } catch (error) {
+      console.error('Error fetching books:', error);
+    } finally {
+      setLoading(false);
     }
   };
-
+  
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('/api/library/categories');
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+  
+  const handleFilterChange = (newFilters) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      ...newFilters
+    }));
+  };
+  
+  const handleBookCreated = () => {
+    fetchBooks();
+    setShowNewBookForm(false);
+  };
+  
+  const handleBookDeleted = () => {
+    fetchBooks();
+  };
+  
+  const isLibrarian = user && (user.role === 'librarian' || user.role === 'administrator');
+  const isStudent = user && user.role === 'student';
+  
   return (
-    <main className="flex-grow flex items-center justify-center py-12 px-4 bg-gray-50">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-800">Login</h2>
-          <p className="mt-2 text-gray-600">Access your Argan High School account</p>
-        </div>
-        
-        {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4">
-            <p className="text-red-700">{error}</p>
-          </div>
-        )}
-        
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="email@example.com"
-                value={formData.email}
-                onChange={handleChange}
-                disabled={loading}
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 px-3 flex items-center"
-                  onClick={togglePasswordVisibility}
-                >
-                  {showPassword ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                    </svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember"
-                name="remember"
-                type="checkbox"
-                className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
-                checked={formData.remember}
-                onChange={handleChange}
-              />
-              <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <Link to="/forgot-password" className="font-medium text-orange-600 hover:text-orange-500">
-                Forgot your password?
-              </Link>
-            </div>
-          </div>
-
-          <div>
+    <main className="flex-grow container mx-auto px-4 py-12">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">Library</h1>
+      
+      {isLibrarian && (
+        <div className="mb-6">
+          <div className="flex space-x-2 mb-4">
             <button
-              type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-              disabled={loading}
+              onClick={() => setActiveTab('catalog')}
+              className={`px-4 py-2 rounded ${activeTab === 'catalog' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              Book Catalog
+            </button>
+            <button
+              onClick={() => setActiveTab('requests')}
+              className={`px-4 py-2 rounded ${activeTab === 'requests' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            >
+              Borrowing Requests
+            </button>
+            <button
+              onClick={() => setActiveTab('add')}
+              className={`px-4 py-2 rounded ${activeTab === 'add' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            >
+              Add New Book
             </button>
           </div>
-        </form>
-        
-        <div className="text-center mt-4">
-          <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-orange-600 hover:text-orange-500">
-              Register here
-            </Link>
-          </p>
+          
+          {activeTab === 'requests' && <BorrowingRequestsTable />}
+          {activeTab === 'add' && <NewBookForm onBookCreated={handleBookCreated} />}
         </div>
-      </div>
+      )}
+      
+      {isStudent && (
+        <div className="mb-6">
+          <div className="flex space-x-2 mb-4">
+            <button
+              onClick={() => setActiveTab('catalog')}
+              className={`px-4 py-2 rounded ${activeTab === 'catalog' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            >
+              Book Catalog
+            </button>
+            <button
+              onClick={() => setActiveTab('myBorrowings')}
+              className={`px-4 py-2 rounded ${activeTab === 'myBorrowings' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            >
+              My Borrowings
+            </button>
+          </div>
+          
+          {activeTab === 'myBorrowings' && <StudentBorrowingsTable />}
+        </div>
+      )}
+      
+      {activeTab === 'catalog' && (
+        <>
+          <BookFilterBar 
+            categories={categories}
+            filters={filters}
+            onFilterChange={handleFilterChange}
+          />
+          
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="loader">Loading...</div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {books.length > 0 ? (
+                books.map(book => (
+                  <BookCard 
+                    key={book.id} 
+                    book={book}
+                    isLibrarian={isLibrarian}
+                    isStudent={isStudent}
+                    onBookDeleted={handleBookDeleted}
+                  />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12 text-gray-500">
+                  No books found matching your search criteria.
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      )}
     </main>
   );
 }

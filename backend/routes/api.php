@@ -3,9 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookBorrowingController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EventCommentController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -22,10 +24,35 @@ Route::get('/registrations/{registration}/download-packet', [RegistrationControl
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
+// Public library routes
+Route::get('/library', [LibraryController::class, 'index']);
+Route::get('/library/categories', [LibraryController::class, 'categories']);
+Route::get('/library/{libraryItem}', [LibraryController::class, 'show']);
+
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    
+    // Library borrowing routes for students
+    Route::post('/library/borrow', [BookBorrowingController::class, 'requestBook']);
+    Route::get('/library/my-requests', [BookBorrowingController::class, 'myRequests']);
+    
+    // Routes for librarians
+    Route::middleware('role:librarian,administrator')->group(function () {
+        // Library management
+        Route::post('/library', [LibraryController::class, 'store']);
+        Route::put('/library/{libraryItem}', [LibraryController::class, 'update']);
+        Route::delete('/library/{libraryItem}', [LibraryController::class, 'destroy']);
+        
+        // Borrowing request management
+        Route::get('/library/borrowing-requests', [BookBorrowingController::class, 'index']);
+        Route::post('/library/borrowing-requests/{request}/approve', [BookBorrowingController::class, 'approve']);
+        Route::post('/library/borrowing-requests/{request}/reject', [BookBorrowingController::class, 'reject']);
+        Route::post('/library/borrowing-requests/{request}/return', [BookBorrowingController::class, 'markReturned']);
+    });
+
+    // Existing routes...
     // News Comments Routes
     Route::post('/news/{news}/comments', [CommentController::class, 'store']);
     Route::put('/news/{news}/comments/{comment}', [CommentController::class, 'update']);
@@ -40,6 +67,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Admin routes
     Route::middleware('role:administrator')->group(function () {
+        // Existing admin routes...
         Route::get('/registrations', [RegistrationController::class, 'index']);
         Route::get('/registrations/{registration}', [RegistrationController::class, 'show']);
         Route::patch('/registrations/{registration}/mark-processed', [RegistrationController::class, 'markProcessed']);
@@ -69,7 +97,6 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/news', [NewsController::class, 'index']);
 Route::get('/news/{news}', [NewsController::class, 'show']);
 Route::get('/news/{news}/comments', [CommentController::class, 'index']);
-
 
 // Public event routes
 Route::get('/events', [EventController::class, 'index']);

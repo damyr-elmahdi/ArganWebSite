@@ -1,5 +1,5 @@
 <?php
-// app/Models/User.php
+
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\CanResetPassword;
@@ -12,19 +12,6 @@ class User extends Authenticatable implements CanResetPassword
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    // Your existing code...
-
-    /**
-     * Send the password reset notification.
-     *
-     * @param  string  $token
-     * @return void
-     */
-    public function sendPasswordResetNotification($token)
-    {
-        $url = config('app.frontend_url', 'http://localhost:5173') . '/reset-password/' . $token . '?email=' . urlencode($this->email);
-        $this->notify(new \App\Notifications\ResetPassword($token, $url));
-    }
     protected $fillable = [
         'name',
         'email',
@@ -52,6 +39,11 @@ class User extends Authenticatable implements CanResetPassword
         return $this->hasOne(Teacher::class);
     }
 
+    public function librarian()
+    {
+        return $this->hasOne(Librarian::class);
+    }
+
     public function administrator()
     {
         return $this->hasOne(Administrator::class);
@@ -67,9 +59,33 @@ class User extends Authenticatable implements CanResetPassword
         return $this->role === 'teacher';
     }
 
+    public function isLibrarian()
+    {
+        return $this->role === 'librarian';
+    }
+
     public function isAdministrator()
     {
         return $this->role === 'administrator';
+    }
+
+    // Borrowing requests made by this user if they are a student
+    public function borrowingRequests()
+    {
+        return $this->hasMany(BookBorrowingRequest::class, 'student_id');
+    }
+
+    // Borrowing requests approved by this user if they are a librarian
+    public function approvedBorrowings()
+    {
+        return $this->hasMany(BookBorrowingRequest::class, 'approved_by');
+    }
+
+    // Existing methods...
+    public function sendPasswordResetNotification($token)
+    {
+        $url = config('app.frontend_url', 'http://localhost:5173') . '/reset-password/' . $token . '?email=' . urlencode($this->email);
+        $this->notify(new \App\Notifications\ResetPassword($token, $url));
     }
 
     public function createdQuizzes()
@@ -97,9 +113,6 @@ class User extends Authenticatable implements CanResetPassword
         return $this->hasMany(TeacherAbsence::class, 'announced_by');
     }
     
-    /**
-     * Get absence notifications for this user if they are a student.
-     */
     public function absenceNotifications()
     {
         return $this->hasMany(AbsenceNotification::class, 'student_id');

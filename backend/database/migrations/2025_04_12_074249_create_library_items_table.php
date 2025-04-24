@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('library_items', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->string('author');
+            $table->string('category');
+            $table->integer('quantity')->default(1);
+            $table->string('inventory_number')->unique();
+            $table->text('description')->nullable();
+            $table->string('image_path')->nullable();
+            $table->boolean('available')->default(true);
+            $table->date('due_date')->nullable();
             $table->timestamps();
         });
     }

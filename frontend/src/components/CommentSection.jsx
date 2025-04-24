@@ -197,37 +197,6 @@ export default function CommentSection({ newsId }) {
         </div>
       ) : (
         <div className="space-y-6">
-          {comments.map((comment) => (
-            <div key={comment.id} className="bg-gray-50 p-4 rounded-lg">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="font-medium text-gray-800">
-                    {comment.user?.name || "Anonymous"}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {format(
-                      new Date(comment.created_at),
-                      "MMMM d, yyyy • h:mm a"
-                    )}
-                  </p>
-                </div>
-                {canDeleteComment(comment) && (
-                  <button
-                    onClick={() => handleDeleteComment(comment.id)}
-                    className="text-red-600 hover:text-red-800 text-sm"
-                  >
-                    Delete
-                  </button>
-                )}
-              </div>
-              <p className="mt-2 text-gray-700">{comment.content}</p>
-            </div>
-          ))}
-        </div>
-      )}
-      {/* Comment list */}
-      {!loading && comments.length > 0 && (
-        <div className="space-y-6">
           {comments.map(comment => renderComment(comment))}
         </div>
       )}

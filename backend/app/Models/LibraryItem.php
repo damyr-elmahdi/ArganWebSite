@@ -13,6 +13,10 @@ class LibraryItem extends Model
         'title',
         'author',
         'category',
+        'quantity',
+        'inventory_number',
+        'description',
+        'image_path',
         'available',
         'due_date',
     ];
@@ -22,13 +26,24 @@ class LibraryItem extends Model
         'due_date' => 'date',
     ];
     
-    public function checkAvailability()
+    public function borrowingRequests()
     {
-        return $this->available;
+        return $this->hasMany(BookBorrowingRequest::class);
     }
     
-    public function getCheckoutProcedure()
+    public function activeBorrowings()
     {
-        return "Visit the library during opening hours and present your student ID.";
+        return $this->borrowingRequests()->where('status', 'approved')->whereNull('return_date');
+    }
+    
+    public function availableQuantity()
+    {
+        $borrowedCount = $this->activeBorrowings()->count();
+        return $this->quantity - $borrowedCount;
+    }
+    
+    public function isAvailableForBorrowing()
+    {
+        return $this->availableQuantity() > 0;
     }
 }
