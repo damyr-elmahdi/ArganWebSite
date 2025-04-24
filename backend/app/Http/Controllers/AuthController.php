@@ -6,12 +6,14 @@ use App\Models\User;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\Administrator;
+use App\Models\Librarian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules\Password;
+use Termwind\Components\Li;
 
 class AuthController extends Controller
 {
@@ -21,9 +23,9 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Password::defaults()],
-            'role' => 'required|in:student,teacher,administrator',
+            'role' => 'required|in:student,teacher,administrator,librarian',
         ]);
-
+    
         DB::beginTransaction();
         try {
             $user = User::create([
@@ -32,7 +34,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => $request->role,
             ]);
-
+    
             // Create role-specific entry
             if ($request->role === 'student') {
                 Student::create([
@@ -52,10 +54,15 @@ class AuthController extends Controller
                     'admin_level' => $request->admin_level ?? 'basic',
                     'department' => $request->department ?? 'general',
                 ]);
+            } elseif ($request->role === 'librarian') {
+                Librarian::create([
+                    'user_id' => $user->id,
+                    'staff_id' => 'L' . date('Y') . str_pad($user->id, 4, '0', STR_PAD_LEFT),
+                ]);
             }
-
+    
             DB::commit();
-
+    
             return response()->json([
                 'message' => 'User registered successfully',
                 'user' => $user,

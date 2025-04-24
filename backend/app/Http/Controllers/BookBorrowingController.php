@@ -6,6 +6,7 @@ use App\Models\BookBorrowingRequest;
 use App\Models\LibraryItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class BookBorrowingController extends Controller
@@ -60,12 +61,17 @@ class BookBorrowingController extends Controller
     // Student views their borrowing requests
     public function myRequests()
     {
-        $requests = BookBorrowingRequest::with('libraryItem')
-            ->where('student_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get();
-            
-        return response()->json($requests);
+        try {
+            $requests = BookBorrowingRequest::with('libraryItem')
+                ->where('student_id', Auth::id())
+                ->orderBy('created_at', 'desc')
+                ->get();
+                
+            return response()->json($requests);
+        } catch (\Exception $e) {
+            \Log::error('Error in myRequests: ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred while fetching your requests'], 500);
+        }
     }
     
     // Librarian views all borrowing requests
