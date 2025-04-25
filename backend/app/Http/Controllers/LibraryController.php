@@ -32,6 +32,19 @@ class LibraryController extends Controller
             });
         }
 
+        // Apply sorting if provided
+        $sortField = $request->get('sort_by', 'inventory_number');
+        $sortDirection = $request->get('sort_dir', 'asc');
+        
+        // Validate sort field to prevent SQL injection
+        $allowedSortFields = ['inventory_number', 'title', 'author', 'category', 'created_at'];
+        $sortField = in_array($sortField, $allowedSortFields) ? $sortField : 'inventory_number';
+        
+        // Validate sort direction
+        $sortDirection = in_array(strtolower($sortDirection), ['asc', 'desc']) ? $sortDirection : 'asc';
+        
+        $query->orderBy($sortField, $sortDirection);
+
         $libraryItems = $query->paginate(15);
 
         // Add availability information

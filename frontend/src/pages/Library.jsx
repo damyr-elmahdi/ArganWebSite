@@ -15,6 +15,8 @@ export default function Library() {
   const [filters, setFilters] = useState({
     search: "",
     category: "",
+    sort_by: "inventory_number", // Default sort by inventory_number
+    sort_dir: "asc", // Default sort direction ascending
   });
   const [activeTab, setActiveTab] = useState("catalog");
 
@@ -30,7 +32,11 @@ export default function Library() {
   const fetchBooks = async () => {
     try {
       setLoading(true);
-      const params = {};
+      const params = {
+        sort_by: filters.sort_by || "inventory_number",
+        sort_dir: filters.sort_dir || "asc"
+      };
+      
       if (filters.search) params.search = filters.search;
       if (filters.category) params.category = filters.category;
 
@@ -73,11 +79,18 @@ export default function Library() {
     setFilters({
       search: "",
       category: "",
+      sort_by: "inventory_number",
+      sort_dir: "asc"
     });
 
     try {
       setLoading(true);
-      const response = await axios.get("/api/library");
+      const response = await axios.get("/api/library", {
+        params: {
+          sort_by: "inventory_number",
+          sort_dir: "asc"
+        }
+      });
       console.log("Books received after creation:", response.data);
 
       if (response.data.data) {
@@ -92,6 +105,7 @@ export default function Library() {
       setActiveTab("catalog");
     }
   };
+  
   const handleBookDeleted = () => {
     fetchBooks();
   };
