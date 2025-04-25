@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
+import { getImageUrl } from "../utils/imageUtils";
 
 export default function BookCard({
   book,
@@ -124,14 +125,22 @@ export default function BookCard({
       setLoading(false);
     }
   };
+  
+  // Get the correct image URL
+  const bookImageUrl = book.image_path ? getImageUrl(book.image_path) : null;
 
   return (
     <div className="border rounded-lg overflow-hidden shadow-md bg-white">
-      {book.image_path ? (
+      {bookImageUrl ? (
         <img
-          src={`${window.location.origin}/storage/${book.image_path}`}
+          src={bookImageUrl}
           alt={book.title}
           className="w-full h-48 object-cover"
+          onError={(e) => {
+            console.error("Image failed to load:", bookImageUrl);
+            e.target.onerror = null;
+            e.target.src = "https://placehold.co/400x200?text=No+Image";
+          }}
         />
       ) : (
         <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
@@ -169,9 +178,13 @@ export default function BookCard({
                 <div className="mt-2">
                   <p className="text-xs text-gray-500">Current image:</p>
                   <img
-                    src={`/storage/${book.image_path}`}
+                    src={bookImageUrl}
                     alt={book.title}
                     className="h-32 object-contain mt-1"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "https://placehold.co/400x200?text=No+Image";
+                    }}
                   />
                 </div>
               )}
