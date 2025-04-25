@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import { getImageUrl } from "../utils/imageUtils";
+import ImageModal from "./ImageModal"; // Add this import
 
 export default function BookCard({
   book,
@@ -17,6 +18,8 @@ export default function BookCard({
   const [showDetails, setShowDetails] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+  // Add state for the image modal
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: book.title,
     author: book.author,
@@ -125,28 +128,42 @@ export default function BookCard({
       setLoading(false);
     }
   };
-  
+
   // Get the correct image URL
   const bookImageUrl = book.image_path ? getImageUrl(book.image_path) : null;
-
+  const openImageModal = () => {
+    if (bookImageUrl) {
+      setIsImageModalOpen(true);
+    }
+  };
   return (
     <div className="border rounded-lg overflow-hidden shadow-md bg-white">
       {bookImageUrl ? (
-        <img
-          src={bookImageUrl}
-          alt={book.title}
-          className="w-full h-48 object-cover"
-          onError={(e) => {
-            console.error("Image failed to load:", bookImageUrl);
-            e.target.onerror = null;
-            e.target.src = "https://placehold.co/400x200?text=No+Image";
-          }}
-        />
+        <div className="cursor-pointer" onClick={openImageModal}>
+          <img
+            src={bookImageUrl}
+            alt={book.title}
+            className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
+            onError={(e) => {
+              console.error("Image failed to load:", bookImageUrl);
+              e.target.onerror = null;
+              e.target.src = "https://placehold.co/400x200?text=No+Image";
+            }}
+          />
+        </div>
       ) : (
         <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
           <span className="text-gray-500">No image available</span>
         </div>
       )}
+
+      {/* Add the ImageModal component */}
+      <ImageModal
+        isOpen={isImageModalOpen}
+        imageUrl={bookImageUrl}
+        imageAlt={book.title}
+        onClose={() => setIsImageModalOpen(false)}
+      />
 
       <div className="p-4">
         {isEditing ? (
@@ -183,7 +200,8 @@ export default function BookCard({
                     className="h-32 object-contain mt-1"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "https://placehold.co/400x200?text=No+Image";
+                      e.target.src =
+                        "https://placehold.co/400x200?text=No+Image";
                     }}
                   />
                 </div>
