@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import { getImageUrl } from "../utils/imageUtils";
-import ImageModal from "./ImageModal"; // Add this import
+import ImageModal from "./ImageModal";
 
 export default function BookCard({
   book,
@@ -18,8 +18,9 @@ export default function BookCard({
   const [showDetails, setShowDetails] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
-  // Add state for the image modal
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  
+  // Initialize form data with book values
   const [formData, setFormData] = useState({
     title: book.title,
     author: book.author,
@@ -66,7 +67,6 @@ export default function BookCard({
     const { name, value, type, files } = e.target;
 
     if (type === "file") {
-      console.log("File selected:", files[0]?.name);
       const file = files[0];
       setFormData((prev) => ({
         ...prev,
@@ -97,28 +97,45 @@ export default function BookCard({
 
       // Create FormData object for file upload
       const form = new FormData();
-      for (const key in formData) {
+      
+      // Add all form fields to FormData
+      Object.keys(formData).forEach(key => {
         if (key === "image" && formData[key]) {
           form.append(key, formData[key]);
         } else if (formData[key] !== null && key !== "image") {
           form.append(key, formData[key]);
         }
+      });
+
+      // Log the form data for debugging
+      console.log("Submitting update with form data:");
+      for (let [key, value] of form.entries()) {
+        if (key !== 'image') {
+          console.log(`${key}: ${value}`);
+        } else {
+          console.log(`${key}: [File object]`);
+        }
       }
 
-      const response = await axios.put(`/api/library/${book.id}`, form, {
+      // Make the API request with proper headers
+      const response = await axios.post(`/api/library/${book.id}?_method=PUT`, form, {
         headers: {
           "Content-Type": "multipart/form-data",
+          "X-HTTP-Method-Override": "PUT"
         },
       });
 
       setSuccess("Book updated successfully!");
+      
+      // Update local state after successful update
       setTimeout(() => {
         setSuccess(null);
         setIsEditing(false);
+        setImagePreview(null);
 
         // Call parent's update function with the updated book data
         if (typeof onBookUpdated === "function") {
-          onBookUpdated(response.data); // Pass the updated book data
+          onBookUpdated(response.data);
         }
       }, 2000);
     } catch (error) {
@@ -131,11 +148,13 @@ export default function BookCard({
 
   // Get the correct image URL
   const bookImageUrl = book.image_path ? getImageUrl(book.image_path) : null;
+  
   const openImageModal = () => {
     if (bookImageUrl) {
       setIsImageModalOpen(true);
     }
   };
+  
   return (
     <div className="border rounded-lg overflow-hidden shadow-md bg-white">
       {bookImageUrl ? (
@@ -145,7 +164,6 @@ export default function BookCard({
             alt={book.title}
             className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
             onError={(e) => {
-              console.error("Image failed to load:", bookImageUrl);
               e.target.onerror = null;
               e.target.src = "https://placehold.co/400x200?text=No+Image";
             }}
@@ -157,7 +175,6 @@ export default function BookCard({
         </div>
       )}
 
-      {/* Add the ImageModal component */}
       <ImageModal
         isOpen={isImageModalOpen}
         imageUrl={bookImageUrl}
@@ -167,7 +184,7 @@ export default function BookCard({
 
       <div className="p-4">
         {isEditing ? (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
                 Change Image
@@ -200,8 +217,7 @@ export default function BookCard({
                     className="h-32 object-contain mt-1"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src =
-                        "https://placehold.co/400x200?text=No+Image";
+                      e.target.src = "https://placehold.co/400x200?text=No+Image";
                     }}
                   />
                 </div>
@@ -299,7 +315,19 @@ export default function BookCard({
             <div className="flex justify-between">
               <button
                 type="button"
-                onClick={() => setIsEditing(false)}
+                onClick={() => {
+                  setIsEditing(false);
+                  setImagePreview(null);
+                  setFormData({
+                    title: book.title,
+                    author: book.author,
+                    category: book.category,
+                    quantity: book.quantity,
+                    inventory_number: book.inventory_number,
+                    description: book.description || "",
+                    image: null,
+                  });
+                }}
                 className="px-3 py-1 bg-gray-300 rounded"
                 disabled={loading}
               >
