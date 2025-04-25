@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LibraryItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class LibraryController extends Controller
 {
@@ -46,7 +47,7 @@ class LibraryController extends Controller
     {
         $libraryItem->available_quantity = $libraryItem->availableQuantity();
         $libraryItem->is_available = $libraryItem->isAvailableForBorrowing();
-        
+
         return response()->json($libraryItem);
     }
 
@@ -81,6 +82,11 @@ class LibraryController extends Controller
     {
         $this->authorize('update', $libraryItem);
 
+        \Log::info('Update request received', [
+            'book_id' => $libraryItem->id,
+            'has_file' => $request->hasFile('image'),
+        ]);
+
         $validated = $request->validate([
             'title' => 'string|max:255',
             'author' => 'string|max:255',
@@ -88,23 +94,26 @@ class LibraryController extends Controller
             'quantity' => 'integer|min:1',
             'inventory_number' => 'string|max:255|unique:library_items,inventory_number,' . $libraryItem->id,
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048', // 2MB max
+            'image' => 'nullable|image|max:2048',
             'available' => 'boolean',
             'due_date' => 'nullable|date',
         ]);
 
         // Handle image upload if provided
         if ($request->hasFile('image')) {
+            \Log::info('Processing image upload');
             // Delete old image if exists
             if ($libraryItem->image_path) {
                 Storage::disk('public')->delete($libraryItem->image_path);
             }
-            
+
             $path = $request->file('image')->store('library_items', 'public');
             $validated['image_path'] = $path;
+            \Log::info('Image saved to path', ['path' => $path]);
         }
 
         $libraryItem->update($validated);
+        \Log::info('Book updated successfully', ['book' => $libraryItem]);
 
         return response()->json($libraryItem);
     }
@@ -129,7 +138,7 @@ class LibraryController extends Controller
 
         return response()->json(null, 204);
     }
-    
+
     // Get categories for filtering
     public function categories()
     {
@@ -137,7 +146,7 @@ class LibraryController extends Controller
             ->distinct()
             ->orderBy('category')
             ->pluck('category');
-            
+
         return response()->json($categories);
     }
 }
