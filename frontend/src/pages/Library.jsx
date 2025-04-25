@@ -18,12 +18,14 @@ export default function Library() {
   });
   const [activeTab, setActiveTab] = useState("catalog");
 
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   useEffect(() => {
     if (activeTab === "catalog") {
       fetchBooks();
       fetchCategories();
     }
-  }, [filters, activeTab]);
+  }, [filters, activeTab, refreshTrigger]);
 
   const fetchBooks = async () => {
     try {
@@ -31,19 +33,18 @@ export default function Library() {
       const params = {};
       if (filters.search) params.search = filters.search;
       if (filters.category) params.category = filters.category;
-      
+
       console.log("Fetching books with params:", params);
-      const response = await axios.get('/api/library', { params });
+      const response = await axios.get("/api/library", { params });
       console.log("Books received:", response.data);
-      
-      // Make sure we're handling pagination correctly
+
       if (response.data.data) {
         setBooks(response.data.data); // If paginated response
       } else {
         setBooks(response.data); // If direct array response
       }
     } catch (error) {
-      console.error('Error fetching books:', error);
+      console.error("Error fetching books:", error);
     } finally {
       setLoading(false);
     }
@@ -65,35 +66,32 @@ export default function Library() {
     }));
   };
 
-  const handleBookCreated = () => {
+  const handleBookCreated = async () => {
     console.log("Book created, refreshing list...");
 
-    const newFilters = {
+    // Reset filters
+    setFilters({
       search: "",
       category: "",
-    };
+    });
 
-    setFilters(newFilters);
+    try {
+      setLoading(true);
+      const response = await axios.get("/api/library");
+      console.log("Books received after creation:", response.data);
 
-    // Force immediate fetch without waiting for effect
-    const fetchNewBooks = async () => {
-      try {
-        setLoading(true);
-        console.log("Fetching all books without filters");
-        const response = await axios.get("/api/library");
-        console.log("Books received after creation:", response.data);
-        setBooks(response.data.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching books:", error);
-        setLoading(false);
+      if (response.data.data) {
+        setBooks(response.data.data); // If paginated response
+      } else {
+        setBooks(response.data); // If direct array response
       }
-    };
-
-    fetchNewBooks();
-    setActiveTab("catalog");
+    } catch (error) {
+      console.error("Error fetching books:", error);
+    } finally {
+      setLoading(false);
+      setActiveTab("catalog");
+    }
   };
-
   const handleBookDeleted = () => {
     fetchBooks();
   };
@@ -183,7 +181,14 @@ export default function Library() {
                     isLibrarian={isLibrarian}
                     isStudent={isStudent}
                     onBookDeleted={handleBookDeleted}
-                    onBookUpdated={() => fetchBooks()} 
+                    onBookUpdated={(updatedBook) => {
+                      // Update the specific book in the list
+                      setBooks((prevBooks) =>
+                        prevBooks.map((b) =>
+                          b.id === updatedBook.id ? updatedBook : b
+                        )
+                      );
+                    }}
                   />
                 ))
               ) : (

@@ -91,20 +91,15 @@ export default function BookCard({
       setLoading(true);
       setError(null);
 
-      console.log("Form data before submission:", formData);
-
       // Create FormData object for file upload
       const form = new FormData();
       for (const key in formData) {
         if (key === "image" && formData[key]) {
-          console.log("Adding image file:", formData[key]);
           form.append(key, formData[key]);
         } else if (formData[key] !== null && key !== "image") {
           form.append(key, formData[key]);
         }
       }
-
-      console.log("Submitting to:", `/api/library/${book.id}`);
 
       const response = await axios.put(`/api/library/${book.id}`, form, {
         headers: {
@@ -112,15 +107,14 @@ export default function BookCard({
         },
       });
 
-      console.log("Server response:", response.data);
-
       setSuccess("Book updated successfully!");
       setTimeout(() => {
         setSuccess(null);
         setIsEditing(false);
-        // Trigger a refresh of the parent component if available
+
+        // Call parent's update function with the updated book data
         if (typeof onBookUpdated === "function") {
-          onBookUpdated(book.id);
+          onBookUpdated(response.data); // Pass the updated book data
         }
       }, 2000);
     } catch (error) {
@@ -135,7 +129,7 @@ export default function BookCard({
     <div className="border rounded-lg overflow-hidden shadow-md bg-white">
       {book.image_path ? (
         <img
-          src={`/storage/${book.image_path}`}
+          src={`${window.location.origin}/storage/${book.image_path}`}
           alt={book.title}
           className="w-full h-48 object-cover"
         />
