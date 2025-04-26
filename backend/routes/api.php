@@ -11,6 +11,7 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\LibrarianController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TeacherAbsenceController;
 use App\Models\BookBorrowingRequest;
@@ -35,30 +36,32 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
+    //     // DELETE THIS DUPLICATED SECTION
+    //     Route::prefix('library')->group(function () {
+    //         // Public routes
+    //         Route::get('/', [LibraryController::class, 'index']);
+    //         Route::get('/categories', [LibraryController::class, 'categories']);
+    //         Route::get('/{libraryItem}', [LibraryController::class, 'show']);
 
-    Route::prefix('library')->group(function () {
-        // Public routes
-        Route::get('/', [LibraryController::class, 'index']);
-        Route::get('/categories', [LibraryController::class, 'categories']);
-        Route::get('/{libraryItem}', [LibraryController::class, 'show']);
+    //         // Protected routes
+    //         Route::middleware('auth:sanctum')->group(function () {
+    //             // Book management (librarians/admins)
+    //             Route::post('/', [LibraryController::class, 'store']);
+    //             Route::put('/{libraryItem}', [LibraryController::class, 'update']);
+    //             Route::delete('/{libraryItem}', [LibraryController::class, 'destroy']);
+    //         });
+    //     });
 
-        // Protected routes
-        Route::middleware('auth:sanctum')->group(function () {
-            // Book management (librarians/admins)
-            Route::post('/', [LibraryController::class, 'store']);
-            Route::put('/{libraryItem}', [LibraryController::class, 'update']);
-            Route::delete('/{libraryItem}', [LibraryController::class, 'destroy']);
-
-            // Borrowing requests
-            Route::get('/borrowing-requests', [BookBorrowingRequestController::class, 'index']);
-            Route::post('/borrowing-requests', [BookBorrowingRequestController::class, 'store']);
-            Route::get('/my-requests', [BookBorrowingRequestController::class, 'myRequests']);
-            Route::post('/borrowing-requests/{borrowingRequest}/approve', [BookBorrowingRequestController::class, 'approve']);
-            Route::post('/borrowing-requests/{borrowingRequest}/reject', [BookBorrowingRequestController::class, 'reject']);
-            Route::post('/borrowing-requests/{borrowingRequest}/return', [BookBorrowingRequestController::class, 'return']);
-            Route::get('/borrowing-stats', [BookBorrowingRequestController::class, 'borrowingStats']);
-        });
+    Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+        return $request->user();
     });
+    // Library Items Routes
+    Route::apiResource('library', LibraryController::class);
+    Route::get('library/categories', [LibraryController::class, 'categories']);
+
+    // Librarian Routes
+    Route::get('librarians/profile', [LibrarianController::class, 'profile']);
+    Route::apiResource('librarians', LibrarianController::class);
 
     Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return $request->user();

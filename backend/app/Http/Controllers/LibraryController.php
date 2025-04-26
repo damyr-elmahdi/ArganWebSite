@@ -17,12 +17,12 @@ class LibraryController extends Controller
     public function index(Request $request)
     {
         $query = LibraryItem::query();
-
+    
         // Apply filters if provided
         if ($request->has('category')) {
             $query->where('category', $request->category);
         }
-
+    
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -31,7 +31,7 @@ class LibraryController extends Controller
                     ->orWhere('inventory_number', 'like', "%{$search}%");
             });
         }
-
+    
         // Apply sorting if provided
         $sortField = $request->get('sort_by', 'inventory_number');
         $sortDirection = $request->get('sort_dir', 'asc');
@@ -44,15 +44,20 @@ class LibraryController extends Controller
         $sortDirection = in_array(strtolower($sortDirection), ['asc', 'desc']) ? $sortDirection : 'asc';
         
         $query->orderBy($sortField, $sortDirection);
-
-        $libraryItems = $query->paginate(15);
-
+    
+        // Get per_page from request or default to 12
+        $perPage = $request->get('per_page', 12);
+        // Ensure per_page is a reasonable value between 5 and 50
+        $perPage = min(max(intval($perPage), 5), 50);
+    
+        $libraryItems = $query->paginate($perPage);
+    
         // Add availability information
         foreach ($libraryItems as $item) {
             $item->available_quantity = $item->availableQuantity();
             $item->is_available = $item->isAvailableForBorrowing();
         }
-
+    
         return response()->json($libraryItems);
     }
 
