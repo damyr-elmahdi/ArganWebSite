@@ -52,22 +52,21 @@ class LibraryController extends Controller
     
         $libraryItems = $query->paginate($perPage);
     
-        // Add availability information
-        foreach ($libraryItems as $item) {
-            $item->available_quantity = $item->availableQuantity();
-            $item->is_available = $item->isAvailableForBorrowing();
-        }
+        // Removed availability information as it depends on borrowing functionality
     
         return response()->json($libraryItems);
     }
-
+    
     public function show(LibraryItem $libraryItem)
     {
-        $libraryItem->available_quantity = $libraryItem->availableQuantity();
-        $libraryItem->is_available = $libraryItem->isAvailableForBorrowing();
+
 
         return response()->json($libraryItem);
     }
+    
+
+
+
 
     public function store(Request $request)
     {
@@ -139,32 +138,16 @@ class LibraryController extends Controller
     public function destroy(LibraryItem $libraryItem)
     {
         $this->authorize('delete', $libraryItem);
-
-        // Check if there are active borrowings
-        if ($libraryItem->activeBorrowings()->count() > 0) {
-            return response()->json([
-                'message' => 'Cannot delete item with active borrowings'
-            ], 400);
-        }
-
+    
+        // Removed check for active borrowings
+    
         // Delete image if exists
         if ($libraryItem->image_path) {
             Storage::disk('public')->delete($libraryItem->image_path);
         }
-
+    
         $libraryItem->delete();
-
+    
         return response()->json(null, 204);
-    }
-
-    // Get categories for filtering
-    public function categories()
-    {
-        $categories = LibraryItem::select('category')
-            ->distinct()
-            ->orderBy('category')
-            ->pluck('category');
-
-        return response()->json($categories);
     }
 }

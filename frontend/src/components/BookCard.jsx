@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Pencil, Trash2, AlertCircle, CheckCircle } from "lucide-react";
+import { Pencil, Trash2, AlertCircle } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { getImageUrl } from "../utils/imageUtils";
 import ImageModal from "./ImageModal";
@@ -8,7 +8,6 @@ import ImageModal from "./ImageModal";
 export default function BookCard({
   book,
   isLibrarian,
-  isStudent,
   onBookDeleted,
   onBookUpdated,
 }) {
@@ -33,24 +32,6 @@ export default function BookCard({
     description: book.description || "",
     image: null,
   });
-
-  const handleBorrowRequest = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      await axios.post("/api/library/borrow", {
-        library_item_id: book.id,
-      });
-
-      setSuccess("Book request submitted successfully!");
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (error) {
-      setError(error.response?.data?.message || "Error submitting request");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleDeleteBook = async () => {
     try {
@@ -354,12 +335,8 @@ export default function BookCard({
             
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-gray-500">#{book.inventory_number}</span>
-              <span className={`text-xs px-2 py-1 rounded-full ${
-                book.is_available ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-              }`}>
-                {book.is_available
-                  ? `Available (${book.available_quantity}/${book.quantity})`
-                  : "Not Available"}
+              <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800">
+                {book.quantity} in inventory
               </span>
             </div>
 
@@ -397,20 +374,6 @@ export default function BookCard({
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
-              )}
-              
-              {isStudent && (
-                <button
-                  onClick={handleBorrowRequest}
-                  disabled={!book.is_available || loading}
-                  className={`px-3 py-1 text-sm rounded ${
-                    book.is_available
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-300 text-gray-500"
-                  }`}
-                >
-                  {loading ? "Processing..." : "Borrow"}
-                </button>
               )}
             </div>
 
@@ -471,4 +434,3 @@ export default function BookCard({
     </div>
   );
 }
-

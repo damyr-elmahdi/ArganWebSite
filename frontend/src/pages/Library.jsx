@@ -3,9 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import BookCard from "../components/BookCard";
 import BookFilterBar from "../components/BookFilterBar";
-import LibrarianDashboard from "./LibrarianDashboard";
 import NewBookForm from "../components/NewBookForm";
-import StudentBorrowingsTable from "../components/StudentBorrowingsTable";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Library() {
@@ -221,7 +219,6 @@ export default function Library() {
 
   const isLibrarian =
     user && (user.role === "librarian" || user.role === "administrator");
-  const isStudent = user && user.role === "student";
 
   return (
     <main className="flex-grow container mx-auto px-4 py-12">
@@ -241,46 +238,19 @@ export default function Library() {
             Book Catalog
           </button>
 
-          {isStudent && (
+          {isLibrarian && (
             <button
-              onClick={() => setActiveTab("myBorrowings")}
+              onClick={() => setActiveTab("add")}
               className={`px-4 py-2 rounded ${
-                activeTab === "myBorrowings"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200"
+                activeTab === "add" ? "bg-blue-600 text-white" : "bg-gray-200"
               }`}
             >
-              My Borrowings
-            </button>
-          )}
-
-          {isLibrarian && (
-            <>
-              <button
-                onClick={() => setActiveTab("dashboard")}
-                className={`px-4 py-2 rounded ${
-                  activeTab === "dashboard"
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200"
-                }`}
-              >
-                Librarian Dashboard
-              </button>
-              <button
-                onClick={() => setActiveTab("add")}
-                className={`px-4 py-2 rounded ${
-                  activeTab === "add" ? "bg-blue-600 text-white" : "bg-gray-200"
-                }`}
-              >
-                Add New Book
-              </button>
-            </>
+              Add New Book
+          </button>
           )}
         </div>
       </div>
 
-      {activeTab === "dashboard" && isLibrarian && <LibrarianDashboard />}
-      {activeTab === "myBorrowings" && isStudent && <StudentBorrowingsTable />}
       {activeTab === "add" && isLibrarian && (
         <NewBookForm onBookCreated={handleBookCreated} />
       )}
@@ -310,7 +280,6 @@ export default function Library() {
                       key={book.id}
                       book={book}
                       isLibrarian={isLibrarian}
-                      isStudent={isStudent}
                       onBookDeleted={handleBookDeleted}
                       onBookUpdated={(updatedBook) => {
                         // Update the specific book in the list

@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BookBorrowingRequestController;
+
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EventCommentController;
 use App\Http\Controllers\EventController;
@@ -11,10 +11,10 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ForgotPasswordController;
-use App\Http\Controllers\LibrarianController;
+
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TeacherAbsenceController;
-use App\Models\BookBorrowingRequest;
+
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -42,8 +42,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/library/{libraryItem}', [LibraryController::class, 'destroy']);
 
     // Librarian Routes
-    Route::get('/librarians/profile', [LibrarianController::class, 'profile']);
-    Route::apiResource('librarians', LibrarianController::class);
 
     // News Comments Routes
     Route::post('/news/{news}/comments', [CommentController::class, 'store']);

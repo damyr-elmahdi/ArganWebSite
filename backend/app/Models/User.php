@@ -2,73 +2,108 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPassword
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
         'role',
-        'recovery_email',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
-    /**
-     * Check if the user is a librarian.
-     *
-     * @return bool
-     */
-    public function isLibrarian(): bool
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
+
+    public function teacher()
+    {
+        return $this->hasOne(Teacher::class);
+    }
+
+    public function librarian()
+    {
+        return $this->hasOne(Librarian::class);
+    }
+
+    public function administrator()
+    {
+        return $this->hasOne(Administrator::class);
+    }
+
+    public function isStudent()
+    {
+        return $this->role === 'student';
+    }
+
+    public function isTeacher()
+    {
+        return $this->role === 'teacher';
+    }
+
+    public function isLibrarian()
     {
         return $this->role === 'librarian';
     }
 
-    /**
-     * Check if the user is an administrator.
-     *
-     * @return bool
-     */
-    public function isAdministrator(): bool
+    public function isAdministrator()
     {
         return $this->role === 'administrator';
     }
 
-    /**
-     * Get the librarian associated with this user.
-     */
-    public function librarian()
+
+    // Existing methods...
+    public function sendPasswordResetNotification($token)
     {
-        return $this->hasOne(Librarian::class);
+        $url = config('app.frontend_url', 'http://localhost:5173') . '/reset-password/' . $token . '?email=' . urlencode($this->email);
+        $this->notify(new \App\Notifications\ResetPassword($token, $url));
+    }
+
+    public function createdQuizzes()
+    {
+        return $this->hasMany(Quiz::class, 'creator_id');
+    }
+
+    public function completedQuizzes()
+    {
+        return $this->hasMany(CompletedQuiz::class, 'student_id');
+    }
+
+    public function uploadedResources()
+    {
+        return $this->hasMany(Resource::class, 'uploaded_by');
+    }
+
+    public function news()
+    {
+        return $this->hasMany(News::class, 'author_id');
+    }
+
+    public function announcedAbsences()
+    {
+        return $this->hasMany(TeacherAbsence::class, 'announced_by');
+    }
+    
+    public function absenceNotifications()
+    {
+        return $this->hasMany(AbsenceNotification::class, 'student_id');
     }
 }

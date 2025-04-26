@@ -19,7 +19,6 @@ import Register from "./pages/Register";
 import StudentDashboard from "./pages/StudentDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
-import LibrarianDashboard from "./pages/LibrarianDashboard"; 
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import Header from "./components/Header";
@@ -43,8 +42,6 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
       return <Navigate to="/teacher-dashboard" replace />;
     } else if (user.role === "administrator") {
       return <Navigate to="/admin-dashboard" replace />;
-    } else if (user.role === "librarian") {
-      return <Navigate to="/librarian-dashboard" replace />;
     } else {
       return <Navigate to="/login" replace />;
     }
@@ -62,8 +59,6 @@ function DashboardRedirect() {
     return <Navigate to="/teacher-dashboard" replace />;
   } else if (user.role === "administrator") {
     return <Navigate to="/admin-dashboard" replace />;
-  } else if (user.role === "librarian") {
-    return <Navigate to="/librarian-dashboard" replace />;
   } else {
     return <Navigate to="/login" replace />;
   }
@@ -128,15 +123,6 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={["administrator"]}>
                   <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
-            {/* Add route for Librarian Dashboard */}
-            <Route
-              path="/librarian-dashboard"
-              element={
-                <ProtectedRoute allowedRoles={["librarian", "administrator"]}>
-                  <LibrarianDashboard />
                 </ProtectedRoute>
               }
             />
