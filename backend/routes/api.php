@@ -36,41 +36,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    //     // DELETE THIS DUPLICATED SECTION
-    //     Route::prefix('library')->group(function () {
-    //         // Public routes
-    //         Route::get('/', [LibraryController::class, 'index']);
-    //         Route::get('/categories', [LibraryController::class, 'categories']);
-    //         Route::get('/{libraryItem}', [LibraryController::class, 'show']);
-
-    //         // Protected routes
-    //         Route::middleware('auth:sanctum')->group(function () {
-    //             // Book management (librarians/admins)
-    //             Route::post('/', [LibraryController::class, 'store']);
-    //             Route::put('/{libraryItem}', [LibraryController::class, 'update']);
-    //             Route::delete('/{libraryItem}', [LibraryController::class, 'destroy']);
-    //         });
-    //     });
-
-    Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-        return $request->user();
-    });
-    // Library Items Routes
-    Route::apiResource('library', LibraryController::class);
-    Route::get('library/categories', [LibraryController::class, 'categories']);
+    // Library Items Routes (protected ones that require authentication)
+    Route::post('/library', [LibraryController::class, 'store']);
+    Route::put('/library/{libraryItem}', [LibraryController::class, 'update']);
+    Route::delete('/library/{libraryItem}', [LibraryController::class, 'destroy']);
 
     // Librarian Routes
-    Route::get('librarians/profile', [LibrarianController::class, 'profile']);
+    Route::get('/librarians/profile', [LibrarianController::class, 'profile']);
     Route::apiResource('librarians', LibrarianController::class);
-
-    Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-        return $request->user();
-    });
 
     // News Comments Routes
     Route::post('/news/{news}/comments', [CommentController::class, 'store']);
     Route::put('/news/{news}/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/news/{news}/comments/{comment}', [CommentController::class, 'destroy']);
+    
     // Event Comments Routes
     Route::post('/events/{event}/comments', [EventCommentController::class, 'store']);
     Route::put('/events/{event}/comments/{comment}', [EventCommentController::class, 'update']);
@@ -117,9 +96,8 @@ Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{event}', [EventController::class, 'show']);
 Route::get('/events/{event}/comments', [EventCommentController::class, 'index']);
 
-// Protected routes
+// Protected routes for content management
 Route::middleware('auth:sanctum')->group(function () {
-
     // News routes for authenticated users
     Route::post('/news', [NewsController::class, 'store']);
     Route::put('/news/{news}', [NewsController::class, 'update']);

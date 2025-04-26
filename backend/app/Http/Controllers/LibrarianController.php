@@ -28,16 +28,38 @@ class LibrarianController extends Controller
     public function profile(Request $request)
     {
         $user = $request->user();
-        if ($user->role !== 'librarian' && $user->role !== 'administrator') {
+        
+        // Check if user is authorized to view librarian profiles
+        if (!$user->isLibrarian() && !$user->isAdministrator()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $librarian = Librarian::with('user')->where('user_id', $user->id)->first();
-        if (!$librarian) {
-            return response()->json(['message' => 'Librarian profile not found'], 404);
+        // If user is a librarian, return their profile
+        if ($user->isLibrarian()) {
+            $librarian = Librarian::with('user')->where('user_id', $user->id)->first();
+            
+            if (!$librarian) {
+                return response()->json(['message' => 'Librarian profile not found'], 404);
+            }
+            
+            return response()->json($librarian);
         }
-
-        return response()->json($librarian);
+        
+        // If user is an administrator but not a librarian, return appropriate message
+        if ($user->isAdministrator()) {
+            // Check if the admin also has a librarian profile
+            $librarian = Librarian::with('user')->where('user_id', $user->id)->first();
+            
+            if ($librarian) {
+                return response()->json($librarian);
+            }
+            
+            // Return a clear message for administrators without librarian profiles
+            return response()->json([
+                'message' => 'You are an administrator without a librarian profile',
+                'user' => $user
+            ]);
+        }
     }
 
     // Create a new librarian account
@@ -99,6 +121,7 @@ class LibrarianController extends Controller
                 Rule::unique('librarians')->ignore($librarian->id),
             ],
             'password' => 'sometimes|string|min:8',
+            'current_password' => 'required_with:password|string',
         ]);
 
         if ($validator->fails()) {
@@ -116,7 +139,15 @@ class LibrarianController extends Controller
             $user->email = $request->email;
         }
         
-        if ($request->has('password')) {
+        // Handle password change with verification
+        if ($request->has('password') && $request->has('current_password')) {
+            // Verify current password
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json([
+                    'message' => 'Current password is incorrect'
+                ], 422);
+            }
+            
             $user->password = Hash::make($request->password);
         }
         
