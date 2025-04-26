@@ -24,44 +24,6 @@ class LibrarianController extends Controller
         return response()->json($librarians);
     }
 
-    // Get current librarian's profile
-    public function profile(Request $request)
-    {
-        $user = $request->user();
-        
-        // Check if user is authorized to view librarian profiles
-        if (!$user->isLibrarian() && !$user->isAdministrator()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        // If user is a librarian, return their profile
-        if ($user->isLibrarian()) {
-            $librarian = Librarian::with('user')->where('user_id', $user->id)->first();
-            
-            if (!$librarian) {
-                return response()->json(['message' => 'Librarian profile not found'], 404);
-            }
-            
-            return response()->json($librarian);
-        }
-        
-        // If user is an administrator but not a librarian, return appropriate message
-        if ($user->isAdministrator()) {
-            // Check if the admin also has a librarian profile
-            $librarian = Librarian::with('user')->where('user_id', $user->id)->first();
-            
-            if ($librarian) {
-                return response()->json($librarian);
-            }
-            
-            // Return a clear message for administrators without librarian profiles
-            return response()->json([
-                'message' => 'You are an administrator without a librarian profile',
-                'user' => $user
-            ]);
-        }
-    }
-
     // Create a new librarian account
     public function store(Request $request)
     {

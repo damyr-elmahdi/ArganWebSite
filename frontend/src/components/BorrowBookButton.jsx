@@ -18,10 +18,13 @@ export default function BorrowBookButton({ bookId, onBorrowed }) {
       setLoading(true);
       setError(null);
       
+      console.log('Borrowing book:', {bookId, userId: user.id});
+      
       const response = await axios.post(`/api/library/${bookId}/borrow`, {
         student_id: user.id
       });
       
+      console.log('Borrow response:', response.data);
       setSuccess('Book borrowed successfully!');
       
       if (typeof onBorrowed === 'function') {
@@ -33,11 +36,24 @@ export default function BorrowBookButton({ bookId, onBorrowed }) {
       }, 3000);
     } catch (error) {
       console.error('Error borrowing book:', error);
-      setError(error.response?.data?.message || 'Failed to borrow book');
+      
+      // More detailed error handling
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        setError(error.response.data?.message || `Server error: ${error.response.status}`);
+        console.error('Server response:', error.response.data);
+      } else if (error.request) {
+        // The request was made but no response was received
+        setError('No response received from server. Please try again later.');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        setError('Request setup error: ' + error.message);
+      }
       
       setTimeout(() => {
         setError(null);
-      }, 3000);
+      }, 5000);
     } finally {
       setLoading(false);
     }
