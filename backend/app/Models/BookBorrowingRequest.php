@@ -10,25 +10,27 @@ class BookBorrowingRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'student_id',
+        'user_id',
         'library_item_id',
         'status',
-        'borrow_date',
         'due_date',
         'return_date',
-        'approved_by',
-        'notes'
+        'notes',
     ];
 
     protected $casts = [
-        'borrow_date' => 'date',
         'due_date' => 'date',
         'return_date' => 'date',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function student()
     {
-        return $this->belongsTo(User::class, 'student_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function libraryItem()
@@ -36,26 +38,27 @@ class BookBorrowingRequest extends Model
         return $this->belongsTo(LibraryItem::class);
     }
 
-    public function approvedBy()
+    // Scope for pending requests
+    public function scopePending($query)
     {
-        return $this->belongsTo(User::class, 'approved_by');
+        return $query->where('status', 'pending');
     }
 
-    // Check if the request is still pending
-    public function isPending()
+    // Scope for approved and active requests
+    public function scopeApproved($query)
     {
-        return $this->status === 'pending';
+        return $query->where('status', 'approved')->whereNull('return_date');
     }
 
-    // Check if the book is currently borrowed (approved but not returned)
-    public function isActive()
+    // Scope for returned requests
+    public function scopeReturned($query)
     {
-        return $this->status === 'approved' && $this->return_date === null;
+        return $query->where('status', 'approved')->whereNotNull('return_date');
     }
 
-    // Check if the book is overdue
-    public function isOverdue()
+    // Scope for rejected requests
+    public function scopeRejected($query)
     {
-        return $this->isActive() && now()->gt($this->due_date);
+        return $query->where('status', 'rejected');
     }
 }

@@ -49,36 +49,36 @@ class User extends Authenticatable implements CanResetPassword
         return $this->hasOne(Administrator::class);
     }
 
-    public function isStudent()
+    /**
+     * Check if the user is a student.
+     */
+    public function isStudent(): bool
     {
         return $this->role === 'student';
     }
 
-    public function isTeacher()
-    {
-        return $this->role === 'teacher';
-    }
-
-    public function isLibrarian()
+    /**
+     * Check if the user is a librarian.
+     */
+    public function isLibrarian(): bool
     {
         return $this->role === 'librarian';
     }
 
-    public function isAdministrator()
+    /**
+     * Check if the user is an administrator.
+     */
+    public function isAdministrator(): bool
     {
         return $this->role === 'administrator';
     }
 
-    // Borrowing requests made by this user if they are a student
+    /**
+     * Get user's borrowing requests.
+     */
     public function borrowingRequests()
     {
-        return $this->hasMany(BookBorrowingRequest::class, 'student_id');
-    }
-
-    // Borrowing requests approved by this user if they are a librarian
-    public function approvedBorrowings()
-    {
-        return $this->hasMany(BookBorrowingRequest::class, 'approved_by');
+        return $this->hasMany(BookBorrowingRequest::class);
     }
 
     // Existing methods...

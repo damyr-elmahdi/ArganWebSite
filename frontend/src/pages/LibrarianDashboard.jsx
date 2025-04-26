@@ -36,8 +36,7 @@ export default function LibrarianDashboard() {
       const response = await axios.get('/api/library/borrowing-requests', {
         params: { status: activeTab }
       });
-      // Check if response.data has a data property (paginated) or is an array
-      setRequests(response.data.data || response.data);
+      setRequests(response.data.data);
     } catch (error) {
       setError('Failed to load borrowing requests');
       console.error(error);

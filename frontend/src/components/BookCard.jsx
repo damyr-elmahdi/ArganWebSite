@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Pencil, Trash2, AlertCircle, CheckCircle } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { getImageUrl } from "../utils/imageUtils";
 import ImageModal from "./ImageModal";
@@ -19,6 +20,8 @@ export default function BookCard({
   const [isEditing, setIsEditing] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   
   // Initialize form data with book values
   const [formData, setFormData] = useState({
@@ -50,16 +53,18 @@ export default function BookCard({
   };
 
   const handleDeleteBook = async () => {
-    if (!window.confirm("Are you sure you want to delete this book?")) return;
-
     try {
-      setLoading(true);
+      setDeleteLoading(true);
       await axios.delete(`/api/library/${book.id}`);
-      onBookDeleted();
+      if (onBookDeleted) {
+        onBookDeleted();
+      }
     } catch (error) {
-      setError(error.response?.data?.message || "Error deleting book");
+      console.error('Error deleting book:', error);
+      setError(error.response?.data?.message || 'Failed to delete book');
     } finally {
-      setLoading(false);
+      setDeleteLoading(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -156,7 +161,7 @@ export default function BookCard({
   };
   
   return (
-    <div className="border rounded-lg overflow-hidden shadow-md bg-white">
+    <div className="border rounded-lg overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow">
       {bookImageUrl ? (
         <div className="cursor-pointer" onClick={openImageModal}>
           <img
@@ -344,24 +349,23 @@ export default function BookCard({
           </form>
         ) : (
           <>
-            <h3 className="text-xl font-semibold mb-2">{book.title}</h3>
-            <p className="text-gray-700">By {book.author}</p>
-            <p className="text-gray-500 text-sm">Category: {book.category}</p>
-
-            <div className="flex justify-between items-center mt-3">
-              <span
-                className={`text-sm ${
-                  book.is_available ? "text-green-600" : "text-red-600"
-                }`}
-              >
+            <h3 className="text-lg font-semibold text-gray-800 mb-1 line-clamp-2">{book.title}</h3>
+            <p className="text-sm text-gray-600 mb-2">by {book.author}</p>
+            
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs text-gray-500">#{book.inventory_number}</span>
+              <span className={`text-xs px-2 py-1 rounded-full ${
+                book.is_available ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+              }`}>
                 {book.is_available
                   ? `Available (${book.available_quantity}/${book.quantity})`
                   : "Not Available"}
               </span>
-              <span className="text-xs text-gray-500">
-                #{book.inventory_number}
-              </span>
             </div>
+
+            <p className="text-sm text-gray-700 mb-4 line-clamp-3">
+              {book.description || "No description available."}
+            </p>
 
             {showDetails && book.description && (
               <div className="mt-3 text-sm text-gray-700">
@@ -369,7 +373,7 @@ export default function BookCard({
               </div>
             )}
 
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="flex justify-between items-center mt-4">
               <button
                 className="text-sm text-blue-600 hover:underline"
                 onClick={() => setShowDetails(!showDetails)}
@@ -377,11 +381,29 @@ export default function BookCard({
                 {showDetails ? "Hide Details" : "Show Details"}
               </button>
 
+              {isLibrarian && (
+                <div className="flex space-x-2">
+                  <button 
+                    onClick={() => setIsEditing(true)}
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                  
+                  <button 
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-full"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+              
               {isStudent && (
                 <button
                   onClick={handleBorrowRequest}
                   disabled={!book.is_available || loading}
-                  className={`ml-auto px-3 py-1 text-sm rounded ${
+                  className={`px-3 py-1 text-sm rounded ${
                     book.is_available
                       ? "bg-blue-600 text-white"
                       : "bg-gray-300 text-gray-500"
@@ -389,24 +411,6 @@ export default function BookCard({
                 >
                   {loading ? "Processing..." : "Borrow"}
                 </button>
-              )}
-
-              {isLibrarian && (
-                <div className="ml-auto flex gap-2">
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="px-3 py-1 text-sm bg-yellow-500 text-white rounded"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={handleDeleteBook}
-                    className="px-3 py-1 text-sm bg-red-600 text-white rounded"
-                    disabled={loading}
-                  >
-                    Delete
-                  </button>
-                </div>
               )}
             </div>
 
@@ -417,6 +421,54 @@ export default function BookCard({
           </>
         )}
       </div>
+
+      {/* Delete confirmation modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full">
+            <div className="flex items-center text-red-600 mb-4">
+              <AlertCircle className="w-6 h-6 mr-2" />
+              <h3 className="text-lg font-semibold">Confirm Deletion</h3>
+            </div>
+            
+            <p className="mb-4 text-gray-700">
+              Are you sure you want to delete "{book.title}"? This action cannot be undone.
+            </p>
+            
+            {error && (
+              <div className="mb-4 p-2 bg-red-100 text-red-700 text-sm rounded">
+                {error}
+              </div>
+            )}
+            
+            <div className="flex justify-end space-x-3">
+              <button 
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                disabled={deleteLoading}
+              >
+                Cancel
+              </button>
+              
+              <button 
+                onClick={handleDeleteBook}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center"
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? (
+                  <>
+                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                    Deleting...
+                  </>
+                ) : (
+                  'Delete'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
