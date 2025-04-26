@@ -26,9 +26,10 @@ Route::get('/registrations/{registration}/download-packet', [RegistrationControl
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
+
 // Public library routes
 Route::get('/library', [LibraryController::class, 'index']);
-Route::get('/library/categories', [LibraryController::class, 'categories']);
+Route::get('/library/categories', [LibraryController::class, 'categories']); 
 Route::get('/library/{libraryItem}', [LibraryController::class, 'show']);
 
 // Protected routes

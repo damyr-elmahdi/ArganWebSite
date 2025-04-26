@@ -17,12 +17,12 @@ class LibraryController extends Controller
     public function index(Request $request)
     {
         $query = LibraryItem::query();
-    
+
         // Apply filters if provided
         if ($request->has('category')) {
             $query->where('category', $request->category);
         }
-    
+
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -31,39 +31,39 @@ class LibraryController extends Controller
                     ->orWhere('inventory_number', 'like', "%{$search}%");
             });
         }
-    
+
         // Apply sorting if provided
         $sortField = $request->get('sort_by', 'inventory_number');
         $sortDirection = $request->get('sort_dir', 'asc');
-        
+
         // Validate sort field to prevent SQL injection
         $allowedSortFields = ['inventory_number', 'title', 'author', 'category', 'created_at'];
         $sortField = in_array($sortField, $allowedSortFields) ? $sortField : 'inventory_number';
-        
+
         // Validate sort direction
         $sortDirection = in_array(strtolower($sortDirection), ['asc', 'desc']) ? $sortDirection : 'asc';
-        
+
         $query->orderBy($sortField, $sortDirection);
-    
+
         // Get per_page from request or default to 12
         $perPage = $request->get('per_page', 12);
         // Ensure per_page is a reasonable value between 5 and 50
         $perPage = min(max(intval($perPage), 5), 50);
-    
+
         $libraryItems = $query->paginate($perPage);
-    
+
         // Removed availability information as it depends on borrowing functionality
-    
+
         return response()->json($libraryItems);
     }
-    
+
     public function show(LibraryItem $libraryItem)
     {
 
 
         return response()->json($libraryItem);
     }
-    
+
 
 
 
@@ -138,16 +138,24 @@ class LibraryController extends Controller
     public function destroy(LibraryItem $libraryItem)
     {
         $this->authorize('delete', $libraryItem);
-    
+
         // Removed check for active borrowings
-    
+
         // Delete image if exists
         if ($libraryItem->image_path) {
             Storage::disk('public')->delete($libraryItem->image_path);
         }
-    
+
         $libraryItem->delete();
-    
+
         return response()->json(null, 204);
+    }
+
+    // In backend/app/Http/Controllers/LibraryController.php
+    public function categories()
+    {
+        // Get unique categories from the database
+        $categories = LibraryItem::distinct('category')->pluck('category')->sort()->values();
+        return response()->json($categories);
     }
 }
