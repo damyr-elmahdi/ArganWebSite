@@ -158,4 +158,63 @@ class LibraryController extends Controller
         $categories = LibraryItem::distinct('category')->pluck('category')->sort()->values();
         return response()->json($categories);
     }
+
+
+
+    public function bookStats()
+    {
+        // Count requested books (those that have been borrowed but not returned)
+        $requested = BookBorrowing::where('status', 'borrowed')->count();
+
+        // Count returned books
+        $returned = BookBorrowing::where('status', 'returned')->count();
+
+        return response()->json([
+            'requested' => $requested,
+            'returned' => $returned
+        ]);
+    }
+
+    public function markBookReturned(Request $request, LibraryItem $libraryItem)
+    {
+        $this->authorize('update', $libraryItem);
+
+        $request->validate([
+            'student_id' => 'required|exists:users,id'
+        ]);
+
+        // Begin transaction to ensure atomicity
+        DB::beginTransaction();
+
+        try {
+            // Find the borrow record
+            $borrowRecord = BookBorrowing::where('library_item_id', $libraryItem->id)
+                ->where('student_id', $request->student_id)
+                ->where('status', 'borrowed')
+                ->firstOrFail();
+
+            // Update borrow record status to returned
+            $borrowRecord->status = 'returned';
+            $borrowRecord->return_date = now();
+            $borrowRecord->save();
+
+            // Increment the available quantity
+            $libraryItem->quantity += 1;
+            $libraryItem->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Book marked as returned successfully',
+                'library_item' => $libraryItem
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Failed to mark book as returned',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

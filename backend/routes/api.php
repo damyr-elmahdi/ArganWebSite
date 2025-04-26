@@ -29,7 +29,7 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name(
 
 // Public library routes
 Route::get('/library', [LibraryController::class, 'index']);
-Route::get('/library/categories', [LibraryController::class, 'categories']); 
+Route::get('/library/categories', [LibraryController::class, 'categories']);
 Route::get('/library/{libraryItem}', [LibraryController::class, 'show']);
 
 // Protected routes
@@ -42,13 +42,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/library/{libraryItem}', [LibraryController::class, 'update']);
     Route::delete('/library/{libraryItem}', [LibraryController::class, 'destroy']);
 
+    Route::post('/library/{libraryItem}/return', [LibraryController::class, 'markBookReturned'])
+        ->middleware(['can:update,libraryItem']);
+
+
+    Route::get('/library/book-stats', [LibraryController::class, 'bookStats']);
+
+
     // Librarian Routes
 
     // News Comments Routes
     Route::post('/news/{news}/comments', [CommentController::class, 'store']);
     Route::put('/news/{news}/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/news/{news}/comments/{comment}', [CommentController::class, 'destroy']);
-    
+
     // Event Comments Routes
     Route::post('/events/{event}/comments', [EventCommentController::class, 'store']);
     Route::put('/events/{event}/comments/{comment}', [EventCommentController::class, 'update']);
