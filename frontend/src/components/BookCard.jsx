@@ -4,12 +4,14 @@ import { Pencil, Trash2, AlertCircle } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { getImageUrl } from "../utils/imageUtils";
 import ImageModal from "./ImageModal";
+import BorrowBookButton from "./BorrowBookButton"; // Import the new component
 
 export default function BookCard({
   book,
   isLibrarian,
   onBookDeleted,
   onBookUpdated,
+  onBookBorrowed,
 }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -171,6 +173,7 @@ export default function BookCard({
       <div className="p-4">
         {isEditing ? (
           <form onSubmit={handleSubmit} encType="multipart/form-data">
+            {/* ... existing form fields ... */}
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
                 Change Image
@@ -335,8 +338,10 @@ export default function BookCard({
             
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-gray-500">#{book.inventory_number}</span>
-              <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800">
-                {book.quantity} in inventory
+              <span className={`text-xs px-2 py-1 rounded-full ${
+                book.quantity > 0 ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'
+              }`}>
+                {book.quantity > 0 ? `${book.quantity} in inventory` : 'Out of stock'}
               </span>
             </div>
 
@@ -376,6 +381,14 @@ export default function BookCard({
                 </div>
               )}
             </div>
+
+            {/* Add Borrow Book Button for students */}
+            {book.quantity > 0 && (
+              <BorrowBookButton 
+                bookId={book.id}
+                onBorrowed={onBookBorrowed}
+              />
+            )}
 
             {error && <div className="mt-2 text-red-500 text-sm">{error}</div>}
             {success && (

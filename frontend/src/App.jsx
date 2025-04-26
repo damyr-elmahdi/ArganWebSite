@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import "./services/axios";
-import { AuthProvider, useAuth } from "./contexts/AuthContext"; 
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Academics from "./pages/Academics";
@@ -23,7 +23,7 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-
+import LibrarianDashboard from "./pages/LibrarianDashboard";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
@@ -32,7 +32,6 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   if (!token) {
     return <Navigate to="/login" replace />;
   }
-
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     // Redirect to the appropriate dashboard
@@ -76,6 +75,21 @@ export default function App() {
     foundedYear: 2014,
     currentYear: new Date().getFullYear(),
   };
+  function DashboardRedirect() {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+  
+    if (user.role === "student") {
+      return <Navigate to="/student-dashboard" replace />;
+    } else if (user.role === "teacher") {
+      return <Navigate to="/teacher-dashboard" replace />;
+    } else if (user.role === "administrator") {
+      return <Navigate to="/admin-dashboard" replace />;
+    } else if (user.role === "librarian") {
+      return <Navigate to="/librarian-dashboard" replace />;
+    } else {
+      return <Navigate to="/login" replace />;
+    }
+  }
 
   return (
     <AuthProvider>
@@ -115,6 +129,14 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={["teacher"]}>
                   <TeacherDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/librarian-dashboard"
+              element={
+                <ProtectedRoute allowedRoles={["librarian", "administrator"]}>
+                  <LibrarianDashboard />
                 </ProtectedRoute>
               }
             />

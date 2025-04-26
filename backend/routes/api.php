@@ -8,6 +8,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EventCommentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\LibrarianController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -48,8 +49,20 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/library/book-stats', [LibraryController::class, 'bookStats']);
 
-
-    // Librarian Routes
+    Route::post('/library/{libraryItem}/borrow', [LibraryController::class, 'borrowBook']);
+    Route::get('/library/book-requests', [LibraryController::class, 'getBookRequests']);
+  
+    // Librarian routes
+    Route::get('/librarian/profile', [LibrarianController::class, 'profile']);
+    
+    // Librarian management (admin only)
+    Route::middleware('can:manage-librarians')->group(function () {
+        Route::get('/librarians', [LibrarianController::class, 'index']);
+        Route::post('/librarians', [LibrarianController::class, 'store']);
+        Route::get('/librarians/{librarian}', [LibrarianController::class, 'show']);
+        Route::put('/librarians/{librarian}', [LibrarianController::class, 'update']);
+        Route::delete('/librarians/{librarian}', [LibrarianController::class, 'destroy']);
+    });
 
     // News Comments Routes
     Route::post('/news/{news}/comments', [CommentController::class, 'store']);

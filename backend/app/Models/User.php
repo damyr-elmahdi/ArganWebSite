@@ -58,12 +58,11 @@ class User extends Authenticatable implements CanResetPassword
     {
         return $this->role === 'teacher';
     }
-
     public function isLibrarian()
     {
         return $this->role === 'librarian';
     }
-
+    
     public function isAdministrator()
     {
         return $this->role === 'administrator';
