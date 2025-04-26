@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\LibraryItem;
+use App\Models\BookBorrowing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class LibraryController extends Controller
 {
+    // Rest of your controller remains the same
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except(['index', 'show']);
