@@ -293,21 +293,32 @@ class LibraryController extends Controller
             ->paginate(10);
 
         // Format the response data to include library item details
-        $formattedData = $bookRequests->through(function ($borrowing) {
+        $formattedRequests = [];
+        foreach ($bookRequests as $borrowing) {
             $item = $borrowing->libraryItem;
-            return [
-                'id' => $borrowing->library_item_id,
-                'student' => $borrowing->student,
-                'title' => $item->title,
-                'author' => $item->author,
-                'inventory_number' => $item->inventory_number,
-                'request_date' => $borrowing->request_date,
-                'return_date' => $borrowing->return_date,
-                'status' => $borrowing->status,
-                'borrow_id' => $borrowing->id
-            ];
-        });
+            if ($item) {
+                $formattedRequests[] = [
+                    'id' => $item->id,
+                    'borrow_id' => $borrowing->id,
+                    'student' => $borrowing->student,
+                    'title' => $item->title,
+                    'author' => $item->author,
+                    'inventory_number' => $item->inventory_number,
+                    'request_date' => $borrowing->request_date,
+                    'return_date' => $borrowing->return_date,
+                    'status' => $borrowing->status
+                ];
+            }
+        }
 
-        return response()->json($formattedData);
+        return response()->json([
+            'data' => $formattedRequests,
+            'meta' => [
+                'current_page' => $bookRequests->currentPage(),
+                'last_page' => $bookRequests->lastPage(),
+                'per_page' => $bookRequests->perPage(),
+                'total' => $bookRequests->total()
+            ]
+        ]);
     }
 }

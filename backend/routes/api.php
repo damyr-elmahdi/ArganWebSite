@@ -38,21 +38,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    // Library Items Routes (protected ones that require authentication)
+    Route::get('/library/book-requests', [LibraryController::class, 'getBookRequests']);
+    Route::get('/library/book-stats', [LibraryController::class, 'bookStats']);
+    
+    // Other library-related routes...
     Route::post('/library', [LibraryController::class, 'store']);
     Route::put('/library/{libraryItem}', [LibraryController::class, 'update']);
     Route::delete('/library/{libraryItem}', [LibraryController::class, 'destroy']);
-
-    Route::post('/library/{libraryItem}/return', [LibraryController::class, 'markBookReturned'])
-        ->middleware(['can:update,libraryItem']);
-
-
-    // These routes should be inside your auth:sanctum middleware group
-    Route::get('/library/book-requests', [LibraryController::class, 'getBookRequests']);
-    Route::get('/library/book-stats', [LibraryController::class, 'bookStats']);
+    Route::post('/library/{libraryItem}/return', [LibraryController::class, 'markBookReturned']);
     Route::post('/library/{libraryItem}/borrow', [LibraryController::class, 'borrowBook']);
-
-    // Librarian management (admin only)
 
     // News Comments Routes
     Route::post('/news/{news}/comments', [CommentController::class, 'store']);

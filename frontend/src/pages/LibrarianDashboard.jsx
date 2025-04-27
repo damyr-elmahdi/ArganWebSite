@@ -21,23 +21,37 @@ export default function LibrarianDashboard() {
 
   const fetchStats = async () => {
     try {
+      console.log('Fetching book stats...');
       const response = await axios.get('/api/library/book-stats');
+      console.log('Stats response:', response.data);
       setStats(response.data);
     } catch (error) {
       console.error('Failed to fetch stats:', error);
+      console.log('Error response:', error.response);
     }
   };
 
   const fetchBooks = async () => {
     try {
       setLoading(true);
+      console.log('Fetching book requests with status:', activeTab === 'requested' ? 'borrowed' : 'returned');
+      
       const response = await axios.get('/api/library/book-requests', {
         params: { status: activeTab === 'requested' ? 'borrowed' : 'returned' }
       });
-      setBooks(response.data.data);
+      
+      console.log('Book requests response:', response.data);
+      
+      if (response.data && response.data.data) {
+        setBooks(response.data.data);
+      } else {
+        setBooks([]);
+        console.warn('No data property found in the response:', response.data);
+      }
     } catch (error) {
-      setError('Failed to load book requests');
-      console.error(error);
+      console.error('Failed to load book requests:', error);
+      console.log('Error response:', error.response);
+      setError('Failed to load book requests. ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
     }
@@ -45,7 +59,9 @@ export default function LibrarianDashboard() {
 
   const handleMarkReturned = async (bookId, studentId) => {
     try {
-      await axios.post(`/api/library/${bookId}/return`, { student_id: studentId });
+      console.log('Marking book as returned:', { bookId, studentId });
+      const response = await axios.post(`/api/library/${bookId}/return`, { student_id: studentId });
+      console.log('Return response:', response.data);
       
       // Show success message
       alert('Book marked as returned successfully. Inventory updated.');
@@ -54,6 +70,7 @@ export default function LibrarianDashboard() {
       fetchBooks();
       fetchStats();
     } catch (error) {
+      console.error('Failed to mark book as returned:', error);
       alert(error.response?.data?.message || 'Failed to mark book as returned');
     }
   };
