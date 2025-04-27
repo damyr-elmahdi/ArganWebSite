@@ -52,18 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/library/book-stats', [LibraryController::class, 'bookStats']);
     Route::post('/library/{libraryItem}/borrow', [LibraryController::class, 'borrowBook']);
 
-
-    // Librarian routes
-    Route::get('/librarian/profile', [LibrarianController::class, 'profile']);
-
     // Librarian management (admin only)
-    Route::middleware('can:manage-librarians')->group(function () {
-        Route::get('/librarians', [LibrarianController::class, 'index']);
-        Route::post('/librarians', [LibrarianController::class, 'store']);
-        Route::get('/librarians/{librarian}', [LibrarianController::class, 'show']);
-        Route::put('/librarians/{librarian}', [LibrarianController::class, 'update']);
-        Route::delete('/librarians/{librarian}', [LibrarianController::class, 'destroy']);
-    });
 
     // News Comments Routes
     Route::post('/news/{news}/comments', [CommentController::class, 'store']);
