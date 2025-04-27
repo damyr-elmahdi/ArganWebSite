@@ -168,10 +168,10 @@ class LibraryController extends Controller
     {
         // Count requested books (those that have been borrowed but not returned)
         $requested = BookBorrowing::where('status', 'borrowed')->count();
-
+    
         // Count returned books
         $returned = BookBorrowing::where('status', 'returned')->count();
-
+    
         return response()->json([
             'requested' => $requested,
             'returned' => $returned
@@ -282,7 +282,7 @@ public function getBookRequests(Request $request)
     $user = $request->user();
     
     // Only librarians and administrators can access this
-    if (!$user->isLibrarian() && !$user->isAdministrator()) {
+    if (!$user || ($user->role !== 'librarian' && $user->role !== 'administrator')) {
         return response()->json(['message' => 'Unauthorized'], 403);
     }
 

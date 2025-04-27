@@ -47,14 +47,15 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware(['can:update,libraryItem']);
 
 
-    Route::get('/library/book-stats', [LibraryController::class, 'bookStats']);
-
-    Route::post('/library/{libraryItem}/borrow', [LibraryController::class, 'borrowBook']);
+    // These routes should be inside your auth:sanctum middleware group
     Route::get('/library/book-requests', [LibraryController::class, 'getBookRequests']);
-  
+    Route::get('/library/book-stats', [LibraryController::class, 'bookStats']);
+    Route::post('/library/{libraryItem}/borrow', [LibraryController::class, 'borrowBook']);
+
+
     // Librarian routes
     Route::get('/librarian/profile', [LibrarianController::class, 'profile']);
-    
+
     // Librarian management (admin only)
     Route::middleware('can:manage-librarians')->group(function () {
         Route::get('/librarians', [LibrarianController::class, 'index']);

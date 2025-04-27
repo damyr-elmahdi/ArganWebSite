@@ -32,7 +32,7 @@ export default function LibrarianDashboard() {
     try {
       setLoading(true);
       const response = await axios.get('/api/library/book-requests', {
-        params: { status: activeTab }
+        params: { status: activeTab === 'requested' ? 'borrowed' : 'returned' }
       });
       setBooks(response.data.data);
     } catch (error) {

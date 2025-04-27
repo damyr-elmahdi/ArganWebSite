@@ -5,14 +5,14 @@ axios.defaults.baseURL = import.meta.env.VITE_API_URL || "/"; // '/' works with 
 
 // Add a request interceptor to include the auth token
 axios.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
+  config => {
+    const token = localStorage.getItem('token');
     if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
   }
 );
