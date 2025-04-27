@@ -62,14 +62,8 @@ class LibraryController extends Controller
 
     public function show(LibraryItem $libraryItem)
     {
-
-
         return response()->json($libraryItem);
     }
-
-
-
-
 
     public function store(Request $request)
     {
@@ -102,7 +96,7 @@ class LibraryController extends Controller
     {
         $this->authorize('update', $libraryItem);
 
-        \Log::info('Update request received', [
+        Log::info('Update request received', [
             'book_id' => $libraryItem->id,
             'has_file' => $request->hasFile('image'),
         ]);
@@ -121,7 +115,7 @@ class LibraryController extends Controller
 
         // Handle image upload if provided
         if ($request->hasFile('image')) {
-            \Log::info('Processing image upload');
+            Log::info('Processing image upload');
             // Delete old image if exists
             if ($libraryItem->image_path) {
                 Storage::disk('public')->delete($libraryItem->image_path);
@@ -129,11 +123,11 @@ class LibraryController extends Controller
 
             $path = $request->file('image')->store('library_items', 'public');
             $validated['image_path'] = $path;
-            \Log::info('Image saved to path', ['path' => $path]);
+            Log::info('Image saved to path', ['path' => $path]);
         }
 
         $libraryItem->update($validated);
-        \Log::info('Book updated successfully', ['book' => $libraryItem]);
+        Log::info('Book updated successfully', ['book' => $libraryItem]);
 
         return response()->json($libraryItem);
     }
@@ -161,8 +155,6 @@ class LibraryController extends Controller
         $categories = LibraryItem::distinct('category')->pluck('category')->sort()->values();
         return response()->json($categories);
     }
-
-
 
     public function bookStats()
     {
@@ -220,101 +212,102 @@ class LibraryController extends Controller
             ], 500);
         }
     }
+    
     public function borrowBook(Request $request, LibraryItem $libraryItem)
-{
-    $request->validate([
-        'student_id' => 'required|exists:users,id'
-    ]);
-
-    // Begin transaction to ensure atomicity
-    DB::beginTransaction();
-
-    try {
-        // Check if book is available
-        if ($libraryItem->quantity <= 0) {
-            return response()->json([
-                'message' => 'This book is not available for borrowing'
-            ], 400);
-        }
-
-        // Check if student has already borrowed this book
-        $existingBorrow = BookBorrowing::where('library_item_id', $libraryItem->id)
-            ->where('student_id', $request->student_id)
-            ->where('status', 'borrowed')
-            ->first();
-
-        if ($existingBorrow) {
-            return response()->json([
-                'message' => 'You have already borrowed this book'
-            ], 400);
-        }
-
-        // Create borrow record
-        $borrowRecord = BookBorrowing::create([
-            'library_item_id' => $libraryItem->id,
-            'student_id' => $request->student_id,
-            'status' => 'borrowed',
-            'request_date' => now(),
+    {
+        $request->validate([
+            'student_id' => 'required|exists:users,id'
         ]);
 
-        // Decrement the available quantity
-        $libraryItem->quantity -= 1;
-        $libraryItem->save();
+        // Begin transaction to ensure atomicity
+        DB::beginTransaction();
 
-        DB::commit();
+        try {
+            // Check if book is available
+            if ($libraryItem->quantity <= 0) {
+                return response()->json([
+                    'message' => 'This book is not available for borrowing'
+                ], 400);
+            }
 
-        return response()->json([
-            'message' => 'Book borrowed successfully',
-            'borrow_record' => $borrowRecord
-        ], 201);
-    } catch (\Exception $e) {
-        DB::rollBack();
+            // Check if student has already borrowed this book
+            $existingBorrow = BookBorrowing::where('library_item_id', $libraryItem->id)
+                ->where('student_id', $request->student_id)
+                ->where('status', 'borrowed')
+                ->first();
 
-        return response()->json([
-            'message' => 'Failed to borrow book',
-            'error' => $e->getMessage()
-        ], 500);
+            if ($existingBorrow) {
+                return response()->json([
+                    'message' => 'You have already borrowed this book'
+                ], 400);
+            }
+
+            // Create borrow record
+            $borrowRecord = BookBorrowing::create([
+                'library_item_id' => $libraryItem->id,
+                'student_id' => $request->student_id,
+                'status' => 'borrowed',
+                'request_date' => now(),
+            ]);
+
+            // Decrement the available quantity
+            $libraryItem->quantity -= 1;
+            $libraryItem->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Book borrowed successfully',
+                'borrow_record' => $borrowRecord
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Failed to borrow book',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
-}
 
-public function getBookRequests(Request $request)
-{
-    $user = $request->user();
-    
-    // Only librarians and administrators can access this
-    if (!$user || ($user->role !== 'librarian' && $user->role !== 'administrator')) {
-        return response()->json(['message' => 'Unauthorized'], 403);
+    public function getBookRequests(Request $request)
+    {
+        $user = $request->user();
+        
+        // Only librarians and administrators can access this
+        if (!$user || ($user->role !== 'librarian' && $user->role !== 'administrator')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $status = $request->get('status', 'borrowed');
+        
+        // Validate status
+        if (!in_array($status, ['borrowed', 'returned'])) {
+            $status = 'borrowed';
+        }
+
+        // Get book borrowing records with book and student details
+        $bookRequests = BookBorrowing::with(['libraryItem', 'student'])
+            ->where('status', $status)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        // Format the response data to include library item details
+        $formattedData = $bookRequests->through(function ($borrowing) {
+            $item = $borrowing->libraryItem;
+            return [
+                'id' => $borrowing->library_item_id,
+                'student' => $borrowing->student,
+                'title' => $item->title,
+                'author' => $item->author,
+                'inventory_number' => $item->inventory_number,
+                'request_date' => $borrowing->request_date,
+                'return_date' => $borrowing->return_date,
+                'status' => $borrowing->status,
+                'borrow_id' => $borrowing->id
+            ];
+        });
+
+        return response()->json($formattedData);
     }
-
-    $status = $request->get('status', 'borrowed');
-    
-    // Validate status
-    if (!in_array($status, ['borrowed', 'returned'])) {
-        $status = 'borrowed';
-    }
-
-    // Get book borrowing records with book and student details
-    $bookRequests = BookBorrowing::with(['libraryItem', 'student'])
-        ->where('status', $status)
-        ->orderBy('created_at', 'desc')
-        ->paginate(10);
-
-    // Format the response data to include library item details
-    $formattedData = $bookRequests->through(function ($borrowing) {
-        $item = $borrowing->libraryItem;
-        return [
-            'id' => $borrowing->library_item_id,
-            'student' => $borrowing->student,
-            'title' => $item->title,
-            'author' => $item->author,
-            'inventory_number' => $item->inventory_number,
-            'request_date' => $borrowing->request_date,
-            'return_date' => $borrowing->return_date,
-            'status' => $borrowing->status,
-            'borrow_id' => $borrowing->id
-        ];
-    });
-
-    return response()->json($formattedData);
-}
 }
