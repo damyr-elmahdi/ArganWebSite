@@ -27,6 +27,7 @@ import LibrarianDashboard from "./pages/LibrarianDashboard";
 import QuizTaking from "./components/QuizTaking";
 import QuizResults from "./components/QuizResults";
 import QuizResultsViewer from "./components/QuizResultsViewer";
+import QuizEditor from "./components/QuizEditor";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
@@ -151,6 +152,10 @@ export default function App() {
                   </div>
                 </ProtectedRoute>
               }
+            />
+            <Route
+              path="/teacher/quizzes/:quizId/edit"
+              element={<QuizEditor />}
             />
             <Route
               path="/student/quiz-results/:attemptId"

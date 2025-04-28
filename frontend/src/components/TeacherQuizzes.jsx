@@ -11,7 +11,7 @@ export default function TeacherQuizzes() {
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
-        const response = await axios.get('/api/teacher/quizzes');
+        const response = await axios.get('/api/quizzes');
         setQuizzes(response.data);
         setLoading(false);
       } catch (err) {

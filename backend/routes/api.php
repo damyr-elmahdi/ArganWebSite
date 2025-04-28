@@ -86,10 +86,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/absence-notifications/{notification}/read', [TeacherAbsenceController::class, 'markAsRead']);
     });
 
-    // Teacher routes
-    Route::middleware('role:teacher')->group(function () {
-        // Add teacher-specific routes here
-    });
 });
 
 // News routes
@@ -130,9 +126,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // Teacher routes
-    Route::middleware(['role:teacher'])->group(function () {
-        Route::post('/quizzes', [QuizController::class, 'store']);
-        Route::get('/results', [ResultsController::class, 'index']);
-        Route::get('/results/{attempt}', [ResultsController::class, 'show']);
-    });
+// Teacher routes
+Route::middleware(['role:teacher'])->group(function () {
+    Route::post('/quizzes', [QuizController::class, 'store']);
+    Route::put('/quizzes/{quiz}', [QuizController::class, 'update']); // Add this line if it's missing
+    Route::get('/results', [ResultsController::class, 'index']);
+    Route::get('/results/{attempt}', [ResultsController::class, 'show']);
+
+    
+    Route::get('/teacher/quizzes', [QuizController::class, 'teacherQuizzes']);
+});
+
 });
