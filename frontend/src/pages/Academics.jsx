@@ -1,93 +1,92 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import academics from '../assets/academia.png'
+import academics from '../assets/academia.png';
 
 export default function Academics() {
   // Academic programs
   const programs = [
     {
       id: 1,
-      title: "Science & Technology",
-      description: "Our science and technology program provides students with hands-on experience in our state-of-the-art laboratories. Students explore physics, chemistry, biology, and computer science with project-based learning approaches.",
-      icon: "🧪",
+      title: "Scientific Stream",
+      description: "Our scientific program focuses on mathematics, physics, chemistry, and life sciences. Students develop strong analytical and experimental skills in our laboratories, preparing them for university studies in STEM fields.",
+      icon: "🔬",
       color: "bg-blue-100"
     },
     {
       id: 2,
-      title: "Mathematics",
-      description: "The mathematics program at Argan High School emphasizes both theoretical foundations and practical applications. Students develop strong problem-solving skills through challenging coursework and competitions.",
+      title: "Mathematics Stream",
+      description: "The mathematics stream at Argan Secondary School emphasizes advanced mathematical concepts with applications in physics and chemistry. This rigorous program prepares students for competitive university programs.",
       icon: "📊",
       color: "bg-green-100"
     },
     {
       id: 3,
-      title: "Humanities & Social Sciences",
-      description: "Our humanities program encourages critical thinking and effective communication. Students explore literature, history, philosophy, and social studies with a focus on developing well-rounded perspectives.",
+      title: "Literary Stream",
+      description: "Our literary program focuses on Arabic and French literature, philosophy, and humanities. Students develop critical thinking and communication skills while exploring cultural and historical texts.",
       icon: "📚",
       color: "bg-yellow-100"
     },
     {
       id: 4,
-      title: "Arts & Music",
-      description: "The arts program fosters creativity and self-expression through visual arts, music, drama, and design. Students showcase their talents in regular exhibitions and performances throughout the academic year.",
-      icon: "🎭",
+      title: "Economics & Management",
+      description: "The economics and management stream introduces students to economic principles, accounting, and business concepts. This track prepares students for university studies in economics, commerce, and management.",
+      icon: "💼",
       color: "bg-purple-100"
     },
     {
       id: 5,
-      title: "Physical Education",
-      description: "Our physical education program promotes healthy lifestyles and teamwork through various sports and fitness activities. Students learn the importance of discipline, perseverance, and sportsmanship.",
-      icon: "🏆",
+      title: "Arts & Culture",
+      description: "Our school promotes artistic expression through various cultural activities including Amazigh dance, theater, music, and visual arts. Students showcase their talents in regular performances and exhibitions.",
+      icon: "🎭",
       color: "bg-red-100"
     },
     {
       id: 6,
-      title: "Language Studies",
-      description: "The language studies program offers instruction in multiple languages, preparing students for global opportunities. Classes focus on communication skills, cultural understanding, and practical application.",
-      icon: "🌐",
+      title: "Environmental Education",
+      description: "We emphasize environmental awareness through special projects and activities. Our students participate in environmental journalism competitions and community initiatives related to sustainability.",
+      icon: "🌱",
       color: "bg-indigo-100"
     }
   ];
 
-  // Faculty members
+  // Faculty members (simplified as specific names were not provided in documentation)
   const faculty = [
     {
       id: 1,
-      name: "Dr. Sophia Chen",
-      position: "Head of Science Department",
-      credentials: "Ph.D. in Physics, Stanford University",
+      name: "Head of Science Department",
+      position: "Scientific Stream Coordinator",
+      credentials: "Specialized in Physics & Chemistry",
       image: "/api/placeholder/120/120"
     },
     {
       id: 2,
-      name: "Prof. Michael Okafor",
-      position: "Head of Mathematics Department",
-      credentials: "M.Sc. in Mathematics, MIT",
+      name: "Head of Mathematics Department",
+      position: "Mathematics Stream Coordinator",
+      credentials: "Specialized in Advanced Mathematics",
       image: "/api/placeholder/120/120"
     },
     {
       id: 3,
-      name: "Dr. Emma Rodriguez",
-      position: "Head of Humanities Department",
-      credentials: "Ph.D. in Literature, Oxford University",
+      name: "Head of Humanities Department",
+      position: "Literary Stream Coordinator",
+      credentials: "Specialized in Language & Literature",
       image: "/api/placeholder/120/120"
     },
     {
       id: 4,
-      name: "Mr. David Kim",
-      position: "Head of Arts Department",
-      credentials: "MFA, Julliard School of Music",
+      name: "Cultural Affairs Coordinator",
+      position: "Arts & Cultural Activities",
+      credentials: "Specialized in Arts Education",
       image: "/api/placeholder/120/120"
     }
   ];
 
-  // Academic achievements
+  // Academic achievements based on actual accomplishments
   const achievements = [
-    "National Science Competition - 1st Place (2024)",
-    "International Math Olympiad - Gold Medal (2024)",
-    "Regional Debate Championship - Winners (2023)",
-    "State Arts Exhibition - Outstanding School Award (2024)",
-    "National Language Contest - Top 5 Finalists (2023)"
+    "Mohammed VI Foundation's 'Young Journalists for the Environment' Competition Entry (2023)",
+    "Environmental Photography Prize - 'Where to? Who Stops the Sprawl?' (2023)",
+    "Celebration of Excellence Ceremony for Top Academic Achievers (2017)",
+    "Artistic-Educational Evening 'Success for All' Performance (2015)",
+    "Distinguished Academic Results in Provincial Rankings"
   ];
 
   return (
@@ -97,8 +96,8 @@ export default function Academics() {
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl font-bold mb-4">Academic Excellence</h1>
           <p className="text-xl max-w-3xl mx-auto">
-            At Argan High School, we provide a rigorous and comprehensive education 
-            that prepares students for success in college and beyond.
+            At Argan Secondary School in Tiznit, we provide a comprehensive education 
+            that prepares students for success in the national Baccalauréat and beyond.
           </p>
         </div>
       </section>
@@ -110,28 +109,28 @@ export default function Academics() {
             <div className="w-full md:w-1/2">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Our Academic Approach</h2>
               <p className="text-gray-600 mb-4">
-                Argan High School offers a balanced curriculum that combines academic rigor with 
-                creative exploration. Our teaching methodology emphasizes critical thinking, 
-                problem-solving, and effective communication skills.
+                Argan Secondary School (الثانوية التأهيلية أركان) follows the Moroccan national curriculum 
+                with a focus on academic excellence and student engagement. Our lycée offers the standard 
+                three-year upper secondary program with specialty streams.
               </p>
               <p className="text-gray-600 mb-6">
-                We maintain small class sizes to ensure personalized attention for each student, 
-                with dedicated faculty who are experts in their fields and passionate about education.
+                Although relatively new, our school has quickly earned a distinguished 
+                reputation among the province's secondary schools for both academic results 
+                and educational influence. We emphasize community engagement and celebrate student achievement.
               </p>
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="text-3xl font-bold text-blue-600">12:1</div>
-                  <div className="text-sm text-gray-600">Student-Teacher Ratio</div>
+                  <div className="text-3xl font-bold text-blue-600">3</div>
+                  <div className="text-sm text-gray-600">Years of Upper Secondary</div>
                 </div>
                 <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="text-3xl font-bold text-blue-600">25+</div>
-                  <div className="text-sm text-gray-600">Advanced Placement Courses</div>
+                  <div className="text-3xl font-bold text-blue-600">4+</div>
+                  <div className="text-sm text-gray-600">Specialized Streams</div>
                 </div>
               </div>
             </div>
             <div className="w-full md:w-1/2">
               <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden shadow-md">
-                {/* Placeholder for academic image */}
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-blue-100 to-blue-200">
                   <img src={academics} alt="Academic Environment" className="object-cover" />
                 </div>
@@ -156,7 +155,6 @@ export default function Academics() {
                   <p className="text-gray-600 mb-4">
                     {program.description}
                   </p>
-                  <a href="#" className="text-blue-600 hover:underline">Learn more</a>
                 </div>
               </div>
             ))}
@@ -172,24 +170,24 @@ export default function Academics() {
             <div className="bg-blue-50 p-6 rounded-lg shadow-md">
               <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
                 <span className="text-2xl mr-2">🌱</span>
-                Junior Years (Grades 7-8)
+                Common Core (Tronc Commun)
               </h3>
               <p className="text-gray-600 mb-4">
-                Foundation years focus on building core skills across all subjects. 
-                Students explore various disciplines to discover their interests and strengths.
+                The first year of upper secondary follows a common curriculum for all students, 
+                providing foundational knowledge across core subjects.
               </p>
               <ul className="text-gray-600 space-y-2">
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  Core subjects in mathematics, science, English, and social studies
+                  Core subjects including Arabic, foreign languages, and Islamic education
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  Introduction to foreign languages
+                  Foundation mathematics and sciences
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  Exploratory courses in arts, technology, and physical education
+                  Standardized regional exams at year's end
                 </li>
               </ul>
             </div>
@@ -197,24 +195,24 @@ export default function Academics() {
             <div className="bg-blue-50 p-6 rounded-lg shadow-md">
               <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
                 <span className="text-2xl mr-2">🌿</span>
-                Middle Years (Grades 9-10)
+                First Baccalaureate (Première)
               </h3>
               <p className="text-gray-600 mb-4">
-                Students delve deeper into subjects with more specialized content, 
-                preparing for advanced studies in the senior years.
+                Students select specialized streams based on interests and aptitudes,
+                beginning focused study in their chosen field.
               </p>
               <ul className="text-gray-600 space-y-2">
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  Advanced core subjects with specialized topics
+                  Specialized tracks (scientific, literary, economics)
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  Elective courses based on student interests
+                  In-depth study of stream-specific subjects
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  Introduction to pre-AP courses
+                  Preparation for final year studies
                 </li>
               </ul>
             </div>
@@ -222,24 +220,24 @@ export default function Academics() {
             <div className="bg-blue-50 p-6 rounded-lg shadow-md">
               <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
                 <span className="text-2xl mr-2">🌳</span>
-                Senior Years (Grades 11-12)
+                Second Baccalaureate (Terminale)
               </h3>
               <p className="text-gray-600 mb-4">
-                Focus on college preparation with specialized courses and 
-                advanced placement options to earn university credits.
+                The final year of lycée culminates in the national Baccalauréat examination,
+                which determines university eligibility.
               </p>
               <ul className="text-gray-600 space-y-2">
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  Advanced Placement (AP) and honors courses
+                  Advanced study in specialized streams
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  Specialized electives in various career paths
+                  Comprehensive national Baccalauréat exams
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  College counseling and career preparation
+                  University preparation and career guidance
                 </li>
               </ul>
             </div>
@@ -263,11 +261,6 @@ export default function Academics() {
               </div>
             ))}
           </div>
-          <div className="text-center mt-8">
-            <a href="#" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition">
-              View All Faculty
-            </a>
-          </div>
         </div>
       </section>
 
@@ -278,9 +271,9 @@ export default function Academics() {
             <div className="w-full md:w-1/2">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Academic Achievements</h2>
               <p className="text-gray-600 mb-6">
-                Our students consistently excel in regional and national competitions, 
-                demonstrating the strength of our academic programs and the dedication 
-                of our students and faculty.
+                Our students have participated in various competitions and projects, demonstrating
+                their academic abilities and commitment to excellence. We regularly celebrate
+                student achievements through special ceremonies and events.
               </p>
               <ul className="space-y-3">
                 {achievements.map((achievement, index) => (
@@ -294,26 +287,26 @@ export default function Academics() {
             <div className="w-full md:w-1/2 grid grid-cols-2 gap-4">
               <div className="bg-blue-100 p-6 rounded-lg flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-blue-600 mb-2">97%</div>
-                  <div className="text-sm text-gray-600">College Acceptance Rate</div>
+                  <div className="text-4xl font-bold text-blue-600 mb-2">2010s</div>
+                  <div className="text-sm text-gray-600">Established In</div>
                 </div>
               </div>
               <div className="bg-green-100 p-6 rounded-lg flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-green-600 mb-2">45+</div>
-                  <div className="text-sm text-gray-600">Academic Competitions</div>
+                  <div className="text-4xl font-bold text-green-600 mb-2">3</div>
+                  <div className="text-sm text-gray-600">Year Program</div>
                 </div>
               </div>
               <div className="bg-yellow-100 p-6 rounded-lg flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-yellow-600 mb-2">85%</div>
-                  <div className="text-sm text-gray-600">AP Exam Pass Rate</div>
+                  <div className="text-4xl font-bold text-yellow-600 mb-2">Top</div>
+                  <div className="text-sm text-gray-600">Provincial Rankings</div>
                 </div>
               </div>
               <div className="bg-purple-100 p-6 rounded-lg flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-purple-600 mb-2">18</div>
-                  <div className="text-sm text-gray-600">National Merit Scholars</div>
+                  <div className="text-4xl font-bold text-purple-600 mb-2">Tiznit</div>
+                  <div className="text-sm text-gray-600">Souss-Massa Region</div>
                 </div>
               </div>
             </div>
@@ -321,45 +314,36 @@ export default function Academics() {
         </div>
       </section>
 
-      {/* Resources */}
+      {/* School Activities */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">Academic Resources</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">School Activities</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="text-4xl text-blue-600 mb-4">📚</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Learning Commons</h3>
+              <div className="text-4xl text-blue-600 mb-4">🎭</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Cultural Events</h3>
               <p className="text-gray-600">
-                Our modern library and learning commons provides students with access to extensive 
-                digital and physical resources, quiet study spaces, and collaborative work areas.
+                We regularly host artistic and cultural events featuring Amazigh (Ahwash) dances, 
+                songs, plays in both Amazigh and French, and other performances to celebrate our heritage.
               </p>
-              <Link to="/library" className="text-blue-600 hover:underline block mt-4">
-                Visit Library
-              </Link>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="text-4xl text-blue-600 mb-4">💻</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Technology Integration</h3>
+              <div className="text-4xl text-blue-600 mb-4">🌳</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Environmental Initiatives</h3>
               <p className="text-gray-600">
-                Every classroom is equipped with modern technology to enhance learning experiences. 
-                Our 1:1 laptop program ensures students have the tools they need to succeed.
+                Our students participate in environmental journalism competitions and projects,
+                including work on plastic pollution and sustainability in our local community.
               </p>
-              <a href="#" className="text-blue-600 hover:underline block mt-4">
-                Tech Resources
-              </a>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="text-4xl text-blue-600 mb-4">🧠</div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Academic Support</h3>
+              <div className="text-4xl text-blue-600 mb-4">🏆</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Academic Recognition</h3>
               <p className="text-gray-600">
-                We offer tutoring services, study groups, and academic counseling to support students 
-                in achieving their academic goals and addressing any learning challenges.
+                We celebrate student achievement through special ceremonies that honor top performers
+                from all grade levels and recognize excellence in academics and extracurricular activities.
               </p>
-              <a href="#" className="text-blue-600 hover:underline block mt-4">
-                Support Services
-              </a>
             </div>
           </div>
         </div>
@@ -368,17 +352,14 @@ export default function Academics() {
       {/* Call-to-action */}
       <section className="py-12 bg-blue-600 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Experience Academic Excellence?</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to Join Argan Secondary School?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Join Argan High School and embark on an educational journey that prepares you for success.
+            Begin your journey toward the Baccalauréat at one of Tiznit's distinguished secondary schools.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/register" className="bg-white text-blue-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition">
-              Apply Now
-            </Link>
-            <a href="#" className="border border-white text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition">
-              Schedule a Visit
-            </a>
+            <button onClick={() => window.location.href = '/contact'} className="bg-white text-blue-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition">
+              Contact Us
+            </button>
           </div>
         </div>
       </section>

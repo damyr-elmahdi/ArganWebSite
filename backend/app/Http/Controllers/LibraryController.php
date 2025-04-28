@@ -14,7 +14,7 @@ class LibraryController extends Controller
     // Rest of your controller remains the same
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->middleware('auth:sanctum')->except(['index', 'show', 'categories']);
     }
 
     public function index(Request $request)

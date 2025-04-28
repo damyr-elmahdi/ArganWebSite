@@ -31,6 +31,7 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name(
 // Public library routes
 Route::get('/library', [LibraryController::class, 'index']);
 Route::get('/library/categories', [LibraryController::class, 'categories']);
+Route::get('/library/book-requests', [LibraryController::class, 'getBookRequests']);
 Route::get('/library/{libraryItem}', [LibraryController::class, 'show']);
 
 // Protected routes
@@ -38,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::get('/library/book-requests', [LibraryController::class, 'getBookRequests']);
+    // Route::get('/library/book-requests', [LibraryController::class, 'getBookRequests']);
     Route::get('/library/book-stats', [LibraryController::class, 'bookStats']);
     
     // Other library-related routes...

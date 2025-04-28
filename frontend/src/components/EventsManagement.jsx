@@ -211,7 +211,7 @@ export default function EventsManagement() {
                 name="location"
                 value={formData.location}
                 onChange={handleInputChange}
-                className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full h-10 sm:text-sm border-gray-300 rounded-md"
               />
             </div>
             <div className="mb-4">
