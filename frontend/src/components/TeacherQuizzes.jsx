@@ -11,7 +11,8 @@ export default function TeacherQuizzes() {
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
-        const response = await axios.get('/api/quizzes');
+        // Change this line to use the teacher-specific endpoint
+        const response = await axios.get('/api/teacher/quizzes');
         setQuizzes(response.data);
         setLoading(false);
       } catch (err) {

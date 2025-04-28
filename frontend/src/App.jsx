@@ -28,6 +28,8 @@ import QuizTaking from "./components/QuizTaking";
 import QuizResults from "./components/QuizResults";
 import QuizResultsViewer from "./components/QuizResultsViewer";
 import QuizEditor from "./components/QuizEditor";
+import TeacherQuizzes from './components/TeacherQuizzes';
+import QuizCreator from './components/QuizCreator';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
@@ -153,6 +155,8 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/teacher/quizzes" element={<TeacherQuizzes />} />
+            <Route path="/teacher/quizzes/create" element={<QuizCreator />} />
             <Route
               path="/teacher/quizzes/:quizId/edit"
               element={<QuizEditor />}
