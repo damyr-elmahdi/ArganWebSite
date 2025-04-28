@@ -39,15 +39,15 @@ class EventCommentController extends Controller
             'content' => 'required|string|max:1000',
             'parent_id' => 'nullable|exists:comments,id',
         ]);
-
+    
         $comment = new Comment($validated);
         $comment->event_id = $event->id;
         $comment->user_id = $request->user()->id;
         $comment->save();
-
+    
         // Load the user relationship for the response
         $comment->load('user:id,name');
-
+    
         return response()->json($comment, 201);
     }
 

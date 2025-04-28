@@ -14,6 +14,7 @@ class Comment extends Model
         'news_id',
         'event_id',
         'user_id',
+        'parent_id',  // Add parent_id to the fillable array
     ];
 
     /**
