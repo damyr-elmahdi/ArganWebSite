@@ -75,17 +75,15 @@ class User extends Authenticatable implements CanResetPassword
         $url = config('app.frontend_url', 'http://localhost:5173') . '/reset-password/' . $token . '?email=' . urlencode($this->email);
         $this->notify(new \App\Notifications\ResetPassword($token, $url));
     }
-
+    public function quizAttempts()
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
+    
     public function createdQuizzes()
     {
-        return $this->hasMany(Quiz::class, 'creator_id');
+        return $this->hasMany(Quiz::class, 'created_by');
     }
-
-    public function completedQuizzes()
-    {
-        return $this->hasMany(CompletedQuiz::class, 'student_id');
-    }
-
     public function uploadedResources()
     {
         return $this->hasMany(Resource::class, 'uploaded_by');
@@ -105,4 +103,7 @@ class User extends Authenticatable implements CanResetPassword
     {
         return $this->hasMany(AbsenceNotification::class, 'student_id');
     }
+
+
+    
 }

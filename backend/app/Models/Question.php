@@ -7,27 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'quiz_id',
-        'question_text',
-        'options',
-        'correct_option',
-        'points',
-    ];
-
-    protected $casts = [
-        'options' => 'array',
-    ];
-
+    protected $fillable = ['quiz_id', 'question_text'];
+    
     public function quiz()
     {
         return $this->belongsTo(Quiz::class);
     }
     
-    public function checkAnswer(int $selectedOption)
+    public function options()
     {
-        return $selectedOption === $this->correct_option;
+        return $this->hasMany(Option::class);
+    }
+    
+    public function correctOption()
+    {
+        return $this->options()->where('is_correct', true)->first();
     }
 }

@@ -7,53 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quiz extends Model
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'title',
-        'subject_id',
-        'creator_id',
-        'is_active',
-    ];
-
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
-
-    public function subject()
-    {
-        return $this->belongsTo(Subject::class);
-    }
-
+    protected $fillable = ['title', 'subject_id', 'created_by'];
+    
     public function creator()
     {
-        return $this->belongsTo(User::class, 'creator_id');
+        return $this->belongsTo(User::class, 'created_by');
     }
-
+    
     public function questions()
     {
         return $this->hasMany(Question::class);
     }
-
-    public function completions()
-    {
-        return $this->hasMany(CompletedQuiz::class);
-    }
     
-    public function activate()
+    public function attempts()
     {
-        $this->is_active = true;
-        $this->save();
-    }
-    
-    public function deactivate()
-    {
-        $this->is_active = false;
-        $this->save();
-    }
-    
-    public function addQuestion(Question $question)
-    {
-        $this->questions()->save($question);
+        return $this->hasMany(QuizAttempt::class);
     }
 }

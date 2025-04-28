@@ -12,8 +12,10 @@ use App\Http\Controllers\LibrarianController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ForgotPasswordController;
-
+use App\Http\Controllers\QuizAttemptController;
+use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\ResultsController;
 use App\Http\Controllers\TeacherAbsenceController;
 
 
@@ -41,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Route::get('/library/book-requests', [LibraryController::class, 'getBookRequests']);
     Route::get('/library/book-stats', [LibraryController::class, 'bookStats']);
-    
+
     // Other library-related routes...
     Route::post('/library', [LibraryController::class, 'store']);
     Route::put('/library/{libraryItem}', [LibraryController::class, 'update']);
@@ -113,4 +115,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/events', [EventController::class, 'store']);
     Route::put('/events/{event}', [EventController::class, 'update']);
     Route::delete('/events/{event}', [EventController::class, 'destroy']);
+});
+Route::middleware(['auth:sanctum'])->group(function () {
+    // Common routes
+    Route::get('/quizzes', [QuizController::class, 'index']);
+    Route::get('/quizzes/{quiz}', [QuizController::class, 'show']);
+
+    // Student routes
+    Route::middleware(['role:student'])->group(function () {
+        Route::post('/quizzes/{quiz}/start', [QuizAttemptController::class, 'start']);
+        Route::post('/attempts/{attempt}/answer', [QuizAttemptController::class, 'submitAnswer']);
+        Route::post('/attempts/{attempt}/complete', [QuizAttemptController::class, 'complete']);
+        Route::get('/attempts/{attempt}/results', [QuizAttemptController::class, 'results']);
+    });
+
+    // Teacher routes
+    Route::middleware(['role:teacher'])->group(function () {
+        Route::post('/quizzes', [QuizController::class, 'store']);
+        Route::get('/results', [ResultsController::class, 'index']);
+        Route::get('/results/{attempt}', [ResultsController::class, 'show']);
+    });
 });
