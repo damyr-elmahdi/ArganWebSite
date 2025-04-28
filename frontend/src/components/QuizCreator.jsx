@@ -158,7 +158,7 @@ export default function QuizCreator() {
       });
       
       setLoading(false);
-      navigate('/teacher/quizzes');
+      navigate('/teacher-dashboard');
     } catch (err) {
       console.error('Error creating quiz:', err);
       setError('Failed to create quiz. Please try again.');
@@ -310,7 +310,7 @@ export default function QuizCreator() {
         <div className="flex justify-end">
           <button
             type="button"
-            onClick={() => navigate('/teacher/quizzes')}
+            onClick={() => navigate('/teacher-dashboard')}
             className="mr-3 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
           >
             Cancel

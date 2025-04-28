@@ -1,3 +1,4 @@
+// In TeacherQuizzes.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -24,10 +25,6 @@ export default function TeacherQuizzes() {
     
     fetchQuizzes();
   }, []);
-  
-  const navigateToCreate = () => {
-    navigate('/teacher/quizzes/create');
-  };
   
   const navigateToResults = (quizId) => {
     navigate(`/teacher/quizzes/${quizId}/results`);
@@ -57,23 +54,13 @@ export default function TeacherQuizzes() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Your Quizzes</h2>
-        <button
-          onClick={navigateToCreate}
-          className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700"
-        >
-          Create New Quiz
-        </button>
+        {/* Create New Quiz button removed from here */}
       </div>
       
       {quizzes.length === 0 ? (
         <div className="bg-white shadow-md rounded-lg p-6 text-center">
           <p className="text-gray-500 mb-4">You haven't created any quizzes yet.</p>
-          <button
-            onClick={navigateToCreate}
-            className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700"
-          >
-            Create Your First Quiz
-          </button>
+          {/* This button is also removed */}
         </div>
       ) : (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">

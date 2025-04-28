@@ -1,22 +1,22 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 export default function QuizEditor() {
   const navigate = useNavigate();
   const { quizId } = useParams();
-  const [title, setTitle] = useState('');
-  const [subject, setSubject] = useState('');
+  const [title, setTitle] = useState("");
+  const [subject, setSubject] = useState("");
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [subjects, setSubjects] = useState([
-    { id: 1, name: 'Mathematics' },
-    { id: 2, name: 'Science' },
-    { id: 3, name: 'History' },
-    { id: 4, name: 'English' },
-    { id: 5, name: 'Computer Science' },
+    { id: 1, name: "Mathematics" },
+    { id: 2, name: "Science" },
+    { id: 3, name: "History" },
+    { id: 4, name: "English" },
+    { id: 5, name: "Computer Science" },
   ]);
 
   useEffect(() => {
@@ -24,28 +24,28 @@ export default function QuizEditor() {
       try {
         const response = await axios.get(`/api/quizzes/${quizId}`);
         const quiz = response.data;
-        
+
         setTitle(quiz.title);
         setSubject(quiz.subject_id.toString());
-        
+
         // Format questions for the editor
-        const formattedQuestions = quiz.questions.map(question => ({
+        const formattedQuestions = quiz.questions.map((question) => ({
           question_text: question.question_text,
-          options: question.options.map(option => ({
+          options: question.options.map((option) => ({
             option_text: option.option_text,
-            is_correct: option.is_correct
-          }))
+            is_correct: option.is_correct,
+          })),
         }));
-        
+
         setQuestions(formattedQuestions);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching quiz:', err);
-        setError('Failed to load quiz. Please try again.');
+        console.error("Error fetching quiz:", err);
+        setError("Failed to load quiz. Please try again.");
         setLoading(false);
       }
     };
-    
+
     fetchQuiz();
   }, [quizId]);
 
@@ -54,13 +54,13 @@ export default function QuizEditor() {
     setQuestions([
       ...questions,
       {
-        question_text: '',
+        question_text: "",
         options: [
-          { option_text: '', is_correct: true },
-          { option_text: '', is_correct: false },
-          { option_text: '', is_correct: false },
-        ]
-      }
+          { option_text: "", is_correct: true },
+          { option_text: "", is_correct: false },
+          { option_text: "", is_correct: false },
+        ],
+      },
     ]);
   };
 
@@ -70,7 +70,7 @@ export default function QuizEditor() {
       setError("You need at least one question in the quiz.");
       return;
     }
-    
+
     const newQuestions = [...questions];
     newQuestions.splice(index, 1);
     setQuestions(newQuestions);
@@ -89,11 +89,11 @@ export default function QuizEditor() {
       setError("Maximum 4 options allowed per question.");
       return;
     }
-    
+
     const newQuestions = [...questions];
     newQuestions[questionIndex].options.push({
-      option_text: '',
-      is_correct: false
+      option_text: "",
+      is_correct: false,
     });
     setQuestions(newQuestions);
   };
@@ -104,7 +104,7 @@ export default function QuizEditor() {
       setError("Minimum 3 options required per question.");
       return;
     }
-    
+
     const newQuestions = [...questions];
     newQuestions[questionIndex].options.splice(optionIndex, 1);
     setQuestions(newQuestions);
@@ -132,59 +132,62 @@ export default function QuizEditor() {
       setError("Quiz title is required.");
       return false;
     }
-    
+
     if (!subject) {
       setError("Please select a subject.");
       return false;
     }
-    
+
     for (let i = 0; i < questions.length; i++) {
       if (!questions[i].question_text.trim()) {
         setError(`Question ${i + 1} text is required.`);
         return false;
       }
-      
+
       for (let j = 0; j < questions[i].options.length; j++) {
         if (!questions[i].options[j].option_text.trim()) {
           setError(`Option ${j + 1} for Question ${i + 1} is required.`);
           return false;
         }
       }
-      
+
       // Check if there's a correct option set
-      const hasCorrectOption = questions[i].options.some(option => option.is_correct);
+      const hasCorrectOption = questions[i].options.some(
+        (option) => option.is_correct
+      );
       if (!hasCorrectOption) {
         setError(`Please select a correct option for Question ${i + 1}.`);
         return false;
       }
     }
-    
+
     return true;
   };
 
   // Submit the updated quiz
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    
+    setError("");
+
     if (!validateForm()) {
       return;
     }
-    
+
     setSaving(true);
-    
+
     try {
       await axios.put(`/api/quizzes/${quizId}`, {
         title,
         subject_id: subject,
-        questions
+        questions,
       });
-      
+
       setSaving(false);
-      navigate('/teacher/quizzes');
+      // Change this line to navigate to the teacher dashboard instead
+      navigate("/teacher-dashboard");
     } catch (err) {
-      console.error('Error updating quiz:', err);
-      setError('Failed to update quiz. Please try again.');
+      console.error("Error updating quiz:", err);
+      setError("Failed to update quiz. Please try again.");
       setSaving(false);
     }
   };
@@ -202,18 +205,24 @@ export default function QuizEditor() {
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-bold mb-6">Edit Quiz</h2>
-      
+
       {error && (
-        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+        <div
+          className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6"
+          role="alert"
+        >
           <p>{error}</p>
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit}>
         {/* Quiz Details */}
         <div className="mb-8">
           <div className="mb-4">
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Quiz Title
             </label>
             <input
@@ -226,9 +235,12 @@ export default function QuizEditor() {
               required
             />
           </div>
-          
+
           <div className="mb-4">
-            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="subject"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Subject
             </label>
             <select
@@ -247,7 +259,7 @@ export default function QuizEditor() {
             </select>
           </div>
         </div>
-        
+
         {/* Questions */}
         <div className="space-y-6 mb-8">
           <div className="flex justify-between items-center">
@@ -260,7 +272,7 @@ export default function QuizEditor() {
               Add Question
             </button>
           </div>
-          
+
           {questions.map((question, qIndex) => (
             <div key={qIndex} className="border border-gray-300 rounded-lg p-4">
               <div className="flex justify-between items-center mb-4">
@@ -273,7 +285,7 @@ export default function QuizEditor() {
                   Remove
                 </button>
               </div>
-              
+
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Question Text
@@ -287,10 +299,12 @@ export default function QuizEditor() {
                   required
                 />
               </div>
-              
+
               <div className="mb-2">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-700">Options</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    Options
+                  </span>
                   {question.options.length < 4 && (
                     <button
                       type="button"
@@ -301,7 +315,7 @@ export default function QuizEditor() {
                     </button>
                   )}
                 </div>
-                
+
                 <div className="space-y-2">
                   {question.options.map((option, oIndex) => (
                     <div key={oIndex} className="flex items-center space-x-2">
@@ -316,7 +330,9 @@ export default function QuizEditor() {
                       <input
                         type="text"
                         value={option.option_text}
-                        onChange={(e) => updateOptionText(qIndex, oIndex, e.target.value)}
+                        onChange={(e) =>
+                          updateOptionText(qIndex, oIndex, e.target.value)
+                        }
                         className="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
                         placeholder={`Option ${oIndex + 1}`}
                         required
@@ -327,8 +343,16 @@ export default function QuizEditor() {
                           onClick={() => removeOption(qIndex, oIndex)}
                           className="text-red-600 hover:text-red-800"
                         >
-                          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                          <svg
+                            className="h-4 w-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                         </button>
                       )}
@@ -339,11 +363,11 @@ export default function QuizEditor() {
             </div>
           ))}
         </div>
-        
+
         <div className="flex justify-end">
           <button
             type="button"
-            onClick={() => navigate('/teacher/quizzes')}
+            onClick={() => navigate("/teacher-dashboard")}
             className="mr-3 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
           >
             Cancel
@@ -353,7 +377,7 @@ export default function QuizEditor() {
             disabled={saving}
             className="px-4 py-2 text-sm font-medium text-white bg-orange-600 border border-transparent rounded-md shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
           >
-            {saving ? 'Saving...' : 'Save Changes'}
+            {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </form>
