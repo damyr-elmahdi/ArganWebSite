@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import NewsManagement from '../components/NewsManagement';
 import EventsManagement from '../components/EventsManagement';
+import TeacherQuizzes from '../components/TeacherQuizzes';
+import QuizCreator from '../components/QuizCreator';
 
 export default function TeacherDashboard() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('profile'); // 'profile', 'classes', 'quizzes', 'news', 'events'
+  const [showQuizCreator, setShowQuizCreator] = useState(false); // To toggle between quiz list and creator
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -56,6 +59,11 @@ export default function TeacherDashboard() {
       localStorage.removeItem('user');
       navigate('/login');
     }
+  };
+  
+  // Handle quiz creation toggle
+  const toggleQuizCreator = () => {
+    setShowQuizCreator(!showQuizCreator);
   };
   
   // Format date for display
@@ -141,7 +149,10 @@ export default function TeacherDashboard() {
                   ? 'border-orange-500 text-orange-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              onClick={() => setActiveTab('quizzes')}
+              onClick={() => {
+                setActiveTab('quizzes');
+                setShowQuizCreator(false); // Reset to quiz list view when switching to quizzes tab
+              }}
             >
               Quizzes
             </button>
@@ -241,21 +252,23 @@ export default function TeacherDashboard() {
           
           {/* Quizzes Tab */}
           {activeTab === 'quizzes' && (
-            <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-              <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
-                <div>
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Your Quizzes</h3>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">Assessments you've created.</p>
-                </div>
-                <button className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700">
-                  Create Quiz
+            <div>
+              {/* Quiz Creator Toggle Button */}
+              <div className="mb-4 flex justify-end">
+                <button
+                  onClick={toggleQuizCreator}
+                  className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700"
+                >
+                  {showQuizCreator ? 'View All Quizzes' : 'Create New Quiz'}
                 </button>
               </div>
-              <div className="border-t border-gray-200">
-                <div className="px-4 py-5">
-                  <p className="text-sm text-gray-500">No quizzes created yet.</p>
-                </div>
-              </div>
+              
+              {/* Show either Quiz Creator or Quiz List */}
+              {showQuizCreator ? (
+                <QuizCreator />
+              ) : (
+                <TeacherQuizzes />
+              )}
             </div>
           )}
           

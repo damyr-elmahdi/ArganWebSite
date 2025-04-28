@@ -2,40 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Subject extends Model
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'name',
-        'description',
-    ];
-
-    public function teachers()
-    {
-        return $this->belongsToMany(Teacher::class);
-    }
-
-    public function resources()
-    {
-        return $this->hasMany(Resource::class);
-    }
-
+    protected $fillable = ['name', 'description', 'created_by'];
+    
     public function quizzes()
     {
         return $this->hasMany(Quiz::class);
     }
     
-    public function addResource(Resource $resource)
+    public function creator()
     {
-        $this->resources()->save($resource);
-    }
-    
-    public function addQuiz(Quiz $quiz)
-    {
-        $this->quizzes()->save($quiz);
+        return $this->belongsTo(User::class, 'created_by');
     }
 }
