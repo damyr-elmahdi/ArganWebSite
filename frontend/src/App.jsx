@@ -24,6 +24,9 @@ import ResetPassword from "./components/ResetPassword";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import LibrarianDashboard from "./pages/LibrarianDashboard";
+import QuizTaking from "./components/QuizTaking";
+import QuizResults from "./components/QuizResults";
+import QuizResultsViewer from "./components/QuizResultsViewer";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
@@ -41,6 +44,8 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
       return <Navigate to="/teacher-dashboard" replace />;
     } else if (user.role === "administrator") {
       return <Navigate to="/admin-dashboard" replace />;
+    } else if (user.role === "librarian") {
+      return <Navigate to="/librarian-dashboard" replace />;
     } else {
       return <Navigate to="/login" replace />;
     }
@@ -48,6 +53,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
   return children;
 };
+
 // Component to redirect to appropriate dashboard
 function DashboardRedirect() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -58,6 +64,8 @@ function DashboardRedirect() {
     return <Navigate to="/teacher-dashboard" replace />;
   } else if (user.role === "administrator") {
     return <Navigate to="/admin-dashboard" replace />;
+  } else if (user.role === "librarian") {
+    return <Navigate to="/librarian-dashboard" replace />;
   } else {
     return <Navigate to="/login" replace />;
   }
@@ -75,21 +83,6 @@ export default function App() {
     foundedYear: 2014,
     currentYear: new Date().getFullYear(),
   };
-  function DashboardRedirect() {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-  
-    if (user.role === "student") {
-      return <Navigate to="/student-dashboard" replace />;
-    } else if (user.role === "teacher") {
-      return <Navigate to="/teacher-dashboard" replace />;
-    } else if (user.role === "administrator") {
-      return <Navigate to="/admin-dashboard" replace />;
-    } else if (user.role === "librarian") {
-      return <Navigate to="/librarian-dashboard" replace />;
-    } else {
-      return <Navigate to="/login" replace />;
-    }
-  }
 
   return (
     <AuthProvider>
@@ -145,6 +138,37 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={["administrator"]}>
                   <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            {/* Quiz related routes */}
+            <Route
+              path="/student/take-quiz/:quizId"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}>
+                  <div className="flex-grow container mx-auto px-4 py-8">
+                    <QuizTaking quizId={":quizId"} />
+                  </div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/quiz-results/:attemptId"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}>
+                  <div className="flex-grow container mx-auto px-4 py-8">
+                    <QuizResults />
+                  </div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teacher/quiz-results/:quizId"
+              element={
+                <ProtectedRoute allowedRoles={["teacher", "administrator"]}>
+                  <div className="flex-grow container mx-auto px-4 py-8">
+                    <QuizResultsViewer />
+                  </div>
                 </ProtectedRoute>
               }
             />

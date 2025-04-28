@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import StudentQuizTab from '../components/StudentQuizTab';
 
 export default function StudentDashboard() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile', 'notifications'
+  const [activeTab, setActiveTab] = useState('profile'); // 'profile', 'notifications', 'quizzes'
   const [absenceNotifications, setAbsenceNotifications] = useState([]);
   const [notificationsLoading, setNotificationsLoading] = useState(false);
   const navigate = useNavigate();
@@ -162,6 +163,16 @@ export default function StudentDashboard() {
                 </span>
               )}
             </button>
+            <button
+              className={`${
+                activeTab === "quizzes"
+                  ? "border-orange-500 text-orange-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              onClick={() => setActiveTab("quizzes")}
+            >
+              Quizzes
+            </button>
           </nav>
         </div>
         
@@ -263,15 +274,23 @@ export default function StudentDashboard() {
                 </div>
               </div>
               
-              {/* Placeholder for upcoming quizzes section */}
+              {/* Preview of available quizzes */}
               <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
-                <div className="px-4 py-5 sm:px-6">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Upcoming Quizzes</h3>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">Scheduled assessments.</p>
+                <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
+                  <div>
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">Available Quizzes</h3>
+                    <p className="mt-1 max-w-2xl text-sm text-gray-500">Quizzes ready for you to take.</p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('quizzes')}
+                    className="text-sm text-orange-600 hover:text-orange-500"
+                  >
+                    View all quizzes
+                  </button>
                 </div>
                 <div className="border-t border-gray-200">
                   <div className="px-4 py-5">
-                    <p className="text-sm text-gray-500">No upcoming quizzes at this time.</p>
+                    <p className="text-sm text-gray-500">Go to the Quizzes tab to view and take available quizzes.</p>
                   </div>
                 </div>
               </div>
@@ -334,6 +353,11 @@ export default function StudentDashboard() {
                 )}
               </div>
             </div>
+          )}
+          
+          {/* Quizzes Tab */}
+          {activeTab === 'quizzes' && (
+            <StudentQuizTab />
           )}
         </div>
       </main>
