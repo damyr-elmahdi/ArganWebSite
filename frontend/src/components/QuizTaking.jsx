@@ -84,18 +84,25 @@ export default function QuizTaking() {
       const correctOption = currentQuestion.options.find(option => option.is_correct);
       
       // Set answer result to show the correct answer
+      // Explicitly mark as incorrect when time is up
       setAnswerResult({
         is_correct: false,
         correct_option_id: correctOption?.id
       });
 
       // Submit the time-up answer
+      // Find an incorrect option to use as the selected option when time is up
+      const incorrectOption = currentQuestion.options.find(option => !option.is_correct) || currentQuestion.options[0];
+      
       const payload = {
         question_id: currentQuestion.id,
-        selected_option_id: currentQuestion.options[0].id, // Use first option as placeholder
+        selected_option_id: incorrectOption.id, // Use an incorrect option
       };
 
       await axios.post(`/api/attempts/${attemptId}/answer`, payload);
+
+      // Do NOT update score since time ran out
+      // The answer should count as incorrect
 
       // Move to next question after delay
       setTimeout(() => {
@@ -390,7 +397,9 @@ export default function QuizTaking() {
             <p className="font-medium">
               {answerResult?.is_correct
                 ? "Correct! Well done."
-                : "Incorrect. Moving to next question..."}
+                : secondsLeft === 0 
+                  ? "Time's up! The correct answer is highlighted."
+                  : "Incorrect. Moving to next question..."}
             </p>
           </div>
         )}
