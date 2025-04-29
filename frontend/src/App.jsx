@@ -28,8 +28,8 @@ import QuizTaking from "./components/QuizTaking";
 import QuizResults from "./components/QuizResults";
 import QuizResultsViewer from "./components/QuizResultsViewer";
 import QuizEditor from "./components/QuizEditor";
-import TeacherQuizzes from './components/TeacherQuizzes';
-import QuizCreator from './components/QuizCreator';
+import TeacherQuizzes from "./components/TeacherQuizzes";
+import QuizCreator from "./components/QuizCreator";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
@@ -150,7 +150,7 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={["student"]}>
                   <div className="flex-grow container mx-auto px-4 py-8">
-                    <QuizTaking quizId={":quizId"} />
+                    <QuizTaking />
                   </div>
                 </ProtectedRoute>
               }

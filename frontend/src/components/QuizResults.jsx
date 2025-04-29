@@ -26,7 +26,7 @@ export default function QuizResults() {
   }, [attemptId]);
   
   const calculatePercentage = () => {
-    if (!results) return 0;
+    if (!results || !results.answers || results.answers.length === 0) return 0;
     const totalQuestions = results.answers.length;
     return Math.round((results.score / totalQuestions) * 100);
   };
@@ -55,7 +55,7 @@ export default function QuizResults() {
         <div className="text-center">
           <h2 className="text-xl font-semibold text-red-600">{error}</h2>
           <button 
-            onClick={() => navigate('/student/dashboard')}
+            onClick={() => navigate('/student-dashboard')}
             className="mt-4 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
           >
             Return to Dashboard
@@ -65,7 +65,22 @@ export default function QuizResults() {
     );
   }
   
-  if (!results) return null;
+  // Make sure we have valid results data before rendering
+  if (!results || !results.quiz || !results.answers) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-red-600">Invalid quiz results data</h2>
+          <button 
+            onClick={() => navigate('/student-dashboard')}
+            className="mt-4 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
+          >
+            Return to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="bg-white shadow-md rounded-lg p-6 max-w-4xl mx-auto">
@@ -96,10 +111,10 @@ export default function QuizResults() {
                 </span>
               </div>
               
-              <p className="text-gray-800 mb-4">{answer.question.question_text}</p>
+              <p className="text-gray-800 mb-4">{answer.question?.question_text || 'Question not available'}</p>
               
               <div className="space-y-2">
-                {answer.question.options.map((option) => (
+                {answer.question?.options?.map((option) => (
                   <div 
                     key={option.id} 
                     className={`p-3 rounded-md ${
@@ -126,7 +141,7 @@ export default function QuizResults() {
                       <span>{option.option_text}</span>
                     </div>
                   </div>
-                ))}
+                )) || <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">Options not available</div>}
               </div>
             </div>
           ))}
@@ -135,7 +150,7 @@ export default function QuizResults() {
       
       <div className="mt-8 text-center">
         <button 
-          onClick={() => navigate('/student/dashboard')}
+          onClick={() => navigate('/student-dashboard')}
           className="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 font-medium"
         >
           Return to Dashboard

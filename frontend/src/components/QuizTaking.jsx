@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
-export default function QuizTaking({ quizId }) {
+export default function QuizTaking() {
+  // Get quizId from URL parameters
+  const { quizId } = useParams();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -155,7 +157,7 @@ export default function QuizTaking({ quizId }) {
         <div className="text-center">
           <h2 className="text-xl font-semibold text-red-600">{error}</h2>
           <button 
-            onClick={() => navigate('/student/dashboard')}
+            onClick={() => navigate('/student-dashboard')}
             className="mt-4 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
           >
             Return to Dashboard
@@ -171,7 +173,7 @@ export default function QuizTaking({ quizId }) {
         <div className="text-center">
           <h2 className="text-xl font-semibold">Quiz not found or has no questions.</h2>
           <button 
-            onClick={() => navigate('/student/dashboard')}
+            onClick={() => navigate('/student-dashboard')}
             className="mt-4 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
           >
             Return to Dashboard
