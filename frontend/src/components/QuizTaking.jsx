@@ -16,6 +16,7 @@ export default function QuizTaking() {
   const [answerResult, setAnswerResult] = useState(null);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [score, setScore] = useState(0);
+  const [showQuestion, setShowQuestion] = useState(true); // For animation
   const timerRef = useRef(null);
   const processingTimeUp = useRef(false);
   const navigate = useNavigate();
@@ -179,15 +180,22 @@ export default function QuizTaking() {
 
   // Move to the next question or finish quiz
   const moveToNextQuestion = () => {
-    if (currentQuestionIndex < quiz.questions.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-      setSelectedOption(null);
-      setAnswerSubmitted(false);
-      setAnswerResult(null);
-    } else {
-      // Quiz finished
-      completeQuiz();
-    }
+    // Apply exit animation
+    setShowQuestion(false);
+    
+    setTimeout(() => {
+      if (currentQuestionIndex < quiz.questions.length - 1) {
+        setCurrentQuestionIndex((prev) => prev + 1);
+        setSelectedOption(null);
+        setAnswerSubmitted(false);
+        setAnswerResult(null);
+        // Apply entrance animation after a brief delay
+        setTimeout(() => setShowQuestion(true), 100);
+      } else {
+        // Quiz finished
+        completeQuiz();
+      }
+    }, 500); // Wait for exit animation to complete
   };
 
   // Complete the quiz and navigate to results
@@ -202,11 +210,25 @@ export default function QuizTaking() {
     }
   };
 
+  // Calculate timer circle progress
+  const calculateTimerProgress = () => {
+    const totalTime = 20; // Total time in seconds
+    return ((totalTime - secondsLeft) / totalTime) * 100;
+  };
+
+  // Get timer color based on remaining time
+  const getTimerColor = () => {
+    if (secondsLeft > 10) return "#4ade80"; // Green
+    if (secondsLeft > 5) return "#facc15"; // Yellow
+    return "#ef4444"; // Red
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <h2 className="text-xl font-semibold">Loading quiz...</h2>
+          <div className="mt-4 w-12 h-12 border-4 border-orange-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
         </div>
       </div>
     );
@@ -253,69 +275,151 @@ export default function QuizTaking() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">{quiz.title}</h1>
         <div className="flex items-center">
-          <span className="mr-2">
+          <span className="mr-4 font-medium">
             Question {currentQuestionIndex + 1}/{quiz.questions.length}
           </span>
-          <div
-            className={`font-bold text-lg ${
-              secondsLeft <= 5 ? "text-red-600" : "text-gray-700"
-            }`}
-          >
-            {secondsLeft}s
+          
+          {/* Clock Timer */}
+          <div className="relative w-16 h-16">
+            {/* Circular progress bar */}
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+              {/* Background circle */}
+              <circle 
+                cx="50" 
+                cy="50" 
+                r="45" 
+                fill="none" 
+                stroke="#e5e7eb" 
+                strokeWidth="8"
+              />
+              {/* Progress circle with stroke-dasharray animation */}
+              <circle 
+                cx="50" 
+                cy="50" 
+                r="45" 
+                fill="none" 
+                stroke={getTimerColor()}
+                strokeWidth="8"
+                strokeLinecap="round"
+                strokeDasharray="283"
+                strokeDashoffset={(283 * (100 - calculateTimerProgress())) / 100}
+                className="transition-all duration-1000 ease-linear"
+              />
+            </svg>
+            
+            {/* Center clock face */}
+            <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+              {/* Clock hands */}
+              <div className="relative w-8 h-8">
+                <div 
+                  className="absolute w-1 h-3 bg-gray-800 left-1/2 top-1/2 -ml-0.5 -mt-3 origin-bottom transform"
+                  style={{ 
+                    transform: `translateX(-50%) rotate(${secondsLeft * 18}deg)` 
+                  }}
+                ></div>
+                <div 
+                  className="absolute w-0.5 h-2 bg-gray-600 left-1/2 top-1/2 -ml-0.5 -mt-2 origin-bottom transform"
+                  style={{ 
+                    transform: `translateX(-50%) rotate(${secondsLeft * 30}deg)` 
+                  }}
+                ></div>
+                <div className="absolute left-1/2 top-1/2 w-2 h-2 bg-gray-900 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+              </div>
+            </div>
+            
+            {/* Digital timer */}
+            <div 
+              className={`absolute bottom-0 left-0 w-full text-center text-sm font-bold ${
+                secondsLeft <= 5 ? "text-red-600 animate-pulse" : "text-gray-800"
+              }`}
+            >
+              {secondsLeft}s
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">
-          {currentQuestion.question_text}
-        </h2>
+      {/* Question content with fade animations */}
+      <div 
+        className={`transition-opacity duration-500 ${
+          showQuestion ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">
+            {currentQuestion.question_text}
+          </h2>
 
-        <div className="space-y-3">
-          {currentQuestion.options.map((option) => (
-            <button
-              key={option.id}
-              onClick={() => !answerSubmitted && handleOptionSelect(option.id)}
-              disabled={answerSubmitted}
-              className={`w-full text-left p-4 border rounded-lg transition-colors ${
-                answerSubmitted
-                  ? option.id === answerResult?.correct_option_id
-                    ? "bg-green-100 border-green-500"
-                    : selectedOption === option.id
-                    ? "bg-red-100 border-red-500"
-                    : "bg-gray-50 border-gray-300"
-                  : selectedOption === option.id
-                  ? "bg-blue-100 border-blue-500"
-                  : "hover:bg-gray-100 border-gray-300"
-              }`}
-            >
-              {option.option_text}
-            </button>
-          ))}
+          <div className="space-y-3">
+            {currentQuestion.options.map((option, index) => (
+              <button
+                key={option.id}
+                onClick={() => !answerSubmitted && handleOptionSelect(option.id)}
+                disabled={answerSubmitted}
+                className={`w-full text-left p-4 border rounded-lg transition-all duration-300 
+                  ${
+                    answerSubmitted
+                      ? option.id === answerResult?.correct_option_id
+                        ? "bg-green-100 border-green-500 transform scale-105"
+                        : selectedOption === option.id
+                        ? "bg-red-100 border-red-500"
+                        : "bg-gray-50 border-gray-300"
+                      : selectedOption === option.id
+                      ? "bg-blue-100 border-blue-500"
+                      : "hover:bg-gray-100 hover:shadow-md border-gray-300"
+                  }
+                  ${!answerSubmitted && "hover:translate-x-1"}
+                `}
+                style={{ 
+                  animationDelay: `${index * 0.1}s`, 
+                  animation: showQuestion ? `fadeSlideIn 0.5s ease-out ${index * 0.1}s both` : ''
+                }}
+              >
+                {option.option_text}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {answerSubmitted && (
+          <div
+            className={`p-4 rounded mb-4 animate-fadeIn ${
+              answerResult?.is_correct ? "bg-green-100" : "bg-red-100"
+            }`}
+          >
+            <p className="font-medium">
+              {answerResult?.is_correct
+                ? "Correct! Well done."
+                : "Incorrect. Moving to next question..."}
+            </p>
+          </div>
+        )}
+
+        <div className="flex justify-between items-center">
+          <div className="bg-gray-100 px-4 py-2 rounded-full">
+            <span className="font-medium">
+              Score: {score}/{currentQuestionIndex + 1}
+            </span>
+          </div>
         </div>
       </div>
-
-      {answerSubmitted && (
-        <div
-          className={`p-4 rounded mb-4 ${
-            answerResult?.is_correct ? "bg-green-100" : "bg-red-100"
-          }`}
-        >
-          <p className="font-medium">
-            {answerResult?.is_correct
-              ? "Correct! Well done."
-              : "Incorrect. Moving to next question..."}
-          </p>
-        </div>
-      )}
-
-      <div className="flex justify-between items-center">
-        <div>
-          <span className="font-medium">
-            Score: {score}/{currentQuestionIndex + 1}
-          </span>
-        </div>
-      </div>
+      
+      {/* Add global animation styles */}
+      <style jsx="true">{`
+        @keyframes fadeSlideIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 }
