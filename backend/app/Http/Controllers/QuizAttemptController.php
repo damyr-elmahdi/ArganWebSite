@@ -66,7 +66,12 @@ class QuizAttemptController extends Controller
     // Get results for a completed quiz attempt
     public function results(QuizAttempt $attempt)
     {
-        $attempt->load(['answers.question.options', 'answers.selectedOption']);
+        // Load all necessary relationships for the quiz results view
+        $attempt->load([
+            'quiz', 
+            'answers.question.options', 
+            'answers.selectedOption'
+        ]);
         
         return response()->json($attempt);
     }

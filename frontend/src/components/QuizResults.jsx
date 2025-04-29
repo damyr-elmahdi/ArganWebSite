@@ -13,6 +13,7 @@ export default function QuizResults() {
     const fetchResults = async () => {
       try {
         const response = await axios.get(`/api/attempts/${attemptId}/results`);
+        console.log('Quiz results data:', response.data); // Log the data for debugging
         setResults(response.data);
         setLoading(false);
       } catch (err) {
@@ -66,11 +67,45 @@ export default function QuizResults() {
   }
   
   // Make sure we have valid results data before rendering
-  if (!results || !results.quiz || !results.answers) {
+  if (!results) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-red-600">Invalid quiz results data</h2>
+          <h2 className="text-xl font-semibold text-red-600">No results data received</h2>
+          <button 
+            onClick={() => navigate('/student-dashboard')}
+            className="mt-4 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
+          >
+            Return to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
+  if (!results.quiz) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-red-600">Quiz data not available</h2>
+          <p className="mt-2 text-gray-600">The quiz information could not be loaded</p>
+          <button 
+            onClick={() => navigate('/student-dashboard')}
+            className="mt-4 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
+          >
+            Return to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
+  if (!results.answers || results.answers.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-yellow-600">No answers recorded for this quiz</h2>
+          <p className="mt-2 text-gray-600">The quiz may have been completed without submitting answers</p>
           <button 
             onClick={() => navigate('/student-dashboard')}
             className="mt-4 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
