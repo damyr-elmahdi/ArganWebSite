@@ -7,12 +7,10 @@ export default function Footer({ schoolInfo }) {
   
   return (
     <footer className="bg-orange-300 text-black-800">
-      {/* Changed background to lighter color for better visibility of dark Ministry logo */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              {/* Make Argan logo clickable */}
               <Link to="/" className="w-20 h-20">
                 <img src={argan} alt="Argan High School" className="w-full h-full object-contain" />
               </Link>
@@ -24,16 +22,16 @@ export default function Footer({ schoolInfo }) {
               Email: {email}
             </p>
             <div className="flex space-x-3">
-              <a href="#" className="text-black-600 hover:text-black-800">
+              <a href="https://instagram.com" className="text-black-600 hover:text-black-800">
                 <span>📱</span>
               </a>
-              <a href="#" className="text-black-600 hover:text-black-800">
+              <a href="https://facebook.com" className="text-black-600 hover:text-black-800">
                 <span>📘</span>
               </a>
-              <a href="#" className="text-black-600 hover:text-black-800">
+              <a href="https://instagram.com" className="text-black-600 hover:text-black-800">
                 <span>📷</span>
               </a>
-              <a href="#" className="text-black-600 hover:text-black-800">
+              <a href="https://twitter.com" className="text-black-600 hover:text-black-800">
                 <span>🐦</span>
               </a>
             </div>
@@ -54,18 +52,16 @@ export default function Footer({ schoolInfo }) {
           <div>
             <h3 className="font-bold text-lg mb-4">Resources</h3>
             <ul className="space-y-2 text-black-600">
-              <li><a href="#" className="hover:text-black-800">Student Portal</a></li>
-              <li><Link to="/library" className="hover:text-black-800">Library Catalog</Link></li>
-              <li><a href="#" className="hover:text-black-800">Academic Calendar</a></li>
-              <li><a href="#" className="hover:text-black-800">Quiz Platform</a></li>
-              <li><a href="#" className="hover:text-black-800">Subject Resources</a></li>
-              <li><a href="#" className="hover:text-black-800">Support Services</a></li>
+              <li><a href="/academics#curriculum" className="hover:text-black-800">Curriculum</a></li>
+              <li><a href="/academics#schedule" className="hover:text-black-800">Class Schedule</a></li>
+              <li><a href="/library#books" className="hover:text-black-800">Book Catalog</a></li>
+              <li><a href="/news#upcoming" className="hover:text-black-800">Upcoming Events</a></li>
+              <li><Link to="/contact" className="hover:text-black-800">Support Services</Link></li>
             </ul>
           </div>
         </div>
         
         <div className="border-t border-black-300 mt-8 pt-6 text-center text-black-600 text-sm">
-          {/* Keep Ministry logo in its original position with text */}
           <div className="flex items-center justify-center space-x-2 mb-4">
             <div className="w-20 h-20">
               <img src={Ministry} alt="Ministry Logo" className="w-full h-full object-contain" />

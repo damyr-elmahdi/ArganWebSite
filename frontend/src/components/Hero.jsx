@@ -22,16 +22,16 @@ export default function Hero({ schoolName, foundedYear }) {
                   <Link to="/register" className="hover:text-orange-600">Registration Information</Link>
                 </li>
                 <li className="flex items-center">
-                  <span className="mr-2">🗓️</span>
-                  <a href="#" className="hover:text-orange-600">Academic Calendar</a>
-                </li>
-                <li className="flex items-center">
                   <span className="mr-2">📚</span>
-                  <Link to="/library" className="hover:text-orange-600">Library Catalog</Link>
+                  <Link to="/library" className="hover:text-orange-600">Library</Link>
                 </li>
                 <li className="flex items-center">
                   <span className="mr-2">🔍</span>
                   <Link to="/academics" className="hover:text-orange-600">Academic Resources</Link>
+                </li>
+                <li className="flex items-center">
+                  <span className="mr-2">📰</span>
+                  <Link to="/news" className="hover:text-orange-600">Latest News</Link>
                 </li>
                 <li className="flex items-center">
                   <span className="mr-2">📞</span>

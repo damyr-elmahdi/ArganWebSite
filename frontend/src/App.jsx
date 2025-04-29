@@ -30,6 +30,7 @@ import QuizResultsViewer from "./components/QuizResultsViewer";
 import QuizEditor from "./components/QuizEditor";
 import TeacherQuizzes from "./components/TeacherQuizzes";
 import QuizCreator from "./components/QuizCreator";
+import Contact from './pages/Contact';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
@@ -76,16 +77,17 @@ function DashboardRedirect() {
 
 export default function App() {
   // School information as a central source of truth
+
   const schoolInfo = {
     name: "Argan High School",
     ministry: "Ministry of Education and Early Childhood Education",
-    tagline: "Nurturing Minds, Building Futures",
     address: "Tiznit, Morocco",
     phone: "(555) 123-4567",
     email: "info@arganhighschool.edu",
-    foundedYear: 2014,
     currentYear: new Date().getFullYear(),
-  };
+    foundedYear: "2014",
+    operatingHours: "8:30 - 18:30"
+  }
 
   return (
     <AuthProvider>
@@ -111,6 +113,7 @@ export default function App() {
             {/* Password reset routes */}
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="/contact" element={<Contact schoolInfo={schoolInfo} />} />
             {/* Protected routes with role-based access */}
             <Route
               path="/student-dashboard"
