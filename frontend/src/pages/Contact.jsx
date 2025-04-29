@@ -74,7 +74,7 @@ export default function Contact({ schoolInfo }) {
               {/* Map (placeholder) */}
               <div className="mt-8 h-64 rounded-lg overflow-hidden">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1027.8069085630254!2d-9.7190804!3d29.694063099999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xdb4710070a0d6b9%3A0x9a88cd6b9bf9f43c!2sSchool%20Qualifiant%20Argane!5e1!3m2!1sar!2sma!4v1745923176559!5m2!1sar!2sma"
+                  src="https://shorturl.at/zLW9a"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

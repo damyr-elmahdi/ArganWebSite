@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import emailjs from '@emailjs/browser';
+import { useState } from 'react';
+import axios from 'axios';
 
 export default function ContactForm({ schoolEmail }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -12,7 +12,6 @@ export default function ContactForm({ schoolEmail }) {
     message: ''
   });
   const [formErrors, setFormErrors] = useState({});
-  const formRef = useRef();
   
   const validateForm = () => {
     const errors = {};
@@ -62,36 +61,38 @@ export default function ContactForm({ schoolEmail }) {
     setSubmitError(null);
     
     try {
-      // Replace these with your actual EmailJS credentials
-      const serviceId = 'SERVICE_ID'; // Your EmailJS service ID
-      const templateId = 'TEMPLATE_ID'; // Your EmailJS template ID
-      const publicKey = 'PUBLIC_KEY'; // Your EmailJS public key
-      
-      const templateParams = {
-        from_name: formData.name,
-        from_email: formData.email,
+      // Send data to Laravel backend API endpoint
+      const response = await axios.post('/api/contact', {
+        name: formData.name,
+        email: formData.email,
         subject: formData.subject,
-        message: formData.message,
-        to_email: schoolEmail,
-      };
-      
-      await emailjs.send(
-        serviceId, 
-        templateId,
-        templateParams,
-        publicKey
-      );
-      
-      setSubmitSuccess(true);
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
+        message: formData.message
       });
+      
+      if (response.data.success) {
+        setSubmitSuccess(true);
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        setSubmitError(response.data.message || 'Failed to send your message. Please try again later.');
+      }
     } catch (error) {
-      console.error('Error sending email:', error);
-      setSubmitError('Failed to send your message. Please try again later.');
+      console.error('Error sending message:', error);
+      
+      if (error.response && error.response.data.errors) {
+        // Handle validation errors from the server
+        const serverErrors = {};
+        Object.keys(error.response.data.errors).forEach(key => {
+          serverErrors[key] = error.response.data.errors[key][0];
+        });
+        setFormErrors(serverErrors);
+      } else {
+        setSubmitError('Failed to send your message. Please try again later.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -123,7 +124,7 @@ export default function ContactForm({ schoolEmail }) {
           </button>
         </div>
       ) : (
-        <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-gray-700 font-medium mb-1">Your Name</label>
             <input

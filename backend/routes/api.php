@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventCommentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LibraryController;
@@ -29,6 +30,7 @@ Route::get('/registrations/{registration}/download-packet', [RegistrationControl
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
+Route::post('/contact', [ContactController::class, 'submitContactForm']);
 
 // Public library routes
 Route::get('/library', [LibraryController::class, 'index']);
