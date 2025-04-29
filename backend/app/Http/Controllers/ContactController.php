@@ -32,7 +32,8 @@ class ContactController extends Controller
 
         // Send email
         try {
-            // Send without queuing
+            // Add logging
+            Log::info('Attempting to send email to: ' . config('school.email'));
             Mail::to(config('school.email'))->send(new ContactFormMail($request->all()));
             
             return response()->json([
@@ -40,12 +41,14 @@ class ContactController extends Controller
                 'message' => 'Your message has been sent successfully!'
             ]);
         } catch (\Exception $e) {
-            // Log the error
-            Log::error('Email error: ' . $e->getMessage());
+            // Enhanced error logging
+            Log::error('Failed to send email: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
             
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to send message: ' . $e->getMessage(),
+                'message' => 'Failed to send message. Please try again later.',
+                'error' => $e->getMessage()
             ], 500);
         }
     
