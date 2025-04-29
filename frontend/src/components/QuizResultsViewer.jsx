@@ -126,14 +126,14 @@ export default function QuizResultsViewer() {
                         </p>
                       </div>
                       <div className="text-sm font-medium">
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          (attempt.score / quiz.questions_count) >= 0.7
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                          (attempt.score / (quiz.questions ? quiz.questions.length : 0)) >= 0.7
                             ? 'bg-green-100 text-green-800'
-                            : (attempt.score / quiz.questions_count) >= 0.4
+                            : (attempt.score / (quiz.questions ? quiz.questions.length : 0)) >= 0.4
                               ? 'bg-yellow-100 text-yellow-800'
                               : 'bg-red-100 text-red-800'
                         }`}>
-                          {attempt.score} / {quiz.questions_count}
+                          {attempt.score} / {quiz.questions ? quiz.questions.length : "?"}
                         </span>
                       </div>
                     </div>
@@ -164,10 +164,10 @@ export default function QuizResultsViewer() {
                       </div>
                       <div>
                         <span className="text-2xl font-bold">
-                          {attemptDetails.score} / {quiz.questions_count}
+                          {attemptDetails.score} / {quiz.questions ? quiz.questions.length : attemptDetails.answers.length}
                         </span>
                         <p className="text-sm text-gray-500 text-right">
-                          {Math.round((attemptDetails.score / quiz.questions_count) * 100)}%
+                          {Math.round((attemptDetails.score / (quiz.questions ? quiz.questions.length : attemptDetails.answers.length)) * 100)}%
                         </p>
                       </div>
                     </div>

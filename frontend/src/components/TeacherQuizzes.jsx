@@ -27,7 +27,7 @@ export default function TeacherQuizzes() {
   }, []);
   
   const navigateToResults = (quizId) => {
-    navigate(`/teacher/quizzes/${quizId}/results`);
+    navigate(`/teacher/quiz-results/${quizId}`);
   };
   
   if (loading) {
