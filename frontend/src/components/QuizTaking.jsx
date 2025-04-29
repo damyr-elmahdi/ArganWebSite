@@ -227,6 +227,23 @@ export default function QuizTaking() {
     return "#ef4444"; // Red
   };
 
+  // Calculate clock hands rotation angle based on time remaining
+  // For a countdown, we want the hands to move clockwise as time decreases
+  const calculateHourHandAngle = () => {
+    // Fix: For a 20 second countdown, we want the hour hand to make one full rotation (360°)
+    // So we calculate what percentage of time has elapsed and multiply by 360
+    const totalTime = 20;
+    const elapsed = totalTime - secondsLeft;
+    return (elapsed / totalTime) * 360;
+  };
+
+  const calculateMinuteHandAngle = () => {
+    // Fix: For a minute hand we want it to rotate faster (like 6 full rotations in 20 seconds)
+    const totalTime = 20;
+    const elapsed = totalTime - secondsLeft;
+    return (elapsed / totalTime) * 360 * 2; // 2x speed of hour hand
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -318,13 +335,13 @@ export default function QuizTaking() {
                 <div 
                   className="absolute w-1 h-3 bg-gray-800 left-1/2 top-1/2 -ml-0.5 -mt-3 origin-bottom transform"
                   style={{ 
-                    transform: `translateX(-50%) rotate(${secondsLeft * 18}deg)` 
+                    transform: `translateX(-50%) rotate(${calculateHourHandAngle()}deg)` 
                   }}
                 ></div>
                 <div 
                   className="absolute w-0.5 h-2 bg-gray-600 left-1/2 top-1/2 -ml-0.5 -mt-2 origin-bottom transform"
                   style={{ 
-                    transform: `translateX(-50%) rotate(${secondsLeft * 30}deg)` 
+                    transform: `translateX(-50%) rotate(${calculateMinuteHandAngle()}deg)` 
                   }}
                 ></div>
                 <div className="absolute left-1/2 top-1/2 w-2 h-2 bg-gray-900 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
