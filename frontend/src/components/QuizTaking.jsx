@@ -17,6 +17,7 @@ export default function QuizTaking() {
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [score, setScore] = useState(0);
   const timerRef = useRef(null);
+  const processingTimeUp = useRef(false);
   const navigate = useNavigate();
 
   // Fetch quiz data and start attempt
@@ -44,7 +45,7 @@ export default function QuizTaking() {
 
   // Timer effect
   useEffect(() => {
-    if (loading || answerSubmitted || quizCompleted) return;
+    if (loading || answerSubmitted || quizCompleted || processingTimeUp.current) return;
 
     // Reset timer when question changes
     setSecondsLeft(20);
@@ -69,15 +70,48 @@ export default function QuizTaking() {
 
   // Handle when time runs out
   const handleTimeUp = async () => {
-    if (!quiz || answerSubmitted) return;
+    if (!quiz || answerSubmitted || processingTimeUp.current) return;
+    
+    processingTimeUp.current = true;
+    clearInterval(timerRef.current);
+    setAnswerSubmitted(true);
 
-    // Mark as no answer selected
-    await handleOptionSelect(null, true);
+    const currentQuestion = quiz.questions[currentQuestionIndex];
+
+    try {
+      // Find the correct option for display purposes
+      const correctOption = currentQuestion.options.find(option => option.is_correct);
+      
+      // Set answer result to show the correct answer
+      setAnswerResult({
+        is_correct: false,
+        correct_option_id: correctOption?.id
+      });
+
+      // Submit the time-up answer
+      const payload = {
+        question_id: currentQuestion.id,
+        selected_option_id: currentQuestion.options[0].id, // Use first option as placeholder
+      };
+
+      await axios.post(`/api/attempts/${attemptId}/answer`, payload);
+
+      // Move to next question after delay
+      setTimeout(() => {
+        processingTimeUp.current = false;
+        moveToNextQuestion();
+      }, 2000);
+    } catch (err) {
+      console.error("Error submitting time-up answer:", err);
+      setError("Failed to submit answer. Please try again.");
+      setAnswerSubmitted(false);
+      processingTimeUp.current = false;
+    }
   };
 
   // Handle option selection
-  const handleOptionSelect = async (optionId, isTimeUp = false) => {
-    if (answerSubmitted || !attemptId) return;
+  const handleOptionSelect = async (optionId) => {
+    if (answerSubmitted || !attemptId || processingTimeUp.current) return;
 
     clearInterval(timerRef.current);
     setSelectedOption(optionId);
@@ -105,10 +139,9 @@ export default function QuizTaking() {
         setScore((prev) => prev + 1);
       }
 
-      // If time's up and no selection, use a placeholder
       const payload = {
         question_id: currentQuestion.id,
-        selected_option_id: optionId || currentQuestion.options[0].id, // Use first option as placeholder if time's up
+        selected_option_id: optionId
       };
 
       // Send API request in background
@@ -121,7 +154,7 @@ export default function QuizTaking() {
       if (response.data.is_correct !== isCorrect) {
         console.warn("Client/server mismatch in answer correctness");
         setAnswerResult({
-          is_correct: optionId && response.data.is_correct,
+          is_correct: response.data.is_correct,
           correct_option_id: response.data.correct_option_id,
         });
 

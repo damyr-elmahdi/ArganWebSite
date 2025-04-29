@@ -1,12 +1,12 @@
 export default function ResourcesSection() {
    // Educational resources based on the Argan High School requirements
    const resources = [
-     { id: 1, title: "Library Catalog", icon: "📚", link: "#" },
+     { id: 1, title: "SVT", icon: "🧬", link: "#" },
      { id: 2, title: "Mathematics", icon: "🔢", link: "#" },
-     { id: 3, title: "Physics", icon: "⚛️", link: "#" },
-     { id: 4, title: "Quiz Platform", icon: "✏️", link: "#" },
-     { id: 5, title: "Student Portal", icon: "🖥️", link: "#" },
-     { id: 6, title: "New Student Info", icon: "📋", link: "#" }
+     { id: 3, title: "Physics & chemistry", icon: "⚛️", link: "#" },
+     { id: 4, title: "Arabic", icon: "✏️", link: "#" },
+     { id: 5, title: "History and Geography", icon: "🏹📈", link: "#" },
+     { id: 6, title: "French", icon: "🇫🇷", link: "#" }
    ];
  
    return (

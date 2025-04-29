@@ -74,13 +74,11 @@ class AuthController extends Controller
         }
     }
 
-    // backend/app/Http/Controllers/AuthController.php
     public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
-            'remember' => 'boolean',
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -91,12 +89,9 @@ class AuthController extends Controller
             ]);
         }
 
-        // Set expiration time based on remember me checkbox
-        $expiresAt = $request->remember ? null : now()->addMinutes(config('sanctum.expiration', 60));
-
         return response()->json([
             'user' => $user,
-            'token' => $user->createToken('api-token', ['*'], $expiresAt)->plainTextToken,
+            'token' => $user->createToken('api-token')->plainTextToken,
         ]);
     }
 

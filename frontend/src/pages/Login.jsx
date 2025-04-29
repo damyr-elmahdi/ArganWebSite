@@ -6,7 +6,6 @@ export default function Login() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    remember: false, // Add remember me state
   });
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -14,10 +13,10 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
   };
 
@@ -30,8 +29,8 @@ export default function Login() {
     setError('');
     
     try {
-      // Pass remember flag to login function
-      const response = await login(formData.email, formData.password, formData.remember);
+      // No longer passing remember flag
+      const response = await login(formData.email, formData.password);
       
       // Redirect based on user role
       const { role } = response.user;
@@ -120,28 +119,6 @@ export default function Login() {
                   )}
                 </button>
               </div>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember"
-                name="remember"
-                type="checkbox"
-                className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
-                checked={formData.remember}
-                onChange={handleChange}
-              />
-              <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <Link to="/forgot-password" className="font-medium text-orange-600 hover:text-orange-500">
-                Forgot your password?
-              </Link>
             </div>
           </div>
 
