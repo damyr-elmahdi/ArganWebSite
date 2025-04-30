@@ -49,6 +49,11 @@ export default function QuizResultsViewer() {
       setDetailsLoading(false);
     }
   };
+
+  // Helper function to determine if an answer was a time expiration (no selected option)
+  const isTimeExpired = (answer) => {
+    return answer.selected_option_id === null;
+  };
   
   if (loading) {
     return (
@@ -172,6 +177,25 @@ export default function QuizResultsViewer() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Legend for answer status */}
+                  <div className="p-4 bg-gray-50 border-b border-gray-200">
+                    <p className="text-sm font-medium mb-2">Answer Legend:</p>
+                    <div className="flex flex-wrap gap-4">
+                      <div className="flex items-center">
+                        <span className="inline-block w-4 h-4 bg-green-100 border border-green-300 rounded mr-2"></span>
+                        <span className="text-sm">Correct Answer</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="inline-block w-4 h-4 bg-red-100 border border-red-300 rounded mr-2"></span>
+                        <span className="text-sm">Incorrect Answer</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="inline-block w-4 h-4 bg-blue-100 border border-blue-300 rounded mr-2"></span>
+                        <span className="text-sm">Time Expired (Missed)</span>
+                      </div>
+                    </div>
+                  </div>
                   
                   <ul className="divide-y divide-gray-200 max-h-screen overflow-y-auto">
                     {attemptDetails.answers.map((answer, index) => (
@@ -179,31 +203,45 @@ export default function QuizResultsViewer() {
                         <div className="mb-2">
                           <span className="font-medium">Question {index + 1}: </span>
                           <span>{answer.question.question_text}</span>
+                          
+                          {/* Time expired indicator */}
+                          {isTimeExpired(answer) && (
+                            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                              Time Expired
+                            </span>
+                          )}
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
-                          {answer.question.options.map((option) => (
-                            <div 
-                              key={option.id} 
-                              className={`p-3 rounded-md ${
-                                option.is_correct 
-                                  ? 'bg-green-50 border border-green-300' 
-                                  : answer.selected_option_id === option.id 
-                                    ? 'bg-red-50 border border-red-300' 
-                                    : 'bg-gray-50 border border-gray-200'
-                              }`}
-                            >
-                              <div className="flex items-start">
-                                {option.is_correct && (
-                                  <span className="text-green-500 mr-2">✓</span>
-                                )}
-                                {!option.is_correct && answer.selected_option_id === option.id && (
-                                  <span className="text-red-500 mr-2">✗</span>
-                                )}
-                                <span>{option.option_text}</span>
+                          {answer.question.options.map((option) => {
+                            // Determine the appropriate styling class
+                            let optionClass = "bg-gray-50 border border-gray-200";
+                            
+                            if (option.is_correct) {
+                              optionClass = "bg-green-50 border border-green-300";
+                            } else if (answer.selected_option_id === option.id) {
+                              optionClass = "bg-red-50 border border-red-300";
+                            } else if (isTimeExpired(answer) && option.is_correct) {
+                              optionClass = "bg-blue-50 border border-blue-300";
+                            }
+                            
+                            return (
+                              <div 
+                                key={option.id} 
+                                className={`p-3 rounded-md ${optionClass}`}
+                              >
+                                <div className="flex items-start">
+                                  {option.is_correct && (
+                                    <span className="text-green-500 mr-2">✓</span>
+                                  )}
+                                  {!option.is_correct && answer.selected_option_id === option.id && (
+                                    <span className="text-red-500 mr-2">✗</span>
+                                  )}
+                                  <span>{option.option_text || "No text available"}</span>
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </li>
                     ))}
