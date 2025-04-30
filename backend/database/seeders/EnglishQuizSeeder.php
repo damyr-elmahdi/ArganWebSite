@@ -27,56 +27,176 @@ class EnglishQuizSeeder extends Seeder
 
         // Create an English Grammar Quiz
         $grammarQuiz = Quiz::create([
-            'title' => 'English Grammar Fundamentals',
+            'title' => 'English Grammar Test',
             'subject_id' => $englishSubject->id,
             'created_by' => User::where('role', 'teacher')->first()->id ?? 1
         ]);
 
-        // Questions for Grammar Quiz
+        // Questions for Grammar Quiz from the document
         $grammarQuestions = [
             [
-                'question_text' => 'Which of the following is a proper noun?',
+                'question_text' => 'This is the village ......... my grandmother was born.',
                 'options' => [
-                    ['option_text' => 'London', 'is_correct' => true],
-                    ['option_text' => 'city', 'is_correct' => false],
-                    ['option_text' => 'building', 'is_correct' => false],
+                    ['option_text' => 'which', 'is_correct' => false],
+                    ['option_text' => 'where', 'is_correct' => true],
+                    ['option_text' => 'when', 'is_correct' => false],
                 ]
             ],
             [
-                'question_text' => 'What is the past tense of "eat"?',
+                'question_text' => 'I am so exhausted. I don\'t feel like .............. out today.',
                 'options' => [
+                    ['option_text' => 'go', 'is_correct' => false],
+                    ['option_text' => 'to go', 'is_correct' => false],
+                    ['option_text' => 'going', 'is_correct' => true],
+                ]
+            ],
+            [
+                'question_text' => 'By this time next year, we ........... to our new house.',
+                'options' => [
+                    ['option_text' => 'will move', 'is_correct' => false],
+                    ['option_text' => 'will have moved', 'is_correct' => true],
+                    ['option_text' => 'are going to move', 'is_correct' => false],
+                ]
+            ],
+            [
+                'question_text' => 'After Aicha ...... her homework, she went to bed.',
+                'options' => [
+                    ['option_text' => 'had done', 'is_correct' => true],
+                    ['option_text' => 'did', 'is_correct' => false],
+                    ['option_text' => 'has done', 'is_correct' => false],
+                ]
+            ],
+            [
+                'question_text' => 'If you had been careful, you ....... an accident.',
+                'options' => [
+                    ['option_text' => 'would not have', 'is_correct' => false],
+                    ['option_text' => 'would not have had', 'is_correct' => true],
+                    ['option_text' => 'will not have', 'is_correct' => false],
+                ]
+            ],
+            [
+                'question_text' => 'Will you please .... me a favour?',
+                'options' => [
+                    ['option_text' => 'take', 'is_correct' => false],
+                    ['option_text' => 'make', 'is_correct' => false],
+                    ['option_text' => 'do', 'is_correct' => true],
+                ]
+            ],
+            [
+                'question_text' => '...... ! There is an old woman crossing the street.',
+                'options' => [
+                    ['option_text' => 'Pass out', 'is_correct' => false],
+                    ['option_text' => 'Watch out', 'is_correct' => true],
+                    ['option_text' => 'Let out', 'is_correct' => false],
+                ]
+            ],
+            [
+                'question_text' => 'We have been waiting for an hour, but he didn\'t .....',
+                'options' => [
+                    ['option_text' => 'show up', 'is_correct' => true],
+                    ['option_text' => 'come up', 'is_correct' => false],
+                    ['option_text' => 'show off', 'is_correct' => false],
+                ]
+            ],
+            [
+                'question_text' => 'You have sore eyes. You ........ be very tired.',
+                'options' => [
+                    ['option_text' => 'should', 'is_correct' => false],
+                    ['option_text' => 'can', 'is_correct' => false],
+                    ['option_text' => 'must', 'is_correct' => true],
+                ]
+            ],
+            [
+                'question_text' => 'They took a taxi ..... they wouldn\'t be late.',
+                'options' => [
+                    ['option_text' => 'so as to', 'is_correct' => false],
+                    ['option_text' => 'so that', 'is_correct' => true],
+                    ['option_text' => 'so as not to', 'is_correct' => false],
+                ]
+            ],
+            [
+                'question_text' => '....... the terrible weather, many people attended the ceremony.',
+                'options' => [
+                    ['option_text' => 'Despite', 'is_correct' => true],
+                    ['option_text' => 'Although', 'is_correct' => false],
+                    ['option_text' => 'However', 'is_correct' => false],
+                ]
+            ],
+            [
+                'question_text' => '........ and hard work are the key to success.',
+                'options' => [
+                    ['option_text' => 'Determine', 'is_correct' => false],
+                    ['option_text' => 'Determination', 'is_correct' => true],
+                    ['option_text' => 'Determined', 'is_correct' => false],
+                ]
+            ],
+            [
+                'question_text' => 'Teenagers ....... to mobile phone has become a widespread phenomenon.',
+                'options' => [
+                    ['option_text' => 'addict', 'is_correct' => false],
+                    ['option_text' => 'addicted', 'is_correct' => false],
+                    ['option_text' => 'addiction', 'is_correct' => true],
+                ]
+            ],
+            [
+                'question_text' => 'Anas said that he ..... to go then.',
+                'options' => [
+                    ['option_text' => 'must', 'is_correct' => false],
+                    ['option_text' => 'had to', 'is_correct' => true],
+                    ['option_text' => 'has to', 'is_correct' => false],
+                ]
+            ],
+            [
+                'question_text' => 'I wish I .... a bird.',
+                'options' => [
+                    ['option_text' => 'am', 'is_correct' => false],
+                    ['option_text' => 'was', 'is_correct' => false],
+                    ['option_text' => 'were', 'is_correct' => true],
+                ]
+            ],
+            [
+                'question_text' => 'The robbers ...... to prison yesterday.',
+                'options' => [
+                    ['option_text' => 'was taken', 'is_correct' => false],
+                    ['option_text' => 'have been taken', 'is_correct' => false],
+                    ['option_text' => 'were taken', 'is_correct' => true],
+                ]
+            ],
+            [
+                'question_text' => 'Would you mind ..... the window please?',
+                'options' => [
+                    ['option_text' => 'opening', 'is_correct' => true],
+                    ['option_text' => 'open', 'is_correct' => false],
+                    ['option_text' => 'to open', 'is_correct' => false],
+                ]
+            ],
+            [
+                'question_text' => 'Salma wanted to know where ......',
+                'options' => [
+                    ['option_text' => 'have I been?', 'is_correct' => false],
+                    ['option_text' => 'I had been', 'is_correct' => true],
+                    ['option_text' => 'had I been', 'is_correct' => false],
+                ]
+            ],
+            [
+                'question_text' => 'We couldn\'t watch the football match on TV ....... some technical problems.',
+                'options' => [
+                    ['option_text' => 'become', 'is_correct' => false],
+                    ['option_text' => 'since', 'is_correct' => false],
+                    ['option_text' => 'due to', 'is_correct' => true],
+                ]
+            ],
+            [
+                'question_text' => 'You should avoid ..... fatty food. It\'s bad for your health.',
+                'options' => [
+                    ['option_text' => 'eating', 'is_correct' => true],
                     ['option_text' => 'eat', 'is_correct' => false],
-                    ['option_text' => 'ate', 'is_correct' => true],
-                    ['option_text' => 'eaten', 'is_correct' => false],
-                ]
-            ],
-            [
-                'question_text' => 'Which sentence uses the correct form of "there/their/they\'re"?',
-                'options' => [
-                    ['option_text' => 'There going to the store.', 'is_correct' => false],
-                    ['option_text' => 'Their going to the store.', 'is_correct' => false],
-                    ['option_text' => 'They\'re going to the store.', 'is_correct' => true],
-                ]
-            ],
-            [
-                'question_text' => 'Which word is an adverb?',
-                'options' => [
-                    ['option_text' => 'quickly', 'is_correct' => true],
-                    ['option_text' => 'house', 'is_correct' => false],
-                    ['option_text' => 'beautiful', 'is_correct' => false],
-                ]
-            ],
-            [
-                'question_text' => 'Identify the preposition in this sentence: "The cat is under the table."',
-                'options' => [
-                    ['option_text' => 'cat', 'is_correct' => false],
-                    ['option_text' => 'under', 'is_correct' => true],
-                    ['option_text' => 'table', 'is_correct' => false],
+                    ['option_text' => 'to eat', 'is_correct' => false],
                 ]
             ],
         ];
 
-        // Create Vocabulary Quiz
+        // Create a Vocabulary Quiz (original from seeder)
         $vocabQuiz = Quiz::create([
             'title' => 'English Vocabulary Challenge',
             'subject_id' => $englishSubject->id,
@@ -127,7 +247,7 @@ class EnglishQuizSeeder extends Seeder
             ],
         ];
 
-        // Create Literature Quiz
+        // Create Literature Quiz (original from seeder)
         $litQuiz = Quiz::create([
             'title' => 'English Literature Classics',
             'subject_id' => $englishSubject->id,

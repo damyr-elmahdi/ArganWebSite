@@ -40,6 +40,11 @@ export default function QuizResults() {
     return 'Keep practicing!';
   };
   
+  // Function to determine if an answer was a time expired one
+  const isTimeExpiredAnswer = (answer) => {
+    return answer.selected_option_id === null && answer.is_correct === false;
+  };
+  
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -139,11 +144,19 @@ export default function QuizResults() {
             <div key={answer.id} className="border border-gray-200 rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-lg font-medium">Question {index + 1}</h3>
-                <span className={`px-2 py-1 rounded text-sm font-medium ${
-                  answer.is_correct ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                  {answer.is_correct ? 'Correct' : 'Incorrect'}
-                </span>
+                <div className="flex items-center">
+                  {/* Time expired badge */}
+                  {isTimeExpiredAnswer(answer) && (
+                    <span className="px-2 py-1 rounded text-sm font-medium bg-yellow-100 text-yellow-800 mr-2">
+                      Time Expired
+                    </span>
+                  )}
+                  <span className={`px-2 py-1 rounded text-sm font-medium ${
+                    answer.is_correct ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  }`}>
+                    {answer.is_correct ? 'Correct' : 'Incorrect'}
+                  </span>
+                </div>
               </div>
               
               <p className="text-gray-800 mb-4">{answer.question?.question_text || 'Question not available'}</p>
@@ -173,11 +186,25 @@ export default function QuizResults() {
                         </svg>
                       )}
                       
+                      {/* Special indicator for time expired - no option selected */}
+                      {isTimeExpiredAnswer(answer) && option.is_correct && (
+                        <svg className="w-5 h-5 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V5z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                      
                       <span>{option.option_text}</span>
                     </div>
                   </div>
                 )) || <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">Options not available</div>}
               </div>
+              
+              {/* Message for time expired questions */}
+              {isTimeExpiredAnswer(answer) && (
+                <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
+                  You ran out of time on this question. No option was selected.
+                </div>
+              )}
             </div>
           ))}
         </div>

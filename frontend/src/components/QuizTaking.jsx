@@ -17,7 +17,7 @@ export default function QuizTaking() {
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [score, setScore] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true); // For animation
-  const [isTimeUp, setIsTimeUp] = useState(false); // New state for tracking time up
+  const [isTimeUp, setIsTimeUp] = useState(false); // Time up state
   const timerRef = useRef(null);
   const processingTimeUp = useRef(false);
   const navigate = useNavigate();
@@ -89,14 +89,15 @@ export default function QuizTaking() {
       // Set answer result to show the correct answer
       setAnswerResult({
         is_correct: false,
-        correct_option_id: correctOption?.id
+        correct_option_id: correctOption?.id,
+        time_expired: true  // Add this flag to track that time expired
       });
 
-      // Submit a "time up" answer - we'll create a more explicit API for this
-      // For now we'll continue to use the first option as a placeholder
+      // Submit a "time expired" answer with no selected option
       const payload = {
         question_id: currentQuestion.id,
-        selected_option_id: currentQuestion.options[0].id, // Use first option as placeholder
+        selected_option_id: null,  // No option selected
+        time_expired: true  // Flag to indicate time expired
       };
 
       await axios.post(`/api/attempts/${attemptId}/answer`, payload);
@@ -136,7 +137,7 @@ export default function QuizTaking() {
         is_correct: isCorrect,
         correct_option_id: currentQuestion.options.find(
           (option) => option.is_correct
-        )?.id,
+        )?.id
       });
 
       // Update score if correct
@@ -193,6 +194,7 @@ export default function QuizTaking() {
         setSelectedOption(null);
         setAnswerSubmitted(false);
         setAnswerResult(null);
+        setIsTimeUp(false); // Reset time up state
         // Apply entrance animation after a brief delay
         setTimeout(() => setShowQuestion(true), 100);
       } else {
@@ -228,17 +230,13 @@ export default function QuizTaking() {
   };
 
   // Calculate clock hands rotation angle based on time remaining
-  // For a countdown, we want the hands to move clockwise as time decreases
   const calculateHourHandAngle = () => {
-    // Fix: For a 20 second countdown, we want the hour hand to make one full rotation (360°)
-    // So we calculate what percentage of time has elapsed and multiply by 360
     const totalTime = 20;
     const elapsed = totalTime - secondsLeft;
     return (elapsed / totalTime) * 360;
   };
 
   const calculateMinuteHandAngle = () => {
-    // Fix: For a minute hand we want it to rotate faster (like 6 full rotations in 20 seconds)
     const totalTime = 20;
     const elapsed = totalTime - secondsLeft;
     return (elapsed / totalTime) * 360 * 2; // 2x speed of hour hand
@@ -299,59 +297,66 @@ export default function QuizTaking() {
           <span className="mr-4 font-medium">
             Question {currentQuestionIndex + 1}/{quiz.questions.length}
           </span>
-          
+
           {/* Clock Timer */}
           <div className="relative w-16 h-16">
             {/* Circular progress bar */}
-            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+            <svg
+              className="w-full h-full transform -rotate-90"
+              viewBox="0 0 100 100"
+            >
               {/* Background circle */}
-              <circle 
-                cx="50" 
-                cy="50" 
-                r="45" 
-                fill="none" 
-                stroke="#e5e7eb" 
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                fill="none"
+                stroke="#e5e7eb"
                 strokeWidth="8"
               />
               {/* Progress circle with stroke-dasharray animation */}
-              <circle 
-                cx="50" 
-                cy="50" 
-                r="45" 
-                fill="none" 
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                fill="none"
                 stroke={getTimerColor()}
                 strokeWidth="8"
                 strokeLinecap="round"
                 strokeDasharray="283"
-                strokeDashoffset={(283 * (100 - calculateTimerProgress())) / 100}
+                strokeDashoffset={
+                  (283 * (100 - calculateTimerProgress())) / 100
+                }
                 className="transition-all duration-1000 ease-linear"
               />
             </svg>
-            
+
             {/* Center clock face */}
             <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
               {/* Clock hands */}
               <div className="relative w-8 h-8">
-                <div 
+                <div
                   className="absolute w-1 h-3 bg-gray-800 left-1/2 top-1/2 -ml-0.5 -mt-3 origin-bottom transform"
-                  style={{ 
-                    transform: `translateX(-50%) rotate(${calculateHourHandAngle()}deg)` 
+                  style={{
+                    transform: `translateX(-50%) rotate(${calculateHourHandAngle()}deg)`,
                   }}
                 ></div>
-                <div 
+                <div
                   className="absolute w-0.5 h-2 bg-gray-600 left-1/2 top-1/2 -ml-0.5 -mt-2 origin-bottom transform"
-                  style={{ 
-                    transform: `translateX(-50%) rotate(${calculateMinuteHandAngle()}deg)` 
+                  style={{
+                    transform: `translateX(-50%) rotate(${calculateMinuteHandAngle()}deg)`,
                   }}
                 ></div>
                 <div className="absolute left-1/2 top-1/2 w-2 h-2 bg-gray-900 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
               </div>
             </div>
-            
+
             {/* Digital timer */}
-            <div 
+            <div
               className={`absolute bottom-0 left-0 w-full text-center text-sm font-bold ${
-                secondsLeft <= 5 ? "text-red-600 animate-pulse" : "text-gray-800"
+                secondsLeft <= 5
+                  ? "text-red-600 animate-pulse"
+                  : "text-gray-800"
               }`}
             >
               {secondsLeft}s
@@ -361,7 +366,7 @@ export default function QuizTaking() {
       </div>
 
       {/* Question content with fade animations */}
-      <div 
+      <div
         className={`transition-opacity duration-500 ${
           showQuestion ? "opacity-100" : "opacity-0"
         }`}
@@ -375,7 +380,9 @@ export default function QuizTaking() {
             {currentQuestion.options.map((option, index) => (
               <button
                 key={option.id}
-                onClick={() => !answerSubmitted && handleOptionSelect(option.id)}
+                onClick={() =>
+                  !answerSubmitted && handleOptionSelect(option.id)
+                }
                 disabled={answerSubmitted}
                 className={`w-full text-left p-4 border rounded-lg transition-all duration-300 
                   ${
@@ -391,9 +398,11 @@ export default function QuizTaking() {
                   }
                   ${!answerSubmitted && "hover:translate-x-1"}
                 `}
-                style={{ 
-                  animationDelay: `${index * 0.1}s`, 
-                  animation: showQuestion ? `fadeSlideIn 0.5s ease-out ${index * 0.1}s both` : ''
+                style={{
+                  animationDelay: `${index * 0.1}s`,
+                  animation: showQuestion
+                    ? `fadeSlideIn 0.5s ease-out ${index * 0.1}s both`
+                    : "",
                 }}
               >
                 {option.option_text}
@@ -411,9 +420,9 @@ export default function QuizTaking() {
             <p className="font-medium">
               {answerResult?.is_correct
                 ? "Correct! Well done."
-                : isTimeUp 
-                  ? "Time's up! The correct answer is highlighted."
-                  : "Incorrect. The correct answer is highlighted."}
+                : isTimeUp
+                ? "Time's up! The correct answer is highlighted."
+                : "Incorrect. The correct answer is highlighted."}
             </p>
           </div>
         )}
@@ -426,19 +435,29 @@ export default function QuizTaking() {
           </div>
         </div>
       </div>
-      
-      {/* Add global animation styles */}
+
+      {/*global animation styles */}
       <style jsx="true">{`
         @keyframes fadeSlideIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
-        
+
         @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
-        
+
         .animate-fadeIn {
           animation: fadeIn 0.5s ease-out forwards;
         }

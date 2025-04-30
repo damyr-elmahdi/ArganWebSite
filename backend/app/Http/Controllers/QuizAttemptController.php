@@ -26,12 +26,36 @@ class QuizAttemptController extends Controller
     // Submit an answer during a quiz
     public function submitAnswer(Request $request, QuizAttempt $attempt)
     {
+        // Validate the basic requirements
         $validated = $request->validate([
             'question_id' => 'required|exists:questions,id',
-            'selected_option_id' => 'required|exists:options,id',
+            'selected_option_id' => 'nullable|exists:options,id',  // Make it nullable
+            'time_expired' => 'boolean', // New field to check if time expired
         ]);
         
         $question = Question::findOrFail($validated['question_id']);
+        
+        // Handle time expired case - always mark as incorrect
+        if ($request->has('time_expired') && $request->time_expired === true) {
+            // Get the correct option for reference in the response
+            $correctOption = $question->correctOption();
+            
+            // Create an answer record with is_correct = false
+            $answer = AttemptAnswer::create([
+                'quiz_attempt_id' => $attempt->id,
+                'question_id' => $question->id,
+                'selected_option_id' => null,  // No option was selected
+                'is_correct' => false,  // Always false for time expired
+            ]);
+            
+            return response()->json([
+                'is_correct' => false,
+                'correct_option_id' => $correctOption->id,
+                'time_expired' => true
+            ]);
+        }
+        
+        // Normal case - user selected an option
         $selectedOption = Option::findOrFail($validated['selected_option_id']);
         $isCorrect = $selectedOption->is_correct;
         
