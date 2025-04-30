@@ -18,6 +18,13 @@ export default function QuizTaking() {
   const [score, setScore] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true); // For animation
   const [isTimeUp, setIsTimeUp] = useState(false); // Time up state
+  
+  // Anti-cheat related states
+  const [violations, setViolations] = useState(0);
+  const [showWarning, setShowWarning] = useState(false);
+  const [autoSubmitting, setAutoSubmitting] = useState(false);
+  const MAX_VIOLATIONS = 3; // Maximum number of violations before auto-submit
+  
   const timerRef = useRef(null);
   const processingTimeUp = useRef(false);
   const navigate = useNavigate();
@@ -43,7 +50,93 @@ export default function QuizTaking() {
     };
 
     fetchQuiz();
+    
+    // Set up anti-cheat listeners when component mounts
+    setupAntiCheatListeners();
+    
+    // Clean up listeners when component unmounts
+    return () => {
+      removeAntiCheatListeners();
+    };
   }, [quizId]);
+
+  // Anti-cheat listeners setup
+  const setupAntiCheatListeners = () => {
+    // Listen for tab visibility changes
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    
+    // Listen for window blur (when user switches to another application)
+    window.addEventListener("blur", handleWindowBlur);
+    
+    // Block right-click context menu
+    document.addEventListener("contextmenu", handleContextMenu);
+    
+    // Block keyboard shortcuts that could be used for cheating
+    document.addEventListener("keydown", handleKeyDown);
+  };
+  
+  // Remove anti-cheat listeners
+  const removeAntiCheatListeners = () => {
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+    window.removeEventListener("blur", handleWindowBlur);
+    document.removeEventListener("contextmenu", handleContextMenu);
+    document.removeEventListener("keydown", handleKeyDown);
+  };
+  
+  // Handle tab visibility change
+  const handleVisibilityChange = () => {
+    if (document.hidden && !quizCompleted && attemptId) {
+      recordViolation("Tab switched");
+    }
+  };
+  
+  // Handle window blur
+  const handleWindowBlur = () => {
+    if (!quizCompleted && attemptId) {
+      recordViolation("Window unfocused");
+    }
+  };
+  
+  // Prevent context menu (right-click)
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    return false;
+  };
+  
+  // Block certain keyboard shortcuts
+  const handleKeyDown = (e) => {
+    // Block Alt+Tab, Ctrl+Tab, Alt+F4, etc.
+    if (
+      (e.altKey && (e.key === "Tab" || e.key === "F4")) ||
+      (e.ctrlKey && (e.key === "Tab" || e.key === "t" || e.key === "n")) ||
+      e.key === "F12" || // Developer tools
+      (e.ctrlKey && e.shiftKey && e.key === "I") // Developer tools
+    ) {
+      e.preventDefault();
+      recordViolation("Keyboard shortcut attempt");
+      return false;
+    }
+  };
+  
+  // Record a violation and check if we should auto-submit
+  const recordViolation = (type) => {
+    if (autoSubmitting) return; // Don't record violations if already auto-submitting
+    
+    const newViolations = violations + 1;
+    setViolations(newViolations);
+    console.warn(`Quiz violation detected: ${type}. Violation ${newViolations}/${MAX_VIOLATIONS}`);
+    
+    // Show warning
+    setShowWarning(true);
+    setTimeout(() => setShowWarning(false), 5000); // Hide warning after 5 seconds
+    
+    // Auto-submit if too many violations
+    if (newViolations >= MAX_VIOLATIONS) {
+      setAutoSubmitting(true);
+      alert("Multiple attempts to leave the quiz detected. Your quiz will be submitted automatically.");
+      completeQuiz(true); // Force complete with cheating flag
+    }
+  };
 
   // Timer effect
   useEffect(() => {
@@ -205,16 +298,50 @@ export default function QuizTaking() {
   };
 
   // Complete the quiz and navigate to results
-  const completeQuiz = async () => {
+  const completeQuiz = async (forcedByCheat = false) => {
     try {
       setQuizCompleted(true);
-      await axios.post(`/api/attempts/${attemptId}/complete`);
+      
+      // Add a flag if this was forced by cheating detection
+      const completePayload = forcedByCheat ? { forced_completion: true } : {};
+      await axios.post(`/api/attempts/${attemptId}/complete`, completePayload);
+      
+      // Navigate to results page
       navigate(`/student/quiz-results/${attemptId}`);
     } catch (err) {
       console.error("Error completing quiz:", err);
       setError("Failed to complete quiz. Please try again.");
     }
   };
+
+  // Listen for browser closing/refreshing attempts
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (!quizCompleted && attemptId) {
+        // Cancel the event as stated by the standard
+        e.preventDefault();
+        // Chrome requires returnValue to be set
+        e.returnValue = 'Are you sure you want to leave? Your quiz will be submitted automatically.';
+        
+        // Try to submit the quiz
+        completeQuiz(true);
+        
+        // This is to give time for the quiz to be submitted
+        // However, this won't reliably work for all browser closing scenarios
+        const startTime = Date.now();
+        while (Date.now() - startTime < 1000) {
+          // Busy wait to give the request time to fire
+          // This is a hack and won't be reliable for all cases
+        }
+      }
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [quizCompleted, attemptId]);
 
   // Calculate timer circle progress
   const calculateTimerProgress = () => {
@@ -291,6 +418,24 @@ export default function QuizTaking() {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
+      {/* Anti-cheat warning */}
+      {showWarning && (
+        <div className="fixed top-0 left-0 w-full bg-red-600 text-white py-3 px-6 text-center z-50 animate-slideDown">
+          <div className="flex items-center justify-center">
+            <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span className="font-bold">Warning: Attempting to leave the quiz is not allowed.</span>
+            <span className="ml-2">
+              Violation {violations}/{MAX_VIOLATIONS}
+            </span>
+          </div>
+          <div className="text-sm mt-1">
+            Your quiz will be automatically submitted after {MAX_VIOLATIONS} violations.
+          </div>
+        </div>
+      )}
+      
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">{quiz.title}</h1>
         <div className="flex items-center">
@@ -433,10 +578,19 @@ export default function QuizTaking() {
               Score: {score}/{currentQuestionIndex + 1}
             </span>
           </div>
+          
+          {/* Violations indicator */}
+          {violations > 0 && (
+            <div className="bg-red-100 px-4 py-2 rounded-full">
+              <span className="font-medium text-red-700">
+                Violations: {violations}/{MAX_VIOLATIONS}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
-      {/*global animation styles */}
+      {/* Global animation styles */}
       <style jsx="true">{`
         @keyframes fadeSlideIn {
           from {
@@ -457,9 +611,22 @@ export default function QuizTaking() {
             opacity: 1;
           }
         }
+        
+        @keyframes slideDown {
+          from {
+            transform: translateY(-100%);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
 
         .animate-fadeIn {
           animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        .animate-slideDown {
+          animation: slideDown 0.3s ease-out forwards;
         }
       `}</style>
     </div>

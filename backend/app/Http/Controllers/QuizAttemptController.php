@@ -8,6 +8,7 @@ use App\Models\Question;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class QuizAttemptController extends Controller
 {
@@ -82,14 +83,33 @@ class QuizAttemptController extends Controller
         ]);
     }
     
-    // Complete a quiz attempt
-    public function complete(QuizAttempt $attempt)
+    // Complete a quiz attempt - updated to handle anti-cheat detections
+    public function complete(Request $request, QuizAttempt $attempt)
     {
-        $attempt->update(['completed_at' => now()]);
+        // Add a flag to record if the quiz was forcibly completed due to anti-cheat detection
+        $forcedCompletion = $request->has('forced_completion') && $request->forced_completion === true;
+        
+        // Check if this is a forced completion (anti-cheat)
+        if ($forcedCompletion) {
+            // You could log this information for monitoring
+            \Log::warning("Quiz attempt #{$attempt->id} was forcibly completed - potential cheating detected");
+            
+            // You might want to add a flag to the database to mark this attempt
+            // This would require adding a 'forced_completion' column to the quiz_attempts table
+            $attempt->update([
+                'completed_at' => now(),
+                // Uncomment if you add this column to the database
+                // 'forced_completion' => true,
+            ]);
+        } else {
+            // Normal completion
+            $attempt->update(['completed_at' => now()]);
+        }
         
         return response()->json([
             'score' => $attempt->score,
             'total_questions' => $attempt->quiz->questions->count(),
+            'forced_completion' => $forcedCompletion,
         ]);
     }
     
