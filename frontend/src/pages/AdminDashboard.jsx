@@ -4,13 +4,14 @@ import axios from "axios";
 import NewsManagement from "../components/NewsManagement";
 import EventsManagement from "../components/EventsManagement";
 import AbsenceManagement from "../components/AbsenceManagement";
+import UserManagement from "../components/UserManagement"; // Import the UserManagement component
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("profile"); // 'profile', 'registrations', 'news', 'events', 'absences'
+  const [activeTab, setActiveTab] = useState("profile"); // 'profile', 'registrations', 'news', 'events', 'absences', 'users'
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -138,7 +139,7 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {/* Navigation Tabs */}
         <div className="mb-6 border-b border-gray-200">
-          <nav className="-mb-px flex space-x-6">
+          <nav className="-mb-px flex space-x-6 overflow-x-auto">
             <button
               className={`${
                 activeTab === "profile"
@@ -148,6 +149,16 @@ export default function AdminDashboard() {
               onClick={() => setActiveTab("profile")}
             >
               Profile
+            </button>
+            <button
+              className={`${
+                activeTab === "users"
+                  ? "border-orange-500 text-orange-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              onClick={() => setActiveTab("users")}
+            >
+              User Management
             </button>
             <button
               className={`${
@@ -242,6 +253,9 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+
+          {/* User Management Tab */}
+          {activeTab === "users" && <UserManagement />}
 
           {/* Registrations Tab */}
           {activeTab === "registrations" && (
