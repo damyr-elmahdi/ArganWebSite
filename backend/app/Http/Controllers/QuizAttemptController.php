@@ -56,6 +56,12 @@ class QuizAttemptController extends Controller
         }
         
         // Normal case - user selected an option
+        if (!isset($validated['selected_option_id'])) {
+            return response()->json([
+                'message' => 'selected_option_id is required when not time expired'
+            ], 422);
+        }
+        
         $selectedOption = Option::findOrFail($validated['selected_option_id']);
         $isCorrect = $selectedOption->is_correct;
         
