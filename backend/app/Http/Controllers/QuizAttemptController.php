@@ -13,12 +13,42 @@ use Illuminate\Support\Facades\Log;
 class QuizAttemptController extends Controller
 {
     // Start a quiz attempt
-    public function start(Quiz $quiz)
+    public function start(Request $request, Quiz $quiz)
     {
+        // Check if there's an existing attempt that isn't completed
+        $existingAttempt = QuizAttempt::where('user_id', auth()->id())
+            ->where('quiz_id', $quiz->id)
+            ->whereNull('completed_at')
+            ->first();
+        
+        if ($existingAttempt) {
+            // Return the existing attempt instead of creating a new one
+            return response()->json([
+                'attempt_id' => $existingAttempt->id,
+                'resumed' => true,
+                'current_question_index' => $existingAttempt->answers->count()
+            ]);
+        }
+        
+        // Check if user has already completed this quiz
+        $completedAttempt = QuizAttempt::where('user_id', auth()->id())
+            ->where('quiz_id', $quiz->id)
+            ->whereNotNull('completed_at')
+            ->exists();
+        
+        if ($completedAttempt && !$quiz->allows_multiple_attempts) {
+            return response()->json([
+                'error' => 'You have already completed this quiz.',
+                'status' => 'denied'
+            ], 403);
+        }
+        
+        // Create a new attempt if eligible
         $attempt = QuizAttempt::create([
             'user_id' => auth()->id(),
             'quiz_id' => $quiz->id,
             'score' => 0,
+            'started_at' => now(),
         ]);
         
         return response()->json(['attempt_id' => $attempt->id]);
@@ -136,4 +166,48 @@ class QuizAttemptController extends Controller
             
         return response()->json($attempts);
     }
+
+    public function checkAttemptEligibility(Quiz $quiz)
+{
+    // Check if user has a completed attempt for this quiz
+    $existingAttempt = QuizAttempt::where('user_id', auth()->id())
+        ->where('quiz_id', $quiz->id)
+        ->whereNotNull('completed_at')
+        ->exists();
+    
+    // Check if user has an in-progress attempt
+    $inProgressAttempt = QuizAttempt::where('user_id', auth()->id())
+        ->where('quiz_id', $quiz->id)
+        ->whereNull('completed_at')
+        ->first();
+    
+    return response()->json([
+        'can_attempt' => !$existingAttempt,
+        'in_progress_attempt' => $inProgressAttempt ? $inProgressAttempt->id : null
+    ]);
+}
+
+public function validateQuestionSequence(Request $request, QuizAttempt $attempt)
+{
+    $validated = $request->validate([
+        'question_id' => 'required|exists:questions,id',
+        'expected_index' => 'required|integer|min:0',
+    ]);
+    
+    $question = Question::findOrFail($validated['question_id']);
+    
+    // Count how many questions have been answered
+    $answeredCount = $attempt->answers()->count();
+    
+    // This ensures the questions are answered in sequence
+    if ($validated['expected_index'] != $answeredCount) {
+        return response()->json([
+            'valid' => false,
+            'expected_index' => $answeredCount,
+            'message' => 'Questions must be answered in sequence'
+        ], 400);
+    }
+    
+    return response()->json(['valid' => true]);
+}
 }

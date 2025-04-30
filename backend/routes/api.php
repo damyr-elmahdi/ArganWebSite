@@ -9,16 +9,16 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventCommentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LibraryController;
-use App\Http\Controllers\LibrarianController;
+
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RegistrationController;
-use App\Http\Controllers\ForgotPasswordController;
+
 use App\Http\Controllers\QuizAttemptController;
 use App\Http\Controllers\QuizController;
-use App\Http\Controllers\ResetPasswordController;
+
 use App\Http\Controllers\ResultsController;
 use App\Http\Controllers\TeacherAbsenceController;
-
+use App\Http\Controllers\UserManagementController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -144,6 +144,17 @@ Route::middleware(['role:teacher'])->group(function () {
 
     
     Route::get('/teacher/quizzes', [QuizController::class, 'teacherQuizzes']);
+});
+
+// Admin user management routes
+Route::middleware('role:administrator')->group(function () {
+    // User management
+    Route::get('/users', [UserManagementController::class, 'index']);
+    Route::post('/users', [UserManagementController::class, 'store']);
+    Route::get('/users/{user}', [UserManagementController::class, 'show']);
+    Route::put('/users/{user}', [UserManagementController::class, 'update']);
+    Route::delete('/users/{user}', [UserManagementController::class, 'destroy']);
+    Route::post('/users/{user}/reset-password', [UserManagementController::class, 'resetPassword']);
 });
 
 });

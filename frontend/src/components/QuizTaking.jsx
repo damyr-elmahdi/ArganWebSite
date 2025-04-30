@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
+
 export default function QuizTaking() {
   // Get quizId from URL parameters
   const { quizId } = useParams();
