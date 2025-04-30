@@ -50,6 +50,7 @@ export default function QuizResults() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <h2 className="text-xl font-semibold">Loading results...</h2>
+          <div className="mt-4 w-12 h-12 border-4 border-orange-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
         </div>
       </div>
     );
@@ -124,6 +125,21 @@ export default function QuizResults() {
   
   return (
     <div className="bg-white shadow-md rounded-lg p-6 max-w-4xl mx-auto">
+      {/* Check if the quiz was forcibly completed due to anti-cheat detection */}
+      {results.forced_completion && (
+        <div className="mb-6 p-4 bg-red-100 border border-red-300 rounded-md text-red-800">
+          <div className="flex items-center">
+            <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <h3 className="text-lg font-semibold">Quiz Submitted Due to Anti-Cheat Detection</h3>
+          </div>
+          <p className="mt-2">
+            This quiz was automatically submitted because multiple attempts to exit or switch tabs were detected.
+          </p>
+        </div>
+      )}
+      
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold">{results.quiz.title} - Results</h1>
         <div className="mt-4">
@@ -132,6 +148,9 @@ export default function QuizResults() {
           </div>
           <div className="text-xl mt-2">
             {calculatePercentage()}% - {getScoreMessage()}
+          </div>
+          <div className="mt-2 text-gray-600">
+            Completed on {new Date(results.completed_at).toLocaleString()}
           </div>
         </div>
       </div>
@@ -217,7 +236,33 @@ export default function QuizResults() {
         >
           Return to Dashboard
         </button>
+        <button 
+          onClick={() => window.print()}
+          className="ml-4 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium"
+        >
+          Print Results
+        </button>
       </div>
+      
+      {/* Add some print-friendly styles */}
+      <style jsx="true">{`
+        @media print {
+          body {
+            padding: 20px;
+            font-size: 14px;
+          }
+          button {
+            display: none !important;
+          }
+          .shadow-md {
+            box-shadow: none !important;
+          }
+          /* Print-specific styling */
+          .print-header {
+            display: block !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
