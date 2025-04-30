@@ -26,9 +26,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/registrations', [RegistrationController::class, 'store']);
 Route::get('/registrations/{registration}/download-packet', [RegistrationController::class, 'downloadInfoPacket']);
 
-// Password reset routes
-Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
+
 
 Route::post('/contact', [ContactController::class, 'submitContactForm']);
 
@@ -86,6 +84,15 @@ Route::middleware('auth:sanctum')->group(function () {
         // Absence notifications for students
         Route::get('/absence-notifications', [TeacherAbsenceController::class, 'getStudentNotifications']);
         Route::patch('/absence-notifications/{notification}/read', [TeacherAbsenceController::class, 'markAsRead']);
+    });
+
+    // Student routes
+    Route::middleware(['role:student'])->group(function () {
+        Route::post('/quizzes/{quiz}/start', [QuizAttemptController::class, 'start']);
+        Route::post('/attempts/{attempt}/answer', [QuizAttemptController::class, 'submitAnswer']);
+        Route::post('/attempts/{attempt}/complete', [QuizAttemptController::class, 'complete']);
+        Route::get('/attempts/{attempt}/results', [QuizAttemptController::class, 'results']);
+        Route::get('/user/quiz-attempts', [QuizAttemptController::class, 'userAttempts']);
     });
 
 });

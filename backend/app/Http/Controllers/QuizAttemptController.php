@@ -105,4 +105,15 @@ class QuizAttemptController extends Controller
         
         return response()->json($attempt);
     }
+
+    public function userAttempts()
+    {
+        $attempts = QuizAttempt::with(['quiz.questions'])
+            ->where('user_id', auth()->id())
+            ->whereNotNull('completed_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+        return response()->json($attempts);
+    }
 }
