@@ -1,7 +1,7 @@
 import Hero from '../components/Hero';
 import NewsSection from '../components/NewsSection';
 import EventsSection from '../components/EventsSection';
-import ResourcesSection from '../components/ResourcesSection';
+import ResourceViewer from '../components/ResourceViewer'; // Import the new ResourceViewer component
 import RegistrationCTA from '../components/RegistrationCTA'; 
 import argan from "../assets/argan.png";
 
@@ -143,7 +143,7 @@ export default function Home({ schoolInfo }) {
       </section>
       
       {/* Resources section */}
-      <ResourcesSection />
+      <ResourceViewer />
       
       {/* Testimonials */}
       <section className="py-12 bg-white">

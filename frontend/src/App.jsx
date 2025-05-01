@@ -29,6 +29,7 @@ import QuizEditor from "./components/QuizEditor";
 import TeacherQuizzes from "./components/TeacherQuizzes";
 import QuizCreator from "./components/QuizCreator";
 import Contact from './pages/Contact';
+import ResourceViewer from './components/ResourceViewer'; // Import the new ResourceViewer component
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
@@ -111,6 +112,10 @@ export default function App() {
             {/* Password reset routes */}
 
             <Route path="/contact" element={<Contact schoolInfo={schoolInfo} />} />
+            
+            {/* Educational Resources route */}
+            <Route path="/resources" element={<ResourceViewer />} />
+            
             {/* Protected routes with role-based access */}
             <Route
               path="/student-dashboard"
