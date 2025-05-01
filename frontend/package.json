@@ -14,12 +14,16 @@
     "@heroicons/react": "^2.2.0",
     "axios": "^1.8.4",
     "date-fns": "^4.1.0",
+    "express-validator": "^7.2.1",
+    "joi": "^17.13.3",
     "lucide-react": "^0.503.0",
+    "multer": "^1.4.5-lts.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-feather": "^2.0.10",
     "react-google-recaptcha": "^3.1.0",
-    "react-router-dom": "^7.5.0"
+    "react-router-dom": "^7.5.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

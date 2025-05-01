@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventCommentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\ResourceController;
 
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RegistrationController;
@@ -26,8 +27,6 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/registrations', [RegistrationController::class, 'store']);
 Route::get('/registrations/{registration}/download-packet', [RegistrationController::class, 'downloadInfoPacket']);
 
-
-
 Route::post('/contact', [ContactController::class, 'submitContactForm']);
 
 // Public library routes
@@ -36,10 +35,19 @@ Route::get('/library/categories', [LibraryController::class, 'categories']);
 Route::get('/library/book-requests', [LibraryController::class, 'getBookRequests']);
 Route::get('/library/{libraryItem}', [LibraryController::class, 'show']);
 
+// Public resource routes
+Route::get('/resources', [ResourceController::class, 'index']);
+Route::get('/resources/{resource}', [ResourceController::class, 'show']);
+Route::get('/resources/{resource}/download', [ResourceController::class, 'download'])->name('resources.download');
+
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Resource management routes
+    Route::post('/resources/upload', [ResourceController::class, 'upload']);
+    Route::delete('/resources/{resource}', [ResourceController::class, 'destroy']);
 
     // Route::get('/library/book-requests', [LibraryController::class, 'getBookRequests']);
     Route::get('/library/book-stats', [LibraryController::class, 'bookStats']);
@@ -121,6 +129,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/events/{event}', [EventController::class, 'update']);
     Route::delete('/events/{event}', [EventController::class, 'destroy']);
 });
+
 Route::middleware(['auth:sanctum'])->group(function () {
     // Common routes
     Route::get('/quizzes', [QuizController::class, 'index']);
@@ -135,26 +144,23 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // Teacher routes
-// Teacher routes
-Route::middleware(['role:teacher'])->group(function () {
-    Route::post('/quizzes', [QuizController::class, 'store']);
-    Route::put('/quizzes/{quiz}', [QuizController::class, 'update']); // Add this line if it's missing
-    Route::get('/results', [ResultsController::class, 'index']);
-    Route::get('/results/{attempt}', [ResultsController::class, 'show']);
+    Route::middleware(['role:teacher'])->group(function () {
+        Route::post('/quizzes', [QuizController::class, 'store']);
+        Route::put('/quizzes/{quiz}', [QuizController::class, 'update']); 
+        Route::get('/results', [ResultsController::class, 'index']);
+        Route::get('/results/{attempt}', [ResultsController::class, 'show']);
+        
+        Route::get('/teacher/quizzes', [QuizController::class, 'teacherQuizzes']);
+    });
 
-    
-    Route::get('/teacher/quizzes', [QuizController::class, 'teacherQuizzes']);
-});
-
-// Admin user management routes
-Route::middleware('role:administrator')->group(function () {
-    // User management
-    Route::get('/users', [UserManagementController::class, 'index']);
-    Route::post('/users', [UserManagementController::class, 'store']);
-    Route::get('/users/{user}', [UserManagementController::class, 'show']);
-    Route::put('/users/{user}', [UserManagementController::class, 'update']);
-    Route::delete('/users/{user}', [UserManagementController::class, 'destroy']);
-    Route::post('/users/{user}/reset-password', [UserManagementController::class, 'resetPassword']);
-});
-
+    // Admin user management routes
+    Route::middleware('role:administrator')->group(function () {
+        // User management
+        Route::get('/users', [UserManagementController::class, 'index']);
+        Route::post('/users', [UserManagementController::class, 'store']);
+        Route::get('/users/{user}', [UserManagementController::class, 'show']);
+        Route::put('/users/{user}', [UserManagementController::class, 'update']);
+        Route::delete('/users/{user}', [UserManagementController::class, 'destroy']);
+        Route::post('/users/{user}/reset-password', [UserManagementController::class, 'resetPassword']);
+    });
 });
