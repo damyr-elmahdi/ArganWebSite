@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export default function ResourceViewer() {
   // State for selected subject, year level, and specialization
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [yearLevel, setYearLevel] = useState('all');
   const [specialization, setSpecialization] = useState('all');
+  const [resources, setResources] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Educational resources data
   const subjects = [
@@ -34,151 +38,258 @@ export default function ResourceViewer() {
     { value: 'al', label: 'AL (Arts et Lettres)' }
   ];
 
-  // Sample resources data - in a real app, this would come from an API
-  const resourcesData = {
-    "SVT": [
-      {
-        title: "Cellular Biology Introduction",
-        type: "pdf",
-        link: "/pdfs/svt/cellular-biology.pdf",
-        year: "1bac",
-        specialization: "svt"
-      },
-      {
-        title: "Ecosystem Dynamics",
-        type: "pdf",
-        link: "/pdfs/svt/ecosystem-dynamics.pdf",
-        year: "2bac",
-        specialization: "svt"
-      },
-      {
-        title: "AlloSchool - SVT Resources",
-        type: "website",
-        link: "https://www.alloschool.com/course/alom-alhiat-oalarz-althania-bak-alom-tajribia",
-        year: "all",
-        specialization: "all"
-      }
-    ],
-    "Mathematics": [
-      {
-        title: "Linear Algebra Foundations",
-        type: "pdf",
-        link: "/pdfs/math/linear-algebra.pdf",
-        year: "1bac",
-        specialization: "sm"
-      },
-      {
-        title: "Calculus & Integration",
-        type: "pdf",
-        link: "/pdfs/math/calculus.pdf",
-        year: "2bac",
-        specialization: "sm"
-      },
-      {
-        title: "AlloSchool - Mathematics",
-        type: "website",
-        link: "https://www.alloschool.com/course/alriadhiat-althania-bak-alom-fiziaiia",
-        year: "all",
-        specialization: "all"
-      }
-    ],
-    "Physics & chemistry": [
-      {
-        title: "Mechanics Fundamentals",
-        type: "pdf",
-        link: "/pdfs/physics/mechanics.pdf",
-        year: "1bac",
-        specialization: "sm"
-      },
-      {
-        title: "Organic Chemistry",
-        type: "pdf",
-        link: "/pdfs/chemistry/organic-chem.pdf",
-        year: "2bac",
-        specialization: "se"
-      },
-      {
-        title: "AlloSchool - Physics",
-        type: "website",
-        link: "https://www.alloschool.com/course/alfizia-oalkimia-althania-bak-alom-fiziaiia",
-        year: "all",
-        specialization: "all"
-      }
-    ],
-    "Arabic": [
-      {
-        title: "Arabic Literature Analysis",
-        type: "pdf",
-        link: "/pdfs/arabic/literature.pdf",
-        year: "1bac",
-        specialization: "al"
-      },
-      {
-        title: "Advanced Arabic Grammar",
-        type: "pdf",
-        link: "/pdfs/arabic/grammar.pdf",
-        year: "2bac",
-        specialization: "al"
-      },
-      {
-        title: "AlloSchool - Arabic",
-        type: "website",
-        link: "https://www.alloschool.com/course/allgha-alrbia-althania-bak-adab",
-        year: "all",
-        specialization: "all"
-      }
-    ],
-    "History and Geography": [
-      {
-        title: "World History Overview",
-        type: "pdf",
-        link: "/pdfs/history/world-history.pdf",
-        year: "1bac",
-        specialization: "sh"
-      },
-      {
-        title: "Economic Geography",
-        type: "pdf",
-        link: "/pdfs/geography/economic-geo.pdf",
-        year: "2bac",
-        specialization: "sh"
-      },
-      {
-        title: "AlloSchool - History & Geography",
-        type: "website",
-        link: "https://www.alloschool.com/course/altarikh-oaljghrafi-althania-bak-adab",
-        year: "all",
-        specialization: "all"
-      }
-    ],
-    "French": [
-      {
-        title: "French Literature Classics",
-        type: "pdf",
-        link: "/pdfs/french/literature.pdf",
-        year: "1bac",
-        specialization: "al"
-      },
-      {
-        title: "Advanced French Composition",
-        type: "pdf",
-        link: "/pdfs/french/composition.pdf",
-        year: "2bac",
-        specialization: "al"
-      },
-      {
-        title: "AlloSchool - French",
-        type: "website",
-        link: "https://www.alloschool.com/course/allgha-alfrnsia-althania-bak-adab",
-        year: "all",
-        specialization: "all"
-      }
-    ]
+  // Fetch resources when component mounts
+  useEffect(() => {
+    fetchResources();
+  }, []);
+
+  // Fetch resources from the backend
+  const fetchResources = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get('/api/resources');
+      
+      // Organize resources by subject
+      const organizedResources = {};
+      subjects.forEach(subject => {
+        organizedResources[subject.title] = [];
+      });
+
+      // Add resources to their corresponding subjects
+      response.data.forEach(resource => {
+        if (organizedResources[resource.subject]) {
+          organizedResources[resource.subject].push({
+            title: resource.title,
+            type: "pdf",
+            link: resource.fileUrl,
+            year: resource.yearLevel,
+            specialization: resource.specialization
+          });
+        }
+      });
+
+      // Add default external resources
+      const defaultResources = {
+        "SVT": [
+          {
+            title: "AlloSchool - SVT Resources",
+            type: "website",
+            link: "https://www.alloschool.com/course/alom-alhiat-oalarz-althania-bak-alom-tajribia",
+            year: "all",
+            specialization: "all"
+          }
+        ],
+        "Mathematics": [
+          {
+            title: "AlloSchool - Mathematics",
+            type: "website",
+            link: "https://www.alloschool.com/course/alriadhiat-althania-bak-alom-fiziaiia",
+            year: "all",
+            specialization: "all"
+          }
+        ],
+        "Physics & chemistry": [
+          {
+            title: "AlloSchool - Physics",
+            type: "website",
+            link: "https://www.alloschool.com/course/alfizia-oalkimia-althania-bak-alom-fiziaiia",
+            year: "all",
+            specialization: "all"
+          }
+        ],
+        "Arabic": [
+          {
+            title: "AlloSchool - Arabic",
+            type: "website",
+            link: "https://www.alloschool.com/course/allgha-alrbia-althania-bak-adab",
+            year: "all",
+            specialization: "all"
+          }
+        ],
+        "History and Geography": [
+          {
+            title: "AlloSchool - History & Geography",
+            type: "website",
+            link: "https://www.alloschool.com/course/altarikh-oaljghrafi-althania-bak-adab",
+            year: "all",
+            specialization: "all"
+          }
+        ],
+        "French": [
+          {
+            title: "AlloSchool - French",
+            type: "website",
+            link: "https://www.alloschool.com/course/allgha-alfrnsia-althania-bak-adab",
+            year: "all",
+            specialization: "all"
+          }
+        ]
+      };
+
+      // Merge default resources with uploaded ones
+      subjects.forEach(subject => {
+        if (defaultResources[subject.title]) {
+          organizedResources[subject.title] = [
+            ...organizedResources[subject.title],
+            ...defaultResources[subject.title]
+          ];
+        }
+      });
+
+      setResources(organizedResources);
+    } catch (err) {
+      console.error("Error fetching resources:", err);
+      setError("Failed to load resources. Please try again later.");
+      
+      // Fall back to sample data if API fails
+      setResources({
+        "SVT": [
+          {
+            title: "Cellular Biology Introduction",
+            type: "pdf",
+            link: "/pdfs/svt/cellular-biology.pdf",
+            year: "1bac",
+            specialization: "svt"
+          },
+          {
+            title: "Ecosystem Dynamics",
+            type: "pdf",
+            link: "/pdfs/svt/ecosystem-dynamics.pdf",
+            year: "2bac",
+            specialization: "svt"
+          },
+          {
+            title: "AlloSchool - SVT Resources",
+            type: "website",
+            link: "https://www.alloschool.com/course/alom-alhiat-oalarz-althania-bak-alom-tajribia",
+            year: "all",
+            specialization: "all"
+          }
+        ],
+        "Mathematics": [
+          {
+            title: "Linear Algebra Foundations",
+            type: "pdf",
+            link: "/pdfs/math/linear-algebra.pdf",
+            year: "1bac",
+            specialization: "sm"
+          },
+          {
+            title: "Calculus & Integration",
+            type: "pdf",
+            link: "/pdfs/math/calculus.pdf",
+            year: "2bac",
+            specialization: "sm"
+          },
+          {
+            title: "AlloSchool - Mathematics",
+            type: "website",
+            link: "https://www.alloschool.com/course/alriadhiat-althania-bak-alom-fiziaiia",
+            year: "all",
+            specialization: "all"
+          }
+        ],
+        "Physics & chemistry": [
+          {
+            title: "Mechanics Fundamentals",
+            type: "pdf",
+            link: "/pdfs/physics/mechanics.pdf",
+            year: "1bac",
+            specialization: "sm"
+          },
+          {
+            title: "Organic Chemistry",
+            type: "pdf",
+            link: "/pdfs/chemistry/organic-chem.pdf",
+            year: "2bac",
+            specialization: "se"
+          },
+          {
+            title: "AlloSchool - Physics",
+            type: "website",
+            link: "https://www.alloschool.com/course/alfizia-oalkimia-althania-bak-alom-fiziaiia",
+            year: "all",
+            specialization: "all"
+          }
+        ],
+        "Arabic": [
+          {
+            title: "Arabic Literature Analysis",
+            type: "pdf",
+            link: "/pdfs/arabic/literature.pdf",
+            year: "1bac",
+            specialization: "al"
+          },
+          {
+            title: "Advanced Arabic Grammar",
+            type: "pdf",
+            link: "/pdfs/arabic/grammar.pdf",
+            year: "2bac",
+            specialization: "al"
+          },
+          {
+            title: "AlloSchool - Arabic",
+            type: "website",
+            link: "https://www.alloschool.com/course/allgha-alrbia-althania-bak-adab",
+            year: "all",
+            specialization: "all"
+          }
+        ],
+        "History and Geography": [
+          {
+            title: "World History Overview",
+            type: "pdf",
+            link: "/pdfs/history/world-history.pdf",
+            year: "1bac",
+            specialization: "sh"
+          },
+          {
+            title: "Economic Geography",
+            type: "pdf",
+            link: "/pdfs/geography/economic-geo.pdf",
+            year: "2bac",
+            specialization: "sh"
+          },
+          {
+            title: "AlloSchool - History & Geography",
+            type: "website",
+            link: "https://www.alloschool.com/course/altarikh-oaljghrafi-althania-bak-adab",
+            year: "all",
+            specialization: "all"
+          }
+        ],
+        "French": [
+          {
+            title: "French Literature Classics",
+            type: "pdf",
+            link: "/pdfs/french/literature.pdf",
+            year: "1bac",
+            specialization: "al"
+          },
+          {
+            title: "Advanced French Composition",
+            type: "pdf",
+            link: "/pdfs/french/composition.pdf",
+            year: "2bac",
+            specialization: "al"
+          },
+          {
+            title: "AlloSchool - French",
+            type: "website",
+            link: "https://www.alloschool.com/course/allgha-alfrnsia-althania-bak-adab",
+            year: "all",
+            specialization: "all"
+          }
+        ]
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Filter resources based on selections
-  const filteredResources = selectedSubject ? 
-    resourcesData[selectedSubject].filter(resource => 
+  const filteredResources = selectedSubject && resources[selectedSubject] ? 
+    resources[selectedSubject].filter(resource => 
       (yearLevel === 'all' || resource.year === 'all' || resource.year === yearLevel) &&
       (specialization === 'all' || resource.specialization === 'all' || resource.specialization === specialization)
     ) : [];
@@ -198,7 +309,15 @@ export default function ResourceViewer() {
       <div className="container mx-auto px-4">
         <h2 className="text-2xl font-bold text-gray-800 mb-8">Educational Resources</h2>
         
-        {!selectedSubject ? (
+        {isLoading ? (
+          <div className="text-center py-8">
+            <p className="text-gray-500">Loading resources...</p>
+          </div>
+        ) : error ? (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        ) : !selectedSubject ? (
           // Subject selection grid
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {subjects.map(subject => (
