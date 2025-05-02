@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Barryvdh\DomPDF\Facade\Pdf; // Use the correct namespace
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class RegistrationController extends Controller
 {
@@ -59,7 +60,7 @@ class RegistrationController extends Controller
             if ($request->hasFile('info_packet') && $request->file('info_packet')->isValid()) {
                 $file = $request->file('info_packet');
                 $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-                
+
                 // Store the file in a private directory
                 $filePath = $file->storeAs('registrations/packets', $filename, 'private');
             }
@@ -86,7 +87,6 @@ class RegistrationController extends Controller
                 'message' => 'Registration submitted successfully',
                 'registration' => $registration,
             ], 201);
-
         } catch (\Exception $e) {
             // Log the error
             \Log::error('Registration submission failed: ' . $e->getMessage(), [
@@ -94,7 +94,7 @@ class RegistrationController extends Controller
                 'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             return response()->json([
                 'message' => 'Failed to submit registration',
                 'error' => $e->getMessage()
@@ -123,7 +123,7 @@ class RegistrationController extends Controller
     {
         $registration->processed = true;
         $registration->save();
-        
+
         return response()->json([
             'message' => 'Registration marked as processed',
             'registration' => $registration
@@ -141,9 +141,9 @@ class RegistrationController extends Controller
         if (!$registration->info_packet_path || !Storage::disk('private')->exists($registration->info_packet_path)) {
             return response()->json(['message' => 'Information packet not found'], 404);
         }
-        
+
         return Storage::disk('private')->download(
-            $registration->info_packet_path, 
+            $registration->info_packet_path,
             'registration_info_packet_' . $registration->id . '.' . pathinfo($registration->info_packet_path, PATHINFO_EXTENSION)
         );
     }
@@ -163,14 +163,15 @@ class RegistrationController extends Controller
                 'margin-right'  => 20,
                 'margin-bottom' => 20,
                 'margin-left'   => 20,
-                'default-font'  => 'dejavusans', // Changed from 'dejavu sans' to 'dejavusans' (no space)
+                'default-font'  => 'dejavusans',
+                'font-family'   => 'dejavusans',
                 'enable-javascript' => true,
                 'javascript-delay' => 5000,
                 'encoding' => 'UTF-8',
                 'orientation' => 'portrait',
                 'isRemoteEnabled' => true,
             ];
-    
+
             // Prepare data for PDF
             $data = [
                 'registration' => $registration,
@@ -185,34 +186,37 @@ class RegistrationController extends Controller
                 // Format grade level to display more readable text
                 'grade_applying_for_text' => $this->formatGradeLevel($registration->grade_applying_for)
             ];
-    
+
             // Generate the PDF with Arabic support
-            $pdf = PDF::loadView('pdfs.registration', $data, [], $config);
-            
-            // Set additional options
+            $pdf = PDF::loadView('pdfs.registration', $data);
+
+            // Set options after loading the view
+            foreach ($config as $key => $value) {
+                $pdf->setOption($key, $value);
+            }
+
             $pdf->setOption('dpi', 150);
-            
+
             // Log success message for debugging
             \Log::info('PDF generation starting for registration: ' . $registration->id);
-            
-            // Download the PDF with a descriptive filename
+
+            // Return the PDF as a download
             return $pdf->download('registration_' . $registration->id . '.pdf');
-            
         } catch (\Exception $e) {
-            // Log the error for debugging
+            // Log the error with detailed information
             \Log::error('PDF generation failed: ' . $e->getMessage(), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             return response()->json([
-                'message' => 'Failed to generate PDF: ' . $e->getMessage(),
+                'message' => 'Failed to generate PDF',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
-    
+
     /**
      * Format grade level for display
      * 
@@ -231,7 +235,7 @@ class RegistrationController extends Controller
             '2BAC-SH' => 'السنة الثانية باكالوريا - العلوم الإنسانية',
             '2BAC-L' => 'السنة الثانية باكالوريا - آداب',
         ];
-        
+
         return $grades[$gradeCode] ?? $gradeCode;
     }
 }
