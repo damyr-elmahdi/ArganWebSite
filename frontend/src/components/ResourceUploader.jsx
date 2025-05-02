@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 export default function ResourceUploader() {
@@ -7,11 +7,14 @@ export default function ResourceUploader() {
   const [yearLevel, setYearLevel] = useState('all');
   const [specialization, setSpecialization] = useState('all');
   const [file, setFile] = useState(null);
+  const [pdfPreview, setPdfPreview] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState({ type: '', content: '' });
   const [resources, setResources] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [previewResource, setPreviewResource] = useState(null);
+  const fileInputRef = useRef(null);
 
   // Subject options
   const subjects = [
@@ -65,6 +68,15 @@ export default function ResourceUploader() {
     }
   }, [yearLevel]);
 
+  // Clean up object URL when component unmounts or when file changes
+  useEffect(() => {
+    return () => {
+      if (pdfPreview) {
+        URL.revokeObjectURL(pdfPreview);
+      }
+    };
+  }, [pdfPreview]);
+
   // Fetch list of resources
   const fetchResources = async () => {
     setIsLoading(true);
@@ -87,10 +99,27 @@ export default function ResourceUploader() {
     const selectedFile = e.target.files[0];
     if (selectedFile && selectedFile.type === 'application/pdf') {
       setFile(selectedFile);
+      // Create a preview URL for the PDF
+      const previewUrl = URL.createObjectURL(selectedFile);
+      setPdfPreview(previewUrl);
       setMessage({ type: '', content: '' });
     } else {
       setFile(null);
+      setPdfPreview(null);
       setMessage({ type: 'error', content: 'Please select a valid PDF file.' });
+    }
+  };
+
+  // Clear the form
+  const clearForm = () => {
+    setTitle('');
+    setSubject('');
+    setYearLevel('all');
+    setSpecialization('all');
+    setFile(null);
+    setPdfPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -127,11 +156,7 @@ export default function ResourceUploader() {
       console.log('Upload response:', response.data);
 
       // Reset form after successful upload
-      setTitle('');
-      setSubject('');
-      setYearLevel('all');
-      setSpecialization('all');
-      setFile(null);
+      clearForm();
       setMessage({ type: 'success', content: 'Resource uploaded successfully!' });
       
       // Refresh resources list
@@ -186,9 +211,14 @@ export default function ResourceUploader() {
     return specialization ? specialization.label : value;
   };
 
-  // View resource in new tab
-  const viewResource = (resource) => {
-    window.open(`/api/resources/${resource.id}/download`, '_blank');
+  // Open PDF preview modal
+  const openPdfPreview = (resource) => {
+    setPreviewResource(resource);
+  };
+
+  // Close PDF preview modal
+  const closePdfPreview = () => {
+    setPreviewResource(null);
   };
 
   return (
@@ -283,6 +313,7 @@ export default function ResourceUploader() {
             PDF File *
           </label>
           <input
+            ref={fileInputRef}
             type="file"
             id="file"
             accept="application/pdf"
@@ -292,6 +323,20 @@ export default function ResourceUploader() {
           />
           <p className="text-xs text-gray-500 mt-1">Only PDF files are accepted</p>
         </div>
+        
+        {/* PDF Preview */}
+        {pdfPreview && (
+          <div className="mb-4">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">PDF Preview</h4>
+            <div className="border border-gray-300 rounded-md overflow-hidden" style={{ height: '400px' }}>
+              <iframe 
+                src={pdfPreview} 
+                className="w-full h-full" 
+                title="PDF Preview" 
+              />
+            </div>
+          </div>
+        )}
         
         {isUploading && (
           <div className="mb-4">
@@ -305,15 +350,25 @@ export default function ResourceUploader() {
           </div>
         )}
         
-        <button
-          type="submit"
-          disabled={isUploading}
-          className={`w-full p-2 text-white rounded-md ${
-            isUploading ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'
-          }`}
-        >
-          {isUploading ? 'Uploading...' : 'Upload Resource'}
-        </button>
+        <div className="flex space-x-2">
+          <button
+            type="submit"
+            disabled={isUploading}
+            className={`w-full p-2 text-white rounded-md ${
+              isUploading ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'
+            }`}
+          >
+            {isUploading ? 'Uploading...' : 'Upload Resource'}
+          </button>
+          
+          <button
+            type="button"
+            onClick={clearForm}
+            className="w-1/4 p-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md"
+          >
+            Clear
+          </button>
+        </div>
       </form>
       
       {/* Resources list */}
@@ -347,7 +402,7 @@ export default function ResourceUploader() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button 
-                        onClick={() => viewResource(resource)}
+                        onClick={() => openPdfPreview(resource)}
                         className="text-green-600 hover:text-green-900 mr-3"
                       >
                         View
@@ -368,6 +423,42 @@ export default function ResourceUploader() {
           <p className="text-gray-500">No resources uploaded yet.</p>
         )}
       </div>
+      
+      {/* PDF Viewer Modal */}
+      {previewResource && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-4">
+          <div className="bg-white rounded-lg w-full max-w-6xl h-5/6 flex flex-col">
+            <div className="flex justify-between items-center border-b p-4">
+              <h3 className="text-lg font-medium">{previewResource.title}</h3>
+              <button 
+                onClick={closePdfPreview}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <iframe 
+                src={previewResource.viewUrl}
+                className="w-full h-full"
+                title={previewResource.title}
+              ></iframe>
+            </div>
+            {/* <div className="p-4 border-t flex justify-end">
+              <a 
+                href={previewResource.fileUrl}
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded"
+              >
+                Download
+              </a>
+            </div> */}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

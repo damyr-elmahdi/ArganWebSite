@@ -210,9 +210,9 @@ export default function ResourceViewer() {
       
       {/* PDF Viewer Modal */}
       {selectedResource && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-4">
-          <div className="bg-white rounded-lg w-full max-w-6xl h-5/6 flex flex-col">
-            <div className="flex justify-between items-center border-b p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-2">
+          <div className="bg-white rounded-lg w-full max-w-7xl h-[90vh] flex flex-col">
+            <div className="flex justify-between items-center border-b p-2">
               <h3 className="text-lg font-medium">{selectedResource.title}</h3>
               <button 
                 onClick={closeViewer}
