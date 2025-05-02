@@ -6,6 +6,7 @@ export default function ResourceViewer() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedResource, setSelectedResource] = useState(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [filters, setFilters] = useState({
     subject: '',
     yearLevel: '',
@@ -129,10 +130,65 @@ export default function ResourceViewer() {
     setSelectedResource(resource);
   };
 
+  // Toggle fullscreen mode
+  const toggleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
+  };
+
   // Close PDF viewer
   const closeViewer = () => {
     setSelectedResource(null);
+    setIsFullScreen(false);
   };
+
+  // If a PDF is being viewed in fullscreen, only show the PDF viewer
+  if (selectedResource && isFullScreen) {
+    return (
+      <div className="fixed inset-0 bg-black z-50 flex flex-col">
+        <div className="bg-gray-800 text-white p-3 flex justify-between items-center">
+          <h3 className="text-lg font-medium truncate">{selectedResource.title}</h3>
+          <div className="flex items-center space-x-4">
+            <a 
+              href={`/api/resources/${selectedResource.id}/download`}
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-white hover:text-orange-300 flex items-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download
+            </a>
+            <button 
+              onClick={toggleFullScreen}
+              className="text-white hover:text-green-300 flex items-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5" />
+              </svg>
+              Exit Full Screen
+            </button>
+            <button 
+              onClick={closeViewer}
+              className="text-white hover:text-red-300 flex items-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Close
+            </button>
+          </div>
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <iframe 
+            src={`/api/resources/${selectedResource.id}/view`}
+            className="w-full h-full"
+            title={selectedResource.title}
+          ></iframe>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
@@ -208,20 +264,43 @@ export default function ResourceViewer() {
         </div>
       )}
       
-      {/* PDF Viewer Modal */}
-      {selectedResource && (
+      {/* PDF Viewer Modal (non-fullscreen mode) */}
+      {selectedResource && !isFullScreen && (
         <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-2">
           <div className="bg-white rounded-lg w-full max-w-7xl h-[90vh] flex flex-col">
-            <div className="flex justify-between items-center border-b p-2">
-              <h3 className="text-lg font-medium">{selectedResource.title}</h3>
-              <button 
-                onClick={closeViewer}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+            <div className="flex justify-between items-center border-b p-3">
+              <h3 className="text-lg font-medium truncate">{selectedResource.title}</h3>
+              <div className="flex items-center space-x-4">
+                <a 
+                  href={`/api/resources/${selectedResource.id}/download`}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-orange-600 flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download
+                </a>
+                <button 
+                  onClick={toggleFullScreen}
+                  className="text-gray-600 hover:text-green-600 flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5" />
+                  </svg>
+                  Full Screen
+                </button>
+                <button 
+                  onClick={closeViewer}
+                  className="text-gray-600 hover:text-red-600 flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Close
+                </button>
+              </div>
             </div>
             <div className="flex-1 overflow-hidden">
               <iframe 

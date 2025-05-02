@@ -5,6 +5,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
+    // allowedHosts: [
+    //   'smtp-kept-elvis-women.trycloudflare.com'  // 👈 Add this
+    // ],
     proxy: {
       '/api': {
         target: 'http://localhost:8000',
