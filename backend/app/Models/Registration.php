@@ -12,6 +12,7 @@ class Registration extends Model
     protected $fillable = [
         'full_name',
         'date_of_birth',
+        'grade_applying_for',
         'address',
         'previous_school',
         'parent_name',
@@ -21,7 +22,9 @@ class Registration extends Model
         'student_phone',
         'family_status',
         'orphan_date',
-
+        'additional_notes',
+        'info_packet_path',
+        'processed',
     ];
 
     protected $casts = [

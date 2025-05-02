@@ -8,7 +8,7 @@ export default function RegistrationCTA({ schoolName }) {
          </p>
          <div className="flex flex-wrap justify-center gap-4">
            <a href="#" className="bg-orange-600 text-white px-6 py-3 rounded-md font-medium hover:bg-orange-700 transition">Register as New Student</a>
-           <a href="#" className="bg-white text-orange-600 border border-orange-600 px-6 py-3 rounded-md font-medium hover:bg-gray-50 transition">Request Information Packet</a>
+
          </div>
        </div>
      </section>

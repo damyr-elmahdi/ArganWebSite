@@ -31,6 +31,7 @@ class RegistrationController extends Controller
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'date_of_birth' => 'nullable|date',
+            'grade_applying_for' => 'nullable|string|max:255',
             'address' => 'required|string',
             'previous_school' => 'nullable|string|max:255',
             'parent_name' => 'required|string|max:255',
@@ -40,6 +41,8 @@ class RegistrationController extends Controller
             'student_phone' => 'required|string|max:20',
             'family_status' => 'required|string|in:with_parents,divorced,orphaned',
             'orphan_date' => 'nullable|date|required_if:family_status,orphaned',
+            'additional_notes' => 'nullable|string',
+            'info_packet' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
         ]);
         
         $registrationData = $request->except('info_packet');

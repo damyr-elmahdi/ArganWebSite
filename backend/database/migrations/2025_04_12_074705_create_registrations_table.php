@@ -11,17 +11,20 @@ return new class extends Migration
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
             $table->string('full_name');
-            $table->string('parent_name')->nullable();
-            $table->string('parent_occupation')->nullable();
-            $table->string('father_phone')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->string('grade_applying_for')->nullable(); // Added field
+            $table->string('parent_name');
+            $table->string('parent_occupation');
+            $table->string('father_phone');
             $table->string('mother_phone')->nullable();
-            $table->string('student_phone')->nullable();
-            $table->string('family_status')->nullable();
+            $table->string('student_phone');
+            $table->string('family_status');
             $table->date('orphan_date')->nullable();
-            $table->date('date_of_birth');
             $table->text('address');
             $table->string('previous_school')->nullable();
-
+            $table->text('additional_notes')->nullable();
+            $table->string('info_packet_path')->nullable(); 
+            $table->boolean('processed')->default(false);
             $table->timestamps();
         });
     }
