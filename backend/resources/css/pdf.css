@@ -1,0 +1,76 @@
+/* Arabic PDF styling */
+* {
+   direction: rtl;
+   text-align: right;
+   font-family: 'DejaVu Sans', 'Arial', sans-serif;
+}
+
+body {
+   background-color: #fff;
+   color: #333;
+   margin: 0;
+   padding: 0;
+   font-size: 14px;
+   line-height: 1.6;
+}
+
+.header {
+   text-align: center;
+   padding: 20px 0;
+   margin-bottom: 20px;
+}
+
+.header-title {
+   font-size: 24px;
+   font-weight: bold;
+   margin-bottom: 5px;
+}
+
+.rtl {
+   direction: rtl;
+}
+
+h1, h2, h3 {
+   font-weight: bold;
+}
+
+h1 {
+   font-size: 22px;
+   text-align: center;
+}
+
+h2 {
+   font-size: 18px;
+   margin-top: 20px;
+   border-bottom: 1px solid #ddd;
+   padding-bottom: 5px;
+}
+
+.section {
+   margin-bottom: 20px;
+}
+
+table {
+   width: 100%;
+   border-collapse: collapse;
+   margin-bottom: 15px;
+}
+
+table, th, td {
+   border: 1px solid #ddd;
+}
+
+th, td {
+   padding: 8px;
+   text-align: right;
+}
+
+th {
+   background-color: #f8f8f8;
+   font-weight: bold;
+}
+
+.label {
+   font-weight: bold;
+   min-width: 150px;
+}

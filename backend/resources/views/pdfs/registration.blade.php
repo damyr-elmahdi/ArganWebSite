@@ -3,167 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استمارة تسجيل</title>
+    <title>استمارة التسجيل</title>
     <style>
+        /* Reset and base styles */
+        * {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            box-sizing: border-box;
+        }
         body {
-            font-family: "Helvetica", "Arial", sans-serif;
-            line-height: 1.6;
-            color: #333;
+            margin: 0;
             padding: 20px;
+            font-size: 12pt;
+            color: #333;
             direction: rtl;
+            text-align: right;
+        }
+        h1 {
+            font-size: 20pt;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 14pt;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
         }
         .header {
             text-align: center;
             margin-bottom: 30px;
-            border-bottom: 2px solid #f97316;
-            padding-bottom: 10px;
         }
-        .logo {
-            max-width: 120px;
-            margin-bottom: 15px;
-        }
-        h1 {
-            font-size: 24px;
-            color: #f97316;
-            margin: 0;
-        }
-        .subtitle {
-            font-size: 18px;
-            color: #666;
-            margin-top: 5px;
-        }
-        .registration-date {
-            font-size: 14px;
-            color: #666;
-            margin-top: 5px;
-        }
-        .section {
-            margin-bottom: 25px;
-        }
-        .section-title {
-            font-size: 18px;
+        .header-title {
+            font-size: 24pt;
             font-weight: bold;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-            color: #f97316;
+            margin-bottom: 5px;
+        }
+        .sub-title {
+            font-size: 14pt;
+            margin-bottom: 5px;
+        }
+        .date {
+            font-size: 12pt;
+            margin-bottom: 20px;
+        }
+        .registration-id {
+            font-size: 10pt;
+            color: #555;
+            margin-top: 5px;
+        }
+        
+        /* Content layout */
+        .section {
+            margin-bottom: 20px;
         }
         .info-row {
-            margin-bottom: 15px;
+            display: flex;
+            margin-bottom: 10px;
         }
-        .label {
+        .info-label {
             font-weight: bold;
-            display: inline-block;
-            width: 30%;
-            vertical-align: top;
+            min-width: 150px;
+            padding-left: 10px;
         }
-        .value {
-            display: inline-block;
-            width: 65%;
+        .info-value {
+            flex: 1;
         }
-        .page-break {
-            page-break-after: always;
+        
+        /* Additional styling */
+        .divider {
+            border-top: 1px solid #eee;
+            margin: 20px 0;
         }
         .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 12px;
+            margin-top: 50px;
+            font-size: 10pt;
             color: #666;
-            padding: 10px;
-            border-top: 1px solid #ddd;
+            text-align: center;
         }
         .signature-section {
-            margin-top: 60px;
+            margin-top: 40px;
             display: flex;
             justify-content: space-between;
         }
         .signature-box {
-            width: 45%;
-            border-top: 1px solid #000;
-            padding-top: 10px;
+            border-top: 1px solid #333;
+            width: 200px;
+            padding-top: 5px;
             text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>استمارة تسجيل طالب</h1>
-        <p class="subtitle">العام الدراسي 2025-2026</p>
-        <p class="registration-date">تاريخ التسجيل: {{ $today }}</p>
+        <div class="header-title">استمارة التسجيل</div>
+        <div class="sub-title">السنة الدراسية {{ $school_year }}</div>
+        <div class="date">تاريخ التسجيل: {{ $date }}</div>
     </div>
 
+    <h2>معلومات الطالب</h2>
     <div class="section">
-        <h2 class="section-title">معلومات الطالب</h2>
         <div class="info-row">
-            <span class="label">الاسم الكامل:</span>
-            <span class="value">{{ $registration->full_name }}</span>
+            <div class="info-label">الإسم الكامل:</div>
+            <div class="info-value">{{ $registration->full_name }}</div>
         </div>
         <div class="info-row">
-            <span class="label">تاريخ الميلاد:</span>
-            <span class="value">{{ $registration->date_of_birth ? $registration->date_of_birth->format('d/m/Y') : 'غير محدد' }}</span>
+            <div class="info-label">المستوى الدراسي:</div>
+            <div class="info-value">{{ $grade_applying_for_text }}</div>
         </div>
         <div class="info-row">
-            <span class="label">رقم هاتف الطالب:</span>
-            <span class="value">{{ $registration->student_phone }}</span>
+            <div class="info-label">رقم هاتف التلميذ:</div>
+            <div class="info-value">{{ $registration->student_phone }}</div>
         </div>
         <div class="info-row">
-            <span class="label">المدرسة السابقة:</span>
-            <span class="value">{{ $registration->previous_school ?: 'غير محدد' }}</span>
-        </div>
-        <div class="info-row">
-            <span class="label">عنوان السكن:</span>
-            <span class="value">{{ $registration->address }}</span>
+            <div class="info-label">المدرسة السابقة:</div>
+            <div class="info-value">{{ $registration->previous_school ?: 'غير محدد' }}</div>
         </div>
     </div>
 
+    <h2>معلومات ولي الأمر</h2>
     <div class="section">
-        <h2 class="section-title">معلومات ولي الأمر</h2>
         <div class="info-row">
-            <span class="label">اسم ولي الأمر:</span>
-            <span class="value">{{ $registration->parent_name }}</span>
+            <div class="info-label">اسم ولي الأمر:</div>
+            <div class="info-value">{{ $registration->parent_name }}</div>
         </div>
         <div class="info-row">
-            <span class="label">المهنة:</span>
-            <span class="value">{{ $registration->parent_occupation }}</span>
+            <div class="info-label">المهنة:</div>
+            <div class="info-value">{{ $registration->parent_occupation }}</div>
         </div>
         <div class="info-row">
-            <span class="label">رقم هاتف الأب:</span>
-            <span class="value">{{ $registration->father_phone }}</span>
+            <div class="info-label">رقم هاتف الأب:</div>
+            <div class="info-value">{{ $registration->father_phone }}</div>
         </div>
+        @if($registration->mother_phone)
         <div class="info-row">
-            <span class="label">رقم هاتف الأم:</span>
-            <span class="value">{{ $registration->mother_phone ?: 'غير متوفر' }}</span>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2 class="section-title">الحالة العائلية</h2>
-        <div class="info-row">
-            <span class="label">الحالة العائلية:</span>
-            <span class="value">{{ $familyStatusText }}</span>
-        </div>
-        @if($registration->family_status == 'orphaned' && $registration->orphan_date)
-        <div class="info-row">
-            <span class="label">تاريخ وفاة الأب:</span>
-            <span class="value">{{ $registration->orphan_date->format('d/m/Y') }}</span>
+            <div class="info-label">رقم هاتف الأم:</div>
+            <div class="info-value">{{ $registration->mother_phone }}</div>
         </div>
         @endif
     </div>
 
+    <h2>العنوان والمعلومات الإضافية</h2>
+    <div class="section">
+        <div class="info-row">
+            <div class="info-label">عنوان السكن:</div>
+            <div class="info-value">{{ $registration->address }}</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">الحالة العائلية:</div>
+            <div class="info-value">{{ $family_status_text }}</div>
+        </div>
+        @if($registration->family_status == 'orphaned' && $registration->orphan_date)
+        <div class="info-row">
+            <div class="info-label">تاريخ وفاة الأب:</div>
+            <div class="info-value">{{ $registration->orphan_date->format('Y-m-d') }}</div>
+        </div>
+        @endif
+        @if($registration->additional_notes)
+        <div class="info-row">
+            <div class="info-label">ملاحظات إضافية:</div>
+            <div class="info-value">{{ $registration->additional_notes }}</div>
+        </div>
+        @endif
+    </div>
+
+    <div class="divider"></div>
+
     <div class="signature-section">
         <div class="signature-box">
-            <p>توقيع ولي الأمر</p>
+            <div>توقيع ولي الأمر</div>
         </div>
         <div class="signature-box">
-            <p>توقيع إدارة المدرسة</p>
+            <div>توقيع الإدارة</div>
         </div>
     </div>
 
     <div class="footer">
-        رقم التسجيل: {{ $registration->id }} | تم إنشاء هذا المستند بتاريخ {{ $today }}
+        <p>رقم التسجيل: {{ $registration->id }} | تم إنشاء هذا التسجيل بتاريخ {{ $date }}</p>
     </div>
 </body>
 </html>
