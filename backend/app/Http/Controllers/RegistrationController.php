@@ -163,14 +163,14 @@ class RegistrationController extends Controller
                 'margin-right'  => 20,
                 'margin-bottom' => 20,
                 'margin-left'   => 20,
-                'default-font' => 'dejavu sans',
+                'default-font'  => 'dejavusans', // Changed from 'dejavu sans' to 'dejavusans' (no space)
                 'enable-javascript' => true,
                 'javascript-delay' => 5000,
                 'encoding' => 'UTF-8',
                 'orientation' => 'portrait',
-                'dir' => 'rtl',  // Right-to-left direction for Arabic
+                'isRemoteEnabled' => true,
             ];
-
+    
             // Prepare data for PDF
             $data = [
                 'registration' => $registration,
@@ -185,13 +185,15 @@ class RegistrationController extends Controller
                 // Format grade level to display more readable text
                 'grade_applying_for_text' => $this->formatGradeLevel($registration->grade_applying_for)
             ];
-
+    
             // Generate the PDF with Arabic support
-            // Notice we're using the correct path to the view file now
             $pdf = PDF::loadView('pdfs.registration', $data, [], $config);
             
             // Set additional options
             $pdf->setOption('dpi', 150);
+            
+            // Log success message for debugging
+            \Log::info('PDF generation starting for registration: ' . $registration->id);
             
             // Download the PDF with a descriptive filename
             return $pdf->download('registration_' . $registration->id . '.pdf');
@@ -205,7 +207,7 @@ class RegistrationController extends Controller
             ]);
             
             return response()->json([
-                'message' => 'Failed to generate PDF',
+                'message' => 'Failed to generate PDF: ' . $e->getMessage(),
                 'error' => $e->getMessage()
             ], 500);
         }
