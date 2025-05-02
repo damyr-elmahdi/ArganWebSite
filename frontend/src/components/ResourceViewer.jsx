@@ -225,7 +225,7 @@ export default function ResourceViewer() {
             </div>
             <div className="flex-1 overflow-hidden">
               <iframe 
-                src={`/api/resources/${selectedResource.id}/download`}
+                src={`/api/resources/${selectedResource.id}/view`}
                 className="w-full h-full"
                 title={selectedResource.title}
               ></iframe>

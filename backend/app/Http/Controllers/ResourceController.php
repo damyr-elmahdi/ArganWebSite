@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Response;
 
 class ResourceController extends Controller
 {
@@ -35,6 +36,7 @@ class ResourceController extends Controller
         // Add file URL to each resource
         $resources->each(function ($resource) {
             $resource->fileUrl = route('resources.download', $resource->id);
+            $resource->viewUrl = route('resources.view', $resource->id);
         });
 
         return response()->json($resources);
@@ -118,6 +120,7 @@ class ResourceController extends Controller
                     'yearLevel' => $resource->year_level,
                     'specialization' => $resource->specialization,
                     'fileUrl' => route('resources.download', $resource->id),
+                    'viewUrl' => route('resources.view', $resource->id),
                 ],
             ], 201);
     
@@ -147,6 +150,7 @@ class ResourceController extends Controller
         $resource = Resource::findOrFail($id);
         
         $resource->fileUrl = route('resources.download', $resource->id);
+        $resource->viewUrl = route('resources.view', $resource->id);
         
         return response()->json($resource);
     }
@@ -203,5 +207,30 @@ class ResourceController extends Controller
             $resource->file_name, 
             ['Content-Type' => $resource->mime_type]
         );
+    }
+
+    /**
+     * View the specified resource in browser.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function view($id)
+    {
+        $resource = Resource::findOrFail($id);
+        
+        // Check if file exists
+        if (!Storage::disk('private')->exists($resource->file_path)) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+        
+        // Get file content
+        $fileContents = Storage::disk('private')->get($resource->file_path);
+        
+        // Return file with appropriate headers for in-browser display
+        return Response::make($fileContents, 200, [
+            'Content-Type' => $resource->mime_type,
+            'Content-Disposition' => 'inline; filename="' . $resource->file_name . '"',
+        ]);
     }
 }

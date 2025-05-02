@@ -39,6 +39,8 @@ Route::get('/library/{libraryItem}', [LibraryController::class, 'show']);
 Route::get('/resources', [ResourceController::class, 'index']);
 Route::get('/resources/{resource}', [ResourceController::class, 'show']);
 Route::get('/resources/{resource}/download', [ResourceController::class, 'download'])->name('resources.download');
+Route::get('/resources/{resource}/view', [ResourceController::class, 'view'])->name('resources.view');
+
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
