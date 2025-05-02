@@ -11,18 +11,22 @@ class Registration extends Model
 
     protected $fillable = [
         'full_name',
-        'email',
         'date_of_birth',
-        'phone',
         'address',
         'previous_school',
-        'grade_applying_for',
-        'info_packet_path',
-        'processed'
+        'parent_name',
+        'parent_occupation',
+        'father_phone',
+        'mother_phone',
+        'student_phone',
+        'family_status',
+        'orphan_date',
+
     ];
 
     protected $casts = [
         'date_of_birth' => 'date',
+        'orphan_date' => 'date',
         'processed' => 'boolean',
     ];
 }

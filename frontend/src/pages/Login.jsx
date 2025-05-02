@@ -133,14 +133,14 @@ export default function Login() {
           </div>
         </form>
         
-        <div className="text-center mt-4">
+        {/* <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             Don't have an account?{' '}
             <Link to="/register" className="font-medium text-orange-600 hover:text-orange-500">
               Register here
             </Link>
           </p>
-        </div>
+        </div> */}
       </div>
     </main>
   );

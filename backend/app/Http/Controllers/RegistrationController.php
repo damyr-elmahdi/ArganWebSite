@@ -6,6 +6,8 @@ use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
+use PDF;
+use Carbon\Carbon;
 
 class RegistrationController extends Controller
 {
@@ -28,14 +30,16 @@ class RegistrationController extends Controller
     {
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'date_of_birth' => 'required|date',
-            'phone' => 'required|string|max:20',
+            'date_of_birth' => 'nullable|date',
             'address' => 'required|string',
             'previous_school' => 'nullable|string|max:255',
-            'grade_applying_for' => 'required|string|max:50',
-            'additional_notes' => 'nullable|string',
-            'info_packet' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
+            'parent_name' => 'required|string|max:255',
+            'parent_occupation' => 'required|string|max:255',
+            'father_phone' => 'required|string|max:20',
+            'mother_phone' => 'nullable|string|max:20',
+            'student_phone' => 'required|string|max:20',
+            'family_status' => 'required|string|in:with_parents,divorced,orphaned',
+            'orphan_date' => 'nullable|date|required_if:family_status,orphaned',
         ]);
         
         $registrationData = $request->except('info_packet');
@@ -86,5 +90,46 @@ class RegistrationController extends Controller
             'Content-Type' => $type,
             'Content-Disposition' => 'attachment; filename="' . $filename . '"'
         ]);
+    }
+    
+    /**
+     * Generate a PDF for the registration
+     */
+    public function generatePDF(Registration $registration)
+    {
+        // Map family status to Arabic text
+        $familyStatusText = [
+            'with_parents' => 'يعيش مع الوالدين',
+            'divorced' => 'الوالدين منفصلين',
+            'orphaned' => 'يتيم'
+        ];
+
+        // Format the current date in Arabic
+        $today = Carbon::now()->locale('ar')->translatedFormat('d F Y');
+        
+        // Create a data array for the view
+        $data = [
+            'registration' => $registration,
+            'familyStatusText' => $familyStatusText[$registration->family_status] ?? $registration->family_status,
+            'today' => $today
+        ];
+        
+        // Generate PDF using the Laravel PDF package
+        $pdf = PDF::loadView('pdfs.registration', $data);
+        
+        // Set RTL direction for Arabic
+        $pdf->setOption('enable-local-file-access', true);
+        $pdf->setOption('orientation', 'portrait');
+        $pdf->setOption('page-size', 'A4');
+        $pdf->setOption('margin-top', '10mm');
+        $pdf->setOption('margin-right', '10mm');
+        $pdf->setOption('margin-bottom', '10mm');
+        $pdf->setOption('margin-left', '10mm');
+        $pdf->setOption('encoding', 'UTF-8');
+        $pdf->setOption('isRemoteEnabled', true);
+        $pdf->setOption('isPhpEnabled', true);
+        
+        // Download the PDF with a custom filename
+        return $pdf->download('registration_' . $registration->id . '.pdf');
     }
 }

@@ -2,7 +2,7 @@ import Hero from '../components/Hero';
 import NewsSection from '../components/NewsSection';
 import EventsSection from '../components/EventsSection';
 import ResourceViewer from '../components/ResourceViewer'; // Import the new ResourceViewer component
-import RegistrationCTA from '../components/RegistrationCTA'; 
+import StudentRegistrationForm from '../components/StudentRegistrationForm'; 
 import argan from "../assets/argan.png";
 
 
@@ -186,7 +186,7 @@ export default function Home({ schoolInfo }) {
       </section>
       
       {/* Registration CTA */}
-      <RegistrationCTA schoolName={schoolInfo.name} />
+      <StudentRegistrationForm  />
     </main>
   );
 }
