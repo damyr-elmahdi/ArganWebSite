@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf; // Use the correct namespace
 
 class RegistrationController extends Controller
 {
@@ -156,42 +156,59 @@ class RegistrationController extends Controller
      */
     public function generatePDF(Registration $registration)
     {
-        // Configure PDF options for Arabic support
-        $config = [
-            'margin-top'    => 20,
-            'margin-right'  => 20,
-            'margin-bottom' => 20,
-            'margin-left'   => 20,
-            'default-font' => 'dejavu sans',
-            'enable-javascript' => true,
-            'javascript-delay' => 5000,
-            'encoding' => 'UTF-8',
-            'user-style-sheet' => public_path('css/pdf.css'),
-            'orientation' => 'portrait',
-            'dir' => 'rtl',  // Right-to-left direction for Arabic
-        ];
+        try {
+            // Configure PDF options for Arabic support
+            $config = [
+                'margin-top'    => 20,
+                'margin-right'  => 20,
+                'margin-bottom' => 20,
+                'margin-left'   => 20,
+                'default-font' => 'dejavu sans',
+                'enable-javascript' => true,
+                'javascript-delay' => 5000,
+                'encoding' => 'UTF-8',
+                'orientation' => 'portrait',
+                'dir' => 'rtl',  // Right-to-left direction for Arabic
+            ];
 
-        // Prepare data for PDF
-        $data = [
-            'registration' => $registration,
-            'date' => now()->format('d F Y'),
-            'school_year' => '2025-2026',
-            // Map family status to Arabic text
-            'family_status_text' => [
-                'with_parents' => 'يعيش مع الوالدين',
-                'divorced' => 'الوالدين منفصلين',
-                'orphaned' => 'يتيم'
-            ][$registration->family_status] ?? $registration->family_status,
-            // Format grade level to display more readable text
-            'grade_applying_for_text' => $this->formatGradeLevel($registration->grade_applying_for)
-        ];
+            // Prepare data for PDF
+            $data = [
+                'registration' => $registration,
+                'date' => now()->format('d F Y'),
+                'school_year' => '2025-2026',
+                // Map family status to Arabic text
+                'family_status_text' => [
+                    'with_parents' => 'يعيش مع الوالدين',
+                    'divorced' => 'الوالدين منفصلين',
+                    'orphaned' => 'يتيم'
+                ][$registration->family_status] ?? $registration->family_status,
+                // Format grade level to display more readable text
+                'grade_applying_for_text' => $this->formatGradeLevel($registration->grade_applying_for)
+            ];
 
-        // Generate the PDF with Arabic support
-        $pdf = PDF::loadView('pdf.registration', $data, [], $config);
-        $pdf->setOption('dpi', 150);
-        
-        // Download the PDF with a descriptive filename
-        return $pdf->download('registration_' . $registration->id . '.pdf');
+            // Generate the PDF with Arabic support
+            // Notice we're using the correct path to the view file now
+            $pdf = PDF::loadView('pdfs.registration', $data, [], $config);
+            
+            // Set additional options
+            $pdf->setOption('dpi', 150);
+            
+            // Download the PDF with a descriptive filename
+            return $pdf->download('registration_' . $registration->id . '.pdf');
+            
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('PDF generation failed: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'message' => 'Failed to generate PDF',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
     
     /**

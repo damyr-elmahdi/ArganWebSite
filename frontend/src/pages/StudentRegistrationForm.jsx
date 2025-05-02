@@ -131,14 +131,6 @@ export default function StudentRegistrationForm() {
         {success && (
           <div className="bg-green-50 border-l-4 border-green-500 p-4">
             <p className="text-green-700">{success}</p>
-            {registrationId && (
-              <button
-                onClick={handleDownloadPDF}
-                className="mt-3 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                تنزيل نموذج التسجيل (PDF)
-              </button>
-            )}
           </div>
         )}
 
@@ -437,6 +429,18 @@ export default function StudentRegistrationForm() {
               {isLoading ? "جاري التقديم..." : "تقديم طلب التسجيل"}
             </button>
           </div>
+          
+          {/* PDF Download button moved to the bottom */}
+          {success && registrationId && (
+            <div className="mt-6 text-center">
+              <button
+                onClick={handleDownloadPDF}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                تنزيل نموذج التسجيل (PDF)
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </main>

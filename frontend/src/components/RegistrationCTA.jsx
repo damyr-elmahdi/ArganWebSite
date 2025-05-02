@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function RegistrationCTA({ schoolName }) {
    return (
      <section className="py-12 bg-orange-50">
@@ -7,11 +9,9 @@ export default function RegistrationCTA({ schoolName }) {
            Take the first step towards a bright future with our comprehensive educational programs.
          </p>
          <div className="flex flex-wrap justify-center gap-4">
-           <a href="#" className="bg-orange-600 text-white px-6 py-3 rounded-md font-medium hover:bg-orange-700 transition">Register as New Student</a>
-
+           <Link to="/register-student" className="bg-orange-600 text-white px-6 py-3 rounded-md font-medium hover:bg-orange-700 transition">Register as New Student</Link>
          </div>
        </div>
      </section>
    );
  }
- 

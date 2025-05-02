@@ -29,7 +29,8 @@ import QuizEditor from "./components/QuizEditor";
 import TeacherQuizzes from "./components/TeacherQuizzes";
 import QuizCreator from "./components/QuizCreator";
 import Contact from './pages/Contact';
-import ResourceViewer from './components/ResourceViewer'; // Import the new ResourceViewer component
+import ResourceViewer from './components/ResourceViewer';
+import StudentRegistrationForm from './pages/StudentRegistrationForm';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
@@ -112,6 +113,9 @@ export default function App() {
             {/* Password reset routes */}
 
             <Route path="/contact" element={<Contact schoolInfo={schoolInfo} />} />
+            
+            {/* Student Registration Form */}
+            <Route path="/register-student" element={<StudentRegistrationForm />} />
             
             {/* Educational Resources route */}
             <Route path="/resources" element={<ResourceViewer />} />
