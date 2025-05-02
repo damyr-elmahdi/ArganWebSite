@@ -5,6 +5,7 @@ export default function ResourceViewer() {
   const [resources, setResources] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedResource, setSelectedResource] = useState(null);
   const [filters, setFilters] = useState({
     subject: '',
     yearLevel: '',
@@ -31,21 +32,43 @@ export default function ResourceViewer() {
     { value: '2bac', label: '2BAC (Second Year)' }
   ];
 
-  // Specialization options
-  const specializations = [
-    { value: '', label: 'All Specializations' },
-    { value: 'all', label: 'General (All Specializations)' },
-    { value: 'se', label: 'SE (Sciences Expérimentales)' }, 
-    { value: 'sm', label: 'SM (Sciences Mathématiques)' },
-    { value: 'svt', label: 'SVT (Sciences de la Vie et de la Terre)' },
-    { value: 'sh', label: 'SH (Sciences Humaines)' },
-    { value: 'al', label: 'AL (Arts et Lettres)' }
+  // Base specialization options
+  const allSpecializations = [
+    { value: '', label: 'All Specializations', yearLevels: ['', 'all', 'tc', '1bac', '2bac'] },
+    { value: 'all', label: 'General (All Specializations)', yearLevels: ['', 'all', 'tc', '1bac', '2bac'] },
+    { value: 'science', label: 'Science', yearLevels: ['tc'] },
+    { value: 'letter', label: 'Letter', yearLevels: ['tc', '1bac', '2bac'] },
+    { value: 'se', label: 'SE (Sciences Expérimentales)', yearLevels: ['1bac'] },
+    { value: 'sm', label: 'SM (Sciences Mathématiques)', yearLevels: ['1bac'] },
+    { value: 'sh', label: 'SH (Sciences Humaines)', yearLevels: ['1bac', '2bac'] },
+    { value: 'spc', label: 'SPC (Sciences Physiques et Chimiques)', yearLevels: ['2bac'] },
+    { value: 'svt', label: 'SVT (Sciences de la Vie et de la Terre)', yearLevels: ['1bac', '2bac'] },
+    { value: 'smb1', label: 'SMB1 (Sciences Mathématiques B1)', yearLevels: ['2bac'] },
+    { value: 'smb2', label: 'SMB2 (Sciences Mathématiques B2)', yearLevels: ['2bac'] },
+    { value: 'al', label: 'AL (Arabic et Lettres)', yearLevels: ['1bac', '2bac'] }
   ];
+
+  // Filtered specialization options based on selected year level
+  const getFilteredSpecializations = () => {
+    if (!filters.yearLevel) {
+      return allSpecializations.filter(spec => spec.yearLevels.includes(''));
+    }
+    return allSpecializations.filter(spec => spec.yearLevels.includes(filters.yearLevel));
+  };
 
   // Fetch resources when component mounts
   useEffect(() => {
     fetchResources();
   }, []);
+
+  // Reset specialization when year level changes
+  useEffect(() => {
+    // Check if current specialization is valid for selected year level
+    const validSpecializations = getFilteredSpecializations().map(spec => spec.value);
+    if (!validSpecializations.includes(filters.specialization)) {
+      setFilters(prev => ({ ...prev, specialization: '' }));
+    }
+  }, [filters.yearLevel]);
 
   // Fetch list of resources
   const fetchResources = async () => {
@@ -75,8 +98,8 @@ export default function ResourceViewer() {
   const filteredResources = resources.filter(resource => {
     return (
       (filters.subject === '' || resource.subject === filters.subject) &&
-      (filters.yearLevel === '' || resource.yearLevel === filters.yearLevel) &&
-      (filters.specialization === '' || resource.specialization === filters.specialization)
+      (filters.yearLevel === '' || resource.yearLevel === filters.yearLevel || resource.yearLevel === 'all') &&
+      (filters.specialization === '' || resource.specialization === filters.specialization || resource.specialization === 'all')
     );
   });
 
@@ -97,8 +120,18 @@ export default function ResourceViewer() {
 
   // Get label for specialization based on value
   const getSpecializationLabel = (value) => {
-    const specialization = specializations.find(s => s.value === value);
+    const specialization = allSpecializations.find(s => s.value === value);
     return specialization ? specialization.label : value;
+  };
+
+  // View resource in PDF viewer
+  const viewResource = (resource) => {
+    setSelectedResource(resource);
+  };
+
+  // Close PDF viewer
+  const closeViewer = () => {
+    setSelectedResource(null);
   };
 
   return (
@@ -158,7 +191,7 @@ export default function ResourceViewer() {
               onChange={handleFilterChange}
               className="w-full border border-gray-300 rounded-md p-2"
             >
-              {specializations.map(option => (
+              {getFilteredSpecializations().map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -172,6 +205,32 @@ export default function ResourceViewer() {
       {error && (
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
           {error}
+        </div>
+      )}
+      
+      {/* PDF Viewer Modal */}
+      {selectedResource && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-4">
+          <div className="bg-white rounded-lg w-full max-w-6xl h-5/6 flex flex-col">
+            <div className="flex justify-between items-center border-b p-4">
+              <h3 className="text-lg font-medium">{selectedResource.title}</h3>
+              <button 
+                onClick={closeViewer}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <iframe 
+                src={`/api/resources/${selectedResource.id}/download`}
+                className="w-full h-full"
+                title={selectedResource.title}
+              ></iframe>
+            </div>
+          </div>
         </div>
       )}
       
@@ -224,8 +283,14 @@ export default function ResourceViewer() {
                     <div className="text-sm text-gray-500">{formatDate(resource.created_at)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button 
+                      onClick={() => viewResource(resource)}
+                      className="text-green-600 hover:text-green-900 mr-3"
+                    >
+                      View
+                    </button>
                     <a 
-                      href={resource.fileUrl} 
+                      href={`/api/resources/${resource.id}/download`}
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-orange-600 hover:text-orange-900"

@@ -31,20 +31,39 @@ export default function ResourceUploader() {
     { value: '2bac', label: '2BAC (Second Year)' }
   ];
 
-  // Specialization options
-  const specializations = [
-    { value: 'all', label: 'All Specializations' },
-    { value: 'se', label: 'SE (Sciences Expérimentales)' }, 
-    { value: 'sm', label: 'SM (Sciences Mathématiques)' },
-    { value: 'svt', label: 'SVT (Sciences de la Vie et de la Terre)' },
-    { value: 'sh', label: 'SH (Sciences Humaines)' },
-    { value: 'al', label: 'AL (Arts et Lettres)' }
+  // Base specialization options
+  const allSpecializations = [
+    { value: 'all', label: 'General (All Specializations)', yearLevels: ['all', 'tc', '1bac', '2bac'] },
+    { value: 'science', label: 'Science', yearLevels: ['tc'] },
+    { value: 'letter', label: 'Letter', yearLevels: ['tc', '1bac', '2bac'] },
+    { value: 'se', label: 'SE (Sciences Expérimentales)', yearLevels: ['1bac'] },
+    { value: 'sm', label: 'SM (Sciences Mathématiques)', yearLevels: ['1bac'] },
+    { value: 'sh', label: 'SH (Sciences Humaines)', yearLevels: ['1bac', '2bac'] },
+    { value: 'spc', label: 'SPC (Sciences Physiques et Chimiques)', yearLevels: ['2bac'] },
+    { value: 'svt', label: 'SVT (Sciences de la Vie et de la Terre)', yearLevels: ['1bac', '2bac'] },
+    { value: 'smb1', label: 'SMB1 (Sciences Mathématiques B1)', yearLevels: ['2bac'] },
+    { value: 'smb2', label: 'SMB2 (Sciences Mathématiques B2)', yearLevels: ['2bac'] },
+    { value: 'al', label: 'AL (Arabic et Lettres)', yearLevels: ['1bac', '2bac'] }
   ];
+
+  // Filtered specialization options based on selected year level
+  const getFilteredSpecializations = () => {
+    return allSpecializations.filter(spec => spec.yearLevels.includes(yearLevel));
+  };
 
   // Fetch resources when component mounts
   useEffect(() => {
     fetchResources();
   }, []);
+
+  // Reset specialization when year level changes
+  useEffect(() => {
+    // Check if current specialization is valid for selected year level
+    const validSpecializations = getFilteredSpecializations().map(spec => spec.value);
+    if (!validSpecializations.includes(specialization)) {
+      setSpecialization('all');
+    }
+  }, [yearLevel]);
 
   // Fetch list of resources
   const fetchResources = async () => {
@@ -76,70 +95,70 @@ export default function ResourceUploader() {
   };
 
   // Handle form submission
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  if (!title || !subject || !file) {
-    setMessage({ type: 'error', content: 'Please fill all required fields and select a PDF file.' });
-    return;
-  }
-
-  setIsUploading(true);
-  setMessage({ type: '', content: '' });
-  
-  const formData = new FormData();
-  formData.append('title', title);
-  formData.append('subject', subject);
-  formData.append('yearLevel', yearLevel);
-  formData.append('specialization', specialization);
-  formData.append('file', file);
-
-  try {
-    const response = await axios.post('/api/resources/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      onUploadProgress: (progressEvent) => {
-        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-        setUploadProgress(percentCompleted);
-      }
-    });
-
-    console.log('Upload response:', response.data);
-
-    // Reset form after successful upload
-    setTitle('');
-    setSubject('');
-    setYearLevel('all');
-    setSpecialization('all');
-    setFile(null);
-    setMessage({ type: 'success', content: 'Resource uploaded successfully!' });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     
-    // Refresh resources list
-    fetchResources();
-  } catch (error) {
-    console.error('Error uploading resource:', error);
-    
-    let errorMessage = 'Failed to upload resource. Please try again.';
-    
-    // Extract detailed error message if available
-    if (error.response) {
-      console.log('Error response:', error.response.data);
-      
-      // If there's a specific error message from the backend
-      if (error.response.data && error.response.data.error) {
-        errorMessage = `Error: ${error.response.data.error}`;
-      } else if (error.response.data && error.response.data.message) {
-        errorMessage = `Error: ${error.response.data.message}`;
-      }
+    if (!title || !subject || !file) {
+      setMessage({ type: 'error', content: 'Please fill all required fields and select a PDF file.' });
+      return;
     }
+
+    setIsUploading(true);
+    setMessage({ type: '', content: '' });
     
-    setMessage({ type: 'error', content: errorMessage });
-  } finally {
-    setIsUploading(false);
-    setUploadProgress(0);
-  }
-};
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('subject', subject);
+    formData.append('yearLevel', yearLevel);
+    formData.append('specialization', specialization);
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post('/api/resources/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(percentCompleted);
+        }
+      });
+
+      console.log('Upload response:', response.data);
+
+      // Reset form after successful upload
+      setTitle('');
+      setSubject('');
+      setYearLevel('all');
+      setSpecialization('all');
+      setFile(null);
+      setMessage({ type: 'success', content: 'Resource uploaded successfully!' });
+      
+      // Refresh resources list
+      fetchResources();
+    } catch (error) {
+      console.error('Error uploading resource:', error);
+      
+      let errorMessage = 'Failed to upload resource. Please try again.';
+      
+      // Extract detailed error message if available
+      if (error.response) {
+        console.log('Error response:', error.response.data);
+        
+        // If there's a specific error message from the backend
+        if (error.response.data && error.response.data.error) {
+          errorMessage = `Error: ${error.response.data.error}`;
+        } else if (error.response.data && error.response.data.message) {
+          errorMessage = `Error: ${error.response.data.message}`;
+        }
+      }
+      
+      setMessage({ type: 'error', content: errorMessage });
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
+  };
 
   // Handle resource deletion
   const handleDeleteResource = async (resourceId) => {
@@ -153,6 +172,23 @@ const handleSubmit = async (e) => {
         setMessage({ type: 'error', content: 'Failed to delete resource. Please try again.' });
       }
     }
+  };
+
+  // Get label for year level based on value
+  const getYearLevelLabel = (value) => {
+    const yearLevel = yearLevels.find(yl => yl.value === value);
+    return yearLevel ? yearLevel.label : value;
+  };
+
+  // Get label for specialization based on value
+  const getSpecializationLabel = (value) => {
+    const specialization = allSpecializations.find(s => s.value === value);
+    return specialization ? specialization.label : value;
+  };
+
+  // View resource in new tab
+  const viewResource = (resource) => {
+    window.open(`/api/resources/${resource.id}/download`, '_blank');
   };
 
   return (
@@ -233,7 +269,7 @@ const handleSubmit = async (e) => {
               onChange={(e) => setSpecialization(e.target.value)}
               className="w-full border border-gray-300 rounded-md p-2"
             >
-              {specializations.map((option) => (
+              {getFilteredSpecializations().map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -294,6 +330,7 @@ const handleSubmit = async (e) => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year Level</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Specialization</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -303,17 +340,18 @@ const handleSubmit = async (e) => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{resource.title}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{resource.subject}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {yearLevels.find(y => y.value === resource.yearLevel)?.label || resource.yearLevel}
+                      {getYearLevelLabel(resource.yearLevel)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {getSpecializationLabel(resource.specialization)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <a 
-                        href={resource.fileUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
+                      <button 
+                        onClick={() => viewResource(resource)}
                         className="text-green-600 hover:text-green-900 mr-3"
                       >
                         View
-                      </a>
+                      </button>
                       <button
                         onClick={() => handleDeleteResource(resource.id)}
                         className="text-red-600 hover:text-red-900"
