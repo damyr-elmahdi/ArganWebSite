@@ -76,53 +76,70 @@ export default function ResourceUploader() {
   };
 
   // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  if (!title || !subject || !file) {
+    setMessage({ type: 'error', content: 'Please fill all required fields and select a PDF file.' });
+    return;
+  }
+
+  setIsUploading(true);
+  setMessage({ type: '', content: '' });
+  
+  const formData = new FormData();
+  formData.append('title', title);
+  formData.append('subject', subject);
+  formData.append('yearLevel', yearLevel);
+  formData.append('specialization', specialization);
+  formData.append('file', file);
+
+  try {
+    const response = await axios.post('/api/resources/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        setUploadProgress(percentCompleted);
+      }
+    });
+
+    console.log('Upload response:', response.data);
+
+    // Reset form after successful upload
+    setTitle('');
+    setSubject('');
+    setYearLevel('all');
+    setSpecialization('all');
+    setFile(null);
+    setMessage({ type: 'success', content: 'Resource uploaded successfully!' });
     
-    if (!title || !subject || !file) {
-      setMessage({ type: 'error', content: 'Please fill all required fields and select a PDF file.' });
-      return;
-    }
-
-    setIsUploading(true);
-    setMessage({ type: '', content: '' });
+    // Refresh resources list
+    fetchResources();
+  } catch (error) {
+    console.error('Error uploading resource:', error);
     
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('subject', subject);
-    formData.append('yearLevel', yearLevel);
-    formData.append('specialization', specialization);
-    formData.append('file', file);
-
-    try {
-      await axios.post('/api/resources/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          setUploadProgress(percentCompleted);
-        }
-      });
-
-      // Reset form after successful upload
-      setTitle('');
-      setSubject('');
-      setYearLevel('all');
-      setSpecialization('all');
-      setFile(null);
-      setMessage({ type: 'success', content: 'Resource uploaded successfully!' });
+    let errorMessage = 'Failed to upload resource. Please try again.';
+    
+    // Extract detailed error message if available
+    if (error.response) {
+      console.log('Error response:', error.response.data);
       
-      // Refresh resources list
-      fetchResources();
-    } catch (error) {
-      console.error('Error uploading resource:', error);
-      setMessage({ type: 'error', content: 'Failed to upload resource. Please try again.' });
-    } finally {
-      setIsUploading(false);
-      setUploadProgress(0);
+      // If there's a specific error message from the backend
+      if (error.response.data && error.response.data.error) {
+        errorMessage = `Error: ${error.response.data.error}`;
+      } else if (error.response.data && error.response.data.message) {
+        errorMessage = `Error: ${error.response.data.message}`;
+      }
     }
-  };
+    
+    setMessage({ type: 'error', content: errorMessage });
+  } finally {
+    setIsUploading(false);
+    setUploadProgress(0);
+  }
+};
 
   // Handle resource deletion
   const handleDeleteResource = async (resourceId) => {

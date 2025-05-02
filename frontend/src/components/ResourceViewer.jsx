@@ -2,27 +2,30 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export default function ResourceViewer() {
-  // State for selected subject, year level, and specialization
-  const [selectedSubject, setSelectedSubject] = useState(null);
-  const [yearLevel, setYearLevel] = useState('all');
-  const [specialization, setSpecialization] = useState('all');
-  const [resources, setResources] = useState({});
+  const [resources, setResources] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
+  const [filters, setFilters] = useState({
+    subject: '',
+    yearLevel: '',
+    specialization: '',
+  });
 
-  // Educational resources data
+  // Subject options
   const subjects = [
-    { id: 1, title: "SVT", icon: "🧬" },
-    { id: 2, title: "Mathematics", icon: "🔢" },
-    { id: 3, title: "Physics & chemistry", icon: "⚛️" },
-    { id: 4, title: "Arabic", icon: "✏️" },
-    { id: 5, title: "History and Geography", icon: "🏹📈" },
-    { id: 6, title: "French", icon: "🇫🇷" }
+    { value: '', label: 'All Subjects' },
+    { value: 'SVT', label: 'SVT' },
+    { value: 'Mathematics', label: 'Mathematics' },
+    { value: 'Physics & chemistry', label: 'Physics & chemistry' },
+    { value: 'Arabic', label: 'Arabic' },
+    { value: 'History and Geography', label: 'History and Geography' },
+    { value: 'French', label: 'French' }
   ];
 
   // Year level options
   const yearLevels = [
-    { value: 'all', label: 'All Years' },
+    { value: '', label: 'All Years' },
+    { value: 'all', label: 'General (All Years)' },
     { value: 'tc', label: 'TC (Tronc Commun)' },
     { value: '1bac', label: '1BAC (First Year)' },
     { value: '2bac', label: '2BAC (Second Year)' }
@@ -30,7 +33,8 @@ export default function ResourceViewer() {
 
   // Specialization options
   const specializations = [
-    { value: 'all', label: 'All Specializations' },
+    { value: '', label: 'All Specializations' },
+    { value: 'all', label: 'General (All Specializations)' },
     { value: 'se', label: 'SE (Sciences Expérimentales)' }, 
     { value: 'sm', label: 'SM (Sciences Mathématiques)' },
     { value: 'svt', label: 'SVT (Sciences de la Vie et de la Terre)' },
@@ -43,389 +47,202 @@ export default function ResourceViewer() {
     fetchResources();
   }, []);
 
-  // Fetch resources from the backend
+  // Fetch list of resources
   const fetchResources = async () => {
     setIsLoading(true);
     try {
       const response = await axios.get('/api/resources');
-      
-      // Organize resources by subject
-      const organizedResources = {};
-      subjects.forEach(subject => {
-        organizedResources[subject.title] = [];
-      });
-
-      // Add resources to their corresponding subjects
-      response.data.forEach(resource => {
-        if (organizedResources[resource.subject]) {
-          organizedResources[resource.subject].push({
-            title: resource.title,
-            type: "pdf",
-            link: resource.fileUrl,
-            year: resource.yearLevel,
-            specialization: resource.specialization
-          });
-        }
-      });
-
-      // Add default external resources
-      const defaultResources = {
-        "SVT": [
-          {
-            title: "AlloSchool - SVT Resources",
-            type: "website",
-            link: "https://www.alloschool.com/course/alom-alhiat-oalarz-althania-bak-alom-tajribia",
-            year: "all",
-            specialization: "all"
-          }
-        ],
-        "Mathematics": [
-          {
-            title: "AlloSchool - Mathematics",
-            type: "website",
-            link: "https://www.alloschool.com/course/alriadhiat-althania-bak-alom-fiziaiia",
-            year: "all",
-            specialization: "all"
-          }
-        ],
-        "Physics & chemistry": [
-          {
-            title: "AlloSchool - Physics",
-            type: "website",
-            link: "https://www.alloschool.com/course/alfizia-oalkimia-althania-bak-alom-fiziaiia",
-            year: "all",
-            specialization: "all"
-          }
-        ],
-        "Arabic": [
-          {
-            title: "AlloSchool - Arabic",
-            type: "website",
-            link: "https://www.alloschool.com/course/allgha-alrbia-althania-bak-adab",
-            year: "all",
-            specialization: "all"
-          }
-        ],
-        "History and Geography": [
-          {
-            title: "AlloSchool - History & Geography",
-            type: "website",
-            link: "https://www.alloschool.com/course/altarikh-oaljghrafi-althania-bak-adab",
-            year: "all",
-            specialization: "all"
-          }
-        ],
-        "French": [
-          {
-            title: "AlloSchool - French",
-            type: "website",
-            link: "https://www.alloschool.com/course/allgha-alfrnsia-althania-bak-adab",
-            year: "all",
-            specialization: "all"
-          }
-        ]
-      };
-
-      // Merge default resources with uploaded ones
-      subjects.forEach(subject => {
-        if (defaultResources[subject.title]) {
-          organizedResources[subject.title] = [
-            ...organizedResources[subject.title],
-            ...defaultResources[subject.title]
-          ];
-        }
-      });
-
-      setResources(organizedResources);
+      setResources(response.data);
+      setError('');
     } catch (err) {
-      console.error("Error fetching resources:", err);
-      setError("Failed to load resources. Please try again later.");
-      
-      // Fall back to sample data if API fails
-      setResources({
-        "SVT": [
-          {
-            title: "Cellular Biology Introduction",
-            type: "pdf",
-            link: "/pdfs/svt/cellular-biology.pdf",
-            year: "1bac",
-            specialization: "svt"
-          },
-          {
-            title: "Ecosystem Dynamics",
-            type: "pdf",
-            link: "/pdfs/svt/ecosystem-dynamics.pdf",
-            year: "2bac",
-            specialization: "svt"
-          },
-          {
-            title: "AlloSchool - SVT Resources",
-            type: "website",
-            link: "https://www.alloschool.com/course/alom-alhiat-oalarz-althania-bak-alom-tajribia",
-            year: "all",
-            specialization: "all"
-          }
-        ],
-        "Mathematics": [
-          {
-            title: "Linear Algebra Foundations",
-            type: "pdf",
-            link: "/pdfs/math/linear-algebra.pdf",
-            year: "1bac",
-            specialization: "sm"
-          },
-          {
-            title: "Calculus & Integration",
-            type: "pdf",
-            link: "/pdfs/math/calculus.pdf",
-            year: "2bac",
-            specialization: "sm"
-          },
-          {
-            title: "AlloSchool - Mathematics",
-            type: "website",
-            link: "https://www.alloschool.com/course/alriadhiat-althania-bak-alom-fiziaiia",
-            year: "all",
-            specialization: "all"
-          }
-        ],
-        "Physics & chemistry": [
-          {
-            title: "Mechanics Fundamentals",
-            type: "pdf",
-            link: "/pdfs/physics/mechanics.pdf",
-            year: "1bac",
-            specialization: "sm"
-          },
-          {
-            title: "Organic Chemistry",
-            type: "pdf",
-            link: "/pdfs/chemistry/organic-chem.pdf",
-            year: "2bac",
-            specialization: "se"
-          },
-          {
-            title: "AlloSchool - Physics",
-            type: "website",
-            link: "https://www.alloschool.com/course/alfizia-oalkimia-althania-bak-alom-fiziaiia",
-            year: "all",
-            specialization: "all"
-          }
-        ],
-        "Arabic": [
-          {
-            title: "Arabic Literature Analysis",
-            type: "pdf",
-            link: "/pdfs/arabic/literature.pdf",
-            year: "1bac",
-            specialization: "al"
-          },
-          {
-            title: "Advanced Arabic Grammar",
-            type: "pdf",
-            link: "/pdfs/arabic/grammar.pdf",
-            year: "2bac",
-            specialization: "al"
-          },
-          {
-            title: "AlloSchool - Arabic",
-            type: "website",
-            link: "https://www.alloschool.com/course/allgha-alrbia-althania-bak-adab",
-            year: "all",
-            specialization: "all"
-          }
-        ],
-        "History and Geography": [
-          {
-            title: "World History Overview",
-            type: "pdf",
-            link: "/pdfs/history/world-history.pdf",
-            year: "1bac",
-            specialization: "sh"
-          },
-          {
-            title: "Economic Geography",
-            type: "pdf",
-            link: "/pdfs/geography/economic-geo.pdf",
-            year: "2bac",
-            specialization: "sh"
-          },
-          {
-            title: "AlloSchool - History & Geography",
-            type: "website",
-            link: "https://www.alloschool.com/course/altarikh-oaljghrafi-althania-bak-adab",
-            year: "all",
-            specialization: "all"
-          }
-        ],
-        "French": [
-          {
-            title: "French Literature Classics",
-            type: "pdf",
-            link: "/pdfs/french/literature.pdf",
-            year: "1bac",
-            specialization: "al"
-          },
-          {
-            title: "Advanced French Composition",
-            type: "pdf",
-            link: "/pdfs/french/composition.pdf",
-            year: "2bac",
-            specialization: "al"
-          },
-          {
-            title: "AlloSchool - French",
-            type: "website",
-            link: "https://www.alloschool.com/course/allgha-alfrnsia-althania-bak-adab",
-            year: "all",
-            specialization: "all"
-          }
-        ]
-      });
+      console.error('Error fetching resources:', err);
+      setError('Failed to load resources. Please try again later.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Filter resources based on selections
-  const filteredResources = selectedSubject && resources[selectedSubject] ? 
-    resources[selectedSubject].filter(resource => 
-      (yearLevel === 'all' || resource.year === 'all' || resource.year === yearLevel) &&
-      (specialization === 'all' || resource.specialization === 'all' || resource.specialization === specialization)
-    ) : [];
-
-  // Handle subject selection
-  const handleSubjectClick = (subject) => {
-    setSelectedSubject(subject.title);
+  // Handle filter changes
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters({
+      ...filters,
+      [name]: value
+    });
   };
 
-  // Reset selected subject
-  const handleBack = () => {
-    setSelectedSubject(null);
+  // Apply filters to resources
+  const filteredResources = resources.filter(resource => {
+    return (
+      (filters.subject === '' || resource.subject === filters.subject) &&
+      (filters.yearLevel === '' || resource.yearLevel === filters.yearLevel) &&
+      (filters.specialization === '' || resource.specialization === filters.specialization)
+    );
+  });
+
+  // Format date for display
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  // Get label for year level based on value
+  const getYearLevelLabel = (value) => {
+    const yearLevel = yearLevels.find(yl => yl.value === value);
+    return yearLevel ? yearLevel.label : value;
+  };
+
+  // Get label for specialization based on value
+  const getSpecializationLabel = (value) => {
+    const specialization = specializations.find(s => s.value === value);
+    return specialization ? specialization.label : value;
   };
 
   return (
-    <section className="py-12 bg-white">
-      <div className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold text-gray-800 mb-8">Educational Resources</h2>
-        
-        {isLoading ? (
-          <div className="text-center py-8">
-            <p className="text-gray-500">Loading resources...</p>
-          </div>
-        ) : error ? (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        ) : !selectedSubject ? (
-          // Subject selection grid
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {subjects.map(subject => (
-              <button 
-                key={subject.id}
-                onClick={() => handleSubjectClick(subject)}
-                className="bg-gray-50 p-4 rounded-lg text-center hover:bg-green-50 hover:shadow-md transition flex flex-col items-center"
-              >
-                <span className="text-3xl mb-2">{subject.icon}</span>
-                <span className="font-medium text-gray-800">{subject.title}</span>
-              </button>
-            ))}
-          </div>
-        ) : (
-          // Resource viewer for selected subject
+    <div className="bg-white shadow-md rounded-lg p-6">
+      <h2 className="text-xl font-bold text-gray-800 mb-6">Browse Educational Resources</h2>
+      
+      {/* Filters */}
+      <div className="mb-6 bg-gray-50 p-4 rounded-md">
+        <h3 className="text-lg font-medium text-gray-700 mb-3">Filter Resources</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <div className="flex justify-between items-center mb-6">
-              <button 
-                onClick={handleBack}
-                className="flex items-center text-green-600 hover:text-green-800"
-              >
-                <span className="mr-1">←</span> Back to subjects
-              </button>
-              <h3 className="text-xl font-semibold">{selectedSubject} Resources</h3>
-            </div>
-            
-            {/* Filters */}
-            <div className="bg-gray-50 p-4 rounded-lg mb-6">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <label htmlFor="year-level" className="block text-sm font-medium text-gray-700 mb-1">
-                    Year Level
-                  </label>
-                  <select
-                    id="year-level"
-                    value={yearLevel}
-                    onChange={(e) => setYearLevel(e.target.value)}
-                    className="w-full border border-gray-300 rounded-md p-2"
-                  >
-                    {yearLevels.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex-1">
-                  <label htmlFor="specialization" className="block text-sm font-medium text-gray-700 mb-1">
-                    Specialization
-                  </label>
-                  <select
-                    id="specialization"
-                    value={specialization}
-                    onChange={(e) => setSpecialization(e.target.value)}
-                    className="w-full border border-gray-300 rounded-md p-2"
-                  >
-                    {specializations.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-            
-            {/* Resources list */}
-            <div className="space-y-4">
-              {filteredResources.length > 0 ? (
-                filteredResources.map((resource, index) => (
-                  <div 
-                    key={index} 
-                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition"
-                  >
-                    <div className="flex items-start">
-                      <div className="mr-4 mt-1">
-                        <span className="text-2xl">
-                          {resource.type === 'pdf' ? '📄' : '🌐'}
-                        </span>
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-medium text-gray-800">{resource.title}</h4>
-                        <p className="text-sm text-gray-600 mb-2">
-                          {resource.type === 'pdf' ? 'PDF Document' : 'Website'} 
-                          {resource.year !== 'all' && ` • ${yearLevels.find(y => y.value === resource.year)?.label}`}
-                          {resource.specialization !== 'all' && ` • ${specializations.find(s => s.value === resource.specialization)?.label}`}
-                        </p>
-                        <a 
-                          href={resource.link} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center text-sm text-green-600 hover:text-green-800"
-                        >
-                          {resource.type === 'pdf' ? 'View PDF' : 'Visit Website'} →
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  No resources found for the selected filters. Try adjusting your selection.
-                </div>
-              )}
-            </div>
+            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+              Subject
+            </label>
+            <select
+              id="subject"
+              name="subject"
+              value={filters.subject}
+              onChange={handleFilterChange}
+              className="w-full border border-gray-300 rounded-md p-2"
+            >
+              {subjects.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
-        )}
+          
+          <div>
+            <label htmlFor="yearLevel" className="block text-sm font-medium text-gray-700 mb-1">
+              Year Level
+            </label>
+            <select
+              id="yearLevel"
+              name="yearLevel"
+              value={filters.yearLevel}
+              onChange={handleFilterChange}
+              className="w-full border border-gray-300 rounded-md p-2"
+            >
+              {yearLevels.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div>
+            <label htmlFor="specialization" className="block text-sm font-medium text-gray-700 mb-1">
+              Specialization
+            </label>
+            <select
+              id="specialization"
+              name="specialization"
+              value={filters.specialization}
+              onChange={handleFilterChange}
+              className="w-full border border-gray-300 rounded-md p-2"
+            >
+              {specializations.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
-    </section>
+      
+      {/* Error display */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+          {error}
+        </div>
+      )}
+      
+      {/* Resources list */}
+      {isLoading ? (
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+        </div>
+      ) : filteredResources.length > 0 ? (
+        <div className="border rounded-lg overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Title
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Subject
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Year Level
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Specialization
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Uploaded
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredResources.map((resource) => (
+                <tr key={resource.id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{resource.title}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">{resource.subject}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">{getYearLevelLabel(resource.yearLevel)}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">{getSpecializationLabel(resource.specialization)}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">{formatDate(resource.created_at)}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <a 
+                      href={resource.fileUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-orange-600 hover:text-orange-900"
+                    >
+                      Download
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="py-8 text-center">
+          <p className="text-gray-500">No resources found matching the selected filters.</p>
+        </div>
+      )}
+    </div>
   );
 }

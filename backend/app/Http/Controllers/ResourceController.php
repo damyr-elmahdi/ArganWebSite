@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ResourceController extends Controller
@@ -51,7 +52,7 @@ class ResourceController extends Controller
         if (!Auth::user()->hasRole(['teacher', 'administrator'])) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-
+    
         // Validate the request
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
@@ -60,12 +61,26 @@ class ResourceController extends Controller
             'specialization' => 'required|string|max:50',
             'file' => 'required|file|mimes:pdf|max:10240', // 10MB max size
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
+    
         try {
+            // Check if the storage directory exists and is writable
+            $storageDir = 'resources';
+            $privateStoragePath = storage_path('app/private/' . $storageDir);
+            
+            if (!file_exists($privateStoragePath)) {
+                if (!mkdir($privateStoragePath, 0775, true)) {
+                    throw new \Exception('Failed to create storage directory: ' . $privateStoragePath);
+                }
+            }
+            
+            if (!is_writable($privateStoragePath)) {
+                throw new \Exception('Storage directory is not writable: ' . $privateStoragePath);
+            }
+            
             // Upload file to storage
             $file = $request->file('file');
             $originalFilename = $file->getClientOriginalName();
@@ -74,7 +89,11 @@ class ResourceController extends Controller
             $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
             
             // Store the file in a private directory
-            $path = $file->storeAs('resources', $filename, 'private');
+            $path = $file->storeAs($storageDir, $filename, 'private');
+            
+            if (!$path) {
+                throw new \Exception('Failed to store file in private storage');
+            }
             
             // Create resource record in the database
             $resource = Resource::create([
@@ -88,7 +107,7 @@ class ResourceController extends Controller
                 'mime_type' => $file->getMimeType(),
                 'uploaded_by' => Auth::id(),
             ]);
-
+    
             // Return success response with resource ID
             return response()->json([
                 'message' => 'Resource uploaded successfully',
@@ -101,8 +120,15 @@ class ResourceController extends Controller
                     'fileUrl' => route('resources.download', $resource->id),
                 ],
             ], 201);
-
+    
         } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Resource upload failed: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'message' => 'Failed to upload resource',
                 'error' => $e->getMessage()

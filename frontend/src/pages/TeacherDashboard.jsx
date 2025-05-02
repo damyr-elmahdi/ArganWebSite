@@ -5,12 +5,13 @@ import NewsManagement from "../components/NewsManagement";
 import EventsManagement from "../components/EventsManagement";
 import TeacherQuizzes from "../components/TeacherQuizzes";
 import QuizCreator from "../components/QuizCreator";
+import TeacherResourceDashboard from "../components/TeacherResourceDashboard";
 
 export default function TeacherDashboard() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("profile"); // 'profile', 'classes', 'quizzes', 'news', 'events'
+  const [activeTab, setActiveTab] = useState("profile"); // 'profile', 'classes', 'quizzes', 'news', 'events', 'resources'
   const [showQuizCreator, setShowQuizCreator] = useState(false); // To toggle between quiz list and creator
   const navigate = useNavigate();
 
@@ -162,6 +163,16 @@ export default function TeacherDashboard() {
               }}
             >
               Quizzes
+            </button>
+            <button
+              className={`${
+                activeTab === "resources"
+                  ? "border-orange-500 text-orange-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              onClick={() => setActiveTab("resources")}
+            >
+              Resources
             </button>
             <button
               className={`${
@@ -322,6 +333,9 @@ export default function TeacherDashboard() {
               <TeacherQuizzes />
             </div>
           )}
+
+          {/* Resources Tab */}
+          {activeTab === "resources" && <TeacherResourceDashboard />}
 
           {/* News Management Tab */}
           {activeTab === "news" && <NewsManagement />}
