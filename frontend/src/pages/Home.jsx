@@ -146,44 +146,7 @@ export default function Home({ schoolInfo }) {
       <ResourceViewer />
       
       {/* Testimonials */}
-      <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">What Our Community Says</h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-orange-200 rounded-full mr-4 flex items-center justify-center text-orange-600 font-bold">
-                  MS
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-800">Mia Sanders</h3>
-                  <p className="text-sm text-gray-600">Parent of 2 students</p>
-                </div>
-              </div>
-              <p className="text-gray-600 italic">
-                "The supportive environment at Argan High School has helped my children thrive both 
-                academically and socially. The teachers genuinely care about each student's success."
-              </p>
-            </div>
-            
-            <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-orange-200 rounded-full mr-4 flex items-center justify-center text-orange-600 font-bold">
-                  JT
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-800">James Thompson</h3>
-                  <p className="text-sm text-gray-600">Former Student, Class of 2023</p>
-                </div>
-              </div>
-              <p className="text-gray-600 italic">
-                "The education I received at Argan prepared me well for university. The challenging 
-                curriculum and extracurricular activities helped me develop skills that I use every day."
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+
       
       {/* Registration CTA */}
       <RegistrationCTA/>

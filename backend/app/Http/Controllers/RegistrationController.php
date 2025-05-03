@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon; // Add this missing import
 
 class RegistrationController extends Controller
 {
@@ -149,7 +150,58 @@ class RegistrationController extends Controller
         );
     }
 
- /**
+    /**
+     * Generate PDF for a registration using standard Laravel PDF generation
+     *
+     * @param  \App\Models\Registration  $registration
+     * @return \Illuminate\Http\Response
+     */
+    public function generatePDF(Registration $registration)
+    {
+        // Format the date
+        $date = Carbon::now()->format('Y-m-d');
+        
+        // Get the school year
+        $school_year = "2025-2026";
+        
+        // Map grade level codes to human-readable Arabic text
+        $gradeMap = [
+            "TC-S" => "الجذع المشترك - علوم",
+            "TC-LSH" => "الجذع المشترك - آداب وعلوم إنسانية",
+            "1BAC-SE" => "السنة الأولى باكالوريا - علوم تجريبية",
+            "1BAC-LSH" => "السنة الأولى باكالوريا - آداب وعلوم إنسانية",
+            "2BAC-PC" => "السنة الثانية باكالوريا - علوم فيزيائية وكيميائية",
+            "2BAC-SVT" => "السنة الثانية باكالوريا - علوم الحياة والأرض",
+            "2BAC-SH" => "السنة الثانية باكالوريا - علوم إنسانية",
+            "2BAC-L" => "السنة الثانية باكالوريا - آداب",
+        ];
+        
+        // Get the grade level text
+        $grade_applying_for_text = $gradeMap[$registration->grade_applying_for] ?? $registration->grade_applying_for;
+        
+        // Map family status codes to human-readable Arabic text
+        $familyStatusMap = [
+            "with_parents" => "يعيش مع الوالدين",
+            "divorced" => "الوالدين منفصلين",
+            "orphaned" => "يتيم",
+        ];
+        
+        // Get the family status text
+        $family_status_text = $familyStatusMap[$registration->family_status] ?? $registration->family_status;
+
+        // Create the PDF
+        $pdf = PDF::loadView('pdfs.registration', compact(
+            'registration',
+            'date',
+            'school_year',
+            'grade_applying_for_text',
+            'family_status_text'
+        ));
+        
+        return $pdf->download('registration_' . $registration->id . '.pdf');
+    }
+
+    /**
      * Generate PDF for a registration using mPDF
      *
      * @param int $id
@@ -191,39 +243,52 @@ class RegistrationController extends Controller
         // Get the family status text
         $family_status_text = $familyStatusMap[$registration->family_status] ?? $registration->family_status;
 
-        // Initialize mPDF with Arabic configuration
-        $mpdf = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'margin_left' => 10,
-            'margin_right' => 10,
-            'margin_top' => 10,
-            'margin_bottom' => 10,
-            'default_font' => 'xbriyaz',
-            'default_font_size' => 12,
-            'tempDir' => storage_path('app/mpdf')
-        ]);
+        try {
+            // Initialize mPDF with Arabic configuration
+            $mpdf = new \Mpdf\Mpdf([
+                'mode' => 'utf-8',
+                'format' => 'A4',
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'default_font' => 'xbriyaz',
+                'default_font_size' => 12,
+                'tempDir' => storage_path('app/mpdf')
+            ]);
 
-        // Set document direction to RTL for Arabic
-        $mpdf->SetDirectionality('rtl');
-        
-        // Get the HTML content (using the blade view)
-        $html = view('pdfs.registration_mpdf', compact(
-            'registration',
-            'date',
-            'school_year',
-            'grade_applying_for_text',
-            'family_status_text'
-        ))->render();
-        
-        // Write the HTML to the PDF
-        $mpdf->WriteHTML($html);
-        
-        // Output the PDF to the browser
-        $fileName = 'registration_' . $registration->id . '.pdf';
-        return response($mpdf->Output($fileName, 'S'))
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+            // Set document direction to RTL for Arabic
+            $mpdf->SetDirectionality('rtl');
+            
+            // Get the HTML content (using the blade view)
+            $html = view('pdfs.registration', compact(
+                'registration',
+                'date',
+                'school_year',
+                'grade_applying_for_text',
+                'family_status_text'
+            ))->render();
+            
+            // Write the HTML to the PDF
+            $mpdf->WriteHTML($html);
+            
+            // Output the PDF to the browser
+            $fileName = 'registration_' . $registration->id . '.pdf';
+            return response($mpdf->Output($fileName, 'S'))
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+        } catch (\Exception $e) {
+            Log::error('PDF generation failed: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'message' => 'Failed to generate PDF',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
     
     /**

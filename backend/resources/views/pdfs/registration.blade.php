@@ -84,6 +84,7 @@
         @page {
             margin: 2cm;
         }
+        
     </style>
 </head>
 <body>
