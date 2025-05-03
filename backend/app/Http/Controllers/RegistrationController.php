@@ -85,7 +85,7 @@ class RegistrationController extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Registration submitted successfully',
+                'message' => 'Inscription soumise avec succès',
                 'registration' => $registration,
             ], 201);
 
@@ -98,7 +98,7 @@ class RegistrationController extends Controller
             ]);
             
             return response()->json([
-                'message' => 'Failed to submit registration',
+                'message' => 'Échec de soumission de l\'inscription',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -127,7 +127,7 @@ class RegistrationController extends Controller
         $registration->save();
         
         return response()->json([
-            'message' => 'Registration marked as processed',
+            'message' => 'Inscription marquée comme traitée',
             'registration' => $registration
         ]);
     }
@@ -141,12 +141,12 @@ class RegistrationController extends Controller
     public function downloadInfoPacket(Registration $registration)
     {
         if (!$registration->info_packet_path || !Storage::disk('private')->exists($registration->info_packet_path)) {
-            return response()->json(['message' => 'Information packet not found'], 404);
+            return response()->json(['message' => 'Dossier d\'information non trouvé'], 404);
         }
         
         return Storage::disk('private')->download(
             $registration->info_packet_path, 
-            'registration_info_packet_' . $registration->id . '.' . pathinfo($registration->info_packet_path, PATHINFO_EXTENSION)
+            'dossier_inscription_' . $registration->id . '.' . pathinfo($registration->info_packet_path, PATHINFO_EXTENSION)
         );
     }
 
@@ -159,31 +159,31 @@ class RegistrationController extends Controller
     public function generatePDF(Registration $registration)
     {
         // Format the date
-        $date = Carbon::now()->format('Y-m-d');
+        $date = Carbon::now()->format('d-m-Y');
         
         // Get the school year
         $school_year = "2025-2026";
         
-        // Map grade level codes to human-readable Arabic text
+        // Map grade level codes to human-readable French text
         $gradeMap = [
-            "TC-S" => "الجذع المشترك - علوم",
-            "TC-LSH" => "الجذع المشترك - آداب وعلوم إنسانية",
-            "1BAC-SE" => "السنة الأولى باكالوريا - علوم تجريبية",
-            "1BAC-LSH" => "السنة الأولى باكالوريا - آداب وعلوم إنسانية",
-            "2BAC-PC" => "السنة الثانية باكالوريا - علوم فيزيائية وكيميائية",
-            "2BAC-SVT" => "السنة الثانية باكالوريا - علوم الحياة والأرض",
-            "2BAC-SH" => "السنة الثانية باكالوريا - علوم إنسانية",
-            "2BAC-L" => "السنة الثانية باكالوريا - آداب",
+            "TC-S" => "Tronc Commun - Sciences",
+            "TC-LSH" => "Tronc Commun - Lettres et Sciences Humaines",
+            "1BAC-SE" => "1ère Année Bac - Sciences Expérimentales",
+            "1BAC-LSH" => "1ère Année Bac - Lettres et Sciences Humaines",
+            "2BAC-PC" => "2ème Année Bac - Physique-Chimie",
+            "2BAC-SVT" => "2ème Année Bac - Sciences de la Vie et de la Terre",
+            "2BAC-SH" => "2ème Année Bac - Sciences Humaines",
+            "2BAC-L" => "2ème Année Bac - Lettres",
         ];
         
         // Get the grade level text
         $grade_applying_for_text = $gradeMap[$registration->grade_applying_for] ?? $registration->grade_applying_for;
         
-        // Map family status codes to human-readable Arabic text
+        // Map family status codes to human-readable French text
         $familyStatusMap = [
-            "with_parents" => "يعيش مع الوالدين",
-            "divorced" => "الوالدين منفصلين",
-            "orphaned" => "يتيم",
+            "with_parents" => "Vit avec les parents",
+            "divorced" => "Parents divorcés",
+            "orphaned" => "Orphelin",
         ];
         
         // Get the family status text
@@ -198,7 +198,7 @@ class RegistrationController extends Controller
             'family_status_text'
         ));
         
-        return $pdf->download('registration_' . $registration->id . '.pdf');
+        return $pdf->download('inscription_' . $registration->id . '.pdf');
     }
 
     /**
@@ -214,31 +214,31 @@ class RegistrationController extends Controller
             $registration = Registration::findOrFail($id);
             
             // Format the date
-            $date = Carbon::now()->format('Y-m-d');
+            $date = Carbon::now()->format('d-m-Y');
             
             // Get the school year
             $school_year = "2025-2026";
             
-            // Map grade level codes to human-readable Arabic text
+            // Map grade level codes to human-readable French text
             $gradeMap = [
-                "TC-S" => "الجذع المشترك - علوم",
-                "TC-LSH" => "الجذع المشترك - آداب وعلوم إنسانية",
-                "1BAC-SE" => "السنة الأولى باكالوريا - علوم تجريبية",
-                "1BAC-LSH" => "السنة الأولى باكالوريا - آداب وعلوم إنسانية",
-                "2BAC-PC" => "السنة الثانية باكالوريا - علوم فيزيائية وكيميائية",
-                "2BAC-SVT" => "السنة الثانية باكالوريا - علوم الحياة والأرض",
-                "2BAC-SH" => "السنة الثانية باكالوريا - علوم إنسانية",
-                "2BAC-L" => "السنة الثانية باكالوريا - آداب",
+                "TC-S" => "Tronc Commun - Sciences",
+                "TC-LSH" => "Tronc Commun - Lettres et Sciences Humaines",
+                "1BAC-SE" => "1ère Année Bac - Sciences Expérimentales",
+                "1BAC-LSH" => "1ère Année Bac - Lettres et Sciences Humaines",
+                "2BAC-PC" => "2ème Année Bac - Physique-Chimie",
+                "2BAC-SVT" => "2ème Année Bac - Sciences de la Vie et de la Terre",
+                "2BAC-SH" => "2ème Année Bac - Sciences Humaines",
+                "2BAC-L" => "2ème Année Bac - Lettres",
             ];
             
             // Get the grade level text
             $grade_applying_for_text = $gradeMap[$registration->grade_applying_for] ?? $registration->grade_applying_for;
             
-            // Map family status codes to human-readable Arabic text
+            // Map family status codes to human-readable French text
             $familyStatusMap = [
-                "with_parents" => "يعيش مع الوالدين",
-                "divorced" => "الوالدين منفصلين",
-                "orphaned" => "يتيم",
+                "with_parents" => "Vit avec les parents",
+                "divorced" => "Parents divorcés",
+                "orphaned" => "Orphelin",
             ];
             
             // Get the family status text
@@ -274,9 +274,6 @@ class RegistrationController extends Controller
             // Initialize mPDF with the config
             $mpdf = new \Mpdf\Mpdf($config);
             
-            // Set RTL direction for Arabic
-            $mpdf->SetDirectionality('rtl');
-            
             // Get the HTML content (using the blade view)
             $html = view('pdfs.registration', compact(
                 'registration',
@@ -290,7 +287,7 @@ class RegistrationController extends Controller
             $mpdf->WriteHTML($html);
             
             // Output the PDF as a downloadable file
-            $fileName = 'registration_' . $registration->id . '.pdf';
+            $fileName = 'inscription_' . $registration->id . '.pdf';
             return response($mpdf->Output($fileName, 'S'))
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
@@ -305,7 +302,7 @@ class RegistrationController extends Controller
             
             // Return a clearer error message
             return response()->json([
-                'message' => 'Failed to generate PDF: ' . $e->getMessage(),
+                'message' => 'Échec de génération du PDF: ' . $e->getMessage(),
                 'error_details' => [
                     'file' => $e->getFile(),
                     'line' => $e->getLine()
@@ -323,14 +320,14 @@ class RegistrationController extends Controller
     private function formatGradeLevel($gradeCode)
     {
         $grades = [
-            'TC-S' => 'الجذع المشترك - علوم',
-            'TC-LSH' => 'الجذع المشترك - آداب وعلوم إنسانية',
-            '1BAC-SE' => 'السنة الأولى باكالوريا - علوم تجريبية',
-            '1BAC-LSH' => 'السنة الأولى باكالوريا - آداب وعلوم إنسانية',
-            '2BAC-PC' => 'السنة الثانية باكالوريا - علوم فيزيائية وكيمياء',
-            '2BAC-SVT' => 'السنة الثانية باكالوريا - علوم الحياة والأرض',
-            '2BAC-SH' => 'السنة الثانية باكالوريا - العلوم الإنسانية',
-            '2BAC-L' => 'السنة الثانية باكالوريا - آداب',
+            'TC-S' => 'Tronc Commun - Sciences',
+            'TC-LSH' => 'Tronc Commun - Lettres et Sciences Humaines',
+            '1BAC-SE' => '1ère Année Bac - Sciences Expérimentales',
+            '1BAC-LSH' => '1ère Année Bac - Lettres et Sciences Humaines',
+            '2BAC-PC' => '2ème Année Bac - Physique-Chimie',
+            '2BAC-SVT' => '2ème Année Bac - Sciences de la Vie et de la Terre',
+            '2BAC-SH' => '2ème Année Bac - Sciences Humaines',
+            '2BAC-L' => '2ème Année Bac - Lettres',
         ];
         
         return $grades[$gradeCode] ?? $gradeCode;

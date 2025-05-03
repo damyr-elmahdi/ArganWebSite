@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html dir="rtl">
+<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>استمارة التسجيل</title>
+    <title>Formulaire d'Inscription</title>
     <style>
         body {
             font-family: DejaVu Sans, sans-serif; /* Using a more universally available font */
             font-size: 14pt;
             line-height: 1.5;
             color: #333;
-            direction: rtl;
-            text-align: right;
         }
         h1 {
             font-size: 24pt;
@@ -88,72 +86,72 @@
 </head>
 <body>
     <div class="header">
-        <div class="header-title">استمارة التسجيل</div>
-        <div class="sub-title">السنة الدراسية {{ $school_year }}</div>
-        <div class="date">تاريخ التسجيل: {{ $date }}</div>
+        <div class="header-title">Formulaire d'Inscription</div>
+        <div class="sub-title">Année Scolaire {{ $school_year }}</div>
+        <div class="date">Date d'inscription: {{ $date }}</div>
     </div>
 
-    <h2>معلومات الطالب</h2>
+    <h2>Informations de l'Élève</h2>
     <table class="info-table">
         <tr>
-            <td class="label">الإسم الكامل:</td>
+            <td class="label">Nom complet:</td>
             <td class="value">{{ $registration->full_name }}</td>
         </tr>
         <tr>
-            <td class="label">المستوى الدراسي:</td>
+            <td class="label">Niveau scolaire:</td>
             <td class="value">{{ $grade_applying_for_text }}</td>
         </tr>
         <tr>
-            <td class="label">رقم هاتف التلميذ:</td>
+            <td class="label">Téléphone de l'élève:</td>
             <td class="value">{{ $registration->student_phone }}</td>
         </tr>
         <tr>
-            <td class="label">المدرسة السابقة:</td>
-            <td class="value">{{ $registration->previous_school ?: 'غير محدد' }}</td>
+            <td class="label">École précédente:</td>
+            <td class="value">{{ $registration->previous_school ?: 'Non spécifié' }}</td>
         </tr>
     </table>
 
-    <h2>معلومات ولي الأمر</h2>
+    <h2>Informations du Parent/Tuteur</h2>
     <table class="info-table">
         <tr>
-            <td class="label">اسم ولي الأمر:</td>
+            <td class="label">Nom du parent:</td>
             <td class="value">{{ $registration->parent_name }}</td>
         </tr>
         <tr>
-            <td class="label">المهنة:</td>
+            <td class="label">Profession:</td>
             <td class="value">{{ $registration->parent_occupation }}</td>
         </tr>
         <tr>
-            <td class="label">رقم هاتف الأب:</td>
+            <td class="label">Téléphone du père:</td>
             <td class="value">{{ $registration->father_phone }}</td>
         </tr>
         @if($registration->mother_phone)
         <tr>
-            <td class="label">رقم هاتف الأم:</td>
+            <td class="label">Téléphone de la mère:</td>
             <td class="value">{{ $registration->mother_phone }}</td>
         </tr>
         @endif
     </table>
 
-    <h2>العنوان والمعلومات الإضافية</h2>
+    <h2>Adresse et Informations Complémentaires</h2>
     <table class="info-table">
         <tr>
-            <td class="label">عنوان السكن:</td>
+            <td class="label">Adresse:</td>
             <td class="value">{{ $registration->address }}</td>
         </tr>
         <tr>
-            <td class="label">الحالة العائلية:</td>
+            <td class="label">Situation familiale:</td>
             <td class="value">{{ $family_status_text }}</td>
         </tr>
         @if($registration->family_status == 'orphaned' && isset($registration->orphan_date))
         <tr>
-            <td class="label">تاريخ وفاة الأب:</td>
+            <td class="label">Date de décès du père:</td>
             <td class="value">{{ $registration->orphan_date }}</td>
         </tr>
         @endif
         @if($registration->additional_notes)
         <tr>
-            <td class="label">ملاحظات إضافية:</td>
+            <td class="label">Notes complémentaires:</td>
             <td class="value">{{ $registration->additional_notes }}</td>
         </tr>
         @endif
@@ -161,14 +159,14 @@
 
     <table class="signature-table">
         <tr>
-            <td class="signature-cell">توقيع ولي الأمر</td>
+            <td class="signature-cell">Signature du Parent/Tuteur</td>
             <td></td>
-            <td class="signature-cell">توقيع الإدارة</td>
+            <td class="signature-cell">Signature de l'Administration</td>
         </tr>
     </table>
 
     <div class="footer">
-        <p>رقم التسجيل: {{ $registration->id }} | تم إنشاء هذا التسجيل بتاريخ {{ $date }}</p>
+        <p>N° d'inscription: {{ $registration->id }} | Ce document a été généré le {{ $date }}</p>
     </div>
 </body>
 </html>
