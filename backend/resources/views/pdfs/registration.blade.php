@@ -1,4 +1,4 @@
-<!-- resources/views/pdfs/registration_mpdf.blade.php -->
+<!-- resources/views/pdfs/registration.blade.php -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -174,7 +174,13 @@
     <div class="section">
         <h3 class="section-title">Signature</h3>
         <p>Signature du père ou tuteur:</p>
+        @if($registration->info_packet_path)
+        <div class="signature">
+            <img src="{{ storage_path('app/public/' . $registration->info_packet_path) }}" width="200">
+        </div>
+        @else
         <div class="signature-box"></div>
+        @endif
     </div>
     
     <div class="footer">

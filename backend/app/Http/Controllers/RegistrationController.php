@@ -68,26 +68,43 @@ class RegistrationController extends Controller
             $signaturePath = 'signatures/' . $filename;
         }
 
+        // Map frontend field names to database field names
         $registration = Registration::create([
-            'student_name' => $request->studentName,
-            'academic_level' => $request->academicLevel,
+            'full_name' => $request->studentName,
+            'grade_applying_for' => $request->academicLevel,
             'parent_name' => $request->parentName,
-            'parent_profession' => $request->parentProfession,
+            'parent_occupation' => $request->parentProfession,
             'father_phone' => $request->fatherPhone,
             'mother_phone' => $request->motherPhone,
             'student_phone' => $request->studentPhone,
             'address' => $request->address,
-            'civil_status' => $request->civilStatus,
-            'death_date' => $request->deathDate,
-            'signature_path' => $signaturePath,
+            'family_status' => $this->mapCivilStatus($request->civilStatus),
+            'orphan_date' => $request->deathDate,
+            'info_packet_path' => $signaturePath, // Use this field for signature path
             'processed' => false,
-            'submission_date' => $request->submissionDate ?? now(),
         ]);
 
         return response()->json([
             'message' => 'Inscription enregistrée avec succès',
             'id' => $registration->id
         ], 201);
+    }
+
+    /**
+     * Map frontend civil status to database values
+     */
+    private function mapCivilStatus($status)
+    {
+        switch ($status) {
+            case 'together':
+                return 'intact';
+            case 'divorced':
+                return 'divorced';
+            case 'orphan':
+                return 'orphan';
+            default:
+                return 'intact';
+        }
     }
 
     /**
@@ -136,7 +153,7 @@ class RegistrationController extends Controller
             'date' => date('d/m/Y'),
         ]);
         
-        $filename = 'inscription_' . str_replace(' ', '_', $registration->student_name) . '.pdf';
+        $filename = 'inscription_' . str_replace(' ', '_', $registration->full_name) . '.pdf';
         
         return $pdf->download($filename);
     }
@@ -169,16 +186,16 @@ class RegistrationController extends Controller
         
         // Récupération de la signature
         $signatureHtml = '';
-        if ($registration->signature_path) {
-            $signatureUrl = Storage::disk('public')->url($registration->signature_path);
+        if ($registration->info_packet_path) {
+            $signatureUrl = Storage::disk('public')->url($registration->info_packet_path);
             $signatureHtml = '<div><img src="' . $signatureUrl . '" width="200"></div>';
         }
         
         // Statut civil avec traduction
         $civilStatus = 'Parents ensemble';
-        if ($registration->civil_status === 'divorced') {
+        if ($registration->family_status === 'divorced') {
             $civilStatus = 'Parents divorcés';
-        } elseif ($registration->civil_status === 'orphan') {
+        } elseif ($registration->family_status === 'orphan') {
             $civilStatus = 'Orphelin';
         }
         
@@ -201,11 +218,11 @@ class RegistrationController extends Controller
         <table>
             <tr>
                 <th>Nom complet de l\'étudiant</th>
-                <td>' . $registration->student_name . '</td>
+                <td>' . $registration->full_name . '</td>
             </tr>
             <tr>
                 <th>Niveau académique</th>
-                <td>' . $registration->academic_level . '</td>
+                <td>' . $registration->grade_applying_for . '</td>
             </tr>
             <tr>
                 <th>Nom complet du père ou du tuteur</th>
@@ -213,7 +230,7 @@ class RegistrationController extends Controller
             </tr>
             <tr>
                 <th>Profession du père ou du tuteur</th>
-                <td>' . $registration->parent_profession . '</td>
+                <td>' . $registration->parent_occupation . '</td>
             </tr>
             <tr>
                 <th>Numéro de téléphone du père</th>
@@ -244,11 +261,11 @@ class RegistrationController extends Controller
             </tr>';
             
         // Ajout de la date de décès si orphelin
-        if ($registration->civil_status === 'orphan' && $registration->death_date) {
+        if ($registration->family_status === 'orphan' && $registration->orphan_date) {
             $html .= '
             <tr>
                 <th>Date de décès du père</th>
-                <td>' . date('d/m/Y', strtotime($registration->death_date)) . '</td>
+                <td>' . date('d/m/Y', strtotime($registration->orphan_date)) . '</td>
             </tr>';
         }
             
@@ -262,7 +279,7 @@ class RegistrationController extends Controller
         
         $mpdf->WriteHTML($html);
         
-        $filename = 'inscription_' . str_replace(' ', '_', $registration->student_name) . '.pdf';
+        $filename = 'inscription_' . str_replace(' ', '_', $registration->full_name) . '.pdf';
         
         // Output
         return $mpdf->Output($filename, 'D');
@@ -281,13 +298,13 @@ class RegistrationController extends Controller
         $data = [
             'registration' => $registration,
             'date' => date('d/m/Y'),
-            'civilStatus' => $registration->civil_status === 'together' ? 'Parents ensemble' : 
-                           ($registration->civil_status === 'divorced' ? 'Parents divorcés' : 'Orphelin')
+            'civilStatus' => $registration->family_status === 'intact' ? 'Parents ensemble' : 
+                           ($registration->family_status === 'divorced' ? 'Parents divorcés' : 'Orphelin')
         ];
         
         $pdf = PDF::loadView('pdfs.registration', $data);
         
-        $filename = 'inscription_' . str_replace(' ', '_', $registration->student_name) . '.pdf';
+        $filename = 'inscription_' . str_replace(' ', '_', $registration->full_name) . '.pdf';
         
         return $pdf->download($filename);
     }

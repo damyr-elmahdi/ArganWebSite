@@ -15,19 +15,20 @@ class Registration extends Model
      * @var array
      */
     protected $fillable = [
-        'student_name',
-        'academic_level',
-        'parent_name',
-        'parent_profession',
-        'father_phone',
-        'mother_phone',
-        'student_phone',
-        'address',
-        'civil_status',
-        'death_date',
-        'signature_path',
-        'processed',
-        'submission_date',
+        'full_name',            
+        'date_of_birth',     
+        'grade_applying_for',   
+        'parent_occupation',   
+        'father_phone',         
+        'mother_phone',         
+        'student_phone',        
+        'address',              
+        'family_status',        
+        'orphan_date',          
+        'previous_school',     
+        'additional_notes',     
+        'info_packet_path',     
+        'processed',            
     ];
 
     /**
@@ -36,8 +37,8 @@ class Registration extends Model
      * @var array
      */
     protected $casts = [
-        'death_date' => 'date',
-        'submission_date' => 'datetime',
+        'date_of_birth' => 'date',
+        'orphan_date' => 'date',
         'processed' => 'boolean',
     ];
 }
