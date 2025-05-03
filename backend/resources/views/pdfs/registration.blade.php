@@ -1,192 +1,184 @@
+<!-- resources/views/pdfs/registration_mpdf.blade.php -->
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Formulaire d'Inscription</title>
+    <title>Formulaire d'Inscription - {{ $registration->full_name }}</title>
     <style>
         body {
-            font-family: dejavusans, sans-serif;
-            font-size: 14pt;
-            line-height: 1.5;
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            line-height: 1.6;
             color: #333;
-            direction: ltr; /* Using LTR as base direction */
-        }
-        h1 {
-            font-size: 24pt;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        h2 {
-            font-size: 18pt;
-            margin-top: 30px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
+            margin: 0;
+            padding: 0;
         }
         .header {
             text-align: center;
             margin-bottom: 30px;
+            border-bottom: 2px solid #1e40af;
+            padding-bottom: 10px;
         }
-        .header-title {
-            font-size: 28pt;
+        .logo {
+            max-width: 120px;
+            margin-bottom: 10px;
+        }
+        .school-name {
+            font-size: 22px;
             font-weight: bold;
-            margin-bottom: 10px;
+            color: #1e40af;
+            margin: 0;
         }
-        .sub-title {
-            font-size: 18pt;
-            margin-bottom: 10px;
+        .ministry {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
         }
         .date {
-            font-size: 14pt;
+            text-align: right;
             margin-bottom: 20px;
         }
-        
-        /* Tables for layout */
-        table.info-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
+        .section {
+            margin-bottom: 20px;
         }
-        table.info-table td.label {
-            width: 40%;
+        .section-title {
+            font-size: 16px;
             font-weight: bold;
-            padding: 8px;
-            vertical-align: top;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            color: #1e40af;
         }
-        table.info-table td.value {
-            width: 60%;
-            padding: 8px;
-            vertical-align: top;
+        .field {
+            margin-bottom: 12px;
         }
-        
-        /* RTL elements for Arabic text - with more specific styling */
-        .rtl {
-            direction: rtl;
-            text-align: right;
-            font-family: dejavusans, sans-serif;
-            unicode-bidi: embed;
-            padding: 2px 0;
+        .field-label {
+            font-weight: bold;
+            display: inline-block;
+            min-width: 200px;
         }
-        
-        /* Signatures */
-        .signature-table {
-            width: 100%;
-            margin-top: 60px;
+        .field-value {
+            display: inline-block;
         }
-        .signature-cell {
-            width: 45%;
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid #333;
+        .signature-box {
+            border: 1px solid #ddd;
+            height: 80px;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
-        
-        /* Footer */
         .footer {
-            margin-top: 50px;
-            font-size: 12pt;
-            color: #666;
+            margin-top: 40px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
             text-align: center;
+            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="header-title">Formulaire d'Inscription</div>
-        <div class="sub-title">Année Scolaire {{ $school_year }}</div>
-        <div class="date">Date d'inscription: {{ $date }}</div>
+        <img class="logo" src="{{ public_path('images/logo.png') }}" alt="Logo Lycée Argan">
+        <h1 class="school-name">Lycée Argan</h1>
+        <p class="ministry">Ministère de l'Éducation et de l'Éducation de la Petite Enfance</p>
     </div>
-
-    <h2>Informations de l'Élève</h2>
-    <table class="info-table">
-        <tr>
-            <td class="label">Nom complet:</td>
-            <td class="value">
-                <!-- For Arabic text, we add specific styling -->
-                <div class="rtl">{{ $registration->full_name }}</div>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">Niveau scolaire:</td>
-            <td class="value">{{ $grade_applying_for_text }}</td>
-        </tr>
-        <tr>
-            <td class="label">Téléphone de l'élève:</td>
-            <td class="value">{{ $registration->student_phone }}</td>
-        </tr>
+    
+    <div class="date">
+        <p>Date: {{ now()->format('d/m/Y') }}</p>
+    </div>
+    
+    <h2 style="text-align: center; margin-bottom: 20px;">FORMULAIRE D'INSCRIPTION</h2>
+    
+    <div class="section">
+        <h3 class="section-title">Informations de l'étudiant</h3>
+        <div class="field">
+            <span class="field-label">Nom complet:</span>
+            <span class="field-value">{{ $registration->full_name }}</span>
+        </div>
+        @if($registration->date_of_birth)
+        <div class="field">
+            <span class="field-label">Date de naissance:</span>
+            <span class="field-value">{{ $registration->date_of_birth->format('d/m/Y') }}</span>
+        </div>
+        @endif
+        <div class="field">
+            <span class="field-label">Niveau académique:</span>
+            <span class="field-value">{{ $registration->grade_applying_for }}</span>
+        </div>
         @if($registration->previous_school)
-        <tr>
-            <td class="label">École précédente:</td>
-            <td class="value">
-                <div class="rtl">{{ $registration->previous_school }}</div>
-            </td>
-        </tr>
+        <div class="field">
+            <span class="field-label">École précédente:</span>
+            <span class="field-value">{{ $registration->previous_school }}</span>
+        </div>
         @endif
-    </table>
-
-    <h2>Informations du Parent/Tuteur</h2>
-    <table class="info-table">
-        <tr>
-            <td class="label">Nom du parent:</td>
-            <td class="value">
-                <div class="rtl">{{ $registration->parent_name }}</div>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">Profession:</td>
-            <td class="value">
-                <div class="rtl">{{ $registration->parent_occupation }}</div>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">Téléphone du père:</td>
-            <td class="value">{{ $registration->father_phone }}</td>
-        </tr>
+        <div class="field">
+            <span class="field-label">Numéro de téléphone:</span>
+            <span class="field-value">{{ $registration->student_phone }}</span>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h3 class="section-title">Informations du parent/tuteur</h3>
+        <div class="field">
+            <span class="field-label">Nom du père/tuteur:</span>
+            <span class="field-value">{{ $registration->parent_name }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Profession:</span>
+            <span class="field-value">{{ $registration->parent_occupation }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Téléphone du père:</span>
+            <span class="field-value">{{ $registration->father_phone }}</span>
+        </div>
         @if($registration->mother_phone)
-        <tr>
-            <td class="label">Téléphone de la mère:</td>
-            <td class="value">{{ $registration->mother_phone }}</td>
-        </tr>
+        <div class="field">
+            <span class="field-label">Téléphone de la mère:</span>
+            <span class="field-value">{{ $registration->mother_phone }}</span>
+        </div>
         @endif
-    </table>
-
-    <h2>Adresse et Informations Complémentaires</h2>
-    <table class="info-table">
-        <tr>
-            <td class="label">Adresse:</td>
-            <td class="value">
-                <div class="rtl">{{ $registration->address }}</div>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">Situation familiale:</td>
-            <td class="value">{{ $family_status_text }}</td>
-        </tr>
-        @if($registration->family_status == 'orphaned' && $registration->orphan_date)
-        <tr>
-            <td class="label">Date de décès du père:</td>
-            <td class="value">{{ $registration->orphan_date }}</td>
-        </tr>
+    </div>
+    
+    <div class="section">
+        <h3 class="section-title">Adresse et situation familiale</h3>
+        <div class="field">
+            <span class="field-label">Adresse:</span>
+            <span class="field-value">{{ $registration->address }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">État civil:</span>
+            <span class="field-value">
+                @if($registration->family_status == 'intact')
+                    Les parents vivent ensemble
+                @elseif($registration->family_status == 'divorced')
+                    Parents divorcés
+                @elseif($registration->family_status == 'orphan')
+                    Orphelin
+                @endif
+            </span>
+        </div>
+        @if($registration->family_status == 'orphan' && $registration->orphan_date)
+        <div class="field">
+            <span class="field-label">Date de décès du père:</span>
+            <span class="field-value">{{ $registration->orphan_date->format('d/m/Y') }}</span>
+        </div>
         @endif
-        @if($registration->additional_notes)
-        <tr>
-            <td class="label">Notes complémentaires:</td>
-            <td class="value">
-                <div class="rtl">{{ $registration->additional_notes }}</div>
-            </td>
-        </tr>
-        @endif
-    </table>
-
-    <table class="signature-table">
-        <tr>
-            <td class="signature-cell">Signature du Parent/Tuteur</td>
-            <td style="width:10%"></td>
-            <td class="signature-cell">Signature de l'Administration</td>
-        </tr>
-    </table>
-
+    </div>
+    
+    @if($registration->additional_notes)
+    <div class="section">
+        <h3 class="section-title">Notes additionnelles</h3>
+        <p>{{ $registration->additional_notes }}</p>
+    </div>
+    @endif
+    
+    <div class="section">
+        <h3 class="section-title">Signature</h3>
+        <p>Signature du père ou tuteur:</p>
+        <div class="signature-box"></div>
+    </div>
+    
     <div class="footer">
-        <p>N° d'inscription: {{ $registration->id }} | Ce document a été généré le {{ $date }}</p>
+        <p>Lycée Argan - Tiznit, Maroc - Tél: (555) 123-4567 - Email: info@arganhighschool.edu</p>
     </div>
 </body>
 </html>

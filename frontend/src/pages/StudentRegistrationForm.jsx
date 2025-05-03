@@ -1,510 +1,395 @@
-import { useState, useRef } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import schoolLogo from '../assets/school-logo.png'; // Assurez-vous d'avoir un logo dans vos assets
 
-export default function StudentRegistrationFormFrench() {
+const StudentRegistrationForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    full_name: "",
-    grade_applying_for: "",
-    parent_name: "",
-    parent_occupation: "",
-    father_phone: "",
-    mother_phone: "",
-    student_phone: "",
-    address: "",
-    family_status: "with_parents",
-    orphan_date: "",
-    previous_school: "",
-    additional_notes: "",
+    studentName: '',
+    academicLevel: '',
+    parentName: '',
+    parentProfession: '',
+    fatherPhone: '',
+    motherPhone: '',
+    studentPhone: '',
+    address: '',
+    civilStatus: 'together', // "together", "divorced", "orphan"
+    deathDate: '',
+    signature: ''
   });
 
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [registrationId, setRegistrationId] = useState(null);
-  const fileInputRef = useRef(null);
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  
+  const signatureRef = useRef(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [signatureDataURL, setSignatureDataURL] = useState('');
+
+  // Fonction pour initialiser le canvas de signature
+  const initializeCanvas = () => {
+    const canvas = signatureRef.current;
+    const ctx = canvas.getContext('2d');
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#000000';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  };
+
+  // Gestion du début du dessin
+  const startDrawing = (e) => {
+    const canvas = signatureRef.current;
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    setIsDrawing(true);
+  };
+
+  // Gestion du dessin en cours
+  const draw = (e) => {
+    if (!isDrawing) return;
+    
+    const canvas = signatureRef.current;
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  };
+
+  // Gestion de la fin du dessin
+  const endDrawing = () => {
+    if (isDrawing) {
+      setIsDrawing(false);
+      const canvas = signatureRef.current;
+      setSignatureDataURL(canvas.toDataURL('image/png'));
+    }
+  };
+
+  // Réinitialiser le canvas
+  const clearSignature = () => {
+    const canvas = signatureRef.current;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    setSignatureDataURL('');
+  };
+
+  // Initialiser le canvas au chargement du composant
+  React.useEffect(() => {
+    if (signatureRef.current) {
+      initializeCanvas();
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleFileChange = (e) => {
-    // Nous ne stockons pas le fichier dans formData car il sera traité séparément par FormData
+    setFormData({
+      ...formData,
+      [name]: value
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
     setIsLoading(true);
-
-    // Créer un objet FormData pour gérer les téléchargements de fichiers
-    const submitData = new FormData();
-    
-    // Ajouter tous les champs du formulaire à FormData
-    Object.keys(formData).forEach(key => {
-      submitData.append(key, formData[key]);
-    });
-    
-    // Ajouter le fichier s'il existe
-    if (fileInputRef.current.files[0]) {
-      submitData.append('info_packet', fileInputRef.current.files[0]);
-    }
+    setError('');
 
     try {
-      const response = await axios.post("/api/registrations", submitData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      
-      setSuccess("Inscription soumise avec succès !");
-      setRegistrationId(response.data.registration.id);
-      window.scrollTo(0, 0); // Faire défiler vers le haut pour afficher le message de succès
+      // Inclure la signature dans les données du formulaire
+      const dataToSubmit = {
+        ...formData,
+        signature: signatureDataURL,
+        submissionDate: new Date().toISOString()
+      };
+
+      const response = await axios.post('/api/registrations', dataToSubmit);
+      setRegistrationId(response.data.id);
+      setIsSubmitted(true);
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else if (err.response && err.response.data && err.response.data.errors) {
-        // Gérer les erreurs de validation
-        const firstError = Object.values(err.response.data.errors)[0][0];
-        setError(firstError);
-      } else {
-        setError("Une erreur s'est produite lors de l'inscription. Veuillez réessayer.");
-      }
+      setError(err.response?.data?.message || 'Une erreur est survenue lors de la soumission du formulaire.');
     } finally {
       setIsLoading(false);
     }
   };
 
-// Replace the handleDownloadPDF function in StudentRegistrationForm.jsx
-
-const handleDownloadPDF = async () => {
-  try {
-    setIsLoading(true);
-    setError("");
-    
-    // Try the improved mPDF endpoint with better Arabic support
-    const response = await axios.get(`/api/registrations/${registrationId}/generate-pdf-with-mpdf`, {
-      responseType: 'blob',
-      // Add timeout to prevent long loading times
-      timeout: 60000 // Increased timeout to 60 seconds for PDF generation
-    });
-    
-    // Check if response is a blob and is a PDF
-    const contentType = response.headers['content-type'];
-    
-    if (response.data instanceof Blob) {
-      if (contentType && contentType.includes('application/pdf')) {
-        // Create a URL for the blob and trigger a download
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `formulaire_inscription_${registrationId}.pdf`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        // Release the blob URL
-        window.URL.revokeObjectURL(url);
-      } else if (contentType && contentType.includes('application/json')) {
-        // Handle case where server returned JSON error in a blob
-        const reader = new FileReader();
-        reader.onload = () => {
-          try {
-            const errorData = JSON.parse(reader.result);
-            setError(errorData.message || "Erreur lors du téléchargement du PDF. Veuillez réessayer.");
-          } catch (e) {
-            setError("Erreur lors du téléchargement du PDF. Veuillez réessayer.");
-          }
-        };
-        reader.readAsText(response.data);
-      } else {
-        // If response is not a proper PDF blob
-        throw new Error("Format de réponse PDF invalide");
-      }
-    } else {
-      throw new Error("Format de réponse invalide");
+  const downloadPDF = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(`/api/registrations/${registrationId}/download-packet`, {
+        responseType: 'blob'
+      });
+      
+      // Créer un objet URL pour le blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      
+      // Créer un élément <a> temporaire pour le téléchargement
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `inscription_${formData.studentName}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      
+      // Nettoyer
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (err) {
+      setError('Erreur lors du téléchargement du PDF');
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error("PDF download error:", error);
-    
-    // Check if the error response contains detailed error information
-    if (error.response) {
-      if (error.response.data instanceof Blob) {
-        // Try to parse the error if it's returned as JSON in a blob
-        const reader = new FileReader();
-        reader.onload = () => {
-          try {
-            const errorData = JSON.parse(reader.result);
-            setError(errorData.message || "Échec du téléchargement du PDF. Veuillez réessayer.");
-          } catch (e) {
-            setError("Échec du téléchargement du PDF. Veuillez réessayer plus tard.");
-          }
-        };
-        reader.readAsText(error.response.data);
-      } else if (error.response.data && error.response.data.message) {
-        setError(error.response.data.message);
-      } else {
-        setError("Échec du téléchargement du PDF. Veuillez contacter le support.");
-      }
-    } else if (error.message.includes('timeout')) {
-      setError("La génération du PDF a pris trop de temps. Veuillez réessayer plus tard.");
-    } else {
-      setError("Impossible de générer le PDF. Veuillez contacter l'administration.");
-    }
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-  // Niveaux scolaires disponibles
-  const gradeOptions = [
-    { value: "TC-S", label: "TC - Sciences" },
-    { value: "TC-LSH", label: "TC - Lettres et Sciences Humaines" },
-    { value: "1BAC-SE", label: "1BAC - Sciences Expérimentales" },
-    { value: "1BAC-LSH", label: "1BAC - Lettres et Sciences Humaines" },
-    { value: "2BAC-PC", label: "2BAC - PC (Physique-Chimie)" },
-    { value: "2BAC-SVT", label: "2BAC - SVT (Sciences de la Vie et de la Terre)" },
-    { value: "2BAC-SH", label: "2BAC - Sciences Humaines" },
-    { value: "2BAC-L", label: "2BAC - Lettres" },
-  ];
+  };
 
   return (
-    <main className="flex-grow flex items-center justify-center py-12 px-4 bg-gray-50">
-      <div className="max-w-3xl w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-800">Formulaire d'Inscription</h2>
-          <p className="mt-2 text-gray-600">
-            Veuillez remplir le formulaire suivant pour l'inscription de l'élève
-          </p>
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <div className="text-center mb-6">
+          <img src={schoolLogo} alt="Logo de l'école" className="h-20 mx-auto mb-2" />
+          <h1 className="text-2xl font-bold text-gray-800">Formulaire d'Inscription</h1>
+          <p className="text-gray-600">Date: {new Date().toLocaleDateString('fr-FR')}</p>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4">
-            <p className="text-red-700">{error}</p>
-          </div>
-        )}
+        {!isSubmitted ? (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nom complet de l'étudiant:
+                </label>
+                <input
+                  type="text"
+                  name="studentName"
+                  value={formData.studentName}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                />
+              </div>
 
-        {success && (
-          <div className="bg-green-50 border-l-4 border-green-500 p-4">
-            <p className="text-green-700">{success}</p>
-          </div>
-        )}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Niveau académique:
+                </label>
+                <select
+                  name="academicLevel"
+                  value={formData.academicLevel}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                >
+                  <option value="">Sélectionnez un niveau</option>
+                  <option value="1ère année">1ère année</option>
+                  <option value="2ème année">2ème année</option>
+                  <option value="3ème année">3ème année</option>
+                  <option value="4ème année">4ème année</option>
+                  <option value="5ème année">5ème année</option>
+                  <option value="6ème année">6ème année</option>
+                </select>
+              </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            {/* Informations de l'élève */}
-            <h3 className="text-xl font-medium text-gray-700 border-b pb-2">Informations de l'Élève</h3>
-            
-            <div>
-              <label htmlFor="full_name" className="block text-sm font-medium text-gray-700">
-                Nom complet de l'élève
-              </label>
-              <input
-                id="full_name"
-                name="full_name"
-                type="text"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Nom complet"
-                value={formData.full_name}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nom complet du père ou du tuteur:
+                </label>
+                <input
+                  type="text"
+                  name="parentName"
+                  value={formData.parentName}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                />
+              </div>
 
-            <div>
-              <label htmlFor="grade_applying_for" className="block text-sm font-medium text-gray-700">
-                Niveau scolaire
-              </label>
-              <select
-                id="grade_applying_for"
-                name="grade_applying_for"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                value={formData.grade_applying_for}
-                onChange={handleChange}
-                disabled={isLoading}
-              >
-                <option value="">Choisir un niveau scolaire</option>
-                {gradeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Profession du père ou du tuteur:
+                </label>
+                <input
+                  type="text"
+                  name="parentProfession"
+                  value={formData.parentProfession}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                />
+              </div>
 
-            <div>
-              <label htmlFor="student_phone" className="block text-sm font-medium text-gray-700">
-                Téléphone de l'élève
-              </label>
-              <input
-                id="student_phone"
-                name="student_phone"
-                type="text"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="0600000000"
-                value={formData.student_phone}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Numéro de téléphone du père:
+                </label>
+                <input
+                  type="tel"
+                  name="fatherPhone"
+                  value={formData.fatherPhone}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                />
+              </div>
 
-            <div>
-              <label htmlFor="previous_school" className="block text-sm font-medium text-gray-700">
-                École précédente
-              </label>
-              <input
-                id="previous_school"
-                name="previous_school"
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Nom de l'école précédente"
-                value={formData.previous_school}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Numéro de téléphone de la mère:
+                </label>
+                <input
+                  type="tel"
+                  name="motherPhone"
+                  value={formData.motherPhone}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                />
+              </div>
 
-            {/* Informations du parent */}
-            <h3 className="text-xl font-medium text-gray-700 border-b pb-2 mt-8">Informations du Parent/Tuteur</h3>
-            
-            <div>
-              <label htmlFor="parent_name" className="block text-sm font-medium text-gray-700">
-                Nom complet du père ou tuteur
-              </label>
-              <input
-                id="parent_name"
-                name="parent_name"
-                type="text"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Nom du parent/tuteur"
-                value={formData.parent_name}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Numéro de téléphone de l'étudiant:
+                </label>
+                <input
+                  type="tel"
+                  name="studentPhone"
+                  value={formData.studentPhone}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
 
-            <div>
-              <label htmlFor="parent_occupation" className="block text-sm font-medium text-gray-700">
-                Profession du parent/tuteur
-              </label>
-              <input
-                id="parent_occupation"
-                name="parent_occupation"
-                type="text"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Profession"
-                value={formData.parent_occupation}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Adresse de résidence:
+                </label>
+                <textarea
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  rows="2"
+                  required
+                ></textarea>
+              </div>
 
-            <div>
-              <label htmlFor="father_phone" className="block text-sm font-medium text-gray-700">
-                Téléphone du père
-              </label>
-              <input
-                id="father_phone"
-                name="father_phone"
-                type="text"
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="0600000000"
-                value={formData.father_phone}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  État civil:
+                </label>
+                <select
+                  name="civilStatus"
+                  value={formData.civilStatus}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                >
+                  <option value="together">Parents ensemble</option>
+                  <option value="divorced">Parents divorcés</option>
+                  <option value="orphan">Orphelin</option>
+                </select>
+              </div>
 
-            <div>
-              <label htmlFor="mother_phone" className="block text-sm font-medium text-gray-700">
-                Téléphone de la mère
-              </label>
-              <input
-                id="mother_phone"
-                name="mother_phone"
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="0600000000"
-                value={formData.mother_phone}
-                onChange={handleChange}
-                disabled={isLoading}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                Adresse de résidence
-              </label>
-              <textarea
-                id="address"
-                name="address"
-                required
-                rows="3"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Adresse complète"
-                value={formData.address}
-                onChange={handleChange}
-                disabled={isLoading}
-              ></textarea>
-            </div>
-
-            {/* Situation familiale */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Situation familiale
-              </label>
-              <div className="mt-2 space-y-2">
-                <div className="flex items-center">
-                  <input
-                    id="with_parents"
-                    name="family_status"
-                    type="radio"
-                    value="with_parents"
-                    checked={formData.family_status === "with_parents"}
-                    onChange={handleChange}
-                    className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
-                  />
-                  <label htmlFor="with_parents" className="ml-3 block text-sm text-gray-700">
-                    Vit avec les parents
+              {formData.civilStatus === 'orphan' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Date de décès du père:
                   </label>
-                </div>
-                <div className="flex items-center">
                   <input
-                    id="divorced"
-                    name="family_status"
-                    type="radio"
-                    value="divorced"
-                    checked={formData.family_status === "divorced"}
+                    type="date"
+                    name="deathDate"
+                    value={formData.deathDate}
                     onChange={handleChange}
-                    className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    required
                   />
-                  <label htmlFor="divorced" className="ml-3 block text-sm text-gray-700">
-                    Parents divorcés
-                  </label>
                 </div>
-                <div className="flex items-center">
-                  <input
-                    id="orphaned"
-                    name="family_status"
-                    type="radio"
-                    value="orphaned"
-                    checked={formData.family_status === "orphaned"}
-                    onChange={handleChange}
-                    className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
-                  />
-                  <label htmlFor="orphaned" className="ml-3 block text-sm text-gray-700">
-                    Orphelin
-                  </label>
-                </div>
+              )}
+            </div>
+
+            <div className="mt-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Signature du père ou du tuteur:
+              </label>
+              <div className="border border-gray-300 rounded-md p-2 bg-gray-50">
+                <canvas
+                  ref={signatureRef}
+                  width="500"
+                  height="150"
+                  className="border border-gray-400 bg-white w-full"
+                  onMouseDown={startDrawing}
+                  onMouseMove={draw}
+                  onMouseUp={endDrawing}
+                  onMouseLeave={endDrawing}
+                ></canvas>
+                <button 
+                  type="button" 
+                  onClick={clearSignature}
+                  className="mt-2 px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                >
+                  Effacer
+                </button>
               </div>
             </div>
 
-            {/* Champ de date orphelin (conditionnel) */}
-            {formData.family_status === "orphaned" && (
-              <div>
-                <label htmlFor="orphan_date" className="block text-sm font-medium text-gray-700">
-                  Date de décès du père
-                </label>
-                <input
-                  id="orphan_date"
-                  name="orphan_date"
-                  type="date"
-                  required
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                  value={formData.orphan_date}
-                  onChange={handleChange}
-                  disabled={isLoading}
-                />
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <span className="block sm:inline">{error}</span>
               </div>
             )}
 
-            {/* Notes supplémentaires et téléchargement de fichiers */}
-            <div>
-              <label htmlFor="additional_notes" className="block text-sm font-medium text-gray-700">
-                Notes complémentaires
-              </label>
-              <textarea
-                id="additional_notes"
-                name="additional_notes"
-                rows="3"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Informations supplémentaires importantes"
-                value={formData.additional_notes}
-                onChange={handleChange}
-                disabled={isLoading}
-              ></textarea>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Documents justificatifs (optionnel)
-              </label>
-              <input
-                ref={fileInputRef}
-                type="file"
-                onChange={handleFileChange}
-                className="mt-1 block w-full text-sm text-gray-500
-                  file:mr-4 file:py-2 file:px-4
-                  file:rounded-md file:border-0
-                  file:text-sm file:font-semibold
-                  file:bg-orange-50 file:text-orange-700
-                  hover:file:bg-orange-100"
-                disabled={isLoading}
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                Vous pouvez télécharger des documents justificatifs tels qu'un relevé de notes ou un certificat scolaire (PDF, JPG, PNG, DOC).
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <input
-              id="terms"
-              name="terms"
-              type="checkbox"
-              required
-              className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
-            />
-            <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-              Je confirme que toutes les informations fournies sont correctes et complètes
-            </label>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-              disabled={isLoading}
-            >
-              {isLoading ? "Soumission en cours..." : "Soumettre la demande d'inscription"}
-            </button>
-          </div>
-          
-          {/* Bouton de téléchargement PDF déplacé en bas */}
-          {success && registrationId && (
-            <div className="mt-6 text-center">
+            <div className="flex justify-end gap-4">
               <button
-                onClick={handleDownloadPDF}
-                className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="button"
+                onClick={() => navigate('/')}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
               >
-                Télécharger le formulaire d'inscription (PDF)
+                Annuler
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Traitement...' : 'Soumettre'}
               </button>
             </div>
-          )}
-        </form>
+          </form>
+        ) : (
+          <div className="text-center">
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+              <p className="font-bold">Inscription réussie!</p>
+              <p>Votre formulaire d'inscription a été soumis avec succès.</p>
+            </div>
+            
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={downloadPDF}
+                className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Génération...' : 'Télécharger PDF'}
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+              <button
+                onClick={() => navigate('/')}
+                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+              >
+                Retour à l'accueil
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-    </main>
+    </div>
   );
-}
+};
+
+export default StudentRegistrationForm;

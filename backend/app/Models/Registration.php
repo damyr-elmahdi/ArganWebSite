@@ -9,27 +9,35 @@ class Registration extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
-        'full_name',
-        'date_of_birth',
-        'grade_applying_for',
-        'address',
-        'previous_school',
+        'student_name',
+        'academic_level',
         'parent_name',
-        'parent_occupation',
+        'parent_profession',
         'father_phone',
         'mother_phone',
         'student_phone',
-        'family_status',
-        'orphan_date',
-        'additional_notes',
-        'info_packet_path',
+        'address',
+        'civil_status',
+        'death_date',
+        'signature_path',
         'processed',
+        'submission_date',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
     protected $casts = [
-        'date_of_birth' => 'date',
-        'orphan_date' => 'date',
+        'death_date' => 'date',
+        'submission_date' => 'datetime',
         'processed' => 'boolean',
     ];
 }
