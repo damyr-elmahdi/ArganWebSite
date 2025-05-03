@@ -81,32 +81,32 @@ export default function StudentRegistrationForm() {
     }
   };
 
-const handleDownloadPDF = async () => {
-  try {
-    setIsLoading(true);
-    // We'll use the more reliable generatePDF method - not the one with mPDF
-    const response = await axios.get(`/api/registrations/${registrationId}/generate-pdf`, {
-      responseType: 'blob'
-    });
-    
-    // Create a URL for the blob and trigger a download
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `registration_${registrationId}.pdf`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Release the blob URL
-    window.URL.revokeObjectURL(url);
-    setIsLoading(false);
-  } catch (error) {
-    console.error("PDF download error:", error);
-    setError("Failed to download PDF. Please try again.");
-    setIsLoading(false);
-  }
-};
+  const handleDownloadPDF = async () => {
+    try {
+      setIsLoading(true);
+      // Use the mPDF-specific endpoint which has better Arabic support
+      const response = await axios.get(`/api/registrations/${registrationId}/generate-pdf-with-mpdf`, {
+        responseType: 'blob'
+      });
+      
+      // Create a URL for the blob and trigger a download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `registration_${registrationId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Release the blob URL
+      window.URL.revokeObjectURL(url);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("PDF download error:", error);
+      setError("Failed to download PDF. Please try again.");
+      setIsLoading(false);
+    }
+  };
 
   // Available grade levels
   const gradeOptions = [

@@ -5,7 +5,7 @@
     <title>استمارة التسجيل</title>
     <style>
         body {
-            font-family: xbriyaz, Arial, sans-serif;
+            font-family: aealarabiya, Arial, sans-serif; /* Changed font family */
             font-size: 14pt;
             line-height: 1.5;
             color: #333;

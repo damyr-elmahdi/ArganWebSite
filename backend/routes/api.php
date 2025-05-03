@@ -23,11 +23,15 @@ use App\Http\Controllers\UserManagementController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+// Route::post('/register', [AuthController::class, 'register']);
+
+// Public routes
 Route::post('/registrations', [RegistrationController::class, 'store']);
 Route::get('/registrations/{registration}/download-packet', [RegistrationController::class, 'downloadInfoPacket']);
 Route::get('/registrations/{registration}/generate-pdf', [RegistrationController::class, 'generatePDF']);
-Route::get('/registrations/{id}/generate-pdf', [RegistrationController::class, 'generatePdfWithMpdf']);
+Route::get('/registrations/{id}/generate-pdf-with-mpdf', [RegistrationController::class, 'generatePdfWithMpdf']);
+
+
 Route::post('/contact', [ContactController::class, 'submitContactForm']);
 
 // Public library routes

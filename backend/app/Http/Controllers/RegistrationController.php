@@ -242,21 +242,42 @@ class RegistrationController extends Controller
         
         // Get the family status text
         $family_status_text = $familyStatusMap[$registration->family_status] ?? $registration->family_status;
-
+    
         try {
+            // First, make sure we have a temp directory for mPDF
+            $tempDir = storage_path('app/mpdf');
+            if (!file_exists($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
+            
             // Initialize mPDF with Arabic configuration
             $mpdf = new \Mpdf\Mpdf([
-                'mode' => 'utf-8',
+                'mode' => 'utf-8', 
                 'format' => 'A4',
                 'margin_left' => 10,
                 'margin_right' => 10,
                 'margin_top' => 10,
                 'margin_bottom' => 10,
-                'default_font' => 'xbriyaz',
+                // Use a font that supports Arabic - try different options if one doesn't work
+                'default_font' => 'aealarabiya', // Try this font first
                 'default_font_size' => 12,
-                'tempDir' => storage_path('app/mpdf')
+                'tempDir' => $tempDir,
+                // Add font directories where mPDF should look for fonts
+                'fontDir' => [
+                    base_path('resources/fonts/'), // Check if you have fonts here
+                    storage_path('fonts/'),        // Or here
+                    // Add the standard font directory that comes with mpdf
+                    base_path('vendor/mpdf/mpdf/ttfonts/')
+                ],
+                // Register the fonts you want to use
+                'fontdata' => [
+                    'aealarabiya' => [
+                        'R' => 'aealarabiya.ttf',
+                        'useOTL' => 0xFF,
+                    ]
+                ]
             ]);
-
+    
             // Set document direction to RTL for Arabic
             $mpdf->SetDirectionality('rtl');
             
