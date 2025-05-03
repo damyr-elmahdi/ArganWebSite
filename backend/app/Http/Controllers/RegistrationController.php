@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon; // Add this missing import
+use Carbon\Carbon;
 
 class RegistrationController extends Controller
 {
@@ -209,76 +209,72 @@ class RegistrationController extends Controller
      */
     public function generatePdfWithMpdf($id)
     {
-        // Find the registration by ID
-        $registration = Registration::findOrFail($id);
-        
-        // Format the date
-        $date = Carbon::now()->format('Y-m-d');
-        
-        // Get the school year
-        $school_year = "2025-2026";
-        
-        // Map grade level codes to human-readable Arabic text
-        $gradeMap = [
-            "TC-S" => "الجذع المشترك - علوم",
-            "TC-LSH" => "الجذع المشترك - آداب وعلوم إنسانية",
-            "1BAC-SE" => "السنة الأولى باكالوريا - علوم تجريبية",
-            "1BAC-LSH" => "السنة الأولى باكالوريا - آداب وعلوم إنسانية",
-            "2BAC-PC" => "السنة الثانية باكالوريا - علوم فيزيائية وكيميائية",
-            "2BAC-SVT" => "السنة الثانية باكالوريا - علوم الحياة والأرض",
-            "2BAC-SH" => "السنة الثانية باكالوريا - علوم إنسانية",
-            "2BAC-L" => "السنة الثانية باكالوريا - آداب",
-        ];
-        
-        // Get the grade level text
-        $grade_applying_for_text = $gradeMap[$registration->grade_applying_for] ?? $registration->grade_applying_for;
-        
-        // Map family status codes to human-readable Arabic text
-        $familyStatusMap = [
-            "with_parents" => "يعيش مع الوالدين",
-            "divorced" => "الوالدين منفصلين",
-            "orphaned" => "يتيم",
-        ];
-        
-        // Get the family status text
-        $family_status_text = $familyStatusMap[$registration->family_status] ?? $registration->family_status;
-    
         try {
-            // First, make sure we have a temp directory for mPDF
+            // Find the registration by ID
+            $registration = Registration::findOrFail($id);
+            
+            // Format the date
+            $date = Carbon::now()->format('Y-m-d');
+            
+            // Get the school year
+            $school_year = "2025-2026";
+            
+            // Map grade level codes to human-readable Arabic text
+            $gradeMap = [
+                "TC-S" => "الجذع المشترك - علوم",
+                "TC-LSH" => "الجذع المشترك - آداب وعلوم إنسانية",
+                "1BAC-SE" => "السنة الأولى باكالوريا - علوم تجريبية",
+                "1BAC-LSH" => "السنة الأولى باكالوريا - آداب وعلوم إنسانية",
+                "2BAC-PC" => "السنة الثانية باكالوريا - علوم فيزيائية وكيميائية",
+                "2BAC-SVT" => "السنة الثانية باكالوريا - علوم الحياة والأرض",
+                "2BAC-SH" => "السنة الثانية باكالوريا - علوم إنسانية",
+                "2BAC-L" => "السنة الثانية باكالوريا - آداب",
+            ];
+            
+            // Get the grade level text
+            $grade_applying_for_text = $gradeMap[$registration->grade_applying_for] ?? $registration->grade_applying_for;
+            
+            // Map family status codes to human-readable Arabic text
+            $familyStatusMap = [
+                "with_parents" => "يعيش مع الوالدين",
+                "divorced" => "الوالدين منفصلين",
+                "orphaned" => "يتيم",
+            ];
+            
+            // Get the family status text
+            $family_status_text = $familyStatusMap[$registration->family_status] ?? $registration->family_status;
+        
+            // First, make sure we have a temp directory for mPDF with proper permissions
             $tempDir = storage_path('app/mpdf');
             if (!file_exists($tempDir)) {
                 mkdir($tempDir, 0755, true);
             }
+
+            // Check if required fonts directory exists, if not create it
+            $fontDir = storage_path('fonts');
+            if (!file_exists($fontDir)) {
+                mkdir($fontDir, 0755, true);
+            }
             
-            // Initialize mPDF with Arabic configuration
-            $mpdf = new \Mpdf\Mpdf([
-                'mode' => 'utf-8', 
+            // Define config for mPDF with simpler configuration
+            $config = [
+                'mode' => 'utf-8',
                 'format' => 'A4',
-                'margin_left' => 10,
-                'margin_right' => 10,
-                'margin_top' => 10,
-                'margin_bottom' => 10,
-                // Use a font that supports Arabic - try different options if one doesn't work
-                'default_font' => 'aealarabiya', // Try this font first
-                'default_font_size' => 12,
+                'default_font' => 'dejavu sans', // Using a font that's typically included with mPDF
+                'margin_left' => 15,
+                'margin_right' => 15,
+                'margin_top' => 16,
+                'margin_bottom' => 16,
+                'margin_header' => 9,
+                'margin_footer' => 9,
                 'tempDir' => $tempDir,
-                // Add font directories where mPDF should look for fonts
-                'fontDir' => [
-                    base_path('resources/fonts/'), // Check if you have fonts here
-                    storage_path('fonts/'),        // Or here
-                    // Add the standard font directory that comes with mpdf
-                    base_path('vendor/mpdf/mpdf/ttfonts/')
-                ],
-                // Register the fonts you want to use
-                'fontdata' => [
-                    'aealarabiya' => [
-                        'R' => 'aealarabiya.ttf',
-                        'useOTL' => 0xFF,
-                    ]
-                ]
-            ]);
-    
-            // Set document direction to RTL for Arabic
+                'orientation' => 'P'
+            ];
+            
+            // Initialize mPDF with the config
+            $mpdf = new \Mpdf\Mpdf($config);
+            
+            // Set RTL direction for Arabic
             $mpdf->SetDirectionality('rtl');
             
             // Get the HTML content (using the blade view)
@@ -293,21 +289,27 @@ class RegistrationController extends Controller
             // Write the HTML to the PDF
             $mpdf->WriteHTML($html);
             
-            // Output the PDF to the browser
+            // Output the PDF as a downloadable file
             $fileName = 'registration_' . $registration->id . '.pdf';
             return response($mpdf->Output($fileName, 'S'))
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+                
         } catch (\Exception $e) {
+            // Log the detailed error for debugging
             Log::error('PDF generation failed: ' . $e->getMessage(), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString()
             ]);
             
+            // Return a clearer error message
             return response()->json([
-                'message' => 'Failed to generate PDF',
-                'error' => $e->getMessage()
+                'message' => 'Failed to generate PDF: ' . $e->getMessage(),
+                'error_details' => [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
             ], 500);
         }
     }

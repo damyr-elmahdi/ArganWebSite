@@ -5,7 +5,7 @@
     <title>استمارة التسجيل</title>
     <style>
         body {
-            font-family: aealarabiya, Arial, sans-serif; /* Changed font family */
+            font-family: DejaVu Sans, sans-serif; /* Using a more universally available font */
             font-size: 14pt;
             line-height: 1.5;
             color: #333;
@@ -80,11 +80,10 @@
             text-align: center;
         }
         
-        /* Set page margin - you can also use CSS @page */
+        /* Set page margin */
         @page {
             margin: 2cm;
         }
-        
     </style>
 </head>
 <body>
