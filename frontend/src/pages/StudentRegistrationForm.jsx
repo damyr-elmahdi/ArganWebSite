@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export default function StudentRegistrationForm() {
+export default function StudentRegistrationFormFrench() {
   const [formData, setFormData] = useState({
     full_name: "",
     grade_applying_for: "",
@@ -34,7 +34,7 @@ export default function StudentRegistrationForm() {
   };
 
   const handleFileChange = (e) => {
-    // We don't set the file in the formData state as it will be handled separately by FormData
+    // Nous ne stockons pas le fichier dans formData car il sera traité séparément par FormData
   };
 
   const handleSubmit = async (e) => {
@@ -43,15 +43,15 @@ export default function StudentRegistrationForm() {
     setSuccess("");
     setIsLoading(true);
 
-    // Create FormData object to handle file uploads
+    // Créer un objet FormData pour gérer les téléchargements de fichiers
     const submitData = new FormData();
     
-    // Add all form fields to FormData
+    // Ajouter tous les champs du formulaire à FormData
     Object.keys(formData).forEach(key => {
       submitData.append(key, formData[key]);
     });
     
-    // Add the file if it exists
+    // Ajouter le fichier s'il existe
     if (fileInputRef.current.files[0]) {
       submitData.append('info_packet', fileInputRef.current.files[0]);
     }
@@ -63,18 +63,18 @@ export default function StudentRegistrationForm() {
         },
       });
       
-      setSuccess("Registration submitted successfully!");
+      setSuccess("Inscription soumise avec succès !");
       setRegistrationId(response.data.registration.id);
-      window.scrollTo(0, 0); // Scroll to top to show success message
+      window.scrollTo(0, 0); // Faire défiler vers le haut pour afficher le message de succès
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else if (err.response && err.response.data && err.response.data.errors) {
-        // Handle validation errors
+        // Gérer les erreurs de validation
         const firstError = Object.values(err.response.data.errors)[0][0];
         setError(firstError);
       } else {
-        setError("An error occurred during registration. Please try again.");
+        setError("Une erreur s'est produite lors de l'inscription. Veuillez réessayer.");
       }
     } finally {
       setIsLoading(false);
@@ -84,31 +84,64 @@ export default function StudentRegistrationForm() {
   const handleDownloadPDF = async () => {
     try {
       setIsLoading(true);
-      // Use the mPDF-specific endpoint which has better Arabic support
+      setError("");
+      
+      // Try the improved mPDF endpoint which has better Arabic support
       const response = await axios.get(`/api/registrations/${registrationId}/generate-pdf-with-mpdf`, {
-        responseType: 'blob'
+        responseType: 'blob',
+        // Add timeout to prevent long loading times
+        timeout: 30000
       });
       
-      // Create a URL for the blob and trigger a download
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `registration_${registrationId}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // Check if response is a blob and is a PDF
+      const contentType = response.headers['content-type'];
+      if (response.data instanceof Blob && contentType && contentType.includes('application/pdf')) {
+        // Create a URL for the blob and trigger a download
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `registration_${registrationId}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Release the blob URL
+        window.URL.revokeObjectURL(url);
+      } else {
+        // If response is not a proper PDF blob
+        throw new Error("Invalid PDF response from server");
+      }
       
-      // Release the blob URL
-      window.URL.revokeObjectURL(url);
       setIsLoading(false);
     } catch (error) {
       console.error("PDF download error:", error);
-      setError("Failed to download PDF. Please try again.");
+      
+      // Check if the error response contains detailed error information
+      if (error.response && error.response.data) {
+        try {
+          // Try to parse the error if it's returned as JSON
+          const reader = new FileReader();
+          reader.onload = () => {
+            try {
+              const errorData = JSON.parse(reader.result);
+              setError(errorData.message || "Failed to download PDF. Please try again.");
+            } catch (e) {
+              setError("Failed to download PDF. Please try again.");
+            }
+          };
+          reader.readAsText(error.response.data);
+        } catch (e) {
+          setError("Failed to download PDF. Please try again.");
+        }
+      } else {
+        setError("Failed to download PDF. Please contact support for assistance.");
+      }
+      
       setIsLoading(false);
     }
   };
 
-  // Available grade levels
+  // Niveaux scolaires disponibles
   const gradeOptions = [
     { value: "TC-S", label: "TC - Sciences" },
     { value: "TC-LSH", label: "TC - Lettres et Sciences Humaines" },
@@ -124,9 +157,9 @@ export default function StudentRegistrationForm() {
     <main className="flex-grow flex items-center justify-center py-12 px-4 bg-gray-50">
       <div className="max-w-3xl w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-800">طلب التسجيل</h2>
+          <h2 className="text-3xl font-bold text-gray-800">Formulaire d'Inscription</h2>
           <p className="mt-2 text-gray-600">
-            يرجى ملء النموذج التالي لتسجيل الطالب
+            Veuillez remplir le formulaire suivant pour l'inscription de l'élève
           </p>
         </div>
 
@@ -144,12 +177,12 @@ export default function StudentRegistrationForm() {
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
-            {/* Student information */}
-            <h3 className="text-xl font-medium text-gray-700 border-b pb-2">معلومات الطالب</h3>
+            {/* Informations de l'élève */}
+            <h3 className="text-xl font-medium text-gray-700 border-b pb-2">Informations de l'Élève</h3>
             
             <div>
               <label htmlFor="full_name" className="block text-sm font-medium text-gray-700">
-                الاسم الكامل للتلميذ
+                Nom complet de l'élève
               </label>
               <input
                 id="full_name"
@@ -157,7 +190,7 @@ export default function StudentRegistrationForm() {
                 type="text"
                 required
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="الاسم الكامل"
+                placeholder="Nom complet"
                 value={formData.full_name}
                 onChange={handleChange}
                 disabled={isLoading}
@@ -166,7 +199,7 @@ export default function StudentRegistrationForm() {
 
             <div>
               <label htmlFor="grade_applying_for" className="block text-sm font-medium text-gray-700">
-                المستوى الدراسي
+                Niveau scolaire
               </label>
               <select
                 id="grade_applying_for"
@@ -177,7 +210,7 @@ export default function StudentRegistrationForm() {
                 onChange={handleChange}
                 disabled={isLoading}
               >
-                <option value="">اختر المستوى الدراسي</option>
+                <option value="">Choisir un niveau scolaire</option>
                 {gradeOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -188,7 +221,7 @@ export default function StudentRegistrationForm() {
 
             <div>
               <label htmlFor="student_phone" className="block text-sm font-medium text-gray-700">
-                رقم هاتف التلميذ
+                Téléphone de l'élève
               </label>
               <input
                 id="student_phone"
@@ -205,26 +238,26 @@ export default function StudentRegistrationForm() {
 
             <div>
               <label htmlFor="previous_school" className="block text-sm font-medium text-gray-700">
-                المدرسة السابقة
+                École précédente
               </label>
               <input
                 id="previous_school"
                 name="previous_school"
                 type="text"
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="اسم المدرسة السابقة"
+                placeholder="Nom de l'école précédente"
                 value={formData.previous_school}
                 onChange={handleChange}
                 disabled={isLoading}
               />
             </div>
 
-            {/* Parent information */}
-            <h3 className="text-xl font-medium text-gray-700 border-b pb-2 mt-8">معلومات ولي الأمر</h3>
+            {/* Informations du parent */}
+            <h3 className="text-xl font-medium text-gray-700 border-b pb-2 mt-8">Informations du Parent/Tuteur</h3>
             
             <div>
               <label htmlFor="parent_name" className="block text-sm font-medium text-gray-700">
-                الاسم الكامل للأب أو ولي الأمر
+                Nom complet du père ou tuteur
               </label>
               <input
                 id="parent_name"
@@ -232,7 +265,7 @@ export default function StudentRegistrationForm() {
                 type="text"
                 required
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="اسم ولي الأمر"
+                placeholder="Nom du parent/tuteur"
                 value={formData.parent_name}
                 onChange={handleChange}
                 disabled={isLoading}
@@ -241,7 +274,7 @@ export default function StudentRegistrationForm() {
 
             <div>
               <label htmlFor="parent_occupation" className="block text-sm font-medium text-gray-700">
-                مهنة الأب أو ولي الأمر
+                Profession du parent/tuteur
               </label>
               <input
                 id="parent_occupation"
@@ -249,7 +282,7 @@ export default function StudentRegistrationForm() {
                 type="text"
                 required
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="المهنة"
+                placeholder="Profession"
                 value={formData.parent_occupation}
                 onChange={handleChange}
                 disabled={isLoading}
@@ -258,7 +291,7 @@ export default function StudentRegistrationForm() {
 
             <div>
               <label htmlFor="father_phone" className="block text-sm font-medium text-gray-700">
-                رقم هاتف الأب
+                Téléphone du père
               </label>
               <input
                 id="father_phone"
@@ -275,7 +308,7 @@ export default function StudentRegistrationForm() {
 
             <div>
               <label htmlFor="mother_phone" className="block text-sm font-medium text-gray-700">
-                رقم هاتف الأم
+                Téléphone de la mère
               </label>
               <input
                 id="mother_phone"
@@ -291,7 +324,7 @@ export default function StudentRegistrationForm() {
 
             <div>
               <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                عنوان السكن
+                Adresse de résidence
               </label>
               <textarea
                 id="address"
@@ -299,17 +332,17 @@ export default function StudentRegistrationForm() {
                 required
                 rows="3"
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="العنوان الكامل"
+                placeholder="Adresse complète"
                 value={formData.address}
                 onChange={handleChange}
                 disabled={isLoading}
               ></textarea>
             </div>
 
-            {/* Family status */}
+            {/* Situation familiale */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                الحالة العائلية
+                Situation familiale
               </label>
               <div className="mt-2 space-y-2">
                 <div className="flex items-center">
@@ -322,8 +355,8 @@ export default function StudentRegistrationForm() {
                     onChange={handleChange}
                     className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
                   />
-                  <label htmlFor="with_parents" className="mr-3 block text-sm text-gray-700">
-                    الطالب يعيش مع الوالدين
+                  <label htmlFor="with_parents" className="ml-3 block text-sm text-gray-700">
+                    Vit avec les parents
                   </label>
                 </div>
                 <div className="flex items-center">
@@ -336,8 +369,8 @@ export default function StudentRegistrationForm() {
                     onChange={handleChange}
                     className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
                   />
-                  <label htmlFor="divorced" className="mr-3 block text-sm text-gray-700">
-                    الوالدين منفصلين
+                  <label htmlFor="divorced" className="ml-3 block text-sm text-gray-700">
+                    Parents divorcés
                   </label>
                 </div>
                 <div className="flex items-center">
@@ -350,18 +383,18 @@ export default function StudentRegistrationForm() {
                     onChange={handleChange}
                     className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
                   />
-                  <label htmlFor="orphaned" className="mr-3 block text-sm text-gray-700">
-                    يتيم
+                  <label htmlFor="orphaned" className="ml-3 block text-sm text-gray-700">
+                    Orphelin
                   </label>
                 </div>
               </div>
             </div>
 
-            {/* Orphan date field (conditional) */}
+            {/* Champ de date orphelin (conditionnel) */}
             {formData.family_status === "orphaned" && (
               <div>
                 <label htmlFor="orphan_date" className="block text-sm font-medium text-gray-700">
-                  تاريخ وفاة الأب
+                  Date de décès du père
                 </label>
                 <input
                   id="orphan_date"
@@ -376,17 +409,17 @@ export default function StudentRegistrationForm() {
               </div>
             )}
 
-            {/* Additional notes and file upload */}
+            {/* Notes supplémentaires et téléchargement de fichiers */}
             <div>
               <label htmlFor="additional_notes" className="block text-sm font-medium text-gray-700">
-                ملاحظات إضافية
+                Notes complémentaires
               </label>
               <textarea
                 id="additional_notes"
                 name="additional_notes"
                 rows="3"
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                placeholder="أي معلومات إضافية مهمة"
+                placeholder="Informations supplémentaires importantes"
                 value={formData.additional_notes}
                 onChange={handleChange}
                 disabled={isLoading}
@@ -395,7 +428,7 @@ export default function StudentRegistrationForm() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                وثائق داعمة (اختياري)
+                Documents justificatifs (optionnel)
               </label>
               <input
                 ref={fileInputRef}
@@ -410,7 +443,7 @@ export default function StudentRegistrationForm() {
                 disabled={isLoading}
               />
               <p className="mt-1 text-xs text-gray-500">
-                يمكنك تحميل وثائق داعمة مثل كشف نقط أو شهادة مدرسية (PDF, JPG, PNG, DOC).
+                Vous pouvez télécharger des documents justificatifs tels qu'un relevé de notes ou un certificat scolaire (PDF, JPG, PNG, DOC).
               </p>
             </div>
           </div>
@@ -423,8 +456,8 @@ export default function StudentRegistrationForm() {
               required
               className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
             />
-            <label htmlFor="terms" className="mr-2 block text-sm text-gray-700">
-              أوافق على أن جميع المعلومات المقدمة صحيحة وكاملة
+            <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
+              Je confirme que toutes les informations fournies sont correctes et complètes
             </label>
           </div>
 
@@ -434,18 +467,18 @@ export default function StudentRegistrationForm() {
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
               disabled={isLoading}
             >
-              {isLoading ? "جاري التقديم..." : "تقديم طلب التسجيل"}
+              {isLoading ? "Soumission en cours..." : "Soumettre la demande d'inscription"}
             </button>
           </div>
           
-          {/* PDF Download button moved to the bottom */}
+          {/* Bouton de téléchargement PDF déplacé en bas */}
           {success && registrationId && (
             <div className="mt-6 text-center">
               <button
                 onClick={handleDownloadPDF}
                 className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               >
-                تنزيل نموذج التسجيل (PDF)
+                Télécharger le formulaire d'inscription (PDF)
               </button>
             </div>
           )}

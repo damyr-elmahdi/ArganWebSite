@@ -5,10 +5,11 @@
     <title>Formulaire d'Inscription</title>
     <style>
         body {
-            font-family: DejaVu Sans, sans-serif; /* Using a more universally available font */
+            font-family: dejavusans, sans-serif; /* Specifically using dejavusans for better Arabic support */
             font-size: 14pt;
             line-height: 1.5;
             color: #333;
+            direction: ltr; /* Using LTR as base direction */
         }
         h1 {
             font-size: 24pt;
@@ -58,6 +59,13 @@
             vertical-align: top;
         }
         
+        /* Adding RTL elements for Arabic text */
+        .rtl {
+            direction: rtl;
+            text-align: right;
+            unicode-bidi: embed;
+        }
+        
         /* Signatures */
         .signature-table {
             width: 100%;
@@ -95,7 +103,7 @@
     <table class="info-table">
         <tr>
             <td class="label">Nom complet:</td>
-            <td class="value">{{ $registration->full_name }}</td>
+            <td class="value rtl">{{ $registration->full_name }}</td>
         </tr>
         <tr>
             <td class="label">Niveau scolaire:</td>
@@ -107,7 +115,7 @@
         </tr>
         <tr>
             <td class="label">École précédente:</td>
-            <td class="value">{{ $registration->previous_school ?: 'Non spécifié' }}</td>
+            <td class="value rtl">{{ $registration->previous_school ?: 'Non spécifié' }}</td>
         </tr>
     </table>
 
@@ -115,11 +123,11 @@
     <table class="info-table">
         <tr>
             <td class="label">Nom du parent:</td>
-            <td class="value">{{ $registration->parent_name }}</td>
+            <td class="value rtl">{{ $registration->parent_name }}</td>
         </tr>
         <tr>
             <td class="label">Profession:</td>
-            <td class="value">{{ $registration->parent_occupation }}</td>
+            <td class="value rtl">{{ $registration->parent_occupation }}</td>
         </tr>
         <tr>
             <td class="label">Téléphone du père:</td>
@@ -137,7 +145,7 @@
     <table class="info-table">
         <tr>
             <td class="label">Adresse:</td>
-            <td class="value">{{ $registration->address }}</td>
+            <td class="value rtl">{{ $registration->address }}</td>
         </tr>
         <tr>
             <td class="label">Situation familiale:</td>
@@ -152,7 +160,7 @@
         @if($registration->additional_notes)
         <tr>
             <td class="label">Notes complémentaires:</td>
-            <td class="value">{{ $registration->additional_notes }}</td>
+            <td class="value rtl">{{ $registration->additional_notes }}</td>
         </tr>
         @endif
     </table>

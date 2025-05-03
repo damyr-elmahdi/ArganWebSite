@@ -201,115 +201,114 @@ class RegistrationController extends Controller
         return $pdf->download('inscription_' . $registration->id . '.pdf');
     }
 
-    /**
-     * Generate PDF for a registration using mPDF
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function generatePdfWithMpdf($id)
-    {
-        try {
-            // Find the registration by ID
-            $registration = Registration::findOrFail($id);
-            
-            // Format the date
-            $date = Carbon::now()->format('d-m-Y');
-            
-            // Get the school year
-            $school_year = "2025-2026";
-            
-            // Map grade level codes to human-readable French text
-            $gradeMap = [
-                "TC-S" => "Tronc Commun - Sciences",
-                "TC-LSH" => "Tronc Commun - Lettres et Sciences Humaines",
-                "1BAC-SE" => "1ère Année Bac - Sciences Expérimentales",
-                "1BAC-LSH" => "1ère Année Bac - Lettres et Sciences Humaines",
-                "2BAC-PC" => "2ème Année Bac - Physique-Chimie",
-                "2BAC-SVT" => "2ème Année Bac - Sciences de la Vie et de la Terre",
-                "2BAC-SH" => "2ème Année Bac - Sciences Humaines",
-                "2BAC-L" => "2ème Année Bac - Lettres",
-            ];
-            
-            // Get the grade level text
-            $grade_applying_for_text = $gradeMap[$registration->grade_applying_for] ?? $registration->grade_applying_for;
-            
-            // Map family status codes to human-readable French text
-            $familyStatusMap = [
-                "with_parents" => "Vit avec les parents",
-                "divorced" => "Parents divorcés",
-                "orphaned" => "Orphelin",
-            ];
-            
-            // Get the family status text
-            $family_status_text = $familyStatusMap[$registration->family_status] ?? $registration->family_status;
+/**
+ * Generate PDF for a registration using mPDF
+ *
+ * @param int $id
+ * @return \Illuminate\Http\Response
+ */
+public function generatePdfWithMpdf($id)
+{
+    try {
+        // Find the registration by ID
+        $registration = Registration::findOrFail($id);
         
-            // First, make sure we have a temp directory for mPDF with proper permissions
-            $tempDir = storage_path('app/mpdf');
-            if (!file_exists($tempDir)) {
-                mkdir($tempDir, 0755, true);
-            }
-
-            // Check if required fonts directory exists, if not create it
-            $fontDir = storage_path('fonts');
-            if (!file_exists($fontDir)) {
-                mkdir($fontDir, 0755, true);
-            }
-            
-            // Define config for mPDF with simpler configuration
-            $config = [
-                'mode' => 'utf-8',
-                'format' => 'A4',
-                'default_font' => 'dejavu sans', // Using a font that's typically included with mPDF
-                'margin_left' => 15,
-                'margin_right' => 15,
-                'margin_top' => 16,
-                'margin_bottom' => 16,
-                'margin_header' => 9,
-                'margin_footer' => 9,
-                'tempDir' => $tempDir,
-                'orientation' => 'P'
-            ];
-            
-            // Initialize mPDF with the config
-            $mpdf = new \Mpdf\Mpdf($config);
-            
-            // Get the HTML content (using the blade view)
-            $html = view('pdfs.registration', compact(
-                'registration',
-                'date',
-                'school_year',
-                'grade_applying_for_text',
-                'family_status_text'
-            ))->render();
-            
-            // Write the HTML to the PDF
-            $mpdf->WriteHTML($html);
-            
-            // Output the PDF as a downloadable file
-            $fileName = 'inscription_' . $registration->id . '.pdf';
-            return response($mpdf->Output($fileName, 'S'))
-                ->header('Content-Type', 'application/pdf')
-                ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
-                
-        } catch (\Exception $e) {
-            // Log the detailed error for debugging
-            Log::error('PDF generation failed: ' . $e->getMessage(), [
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            
-            // Return a clearer error message
-            return response()->json([
-                'message' => 'Échec de génération du PDF: ' . $e->getMessage(),
-                'error_details' => [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine()
-                ]
-            ], 500);
+        // Format the date
+        $date = Carbon::now()->format('d-m-Y');
+        
+        // Get the school year
+        $school_year = "2025-2026";
+        
+        // Map grade level codes to human-readable French text
+        $gradeMap = [
+            "TC-S" => "Tronc Commun - Sciences",
+            "TC-LSH" => "Tronc Commun - Lettres et Sciences Humaines",
+            "1BAC-SE" => "1ère Année Bac - Sciences Expérimentales",
+            "1BAC-LSH" => "1ère Année Bac - Lettres et Sciences Humaines",
+            "2BAC-PC" => "2ème Année Bac - Physique-Chimie",
+            "2BAC-SVT" => "2ème Année Bac - Sciences de la Vie et de la Terre",
+            "2BAC-SH" => "2ème Année Bac - Sciences Humaines",
+            "2BAC-L" => "2ème Année Bac - Lettres",
+        ];
+        
+        // Get the grade level text
+        $grade_applying_for_text = $gradeMap[$registration->grade_applying_for] ?? $registration->grade_applying_for;
+        
+        // Map family status codes to human-readable French text
+        $familyStatusMap = [
+            "with_parents" => "Vit avec les parents",
+            "divorced" => "Parents divorcés",
+            "orphaned" => "Orphelin",
+        ];
+        
+        // Get the family status text
+        $family_status_text = $familyStatusMap[$registration->family_status] ?? $registration->family_status;
+    
+        // First, make sure we have a temp directory for mPDF with proper permissions
+        $tempDir = storage_path('app/mpdf');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0755, true);
         }
+        
+        // Define config for mPDF with simpler configuration
+        $config = [
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font_size' => '14',
+            'default_font' => 'dejavusans',
+            'margin_left' => 15,
+            'margin_right' => 15,
+            'margin_top' => 16,
+            'margin_bottom' => 16,
+            'margin_header' => 9,
+            'margin_footer' => 9,
+            'tempDir' => $tempDir,
+            'orientation' => 'P',
+            'debug' => true, // Enable debug mode to catch more details about errors
+        ];
+        
+        // Initialize mPDF with the config
+        $mpdf = new \Mpdf\Mpdf($config);
+        
+        // Get the HTML content (using the blade view)
+        $html = view('pdfs.registration', compact(
+            'registration',
+            'date',
+            'school_year',
+            'grade_applying_for_text',
+            'family_status_text'
+        ))->render();
+        
+        // Try setting a specific paper size to avoid issues
+        $mpdf->AddPage('P', 'A4');
+        
+        // Write the HTML to the PDF
+        $mpdf->WriteHTML($html);
+        
+        // Output the PDF as a downloadable file
+        $fileName = 'inscription_' . $registration->id . '.pdf';
+        return response($mpdf->Output($fileName, 'S'))
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+            
+    } catch (\Exception $e) {
+        // Log the detailed error for debugging
+        Log::error('PDF generation failed: ' . $e->getMessage(), [
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        // Return a clearer error message
+        return response()->json([
+            'message' => 'Échec de génération du PDF: ' . $e->getMessage(),
+            'error_details' => [
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]
+        ], 500);
     }
+}
     
     /**
      * Format grade level for display
