@@ -5,7 +5,7 @@
     <title>Formulaire d'Inscription</title>
     <style>
         body {
-            font-family: dejavusans, sans-serif; /* Specifically using dejavusans for better Arabic support */
+            font-family: dejavusans, sans-serif;
             font-size: 14pt;
             line-height: 1.5;
             color: #333;
@@ -48,22 +48,24 @@
             margin-bottom: 15px;
         }
         table.info-table td.label {
-            width: 30%;
+            width: 40%;
             font-weight: bold;
-            padding: 5px;
+            padding: 8px;
             vertical-align: top;
         }
         table.info-table td.value {
-            width: 70%;
-            padding: 5px;
+            width: 60%;
+            padding: 8px;
             vertical-align: top;
         }
         
-        /* Adding RTL elements for Arabic text */
+        /* RTL elements for Arabic text - with more specific styling */
         .rtl {
             direction: rtl;
             text-align: right;
+            font-family: dejavusans, sans-serif;
             unicode-bidi: embed;
+            padding: 2px 0;
         }
         
         /* Signatures */
@@ -74,7 +76,7 @@
         .signature-cell {
             width: 45%;
             text-align: center;
-            padding-top: 10px;
+            padding-top: 30px;
             border-top: 1px solid #333;
         }
         
@@ -84,11 +86,6 @@
             font-size: 12pt;
             color: #666;
             text-align: center;
-        }
-        
-        /* Set page margin */
-        @page {
-            margin: 2cm;
         }
     </style>
 </head>
@@ -103,7 +100,10 @@
     <table class="info-table">
         <tr>
             <td class="label">Nom complet:</td>
-            <td class="value rtl">{{ $registration->full_name }}</td>
+            <td class="value">
+                <!-- For Arabic text, we add specific styling -->
+                <div class="rtl">{{ $registration->full_name }}</div>
+            </td>
         </tr>
         <tr>
             <td class="label">Niveau scolaire:</td>
@@ -113,21 +113,29 @@
             <td class="label">Téléphone de l'élève:</td>
             <td class="value">{{ $registration->student_phone }}</td>
         </tr>
+        @if($registration->previous_school)
         <tr>
             <td class="label">École précédente:</td>
-            <td class="value rtl">{{ $registration->previous_school ?: 'Non spécifié' }}</td>
+            <td class="value">
+                <div class="rtl">{{ $registration->previous_school }}</div>
+            </td>
         </tr>
+        @endif
     </table>
 
     <h2>Informations du Parent/Tuteur</h2>
     <table class="info-table">
         <tr>
             <td class="label">Nom du parent:</td>
-            <td class="value rtl">{{ $registration->parent_name }}</td>
+            <td class="value">
+                <div class="rtl">{{ $registration->parent_name }}</div>
+            </td>
         </tr>
         <tr>
             <td class="label">Profession:</td>
-            <td class="value rtl">{{ $registration->parent_occupation }}</td>
+            <td class="value">
+                <div class="rtl">{{ $registration->parent_occupation }}</div>
+            </td>
         </tr>
         <tr>
             <td class="label">Téléphone du père:</td>
@@ -145,13 +153,15 @@
     <table class="info-table">
         <tr>
             <td class="label">Adresse:</td>
-            <td class="value rtl">{{ $registration->address }}</td>
+            <td class="value">
+                <div class="rtl">{{ $registration->address }}</div>
+            </td>
         </tr>
         <tr>
             <td class="label">Situation familiale:</td>
             <td class="value">{{ $family_status_text }}</td>
         </tr>
-        @if($registration->family_status == 'orphaned' && isset($registration->orphan_date))
+        @if($registration->family_status == 'orphaned' && $registration->orphan_date)
         <tr>
             <td class="label">Date de décès du père:</td>
             <td class="value">{{ $registration->orphan_date }}</td>
@@ -160,7 +170,9 @@
         @if($registration->additional_notes)
         <tr>
             <td class="label">Notes complémentaires:</td>
-            <td class="value rtl">{{ $registration->additional_notes }}</td>
+            <td class="value">
+                <div class="rtl">{{ $registration->additional_notes }}</div>
+            </td>
         </tr>
         @endif
     </table>
@@ -168,7 +180,7 @@
     <table class="signature-table">
         <tr>
             <td class="signature-cell">Signature du Parent/Tuteur</td>
-            <td></td>
+            <td style="width:10%"></td>
             <td class="signature-cell">Signature de l'Administration</td>
         </tr>
     </table>

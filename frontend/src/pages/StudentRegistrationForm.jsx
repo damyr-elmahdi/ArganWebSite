@@ -81,65 +81,86 @@ export default function StudentRegistrationFormFrench() {
     }
   };
 
-  const handleDownloadPDF = async () => {
-    try {
-      setIsLoading(true);
-      setError("");
-      
-      // Try the improved mPDF endpoint which has better Arabic support
-      const response = await axios.get(`/api/registrations/${registrationId}/generate-pdf-with-mpdf`, {
-        responseType: 'blob',
-        // Add timeout to prevent long loading times
-        timeout: 30000
-      });
-      
-      // Check if response is a blob and is a PDF
-      const contentType = response.headers['content-type'];
-      if (response.data instanceof Blob && contentType && contentType.includes('application/pdf')) {
+// Replace the handleDownloadPDF function in StudentRegistrationForm.jsx
+
+const handleDownloadPDF = async () => {
+  try {
+    setIsLoading(true);
+    setError("");
+    
+    // Try the improved mPDF endpoint with better Arabic support
+    const response = await axios.get(`/api/registrations/${registrationId}/generate-pdf-with-mpdf`, {
+      responseType: 'blob',
+      // Add timeout to prevent long loading times
+      timeout: 60000 // Increased timeout to 60 seconds for PDF generation
+    });
+    
+    // Check if response is a blob and is a PDF
+    const contentType = response.headers['content-type'];
+    
+    if (response.data instanceof Blob) {
+      if (contentType && contentType.includes('application/pdf')) {
         // Create a URL for the blob and trigger a download
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `registration_${registrationId}.pdf`);
+        link.setAttribute('download', `formulaire_inscription_${registrationId}.pdf`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         
         // Release the blob URL
         window.URL.revokeObjectURL(url);
+      } else if (contentType && contentType.includes('application/json')) {
+        // Handle case where server returned JSON error in a blob
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const errorData = JSON.parse(reader.result);
+            setError(errorData.message || "Erreur lors du téléchargement du PDF. Veuillez réessayer.");
+          } catch (e) {
+            setError("Erreur lors du téléchargement du PDF. Veuillez réessayer.");
+          }
+        };
+        reader.readAsText(response.data);
       } else {
         // If response is not a proper PDF blob
-        throw new Error("Invalid PDF response from server");
+        throw new Error("Format de réponse PDF invalide");
       }
-      
-      setIsLoading(false);
-    } catch (error) {
-      console.error("PDF download error:", error);
-      
-      // Check if the error response contains detailed error information
-      if (error.response && error.response.data) {
-        try {
-          // Try to parse the error if it's returned as JSON
-          const reader = new FileReader();
-          reader.onload = () => {
-            try {
-              const errorData = JSON.parse(reader.result);
-              setError(errorData.message || "Failed to download PDF. Please try again.");
-            } catch (e) {
-              setError("Failed to download PDF. Please try again.");
-            }
-          };
-          reader.readAsText(error.response.data);
-        } catch (e) {
-          setError("Failed to download PDF. Please try again.");
-        }
-      } else {
-        setError("Failed to download PDF. Please contact support for assistance.");
-      }
-      
-      setIsLoading(false);
+    } else {
+      throw new Error("Format de réponse invalide");
     }
-  };
+  } catch (error) {
+    console.error("PDF download error:", error);
+    
+    // Check if the error response contains detailed error information
+    if (error.response) {
+      if (error.response.data instanceof Blob) {
+        // Try to parse the error if it's returned as JSON in a blob
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const errorData = JSON.parse(reader.result);
+            setError(errorData.message || "Échec du téléchargement du PDF. Veuillez réessayer.");
+          } catch (e) {
+            setError("Échec du téléchargement du PDF. Veuillez réessayer plus tard.");
+          }
+        };
+        reader.readAsText(error.response.data);
+      } else if (error.response.data && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("Échec du téléchargement du PDF. Veuillez contacter le support.");
+      }
+    } else if (error.message.includes('timeout')) {
+      setError("La génération du PDF a pris trop de temps. Veuillez réessayer plus tard.");
+    } else {
+      setError("Impossible de générer le PDF. Veuillez contacter l'administration.");
+    }
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   // Niveaux scolaires disponibles
   const gradeOptions = [
