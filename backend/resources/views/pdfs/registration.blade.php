@@ -1,4 +1,3 @@
-<!-- resources/views/pdfs/registration.blade.php -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -77,9 +76,11 @@
 </head>
 <body>
     <div class="header">
-        <img class="logo" src="{{ public_path('images/logo.png') }}" alt="Logo Lycée Argan">
+        <img class="logo" src="{{ public_path('../argan.png') }}" alt="Logo Lycée Argan">
         <h1 class="school-name">Lycée Argan</h1>
         <p class="ministry">Ministère de l'Éducation et de l'Éducation de la Petite Enfance</p>
+        <img class="logo" src="{{ public_path('../Ministry.png') }}" alt="Logo Ministère de l'Éducation et de l'Éducation de la Petite Enfance">
+
     </div>
     
     <div class="date">
