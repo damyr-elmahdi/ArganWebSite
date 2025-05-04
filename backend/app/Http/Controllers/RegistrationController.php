@@ -72,7 +72,7 @@ class RegistrationController extends Controller
         $registration = Registration::create([
             'full_name' => $request->studentName,
             'grade_applying_for' => $request->academicLevel,
-            'parent_name' => $request->parentName,           // Fixed: Add this line to properly map parentName
+            'parent_name' => $request->parentName,           
             'parent_occupation' => $request->parentProfession,
             'father_phone' => $request->fatherPhone,
             'mother_phone' => $request->motherPhone,

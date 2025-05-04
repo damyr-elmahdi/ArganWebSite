@@ -12,12 +12,12 @@ return new class extends Migration
             $table->id();
             $table->string('full_name');
             $table->date('date_of_birth')->nullable();
-            $table->string('grade_applying_for')->nullable(); // Added field
-            $table->string('parent_name');
+            $table->string('grade_applying_for');
+             $table->string('parent_name');
             $table->string('parent_occupation');
             $table->string('father_phone');
-            $table->string('mother_phone')->nullable();
-            $table->string('student_phone');
+            $table->string('mother_phone');
+            $table->string('student_phone')->nullable();
             $table->string('family_status');
             $table->date('orphan_date')->nullable();
             $table->text('address');

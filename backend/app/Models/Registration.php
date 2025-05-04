@@ -18,6 +18,7 @@ class Registration extends Model
         'full_name',            
         'date_of_birth',     
         'grade_applying_for',   
+        'parent_name',          // Added parent_name field
         'parent_occupation',   
         'father_phone',         
         'mother_phone',         
