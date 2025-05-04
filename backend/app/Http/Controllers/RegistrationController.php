@@ -43,11 +43,11 @@ class RegistrationController extends Controller
             'deathDate' => 'nullable|date|required_if:civilStatus,orphan',
             'signature' => 'nullable|string',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()->first()], 422);
         }
-    
+
         // Si la signature est une chaîne base64, stockez-la dans un fichier
         $signaturePath = null;
         if ($request->has('signature') && $request->signature !== null) {
@@ -67,12 +67,12 @@ class RegistrationController extends Controller
             // Sauvegarde le chemin du fichier
             $signaturePath = 'signatures/' . $filename;
         }
-    
+
         // Map frontend field names to database field names
         $registration = Registration::create([
             'full_name' => $request->studentName,
             'grade_applying_for' => $request->academicLevel,
-            'parent_name' => $request->parentName,           
+            'parent_name' => $request->parentName,
             'parent_occupation' => $request->parentProfession,
             'father_phone' => $request->fatherPhone,
             'mother_phone' => $request->motherPhone,
@@ -82,10 +82,8 @@ class RegistrationController extends Controller
             'orphan_date' => $request->deathDate,
             'info_packet_path' => $signaturePath, // Use this field for signature path
             'processed' => false,
-            'previous_school' => $request->previousSchool ?? null,
-            'additional_notes' => $request->additionalNotes ?? null,
         ]);
-    
+
         return response()->json([
             'message' => 'Inscription enregistrée avec succès',
             'id' => $registration->id
@@ -180,32 +178,17 @@ class RegistrationController extends Controller
             'margin_bottom' => 15
         ]);
         
-        // Logo paths
-        $schoolLogoPath = public_path('images/argan.png');
-        $ministryLogoPath = public_path('images/Ministry.png');
-        
-        // Check if logo files exist
-        $schoolLogoHtml = file_exists($schoolLogoPath) 
-            ? '<img src="' . $schoolLogoPath . '" width="100" style="display: block; margin: 0 auto;">' 
-            : '<div style="text-align: center; height: 50px;">Logo indisponible</div>';
-        
-        // Ajout d'en-tête
+        // Ajout d'en-tête ou de pied de page
         $mpdf->SetHTMLHeader('<div style="text-align: center; font-weight: bold;">
-            ' . $schoolLogoHtml . '
-            <h2>Lycée Argan</h2>
+            <img src="' . public_path('images/school-logo.png') . '" width="100" style="display: block; margin: 0 auto;">
+            <h2>Argan High School</h2>
         </div>');
         
         // Récupération de la signature
         $signatureHtml = '';
         if ($registration->info_packet_path) {
-            $signaturePath = storage_path('app/public/' . $registration->info_packet_path);
-            if (file_exists($signaturePath)) {
-                $signatureHtml = '<div><img src="' . $signaturePath . '" width="200"></div>';
-            } else {
-                $signatureHtml = '<div style="border: 1px solid #ddd; height: 80px; width: 200px;"></div>';
-            }
-        } else {
-            $signatureHtml = '<div style="border: 1px solid #ddd; height: 80px; width: 200px;"></div>';
+            $signatureUrl = Storage::disk('public')->url($registration->info_packet_path);
+            $signatureHtml = '<div><img src="' . $signatureUrl . '" width="200"></div>';
         }
         
         // Statut civil avec traduction
@@ -216,24 +199,22 @@ class RegistrationController extends Controller
             $civilStatus = 'Orphelin';
         }
         
-        // Création du contenu HTML avec style optimisé pour une seule page
+        // Création du contenu HTML
         $html = '
         <style>
-            body { font-family: sans-serif; font-size: 12px; line-height: 1.3; }
-            h1 { text-align: center; color: #333; margin-bottom: 10px; }
-            .date { text-align: right; margin-bottom: 10px; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+            body { font-family: sans-serif; }
+            h1 { text-align: center; color: #333; margin-bottom: 20px; }
+            .date { text-align: right; margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
             table, th, td { border: 1px solid #ccc; }
-            th { background-color: #f2f2f2; text-align: left; padding: 6px; width: 40%; }
-            td { padding: 6px; }
-            .subtitle { font-weight: bold; margin: 8px 0 5px 0; color: #1e40af; }
-            .signature-section { margin-top: 10px; }
+            th { background-color: #f2f2f2; text-align: left; padding: 10px; }
+            td { padding: 10px; }
+            .signature-section { margin-top: 30px; }
         </style>
         
         <h1>Formulaire d\'Inscription</h1>
         <div class="date">Date: ' . date('d/m/Y') . '</div>
         
-        <div class="subtitle">Informations de l\'étudiant</div>
         <table>
             <tr>
                 <th>Nom complet de l\'étudiant</th>
@@ -242,53 +223,36 @@ class RegistrationController extends Controller
             <tr>
                 <th>Niveau académique</th>
                 <td>' . $registration->grade_applying_for . '</td>
-            </tr>';
-            
-        // Ajout de l'école précédente si disponible
-        if ($registration->previous_school) {
-            $html .= '
+            </tr>
             <tr>
-                <th>École précédente</th>
-                <td>' . $registration->previous_school . '</td>
+                <th>Nom complet du père ou du tuteur</th>
+                <td>' . $registration->parent_name . '</td>
+            </tr>
+            <tr>
+                <th>Profession du père ou du tuteur</th>
+                <td>' . $registration->parent_occupation . '</td>
+            </tr>
+            <tr>
+                <th>Numéro de téléphone du père</th>
+                <td>' . $registration->father_phone . '</td>
+            </tr>
+            <tr>
+                <th>Numéro de téléphone de la mère</th>
+                <td>' . $registration->mother_phone . '</td>
             </tr>';
-        }
             
         // Ajout du téléphone étudiant si disponible
         if ($registration->student_phone) {
             $html .= '
             <tr>
-                <th>Téléphone de l\'étudiant</th>
+                <th>Numéro de téléphone de l\'étudiant</th>
                 <td>' . $registration->student_phone . '</td>
             </tr>';
         }
-        
+            
         $html .= '
-        </table>
-        
-        <div class="subtitle">Informations du parent/tuteur</div>
-        <table>
             <tr>
-                <th>Nom du père/tuteur</th>
-                <td>' . $registration->parent_name . '</td>
-            </tr>
-            <tr>
-                <th>Profession</th>
-                <td>' . $registration->parent_occupation . '</td>
-            </tr>
-            <tr>
-                <th>Téléphone du père</th>
-                <td>' . $registration->father_phone . '</td>
-            </tr>
-            <tr>
-                <th>Téléphone de la mère</th>
-                <td>' . $registration->mother_phone . '</td>
-            </tr>
-        </table>
-        
-        <div class="subtitle">Adresse et situation familiale</div>
-        <table>
-            <tr>
-                <th>Adresse</th>
+                <th>Adresse de résidence</th>
                 <td>' . $registration->address . '</td>
             </tr>
             <tr>
@@ -304,25 +268,13 @@ class RegistrationController extends Controller
                 <td>' . date('d/m/Y', strtotime($registration->orphan_date)) . '</td>
             </tr>';
         }
-        
+            
         $html .= '
-        </table>';
+        </table>
         
-        // Ajout des notes additionnelles si disponibles
-        if (!empty($registration->additional_notes)) {
-            $html .= '
-            <div class="subtitle">Notes additionnelles</div>
-            <p style="margin-top: 5px; font-size: 11px;">' . $registration->additional_notes . '</p>';
-        }
-        
-        $html .= '
         <div class="signature-section">
-            <div class="subtitle">Signature du père ou du tuteur</div>
+            <h3>Signature du père ou du tuteur</h3>
             ' . $signatureHtml . '
-        </div>
-        
-        <div style="text-align: center; margin-top: 15px; font-size: 10px; color: #666;">
-            Lycée Argan - Tiznit, Maroc - Tél: (555) 123-4567
         </div>';
         
         $mpdf->WriteHTML($html);
@@ -351,9 +303,6 @@ class RegistrationController extends Controller
         ];
         
         $pdf = PDF::loadView('pdfs.registration', $data);
-        
-        // Set paper size and orientation
-        $pdf->setPaper('a4', 'portrait');
         
         $filename = 'inscription_' . str_replace(' ', '_', $registration->full_name) . '.pdf';
         
