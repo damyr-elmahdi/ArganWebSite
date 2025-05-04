@@ -43,11 +43,11 @@ class RegistrationController extends Controller
             'deathDate' => 'nullable|date|required_if:civilStatus,orphan',
             'signature' => 'nullable|string',
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()->first()], 422);
         }
-
+    
         // Si la signature est une chaîne base64, stockez-la dans un fichier
         $signaturePath = null;
         if ($request->has('signature') && $request->signature !== null) {
@@ -67,12 +67,12 @@ class RegistrationController extends Controller
             // Sauvegarde le chemin du fichier
             $signaturePath = 'signatures/' . $filename;
         }
-
+    
         // Map frontend field names to database field names
         $registration = Registration::create([
             'full_name' => $request->studentName,
             'grade_applying_for' => $request->academicLevel,
-            'parent_name' => $request->parentName,
+            'parent_name' => $request->parentName,           // Fixed: Add this line to properly map parentName
             'parent_occupation' => $request->parentProfession,
             'father_phone' => $request->fatherPhone,
             'mother_phone' => $request->motherPhone,
@@ -83,7 +83,7 @@ class RegistrationController extends Controller
             'info_packet_path' => $signaturePath, // Use this field for signature path
             'processed' => false,
         ]);
-
+    
         return response()->json([
             'message' => 'Inscription enregistrée avec succès',
             'id' => $registration->id
