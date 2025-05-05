@@ -6,7 +6,7 @@ export default function Footer({ schoolInfo }) {
   const { name, ministry, address, phone,fax, email, currentYear } = schoolInfo;
   
   return (
-    <footer className="bg-orange-300 text-black-800">
+    <footer className="bg-[#72b8ff] text-black">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-3 gap-8">
           <div>

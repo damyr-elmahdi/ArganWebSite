@@ -24,7 +24,7 @@ export default function About() {
             <button 
               onClick={() => setActiveTab('overview')}
               className={`whitespace-nowrap px-3 py-2 font-medium text-sm rounded-md transition ${
-                activeTab === 'overview' ? 'bg-orange-100 text-orange-600' : 'text-gray-600 hover:text-orange-600'
+                activeTab === 'overview' ? 'bg-teal-100 text-[#18bebc]' : 'text-gray-600 hover:text-[#18bebc]'
               }`}
             >
               Overview
@@ -32,7 +32,7 @@ export default function About() {
             <button 
               onClick={() => setActiveTab('history')}
               className={`whitespace-nowrap px-3 py-2 font-medium text-sm rounded-md transition ${
-                activeTab === 'history' ? 'bg-orange-100 text-orange-600' : 'text-gray-600 hover:text-orange-600'
+                activeTab === 'history' ? 'bg-teal-100 text-[#18bebc]' : 'text-gray-600 hover:text-[#18bebc]'
               }`}
             >
               History
@@ -40,7 +40,7 @@ export default function About() {
             <button 
               onClick={() => setActiveTab('programs')}
               className={`whitespace-nowrap px-3 py-2 font-medium text-sm rounded-md transition ${
-                activeTab === 'programs' ? 'bg-orange-100 text-orange-600' : 'text-gray-600 hover:text-orange-600'
+                activeTab === 'programs' ? 'bg-teal-100 text-[#18bebc]' : 'text-gray-600 hover:text-[#18bebc]'
               }`}
             >
               Educational Programs
@@ -48,7 +48,7 @@ export default function About() {
             <button 
               onClick={() => setActiveTab('achievements')}
               className={`whitespace-nowrap px-3 py-2 font-medium text-sm rounded-md transition ${
-                activeTab === 'achievements' ? 'bg-orange-100 text-orange-600' : 'text-gray-600 hover:text-orange-600'
+                activeTab === 'achievements' ? 'bg-teal-100 text-[#18bebc]' : 'text-gray-600 hover:text-[#18bebc]'
               }`}
             >
               Achievements
@@ -56,7 +56,7 @@ export default function About() {
             <button 
               onClick={() => setActiveTab('facilities')}
               className={`whitespace-nowrap px-3 py-2 font-medium text-sm rounded-md transition ${
-                activeTab === 'facilities' ? 'bg-orange-100 text-orange-600' : 'text-gray-600 hover:text-orange-600'
+                activeTab === 'facilities' ? 'bg-teal-100 text-[#18bebc]' : 'text-gray-600 hover:text-[#18bebc]'
               }`}
             >
               Facilities
@@ -84,25 +84,25 @@ export default function About() {
               </p>
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div className="bg-gray-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-orange-600">3</div>
+                  <div className="text-2xl font-bold text-[#18bebc]">3</div>
                   <div className="text-sm text-gray-600">Academic Years</div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-orange-600">Multiple</div>
+                  <div className="text-2xl font-bold text-[#18bebc]">Multiple</div>
                   <div className="text-sm text-gray-600">Academic Tracks</div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-orange-600">2014s</div>
+                  <div className="text-2xl font-bold text-[#18bebc]">2014s</div>
                   <div className="text-sm text-gray-600">Year Established</div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-orange-600">Numerous</div>
+                  <div className="text-2xl font-bold text-[#18bebc]">Numerous</div>
                   <div className="text-sm text-gray-600">Cultural Activities</div>
                 </div>
               </div>
             </div>
             <div className="flex flex-col space-y-4">
-              <div className="bg-gradient-to-r from-orange-400 to-orange-500 h-64 rounded-lg shadow-md flex items-center justify-center">
+              <div className="bg-gradient-to-r from-teal-400 to-teal-500 h-64 rounded-lg shadow-md flex items-center justify-center">
                 <img src={argan} alt="School Logo" className="w-48 h-48 object-contain bg-white p-3 rounded-full" />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -122,12 +122,12 @@ export default function About() {
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Our History</h2>
             <div className="relative">
               {/* Timeline */}
-              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-orange-200"></div>
+              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-teal-200"></div>
               
               {/* Timeline events */}
               <div className="space-y-8 relative ml-12">
                 <div className="relative">
-                  <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-orange-500"></div>
+                  <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-teal-500"></div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-800">2014s: Establishment</h3>
                     <p className="text-gray-600 mt-2">
@@ -138,7 +138,7 @@ export default function About() {
                 </div>
                 
                 <div className="relative">
-                  <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-orange-500"></div>
+                  <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-teal-500"></div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-800">2015: Cultural Development</h3>
                     <p className="text-gray-600 mt-2">
@@ -149,7 +149,7 @@ export default function About() {
                 </div>
                 
                 <div className="relative">
-                  <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-orange-500"></div>
+                  <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-teal-500"></div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-800">2017: Recognition of Excellence</h3>
                     <p className="text-gray-600 mt-2">
@@ -160,7 +160,7 @@ export default function About() {
                 </div>
                 
                 <div className="relative">
-                  <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-orange-500"></div>
+                  <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-teal-500"></div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-800">2023: Environmental Engagement</h3>
                     <p className="text-gray-600 mt-2">
@@ -182,7 +182,7 @@ export default function About() {
             </p>
             
             <div className="space-y-6">
-              <div className="border-l-4 border-orange-500 pl-4">
+              <div className="border-l-4 border-teal-500 pl-4">
                 <h3 className="text-xl font-bold text-gray-800">Tronc Commun (Common Core)</h3>
                 <p className="text-gray-600 mt-2">
                   The first year provides a common curriculum for all students. At the end of this year,
@@ -191,7 +191,7 @@ export default function About() {
                 </p>
               </div>
               
-              <div className="border-l-4 border-orange-500 pl-4">
+              <div className="border-l-4 border-teal-500 pl-4">
                 <h3 className="text-xl font-bold text-gray-800">First Baccalaureate Year (1ère Bac)</h3>
                 <p className="text-gray-600 mt-2">
                   In this second year, students begin specializing in their chosen streams, which may include:
@@ -204,7 +204,7 @@ export default function About() {
                 </ul>
               </div>
               
-              <div className="border-l-4 border-orange-500 pl-4">
+              <div className="border-l-4 border-teal-500 pl-4">
                 <h3 className="text-xl font-bold text-gray-800">Second Baccalaureate Year (2ème Bac)</h3>
                 <p className="text-gray-600 mt-2">
                   The final year continues students' specialization in their chosen streams. All students
@@ -297,7 +297,7 @@ export default function About() {
             
             <div className="grid md:grid-cols-2 gap-6">
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-bold text-orange-600 text-lg">Auditorium/School Hall</h3>
+                <h3 className="font-bold text-[#18bebc] text-lg">Auditorium/School Hall</h3>
                 <p className="text-gray-600 mt-2">
                   Our school has a dedicated space (قاعة أو فضاء المؤسسة) for hosting cultural events,
                   ceremonies, and student performances.
@@ -305,7 +305,7 @@ export default function About() {
               </div>
               
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-bold text-orange-600 text-lg">Classrooms</h3>
+                <h3 className="font-bold text-[#18bebc] text-lg">Classrooms</h3>
                 <p className="text-gray-600 mt-2">
                   Modern classrooms equipped for the different educational levels and streams: common core,
                   first baccalaureate, and second baccalaureate.
@@ -313,14 +313,14 @@ export default function About() {
               </div>
               
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-bold text-orange-600 text-lg">Campus Grounds</h3>
+                <h3 className="font-bold text-[#18bebc] text-lg">Campus Grounds</h3>
                 <p className="text-gray-600 mt-2">
                   Outdoor areas that accommodate exhibitions, cultural activities, and student gatherings.
                 </p>
               </div>
               
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-bold text-orange-600 text-lg">Educational Resources</h3>
+                <h3 className="font-bold text-[#18bebc] text-lg">Educational Resources</h3>
                 <p className="text-gray-600 mt-2">
                   Learning materials and resources to support the national curriculum across all streams and specializations.
                 </p>
@@ -339,10 +339,10 @@ export default function About() {
             and develop personally through diverse educational and cultural experiences.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/register" className="bg-orange-600 text-white px-6 py-3 rounded-md font-medium hover:bg-orange-700 transition">
+            <Link to="/register" className="bg-[#18bebc] text-white px-6 py-3 rounded-md font-medium hover:bg-teal-700 transition">
               Apply Now
             </Link>
-            <Link to="/contact" className="bg-white text-orange-600 border border-orange-600 px-6 py-3 rounded-md font-medium hover:bg-orange-50 transition">
+            <Link to="/contact" className="bg-white text-[#18bebc] border border-[#18bebc] px-6 py-3 rounded-md font-medium hover:bg-teal-50 transition">
               Contact Us
             </Link>
           </div>

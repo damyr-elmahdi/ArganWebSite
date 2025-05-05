@@ -129,7 +129,7 @@ export default function Events() {
           <div className="flex gap-2">
             <button
               type="submit"
-              className="bg-orange-600 text-white px-6 py-2 rounded-md hover:bg-orange-700 transition-colors"
+              className="bg-[#18bebc] text-white px-6 py-2 rounded-md hover:bg-teal-700 transition-colors"
             >
               Apply Filter
             </button>
@@ -149,7 +149,7 @@ export default function Events() {
       {/* Events List */}
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#18bebc]"></div>
         </div>
       ) : error ? (
         <div className="bg-red-100 text-red-700 p-4 rounded-md">{error}</div>
@@ -196,8 +196,8 @@ export default function Events() {
                     />
                   </div>
                 ) : (
-                  <div className="bg-orange-100 h-48 flex items-center justify-center">
-                    <CalendarIcon className="h-12 w-12 text-orange-500" />
+                  <div className="bg-teal-100 h-48 flex items-center justify-center">
+                    <CalendarIcon className="h-12 w-12 text-teal-400" />
                   </div>
                 )}
                 <div className="p-6">

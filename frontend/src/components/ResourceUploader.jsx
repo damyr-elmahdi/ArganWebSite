@@ -451,7 +451,7 @@ export default function ResourceUploader() {
                 href={previewResource.fileUrl}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded"
+                className="bg-teal-600 hover:bg-teal-700 text-white py-2 px-4 rounded"
               >
                 Download
               </a>

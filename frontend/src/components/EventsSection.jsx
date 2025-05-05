@@ -71,14 +71,14 @@ export default function EventsSection() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800">Upcoming Events</h2>
-          <Link to="/events" className="text-orange-600 hover:underline">
+          <Link to="/events" className="text-[#18bebc] hover:underline">
             View All Events
           </Link>
         </div>
 
         {loading ? (
           <div className="flex justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#18bebc]"></div>
           </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-6">
@@ -104,7 +104,7 @@ export default function EventsSection() {
                         />
                       </div>
                     ) : (
-                      <div className="bg-orange-600 text-white rounded p-2 mr-4 text-center min-w-[60px]">
+                      <div className="bg-[#18bebc] text-white rounded p-2 mr-4 text-center min-w-[60px]">
                         <div className="text-sm font-bold">
                           {format(startDate, "MMM")}
                         </div>
@@ -132,7 +132,7 @@ export default function EventsSection() {
                   </div>
                   <Link
                     to={`/events/${event.id}`}
-                    className="text-orange-600 hover:underline text-sm"
+                    className="text-[#18bebc] hover:underline text-sm"
                   >
                     View details
                   </Link>

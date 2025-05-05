@@ -118,7 +118,7 @@ export default function ContactForm({ schoolEmail }) {
           <p className="text-gray-600 mb-6">Thank you for contacting us. We'll get back to you soon.</p>
           <button 
             onClick={resetForm}
-            className="bg-orange-600 text-white px-6 py-2 rounded-md hover:bg-orange-700 transition"
+            className="bg-[#18bebc] text-white px-6 py-2 rounded-md hover:bg-teal-700 transition"
           >
             Send Another Message
           </button>
@@ -133,7 +133,7 @@ export default function ContactForm({ schoolEmail }) {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400 ${
                 formErrors.name ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -148,7 +148,7 @@ export default function ContactForm({ schoolEmail }) {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400 ${
                 formErrors.email ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -163,7 +163,7 @@ export default function ContactForm({ schoolEmail }) {
               name="subject"
               value={formData.subject}
               onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400 ${
                 formErrors.subject ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -178,7 +178,7 @@ export default function ContactForm({ schoolEmail }) {
               rows="5"
               value={formData.message}
               onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 ${
+              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400 ${
                 formErrors.message ? 'border-red-500' : 'border-gray-300'
               }`}
             ></textarea>
@@ -194,7 +194,7 @@ export default function ContactForm({ schoolEmail }) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-orange-600 text-white py-3 rounded-md font-medium hover:bg-orange-700 transition disabled:bg-orange-300"
+            className="w-full bg-[#18bebc] text-white py-3 rounded-md font-medium hover:bg-teal-700 transition disabled:bg-teal-300"
           >
             {isSubmitting ? 'Sending...' : 'Send Message'}
           </button>

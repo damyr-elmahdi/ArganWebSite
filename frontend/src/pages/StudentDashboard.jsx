@@ -128,7 +128,7 @@ export default function StudentDashboard() {
           <h1 className="text-3xl font-bold text-gray-900">Student Dashboard</h1>
           <button 
             onClick={handleLogout}
-            className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700"
+            className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
           >
             Logout
           </button>
@@ -141,7 +141,7 @@ export default function StudentDashboard() {
             <button
               className={`${
                 activeTab === "profile"
-                  ? "border-orange-500 text-orange-600"
+                  ? "border-teal-400 text-[#18bebc]"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("profile")}
@@ -151,14 +151,14 @@ export default function StudentDashboard() {
             <button
               className={`${
                 activeTab === "notifications"
-                  ? "border-orange-500 text-orange-600"
+                  ? "border-teal-400 text-[#18bebc]"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
               onClick={() => setActiveTab("notifications")}
             >
               Notifications
               {getUnreadNotificationsCount() > 0 && (
-                <span className="ml-2 bg-orange-600 text-white text-xs rounded-full px-2 py-1">
+                <span className="ml-2 bg-[#18bebc] text-white text-xs rounded-full px-2 py-1">
                   {getUnreadNotificationsCount()}
                 </span>
               )}
@@ -166,7 +166,7 @@ export default function StudentDashboard() {
             <button
               className={`${
                 activeTab === "quizzes"
-                  ? "border-orange-500 text-orange-600"
+                  ? "border-teal-400 text-[#18bebc]"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("quizzes")}
@@ -221,7 +221,7 @@ export default function StudentDashboard() {
                     </div>
                     <button
                       onClick={() => setActiveTab('notifications')}
-                      className="text-sm text-orange-600 hover:text-orange-500"
+                      className="text-sm text-[#18bebc] hover:text-teal-400"
                     >
                       View all
                     </button>
@@ -249,7 +249,7 @@ export default function StudentDashboard() {
                               </div>
                               <button
                                 onClick={() => handleMarkAsRead(notification.id)}
-                                className="text-xs text-orange-600 hover:text-orange-500"
+                                className="text-xs text-[#18bebc] hover:text-teal-400"
                               >
                                 Mark as read
                               </button>
@@ -283,7 +283,7 @@ export default function StudentDashboard() {
                   </div>
                   <button
                     onClick={() => setActiveTab('quizzes')}
-                    className="text-sm text-orange-600 hover:text-orange-500"
+                    className="text-sm text-[#18bebc] hover:text-teal-400"
                   >
                     View all quizzes
                   </button>
@@ -316,7 +316,7 @@ export default function StudentDashboard() {
                 ) : absenceNotifications.length > 0 ? (
                   <ul className="divide-y divide-gray-200">
                     {absenceNotifications.map((notification) => (
-                      <li key={notification.id} className={`px-4 py-4 ${!notification.is_read ? 'bg-orange-50' : ''}`}>
+                      <li key={notification.id} className={`px-4 py-4 ${!notification.is_read ? 'bg-teal-50' : ''}`}>
                         <div className="flex justify-between">
                           <div>
                             <p className="text-sm font-medium text-gray-900">
@@ -337,7 +337,7 @@ export default function StudentDashboard() {
                           {!notification.is_read && (
                             <button
                               onClick={() => handleMarkAsRead(notification.id)}
-                              className="text-xs text-orange-600 hover:text-orange-500"
+                              className="text-xs text-[#18bebc] hover:text-teal-400"
                             >
                               Mark as read
                             </button>

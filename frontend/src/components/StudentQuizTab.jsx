@@ -77,7 +77,7 @@ export default function StudentQuizTab() {
                     <td className="px-4 py-4 whitespace-nowrap text-sm">
                       <a 
                         href={`/student/quiz-results/${attempt.id}`} 
-                        className="text-orange-600 hover:text-orange-800"
+                        className="text-[#18bebc] hover:text-teal-800"
                       >
                         View Results
                       </a>

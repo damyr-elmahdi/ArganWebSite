@@ -34,7 +34,7 @@ export default function CommentForm({ onAddComment }) {
           onChange={(e) => setContent(e.target.value)}
           required
           placeholder="Share your thoughts..."
-          className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+          className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
         />
       </div>
       <button
@@ -42,8 +42,8 @@ export default function CommentForm({ onAddComment }) {
         disabled={isSubmitting || !content.trim()}
         className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
           isSubmitting || !content.trim() 
-            ? 'bg-orange-300 cursor-not-allowed' 
-            : 'bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500'
+            ? 'bg-teal-300 cursor-not-allowed' 
+            : 'bg-[#18bebc] hover:bg-[#2cadab] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38e1de]'
         }`}
       >
         {isSubmitting ? 'Posting...' : 'Post Comment'}

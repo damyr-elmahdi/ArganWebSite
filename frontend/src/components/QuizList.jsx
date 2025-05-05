@@ -67,7 +67,7 @@ export default function QuizList() {
         {quizzes.map((quiz) => (
           <div 
             key={quiz.id} 
-            className="border border-gray-200 rounded-lg p-4 hover:border-orange-500 transition-colors"
+            className="border border-gray-200 rounded-lg p-4 hover:border-teal-400 transition-colors"
           >
             <h3 className="text-lg font-medium">{quiz.title}</h3>
             <p className="text-sm text-gray-500 mt-1">
@@ -79,7 +79,7 @@ export default function QuizList() {
               </p>
               <button
                 onClick={() => handleStartQuiz(quiz.id)}
-                className="mt-3 w-full px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 flex items-center justify-center"
+                className="mt-3 w-full px-4 py-2 bg-[#18bebc] text-white rounded hover:bg-teal-700 flex items-center justify-center"
               >
                 <span>Start Quiz</span>
                 <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

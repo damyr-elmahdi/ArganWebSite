@@ -122,7 +122,7 @@ export default function AbsenceManagement() {
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700"
+          className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
         >
           {showForm ? "Cancel" : "Announce New Absence"}
         </button>
@@ -159,7 +159,7 @@ export default function AbsenceManagement() {
                   value={formData.teacher_id}
                   onChange={handleChange}
                   required
-                  className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                  className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-teal-400 focus:border-teal-400 sm:text-sm"
                 >
                   <option value="">Select a teacher</option>
                   {teachers.map((teacher) => (
@@ -182,7 +182,7 @@ export default function AbsenceManagement() {
                   value={formData.start_date}
                   onChange={handleChange}
                   required
-                  className="mt-1 focus:ring-orange-500 focus:border-orange-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  className="mt-1 focus:ring-teal-400 focus:border-teal-400 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                 />
               </div>
               
@@ -198,7 +198,7 @@ export default function AbsenceManagement() {
                   value={formData.end_date}
                   onChange={handleChange}
                   required
-                  className="mt-1 focus:ring-orange-500 focus:border-orange-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  className="mt-1 focus:ring-teal-400 focus:border-teal-400 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                 />
               </div>
               
@@ -213,7 +213,7 @@ export default function AbsenceManagement() {
                   value={formData.reason}
                   onChange={handleChange}
                   rows={3}
-                  className="mt-1 focus:ring-orange-500 focus:border-orange-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  className="mt-1 focus:ring-teal-400 focus:border-teal-400 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   placeholder="Enter reason for absence"
                 />
               </div>
@@ -223,14 +223,14 @@ export default function AbsenceManagement() {
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="mr-3 bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                className="mr-3 bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-orange-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                className="bg-[#18bebc] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
               >
                 {loading ? "Submitting..." : "Announce Absence"}
               </button>

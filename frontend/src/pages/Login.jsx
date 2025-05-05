@@ -80,7 +80,7 @@ export default function Login() {
                 name="email"
                 type="email"
                 required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                 placeholder="email@example.com"
                 value={formData.email}
                 onChange={handleChange}
@@ -96,7 +96,7 @@ export default function Login() {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   required
-                  className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                  className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
@@ -125,7 +125,7 @@ export default function Login() {
           <div>
             <button
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#18bebc] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
               disabled={loading}
             >
               {loading ? 'Signing in...' : 'Sign in'}
@@ -136,7 +136,7 @@ export default function Login() {
         {/* <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-orange-600 hover:text-orange-500">
+            <Link to="/register" className="font-medium text-[#18bebc] hover:text-teal-400">
               Register here
             </Link>
           </p>

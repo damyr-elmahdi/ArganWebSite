@@ -268,7 +268,7 @@ export default function ResourceViewer() {
               href={`/api/resources/${selectedResource.id}/download`}
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-white hover:text-orange-300 flex items-center"
+              className="text-white hover:text-teal-300 flex items-center"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -408,7 +408,7 @@ export default function ResourceViewer() {
                   href={`/api/resources/${selectedResource.id}/download`}
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-orange-600 flex items-center"
+                  className="text-gray-600 hover:text-[#18bebc] flex items-center"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -449,7 +449,7 @@ export default function ResourceViewer() {
       {/* Resources list */}
       {isLoading ? (
         <div className="flex justify-center items-center py-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-400"></div>
         </div>
       ) : filteredResources.length > 0 ? (
         <div className="border rounded-lg overflow-hidden">
@@ -513,7 +513,7 @@ export default function ResourceViewer() {
                         href={`/api/resources/${resource.id}/download`}
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-orange-600 hover:text-orange-900 mr-3"
+                        className="text-[#18bebc] hover:text-teal-900 mr-3"
                       >
                         Download
                       </a>

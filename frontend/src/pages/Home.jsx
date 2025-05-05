@@ -34,7 +34,7 @@ export default function Home({ schoolInfo }) {
   return (
     <main className="flex-grow">
       {/* Banner announcement */}
-      <div className="bg-blue-600 text-white text-center py-2 px-4">
+      <div className="bg-[#165b9f] text-white text-center py-2 px-4">
         <div className="container mx-auto">
           <p className="text-sm font-medium">
           Welcome to Argane High School in Tiznit — where knowledge, values, and ambition come together to shape a brighter future.
@@ -52,13 +52,13 @@ export default function Home({ schoolInfo }) {
             <div className="w-full lg:w-1/2">
               <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden shadow-md">
                 {/* This would be a school video or image */}
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-orange-100 to-orange-200">
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-teal-100 to-teal-200">
                   <img src={argan} alt="Argan High School" className="w-90 h-80 object-contain" />
                 </div>
               </div>
             </div>
             <div className="w-full lg:w-1/2">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">A Tradition of Excellence</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">A Tradition of Excellence</h2>
               <p className="text-gray-600 mb-4">
                 Since {schoolInfo.foundedYear}, {schoolInfo.name} has been committed to providing 
                 quality education that prepares students for success in their academic 
@@ -70,14 +70,16 @@ export default function Home({ schoolInfo }) {
                 and character development are prioritized alongside academic achievement.
               </p>
               <div className="grid grid-cols-2 gap-4 text-center">
-                <div className="bg-orange-50 p-4 rounded-lg">
-                  <div className="text-3xl font-bold text-orange-600">95%</div>
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div className="bg-[#18bebc] bg-opacity-20 p-4 rounded-lg">
+                  <div className="text-3xl font-bold text-[#165b9f]">95%</div>
                   <div className="text-sm text-gray-600">Graduation Rate</div>
                 </div>
-                <div className="bg-orange-50 p-4 rounded-lg">
-                  <div className="text-3xl font-bold text-orange-600">85%</div>
+                <div className="bg-[#18bebc] bg-opacity-20 p-4 rounded-lg">
+                  <div className="text-3xl font-bold text-[#165b9f]">85%</div>
                   <div className="text-sm text-gray-600">University Acceptance</div>
                 </div>
+              </div>
               </div>
             </div>
           </div>
@@ -105,7 +107,7 @@ export default function Home({ schoolInfo }) {
                   State-of-the-art laboratories and innovative teaching approaches 
                   for future scientists and engineers.
                 </p>
-                <a href="#" className="text-orange-600 hover:underline">Learn more</a>
+                <a href="#" className="text-[#18bebc] hover:underline">Learn more</a>
               </div>
             </div>
             
@@ -119,7 +121,7 @@ export default function Home({ schoolInfo }) {
                   Express creativity and develop critical thinking through our 
                   comprehensive arts and humanities curriculum.
                 </p>
-                <a href="#" className="text-orange-600 hover:underline">Learn more</a>
+                <a href="#" className="text-[#18bebc] hover:underline">Learn more</a>
               </div>
             </div>
             
@@ -133,7 +135,7 @@ export default function Home({ schoolInfo }) {
                   Prepare for the global marketplace with language studies 
                   and international perspectives.
                 </p>
-                <a href="#" className="text-orange-600 hover:underline">Learn more</a>
+                <a href="#" className="text-[#18bebc] hover:underline">Learn more</a>
               </div>
             </div>
           </div>

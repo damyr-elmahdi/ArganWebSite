@@ -192,7 +192,7 @@ export default function UserManagement() {
         </div>
         <div className="flex space-x-4">
           <select 
-            className="rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+            className="rounded-md border-gray-300 shadow-sm focus:border-teal-400 focus:ring-teal-400"
             value={filter}
             onChange={handleFilterChange}
           >
@@ -207,7 +207,7 @@ export default function UserManagement() {
               resetForm();
               setShowForm(!showForm);
             }}
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700"
+            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
           >
             {showForm ? 'Cancel' : 'Add New User'}
           </button>
@@ -266,7 +266,7 @@ export default function UserManagement() {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
               </div>
@@ -283,7 +283,7 @@ export default function UserManagement() {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
               </div>
@@ -300,7 +300,7 @@ export default function UserManagement() {
                     required={formMode === 'create'}
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
               </div>
@@ -317,7 +317,7 @@ export default function UserManagement() {
                     value={formData.role}
                     onChange={handleInputChange}
                     disabled={formMode === 'edit'} // Can't change role when editing
-                    className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                   >
                     <option value="student">Student</option>
                     <option value="teacher">Teacher</option>
@@ -341,7 +341,7 @@ export default function UserManagement() {
                         id="grade"
                         value={formData.grade}
                         onChange={handleInputChange}
-                        className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                   </div>
@@ -357,7 +357,7 @@ export default function UserManagement() {
                         id="recovery_email"
                         value={formData.recovery_email}
                         onChange={handleInputChange}
-                        className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                   </div>
@@ -378,7 +378,7 @@ export default function UserManagement() {
                         id="department"
                         value={formData.department}
                         onChange={handleInputChange}
-                        className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                   </div>
@@ -394,7 +394,7 @@ export default function UserManagement() {
                         id="position"
                         value={formData.position}
                         onChange={handleInputChange}
-                        className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                   </div>
@@ -410,7 +410,7 @@ export default function UserManagement() {
                         id="specialization"
                         value={formData.specialization}
                         onChange={handleInputChange}
-                        className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                   </div>
@@ -430,7 +430,7 @@ export default function UserManagement() {
                         name="admin_level"
                         value={formData.admin_level}
                         onChange={handleInputChange}
-                        className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                       >
                         <option value="basic">Basic</option>
                         <option value="intermediate">Intermediate</option>
@@ -450,7 +450,7 @@ export default function UserManagement() {
                         id="department"
                         value={formData.department}
                         onChange={handleInputChange}
-                        className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                   </div>
@@ -468,7 +468,7 @@ export default function UserManagement() {
                 </button>
                 <button
                   type="submit"
-                  className="py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700"
+                  className="py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
                 >
                   {formMode === 'create' ? 'Create User' : 'Update User'}
                 </button>
@@ -482,7 +482,7 @@ export default function UserManagement() {
       <div className="border-t border-gray-200">
         {loading && !showForm ? (
           <div className="flex justify-center items-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#18bebc]"></div>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -527,7 +527,7 @@ export default function UserManagement() {
                           ${user.role === 'administrator' ? 'bg-purple-100 text-purple-800' : 
                           user.role === 'teacher' ? 'bg-blue-100 text-blue-800' : 
                           user.role === 'student' ? 'bg-green-100 text-green-800' : 
-                          'bg-orange-100 text-orange-800'}`}>
+                          'bg-teal-100 text-teal-800'}`}>
                           {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                         </span>
                       </td>

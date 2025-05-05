@@ -47,14 +47,14 @@ export default function NewsSection() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800">Latest News</h2>
-          <Link to="/news" className="text-orange-600 hover:underline">
+          <Link to="/news" className="text-[#18bebc] hover:underline">
             View All News
           </Link>
         </div>
 
         {loading ? (
           <div className="flex justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#18bebc]"></div>
           </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-6">
@@ -72,8 +72,8 @@ export default function NewsSection() {
                     />
                   </div>
                 ) : (
-                  <div className="bg-gradient-to-r from-orange-100 to-orange-200 h-48 rounded-t-lg flex items-center justify-center">
-                    <span className="text-orange-500 text-lg font-semibold">
+                  <div className="bg-gradient-to-r from-teal-100 to-teal-200 h-48 rounded-t-lg flex items-center justify-center">
+                    <span className="text-teal-400 text-lg font-semibold">
                       No Image Available
                     </span>
                   </div>
@@ -90,7 +90,7 @@ export default function NewsSection() {
                   </p>
                   <Link
                     to={`/news/${news.id}`}
-                    className="text-orange-600 hover:underline mt-auto"
+                    className="text-[#18bebc] hover:underline mt-auto"
                   >
                     Read more
                   </Link>

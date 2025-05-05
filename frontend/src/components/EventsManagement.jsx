@@ -129,7 +129,7 @@ export default function EventsManagement() {
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700"
+          className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
         >
           {showForm ? 'Cancel' : 'Create Event'}
         </button>
@@ -155,7 +155,7 @@ export default function EventsManagement() {
                 value={formData.title}
                 onChange={handleInputChange}
                 required
-                className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full h-8 sm:text-sm border-gray-300 rounded-md"
+                className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full h-8 sm:text-sm border-gray-300 rounded-md"
               />
             </div>
             <div className="mb-4">
@@ -168,7 +168,7 @@ export default function EventsManagement() {
                 rows={3}
                 value={formData.description}
                 onChange={handleInputChange}
-                className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -183,7 +183,7 @@ export default function EventsManagement() {
                   value={formData.start_time}
                   onChange={handleInputChange}
                   required
-                  className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                 />
               </div>
               <div>
@@ -197,7 +197,7 @@ export default function EventsManagement() {
                   value={formData.end_time}
                   onChange={handleInputChange}
                   required
-                  className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                 />
               </div>
             </div>
@@ -211,7 +211,7 @@ export default function EventsManagement() {
                 name="location"
                 value={formData.location}
                 onChange={handleInputChange}
-                className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full h-10 sm:text-sm border-gray-300 rounded-md"
+                className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full h-10 sm:text-sm border-gray-300 rounded-md"
               />
             </div>
             <div className="mb-4">
@@ -228,8 +228,8 @@ export default function EventsManagement() {
                   file:mr-4 file:py-2 file:px-4
                   file:rounded-md file:border-0
                   file:text-sm file:font-medium
-                  file:bg-orange-50 file:text-orange-700
-                  hover:file:bg-orange-100"
+                  file:bg-teal-50 file:text-teal-700
+                  hover:file:bg-teal-100"
               />
               {imagePreview && (
                 <div className="mt-2">
@@ -243,7 +243,7 @@ export default function EventsManagement() {
             </div>
             <button
               type="submit"
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
             >
               Save Event
             </button>

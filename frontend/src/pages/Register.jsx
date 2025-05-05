@@ -205,7 +205,7 @@ export default function Register() {
                 name="name"
                 type="text"
                 required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                 placeholder="John Doe"
                 value={formData.name}
                 onChange={handleChange}
@@ -225,7 +225,7 @@ export default function Register() {
                 name="email"
                 type="email"
                 required
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                 placeholder="email@example.com"
                 value={formData.email}
                 onChange={handleChange}
@@ -246,7 +246,7 @@ export default function Register() {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   required
-                  className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                  className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
@@ -303,7 +303,7 @@ export default function Register() {
                   name="password_confirmation"
                   type={showConfirmPassword ? "text" : "password"}
                   required
-                  className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                  className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                   placeholder="••••••••"
                   value={formData.password_confirmation}
                   onChange={handleChange}
@@ -357,7 +357,7 @@ export default function Register() {
               <select
                 id="role"
                 name="role"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                 value={formData.role}
                 onChange={handleChange}
                 disabled={isLoading}
@@ -381,7 +381,7 @@ export default function Register() {
                   <select
                     id="grade"
                     name="grade"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                     value={formData.grade}
                     onChange={handleChange}
                     disabled={isLoading}
@@ -409,7 +409,7 @@ export default function Register() {
                     <select
                       id="stream"
                       name="stream"
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                       value={formData.stream}
                       onChange={handleChange}
                       disabled={isLoading}
@@ -441,7 +441,7 @@ export default function Register() {
                     id="employee_id"
                     name="employee_id"
                     type="text"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                     placeholder="T00000"
                     value={formData.employee_id}
                     onChange={handleChange}
@@ -463,7 +463,7 @@ export default function Register() {
                   <select
                     id="department"
                     name="department"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                     value={formData.department}
                     onChange={handleChange}
                     disabled={isLoading}
@@ -488,7 +488,7 @@ export default function Register() {
                   <select
                     id="position"
                     name="position"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                     value={formData.position}
                     onChange={handleChange}
                     disabled={isLoading}
@@ -513,7 +513,7 @@ export default function Register() {
                     id="specialization"
                     name="specialization"
                     type="text"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                     placeholder="e.g., Algebra, Physics, French Literature"
                     value={formData.specialization}
                     onChange={handleChange}
@@ -532,7 +532,7 @@ export default function Register() {
                     id="hire_date"
                     name="hire_date"
                     type="date"
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
                     value={formData.hire_date}
                     onChange={handleChange}
                     disabled={isLoading}
@@ -548,15 +548,15 @@ export default function Register() {
               name="terms"
               type="checkbox"
               required
-              className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+              className="h-4 w-4 text-[#18bebc] focus:ring-teal-400 border-gray-300 rounded"
             />
             <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
               I agree to the{" "}
-              <a href="#" className="text-orange-600 hover:text-orange-500">
+              <a href="#" className="text-[#18bebc] hover:text-teal-400">
                 Terms of Service
               </a>{" "}
               and{" "}
-              <a href="#" className="text-orange-600 hover:text-orange-500">
+              <a href="#" className="text-[#18bebc] hover:text-teal-400">
                 Privacy Policy
               </a>
             </label>
@@ -565,7 +565,7 @@ export default function Register() {
           <div>
             <button
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#18bebc] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
               disabled={isLoading}
             >
               {isLoading ? "Registering..." : "Register"}
@@ -578,7 +578,7 @@ export default function Register() {
             Already have an account?{" "}
             <Link
               to="/login"
-              className="font-medium text-orange-600 hover:text-orange-500"
+              className="font-medium text-[#18bebc] hover:text-teal-400"
             >
               Login here
             </Link>

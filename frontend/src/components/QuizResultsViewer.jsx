@@ -72,7 +72,7 @@ export default function QuizResultsViewer() {
           <h2 className="text-xl font-semibold text-red-600">{error}</h2>
           <button 
             onClick={() => navigate('/teacher/quizzes')}
-            className="mt-4 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
+            className="mt-4 px-4 py-2 bg-[#18bebc] text-white rounded hover:bg-teal-700"
           >
             Back to Quizzes
           </button>
@@ -117,7 +117,7 @@ export default function QuizResultsViewer() {
                   <li 
                     key={attempt.id}
                     className={`px-4 py-4 hover:bg-gray-50 cursor-pointer ${
-                      selectedAttempt === attempt.id ? 'bg-orange-50' : ''
+                      selectedAttempt === attempt.id ? 'bg-teal-50' : ''
                     }`}
                     onClick={() => viewAttemptDetails(attempt.id)}
                   >

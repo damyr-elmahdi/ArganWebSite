@@ -108,7 +108,7 @@ export default function TeacherQuizzes() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
                       onClick={() => navigateToResults(quiz.id)}
-                      className="text-orange-600 hover:text-orange-900 mr-4"
+                      className="text-[#18bebc] hover:text-teal-900 mr-4"
                     >
                       View Results
                     </button>

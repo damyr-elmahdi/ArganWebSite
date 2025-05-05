@@ -48,35 +48,42 @@ export default function Academics() {
     }
   ];
 
-  // Faculty members (simplified as specific names were not provided in documentation)
+  // Updated faculty members with names and icons
   const faculty = [
     {
       id: 1,
-      name: "Head of Physics & Chemistry Department",
-      position: "PC Stream Coordinator",
-      credentials: "Specialized in Physical Sciences",
-      image: "/api/placeholder/120/120"
+      name: "Abdel Fattah Ait Baahmed",
+      position: "High School Principal",
+      icon: "👨‍💼",
+      iconColor: "bg-blue-100"
     },
     {
       id: 2,
-      name: "Head of Life & Earth Sciences Department",
-      position: "SVT Stream Coordinator",
-      credentials: "Specialized in Biological Sciences",
-      image: "/api/placeholder/120/120"
+      name: "Mohamed Rhaidour",
+      position: "Supervisor",
+      icon: "👨‍🏫",
+      iconColor: "bg-green-100"
     },
     {
       id: 3,
-      name: "Head of Mathematics Department",
-      position: "Mathematics Stream Coordinator",
-      credentials: "Specialized in Advanced Mathematics",
-      image: "/api/placeholder/120/120"
+      name: "Mohamed Asoufi",
+      position: "General Guardian",
+      icon: "👨‍💻",
+      iconColor: "bg-yellow-100"
     },
     {
       id: 4,
-      name: "Head of Humanities Department",
-      position: "Literary Stream Coordinator",
-      credentials: "Specialized in Language & Literature",
-      image: "/api/placeholder/120/120"
+      name: "Mohamed Amkhad",
+      position: "General Guardian",
+      icon: "👨‍💻",
+      iconColor: "bg-purple-100"
+    },
+    {
+      id: 5,
+      name: "Ali Sadik",
+      position: "Economizer",
+      icon: "💼",
+      iconColor: "bg-red-100"
     }
   ];
 
@@ -245,19 +252,18 @@ export default function Academics() {
         </div>
       </section>
 
-      {/* Faculty */}
+      {/* Faculty - UPDATED with icons instead of images */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">Our Faculty</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {faculty.map(member => (
               <div key={member.id} className="bg-white rounded-lg overflow-hidden shadow-md p-4 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden">
-                  <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                <div className={`w-24 h-24 mx-auto mb-4 rounded-full ${member.iconColor} flex items-center justify-center`}>
+                  <span className="text-4xl">{member.icon}</span>
                 </div>
                 <h3 className="text-lg font-bold text-gray-800">{member.name}</h3>
-                <p className="text-blue-600 text-sm mb-2">{member.position}</p>
-                <p className="text-gray-600 text-sm">{member.credentials}</p>
+                <p className="text-blue-600 text-sm">{member.position}</p>
               </div>
             ))}
           </div>

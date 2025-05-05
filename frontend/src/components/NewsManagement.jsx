@@ -237,7 +237,7 @@ export default function NewsManagement() {
               }
             }
           }}
-          className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700"
+          className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
         >
           {showForm ? (isEditing ? "Cancel Edit" : "Cancel") : "Create News"}
         </button>
@@ -266,7 +266,7 @@ export default function NewsManagement() {
                 value={formData.title}
                 onChange={handleInputChange}
                 required
-                className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full h-8 sm:text-sm border-gray-300 rounded-md"
+                className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full h-8 sm:text-sm border-gray-300 rounded-md"
               />
             </div>
             <div className="mb-4">
@@ -283,7 +283,7 @@ export default function NewsManagement() {
                 value={formData.content}
                 onChange={handleInputChange}
                 required
-                className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
               />
             </div>
             <div className="mb-4">
@@ -303,8 +303,8 @@ export default function NewsManagement() {
                   file:mr-4 file:py-2 file:px-4
                   file:rounded-md file:border-0
                   file:text-sm file:font-medium
-                  file:bg-orange-50 file:text-orange-700
-                  hover:file:bg-orange-100"
+                  file:bg-teal-50 file:text-teal-700
+                  hover:file:bg-teal-100"
               />
               {imagePreview && (
                 <div className="mt-2">
@@ -331,7 +331,7 @@ export default function NewsManagement() {
                   name="is_published"
                   checked={formData.is_published}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-[#18bebc] focus:ring-teal-400 border-gray-300 rounded"
                 />
                 <label
                   htmlFor="is_published"
@@ -358,7 +358,7 @@ export default function NewsManagement() {
                   value={formData.scheduled_for}
                   onChange={handleInputChange}
                   min={getMinDateTime()}
-                  className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                 />
                 <p className="mt-1 text-xs text-gray-500">
                   Leave empty to save as draft without scheduling
@@ -368,7 +368,7 @@ export default function NewsManagement() {
 
             <button
               type="submit"
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
             >
               {isEditing ? "Update News Item" : "Save News Item"}
             </button>

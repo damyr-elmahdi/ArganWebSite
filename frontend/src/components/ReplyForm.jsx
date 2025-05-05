@@ -22,7 +22,7 @@ export default function ReplyForm({ onAddReply, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-2 mb-4 pl-4 border-l-2 border-orange-200">
+    <form onSubmit={handleSubmit} className="mt-2 mb-4 pl-4 border-l-2 border-teal-200">
       <div className="mb-2">
         <textarea
           id="reply"
@@ -32,7 +32,7 @@ export default function ReplyForm({ onAddReply, onCancel }) {
           onChange={(e) => setContent(e.target.value)}
           required
           placeholder="Write your reply..."
-          className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md"
+          className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
         />
       </div>
       <div className="flex space-x-2">
@@ -41,8 +41,8 @@ export default function ReplyForm({ onAddReply, onCancel }) {
           disabled={isSubmitting || !content.trim()}
           className={`inline-flex justify-center py-1 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
             isSubmitting || !content.trim() 
-              ? 'bg-orange-300 cursor-not-allowed' 
-              : 'bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500'
+              ? 'bg-teal-300 cursor-not-allowed' 
+              : 'bg-[#18bebc] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400'
           }`}
         >
           {isSubmitting ? 'Posting...' : 'Reply'}
@@ -50,7 +50,7 @@ export default function ReplyForm({ onAddReply, onCancel }) {
         <button
           type="button"
           onClick={onCancel}
-          className="inline-flex justify-center py-1 px-3 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+          className="inline-flex justify-center py-1 px-3 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
         >
           Cancel
         </button>

@@ -230,7 +230,7 @@ export default function QuizEditor() {
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
               placeholder="Enter quiz title"
               required
             />
@@ -247,7 +247,7 @@ export default function QuizEditor() {
               id="subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
               required
             >
               <option value="">Select a subject</option>
@@ -267,7 +267,7 @@ export default function QuizEditor() {
             <button
               type="button"
               onClick={addQuestion}
-              className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-orange-600 hover:bg-orange-700"
+              className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-teal-600 hover:bg-teal-700"
             >
               Add Question
             </button>
@@ -294,7 +294,7 @@ export default function QuizEditor() {
                   type="text"
                   value={question.question_text}
                   onChange={(e) => updateQuestionText(qIndex, e.target.value)}
-                  className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
                   placeholder="Enter question"
                   required
                 />
@@ -309,7 +309,7 @@ export default function QuizEditor() {
                     <button
                       type="button"
                       onClick={() => addOption(qIndex)}
-                      className="text-xs text-orange-600 hover:text-orange-800"
+                      className="text-xs text-teal-600 hover:text-teal-800"
                     >
                       Add Option
                     </button>
@@ -324,7 +324,7 @@ export default function QuizEditor() {
                         name={`correct-option-${qIndex}`}
                         checked={option.is_correct}
                         onChange={() => setCorrectOption(qIndex, oIndex)}
-                        className="focus:ring-orange-500 h-4 w-4 text-orange-600 border-gray-300"
+                        className="focus:ring-teal-400 h-4 w-4 text-teal-600 border-gray-300"
                         required
                       />
                       <input
@@ -333,7 +333,7 @@ export default function QuizEditor() {
                         onChange={(e) =>
                           updateOptionText(qIndex, oIndex, e.target.value)
                         }
-                        className="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+                        className="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
                         placeholder={`Option ${oIndex + 1}`}
                         required
                       />
@@ -375,7 +375,7 @@ export default function QuizEditor() {
           <button
             type="submit"
             disabled={saving}
-            className="px-4 py-2 text-sm font-medium text-white bg-orange-600 border border-transparent rounded-md shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
+            className="px-4 py-2 text-sm font-medium text-white bg-teal-500 border border-transparent rounded-md shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400 disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save Changes"}
           </button>

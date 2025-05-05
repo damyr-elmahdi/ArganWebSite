@@ -64,71 +64,70 @@ export default function Header({ schoolName, ministry, tagline }) {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-6 items-center">
-        <Link to="/" className="text-gray-800 hover:text-orange-600 font-medium">Home</Link>
-          <Link to="/about" className="text-gray-800 hover:text-orange-600 font-medium">About</Link>
-          <Link to="/academics" className="text-gray-800 hover:text-orange-600 font-medium">Academics</Link>
-          <Link to="/news" className="text-gray-800 hover:text-orange-600 font-medium">News</Link>
-          <Link to="/events" className="text-gray-800 hover:text-orange-600 font-medium">Events</Link>
-          <Link to="/library" className="text-gray-800 hover:text-orange-600 font-medium">Library</Link>
-          <Link to="/resources" className="text-gray-800 hover:text-orange-600 font-medium">Resources</Link>
-          
-          {/* Conditional rendering based on auth context */}
-          {isAuthenticated ? (
-            <div className="relative">
-              <button 
-                onClick={toggleDropdown}
-                className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition flex items-center"
-              >
+        <Link to="/" className="text-gray-800 hover:text-[#18bebc] font-medium">Home</Link>
+        <Link to="/about" className="text-gray-800 hover:text-[#18bebc] font-medium">About</Link>
+        <Link to="/academics" className="text-gray-800 hover:text-[#18bebc] font-medium">Academics</Link>
+        <Link to="/news" className="text-gray-800 hover:text-[#18bebc] font-medium">News</Link>
+        <Link to="/events" className="text-gray-800 hover:text-[#18bebc] font-medium">Events</Link>
+        <Link to="/library" className="text-gray-800 hover:text-[#18bebc] font-medium">Library</Link>
+        <Link to="/resources" className="text-gray-800 hover:text-[#18bebc] font-medium">Resources</Link>
+        
+        {isAuthenticated ? (
+          <div className="relative">
+            <button 
+              onClick={toggleDropdown}
+              className="bg-[#165b9f] text-white px-4 py-2 rounded-md hover:bg-[#18395a] transition flex items-center"
+            >
                 Welcome {user?.name?.split(' ')[0]}
                 <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isDropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}></path>
                 </svg>
-              </button>
-              
-              {/* Dropdown menu */}
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                  <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-100">Dashboard</Link>
+                </button>
+            
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#18bebc] hover:text-white">Dashboard</Link>
                   <button 
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-orange-100"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-teal-100"
                   >
                     Logout
                   </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <Link to="/login" className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition">Login</Link>
-          )}
-        </nav>
+                  </div>
+            )}
+          </div>
+        ) : (
+          <Link to="/login" className="bg-[#165b9f] text-white px-4 py-2 rounded-md hover:bg-[#18395a] transition">Login</Link>
+        )}
+      </nav>
       </div>
 
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200">
           <div className="container mx-auto px-4 py-2">
-            <nav className="flex flex-col space-y-3 py-3">
-              <Link to="/" className="text-gray-800 hover:text-orange-600 font-medium py-1">Home</Link>
-              <Link to="/about" className="text-gray-800 hover:text-orange-600 font-medium py-1">About</Link>
-              <Link to="/academics" className="text-gray-800 hover:text-orange-600 font-medium py-1">Academics</Link>
-              <Link to="/news" className="text-gray-800 hover:text-orange-600 font-medium py-1">News</Link>
-              <Link to="/events" className="text-gray-800 hover:text-orange-600 font-medium py-1">Events</Link>
-              <Link to="/library" className="text-gray-800 hover:text-orange-600 font-medium py-1">Library</Link>
+          <nav className="hidden md:flex space-x-6 items-center">
+        <Link to="/" className="text-gray-800 hover:text-[#18bebc] font-medium">Home</Link>
+        <Link to="/about" className="text-gray-800 hover:text-[#18bebc] font-medium">About</Link>
+        <Link to="/academics" className="text-gray-800 hover:text-[#18bebc] font-medium">Academics</Link>
+        <Link to="/news" className="text-gray-800 hover:text-[#18bebc] font-medium">News</Link>
+        <Link to="/events" className="text-gray-800 hover:text-[#18bebc] font-medium">Events</Link>
+        <Link to="/library" className="text-gray-800 hover:text-[#18bebc] font-medium">Library</Link>
+        <Link to="/resources" className="text-gray-800 hover:text-[#18bebc] font-medium">Resources</Link>
               
               {/* Conditional rendering for mobile menu */}
               {isAuthenticated ? (
                 <>
-                  <Link to="/dashboard" className="text-gray-800 hover:text-orange-600 font-medium py-1">Dashboard</Link>
+                  <Link to="/dashboard" className="text-gray-800 hover:text-[#18bebc] font-medium py-1">Dashboard</Link>
                   <button 
                     onClick={handleLogout}
-                    className="text-left text-gray-800 hover:text-orange-600 font-medium py-1"
+                    className="text-left text-gray-800 hover:text-[#18bebc] font-medium py-1"
                   >
                     Logout
                   </button>
                 </>
               ) : (
-                <Link to="/login" className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition text-center">Login</Link>
+                <Link to="/login" className="bg-[#18bebc] text-white px-4 py-2 rounded-md hover:bg-[#2a9b99] transition text-center">Login</Link>
               )}
             </nav>
             

@@ -79,10 +79,10 @@ export default function News() {
             />
           </div>
         ) : (
-          <div className="bg-orange-100 h-64 flex items-center justify-center">
+          <div className="bg-teal-100 h-64 flex items-center justify-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-16 w-16 text-orange-500"
+              className="h-16 w-16 text-teal-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -115,7 +115,7 @@ export default function News() {
             {currentNews.title}
           </h1>
 
-          <div className="prose prose-orange max-w-none">
+          <div className="prose prose-teal max-w-none">
             {currentNews.content.split("\n").map((paragraph, idx) => (
               <p key={idx} className="mb-4">
                 {paragraph}
@@ -127,7 +127,7 @@ export default function News() {
           <CommentSection newsId={currentNews.id} />
 
           <div className="mt-8 pt-4 border-t border-gray-200">
-            <Link to="/news" className="text-orange-600 hover:underline">
+            <Link to="/news" className="text-[#18bebc] hover:underline">
               ← Back to all news
             </Link>
           </div>
@@ -175,10 +175,10 @@ export default function News() {
                     />
                   </div>
                 ) : (
-                  <div className="bg-orange-100 h-48 rounded-t-lg flex items-center justify-center">
+                  <div className="bg-teal-100 h-48 rounded-t-lg flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-12 w-12 text-orange-500"
+                      className="h-12 w-12 text-teal-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -205,7 +205,7 @@ export default function News() {
                   </p>
                   <Link
                     to={`/news/${news.id}`}
-                    className="text-orange-600 hover:underline"
+                    className="text-[#18bebc] hover:underline"
                   >
                     Read more
                   </Link>
@@ -240,7 +240,7 @@ export default function News() {
                   onClick={() => handlePageChange(i + 1)}
                   className={`relative inline-flex items-center px-4 py-2 border ${
                     currentPage === i + 1
-                      ? "z-10 bg-orange-600 border-orange-600 text-white"
+                      ? "z-10 bg-[#18bebc] border-[#18bebc] text-white"
                       : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
                   } text-sm font-medium`}
                 >
@@ -270,7 +270,7 @@ export default function News() {
     <main className="flex-grow container mx-auto px-4 py-12">
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#18bebc]"></div>
         </div>
       ) : error ? (
         <div className="bg-red-100 text-red-700 p-4 rounded-md">{error}</div>

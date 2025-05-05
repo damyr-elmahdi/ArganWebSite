@@ -107,7 +107,7 @@ export default function EventCommentSection({ eventId }) {
               onClick={() =>
                 setReplyingTo(replyingTo === comment.id ? null : comment.id)
               }
-              className="text-orange-600 hover:text-orange-800 text-sm"
+              className="text-[#18bebc] hover:text-teal-800 text-sm"
             >
               {replyingTo === comment.id ? "Cancel" : "Reply"}
             </button>
@@ -134,7 +134,7 @@ export default function EventCommentSection({ eventId }) {
 
       {/* Replies */}
       {comment.replies && comment.replies.length > 0 && (
-        <div className="mt-4 space-y-3 pl-4 border-l-2 border-orange-100">
+        <div className="mt-4 space-y-3 pl-4 border-l-2 border-teal-100">
           {comment.replies.map((reply) => (
             <div key={reply.id} className="bg-gray-100 p-3 rounded-lg">
               <div className="flex justify-between items-start">
@@ -176,7 +176,7 @@ export default function EventCommentSection({ eventId }) {
         <div className="bg-gray-50 p-4 rounded-md mb-6">
           <p className="text-gray-700">
             Please{" "}
-            <a href="/login" className="text-orange-600 hover:underline">
+            <a href="/login" className="text-[#18bebc] hover:underline">
               log in
             </a>{" "}
             to leave a comment.
@@ -192,7 +192,7 @@ export default function EventCommentSection({ eventId }) {
 
       {loading ? (
         <div className="flex justify-center py-4">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600"></div>
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#18bebc]"></div>
         </div>
       ) : comments.length === 0 ? (
         <div className="text-center py-6 text-gray-500">

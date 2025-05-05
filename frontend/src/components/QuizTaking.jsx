@@ -375,7 +375,7 @@ export default function QuizTaking() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <h2 className="text-xl font-semibold">Loading quiz...</h2>
-          <div className="mt-4 w-12 h-12 border-4 border-orange-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <div className="mt-4 w-12 h-12 border-4 border-[#18bebc] border-t-transparent rounded-full animate-spin mx-auto"></div>
         </div>
       </div>
     );
@@ -388,7 +388,7 @@ export default function QuizTaking() {
           <h2 className="text-xl font-semibold text-red-600">{error}</h2>
           <button
             onClick={() => navigate("/student-dashboard")}
-            className="mt-4 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
+            className="mt-4 px-4 py-2 bg-[#18bebc] text-white rounded hover:bg-teal-700"
           >
             Return to Dashboard
           </button>
@@ -406,7 +406,7 @@ export default function QuizTaking() {
           </h2>
           <button
             onClick={() => navigate("/student-dashboard")}
-            className="mt-4 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
+            className="mt-4 px-4 py-2 bg-[#18bebc] text-white rounded hover:bg-teal-700"
           >
             Return to Dashboard
           </button>

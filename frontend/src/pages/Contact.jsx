@@ -7,7 +7,7 @@ export default function Contact({ schoolInfo }) {
   return (
     <main className="flex-grow">
       {/* Header Banner */}
-      <section className="bg-orange-600 text-white py-12">
+      <section className="bg-[#18bebc] text-white py-12">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold mb-2">Contact Us</h1>
           <p className="text-lg">
@@ -28,7 +28,7 @@ export default function Contact({ schoolInfo }) {
 
               <div className="space-y-6">
                 <div className="flex items-start">
-                  <div className="mr-4 bg-orange-100 p-3 rounded-full text-orange-600">
+                  <div className="mr-4 bg-teal-100 p-3 rounded-full text-[#18bebc]">
                     <MapPin size={20} />
                   </div>
                   <div>
@@ -38,7 +38,7 @@ export default function Contact({ schoolInfo }) {
                 </div>
 
                 <div className="flex items-start">
-                  <div className="mr-4 bg-orange-100 p-3 rounded-full text-orange-600">
+                  <div className="mr-4 bg-teal-100 p-3 rounded-full text-[#18bebc]">
                     <Phone size={20} />
                   </div>
                   <div>
@@ -48,7 +48,7 @@ export default function Contact({ schoolInfo }) {
                 </div>
 
                 <div className="flex items-start">
-                  <div className="mr-4 bg-orange-100 p-3 rounded-full text-orange-600">
+                  <div className="mr-4 bg-teal-100 p-3 rounded-full text-[#18bebc]">
                     <Phone size={20} />
                   </div>
                   <div>
@@ -58,7 +58,7 @@ export default function Contact({ schoolInfo }) {
                 </div>
 
                 <div className="flex items-start">
-                  <div className="mr-4 bg-orange-100 p-3 rounded-full text-orange-600">
+                  <div className="mr-4 bg-teal-100 p-3 rounded-full text-[#18bebc]">
                     <Mail size={20} />
                   </div>
                   <div>
@@ -68,7 +68,7 @@ export default function Contact({ schoolInfo }) {
                 </div>
 
                 <div className="flex items-start">
-                  <div className="mr-4 bg-orange-100 p-3 rounded-full text-orange-600">
+                  <div className="mr-4 bg-teal-100 p-3 rounded-full text-[#18bebc]">
                     <Clock size={20} />
                   </div>
                   <div>

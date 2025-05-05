@@ -61,7 +61,7 @@ export default function EventDetail() {
   if (loading) {
     return (
       <div className="flex-grow container mx-auto px-4 py-12 flex justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#18bebc]"></div>
       </div>
     );
   }
@@ -106,23 +106,23 @@ export default function EventDetail() {
 
           <div className="space-y-3 bg-gray-50 p-4 rounded-lg mb-6">
             <div className="flex items-center text-gray-700">
-              <CalendarIcon className="h-5 w-5 mr-2 text-orange-600" />
+              <CalendarIcon className="h-5 w-5 mr-2 text-[#18bebc]" />
               <span>{date}</span>
             </div>
             <div className="flex items-center text-gray-700">
-              <ClockIcon className="h-5 w-5 mr-2 text-orange-600" />
+              <ClockIcon className="h-5 w-5 mr-2 text-[#18bebc]" />
               <span>{time}</span>
             </div>
             {event.location && (
               <div className="flex items-center text-gray-700">
-                <MapPinIcon className="h-5 w-5 mr-2 text-orange-600" />
+                <MapPinIcon className="h-5 w-5 mr-2 text-[#18bebc]" />
                 <span>{event.location}</span>
               </div>
             )}
           </div>
 
           {event.description && (
-            <div className="prose prose-orange max-w-none mb-8">
+            <div className="prose prose-teal max-w-none mb-8">
               {event.description.split("\n").map((paragraph, idx) => (
                 <p key={idx}>{paragraph}</p>
               ))}
@@ -133,7 +133,7 @@ export default function EventDetail() {
           <EventCommentSection eventId={event.id} />
 
           <div className="mt-8 pt-4 border-t border-gray-200">
-            <Link to="/events" className="text-orange-600 hover:underline">
+            <Link to="/events" className="text-[#18bebc] hover:underline">
               ← Back to all events
             </Link>
           </div>
