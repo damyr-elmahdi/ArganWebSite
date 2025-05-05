@@ -68,10 +68,18 @@ export default function ClubManagement() {
     try {
       setLoadingUsers(true);
       const response = await axios.get('/api/users');
-      setAvailableUsers(response.data);
+      // Ensure response.data is an array before setting it
+      if (Array.isArray(response.data)) {
+        setAvailableUsers(response.data);
+      } else {
+        console.error('Expected array of users but got:', response.data);
+        setAvailableUsers([]);
+        setError('Received invalid user data format');
+      }
     } catch (err) {
       console.error('Error fetching users:', err);
       setError('Failed to load users');
+      setAvailableUsers([]);
     } finally {
       setLoadingUsers(false);
     }
@@ -491,7 +499,7 @@ export default function ClubManagement() {
                       {loadingUsers ? (
                         <option disabled>Loading users...</option>
                       ) : (
-                        availableUsers.map(user => (
+                        Array.isArray(availableUsers) && availableUsers.map(user => (
                           <option key={user.id} value={user.id}>{user.name}</option>
                         ))
                       )}
