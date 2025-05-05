@@ -21,6 +21,11 @@ use App\Http\Controllers\ResultsController;
 use App\Http\Controllers\TeacherAbsenceController;
 use App\Http\Controllers\UserManagementController;
 
+use App\Http\Controllers\ClubController;
+use App\Http\Controllers\ClubMemberController;
+
+
+
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 // Route::post('/register', [AuthController::class, 'register']);
@@ -39,6 +44,18 @@ Route::get('/library', [LibraryController::class, 'index']);
 Route::get('/library/categories', [LibraryController::class, 'categories']);
 Route::get('/library/book-requests', [LibraryController::class, 'getBookRequests']);
 Route::get('/library/{libraryItem}', [LibraryController::class, 'show']);
+
+
+// Club routes
+Route::apiResource('clubs', ClubController::class);
+Route::get('clubs/{club}/members', [ClubController::class, 'members']);
+
+// Club member routes
+Route::post('clubs/{club}/members', [ClubMemberController::class, 'store']);
+Route::put('clubs/{club}/members/{member}', [ClubMemberController::class, 'update']);
+Route::delete('clubs/{club}/members/{member}', [ClubMemberController::class, 'destroy']);
+
+
 
 // Public resource routes
 Route::get('/resources', [ResourceController::class, 'index']);

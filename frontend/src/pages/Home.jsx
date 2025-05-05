@@ -2,7 +2,7 @@ import Hero from '../components/Hero';
 import NewsSection from '../components/NewsSection';
 import EventsSection from '../components/EventsSection';
 import RegistrationCTA from '../components/RegistrationCTA';
-import ClubsSection from '../components/ClubsSection'; // Import the new ClubsSection component
+import ClubsSection from '../components/ClubsSection';
 import argan from "../assets/argan.png";
 
 import { useState, useEffect } from 'react';
@@ -70,7 +70,6 @@ export default function Home({ schoolInfo }) {
                 and character development are prioritized alongside academic achievement.
               </p>
               <div className="grid grid-cols-2 gap-4 text-center">
-              <div className="grid grid-cols-2 gap-4 text-center">
                 <div className="bg-[#18bebc] bg-opacity-20 p-4 rounded-lg">
                   <div className="text-3xl font-bold text-[#165b9f]">95%</div>
                   <div className="text-sm text-gray-600">Graduation Rate</div>
@@ -79,7 +78,6 @@ export default function Home({ schoolInfo }) {
                   <div className="text-3xl font-bold text-[#165b9f]">85%</div>
                   <div className="text-sm text-gray-600">University Acceptance</div>
                 </div>
-              </div>
               </div>
             </div>
           </div>
@@ -92,11 +90,11 @@ export default function Home({ schoolInfo }) {
       {/* Events section */}
       <EventsSection />
       
-      {/* Clubs section - New section replacing Featured Programs */}
+      {/* Clubs section */}
       <ClubsSection />
       
       {/* Registration CTA */}
-      <RegistrationCTA/>
+      <RegistrationCTA />
     </main>
   );
 }

@@ -110,7 +110,9 @@ export default function App() {
             <Route path="/events" element={<Events />} />
             <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/library" element={<Library />} />
+            <Route path="/clubs/:id" element={<ClubDetails />} />
             <Route path="/login" element={<Login />} />
+
             {/* <Route path="/register" element={<Register />} /> */}
             {/* Password reset routes */}
             <Route
