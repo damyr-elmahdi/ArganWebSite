@@ -11,9 +11,8 @@ return new class extends Migration
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
             $table->string('full_name');
-            $table->date('date_of_birth')->nullable();
             $table->string('grade_applying_for');
-             $table->string('parent_name');
+            $table->string('parent_name');
             $table->string('parent_occupation');
             $table->string('father_phone');
             $table->string('mother_phone');

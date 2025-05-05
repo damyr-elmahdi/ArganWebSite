@@ -16,7 +16,6 @@ class Registration extends Model
      */
     protected $fillable = [
         'full_name',            
-        'date_of_birth',     
         'grade_applying_for',   
         'parent_name',         
         'parent_occupation',   
@@ -38,8 +37,10 @@ class Registration extends Model
      * @var array
      */
     protected $casts = [
-        'date_of_birth' => 'date',
+        // Removed date_of_birth
         'orphan_date' => 'date',
         'processed' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 }

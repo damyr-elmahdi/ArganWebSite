@@ -4,7 +4,7 @@ import axios from "axios";
 import NewsManagement from "../components/NewsManagement";
 import EventsManagement from "../components/EventsManagement";
 import AbsenceManagement from "../components/AbsenceManagement";
-import UserManagement from "../components/UserManagement"; // Import the UserManagement component
+import UserManagement from "../components/UserManagement";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -96,6 +96,11 @@ export default function AdminDashboard() {
       console.error("Error marking registration as processed:", err);
       alert("Failed to update registration status.");
     }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString();
   };
 
   if (loading) {
@@ -284,13 +289,13 @@ export default function AdminDashboard() {
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Email
+                            Student Phone
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Date of Birth
+                            Registration Date
                           </th>
                           <th
                             scope="col"
@@ -313,12 +318,10 @@ export default function AdminDashboard() {
                               {registration.full_name}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {registration.email}
+                              {registration.student_phone || "N/A"}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {new Date(
-                                registration.date_of_birth
-                              ).toLocaleDateString()}
+                              {formatDate(registration.created_at)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               {registration.processed ? (
@@ -372,7 +375,7 @@ export default function AdminDashboard() {
 
           {/* Events Management Tab */}
           {activeTab === "events" && <EventsManagement />}
-          
+
           {/* Teacher Absences Tab */}
           {activeTab === "absences" && <AbsenceManagement />}
         </div>
