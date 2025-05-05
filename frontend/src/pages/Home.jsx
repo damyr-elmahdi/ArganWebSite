@@ -2,7 +2,8 @@ import Hero from '../components/Hero';
 import NewsSection from '../components/NewsSection';
 import EventsSection from '../components/EventsSection';
 import RegistrationCTA from '../components/RegistrationCTA';
-import ClubsSection from '../components/ClubsSection'; // Import the new ClubsSection component
+import ClubsSection from '../components/ClubsSection';
+import OutstandingStudentsSection from '../components/OutstandingStudentsSection';
 import argan from "../assets/argan.png";
 
 import { useState, useEffect } from 'react';
@@ -89,10 +90,13 @@ export default function Home({ schoolInfo }) {
       {/* News section */}
       <NewsSection />
       
+      {/* Outstanding Students section */}
+      <OutstandingStudentsSection />
+      
       {/* Events section */}
       <EventsSection />
       
-      {/* Clubs section - New section replacing Featured Programs */}
+      {/* Clubs section */}
       <ClubsSection />
       
       {/* Registration CTA */}
