@@ -6,7 +6,7 @@ import {
   updateNews,
   deleteNews,
   publishNews,
-  archiveNews,
+  // Removed archiveNews import
 } from "../services/newsService";
 
 export default function NewsManagement() {
@@ -184,15 +184,7 @@ export default function NewsManagement() {
     }
   };
 
-  const handleArchive = async (id) => {
-    try {
-      await archiveNews(id);
-      fetchNews();
-    } catch (err) {
-      setError("Failed to archive news item");
-      console.error(err);
-    }
-  };
+  // Removed handleArchive function
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
@@ -472,12 +464,8 @@ export default function NewsManagement() {
                           Publish Now
                         </button>
                       ) : (
-                        <button
-                          onClick={() => handleArchive(item.id)}
-                          className="text-yellow-600 hover:text-yellow-900 mr-3"
-                        >
-                          Archive
-                        </button>
+                        // Removed Archive button
+                        <></>
                       )}
                       <button
                         onClick={() => handleDelete(item.id)}
