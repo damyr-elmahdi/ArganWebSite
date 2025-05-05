@@ -49,6 +49,122 @@ export default function ResourceViewer() {
     { value: 'al', label: 'AL (Arabic et Lettres)', yearLevels: ['1bac', '2bac'] }
   ];
 
+  // AlloSchool links mapping
+  const alloSchoolLinks = {
+    // TC (Tronc Commun)
+    'tc': {
+      'Mathematics': {
+        'science': 'https://www.alloschool.com/course/mathematiques-tronc-commun-sciences-biof',
+        'letter': 'https://www.alloschool.com/course/alriadhiat-tjdh-mshrk-aladab-walalom-alansanit'
+      },
+      'Physics & chemistry': {
+        'science': 'https://www.alloschool.com/course/alfizia-walkimia-tjdh-mshrk-alom-riadhia'
+      },
+      'SVT': {
+        'science': 'https://www.alloschool.com/course/alom-alhiat-walarth-tjdh-mshrk-alom-riadhia'
+      },
+      'Arabic': {
+        'science': 'https://www.alloschool.com/course/allgha-alrbia-tjdh-mshrk-alom',
+        'letter': 'https://www.alloschool.com/course/allgha-alrbia-tjdh-mshrk-aladab-walalom-alansanit'
+      },
+      'History and Geography': {
+        'science': 'https://www.alloschool.com/course/alijtmaiat-tjdh-mshrk-alom',
+        'letter': 'https://www.alloschool.com/course/alijtmaiat-tjdh-mshrk-aladab-walalom-alansanit'
+      },
+      'French': {
+        'science': 'https://www.alloschool.com/course/allgha-alfrnsia-tjdh-mshrk-alom',
+        'letter': 'https://www.alloschool.com/course/allgha-alfrnsia-tjdh-mshrk-aladab-walalom-alansanit'
+      }
+    },
+    
+    // 1BAC (First Year)
+    '1bac': {
+      'Mathematics': {
+        'se': 'https://www.alloschool.com/course/alriadhiat-alaola-bakaloria-alom-tjribia-biof',
+        'sm': 'https://www.alloschool.com/course/alriadhiat-alaola-bakaloria-alom-riadhia-biof',
+        'sh': 'https://www.alloschool.com/course/alriadhiat-alaola-bakaloria-alom-alansanit-biof'
+      },
+      'Physics & chemistry': {
+        'se': 'https://www.alloschool.com/course/physique-et-chimie-1er-bac-sciences-experimentales-biof',
+        'sm': 'https://www.alloschool.com/course/alfizia-walkimia-alaola-bakaloria-alom-riadhia-biof'
+      },
+      'SVT': {
+        'se': 'https://www.alloschool.com/course/alom-alhiat-walarth-alaola-bakaloria-alom-tjribia-biof'
+      },
+      'Arabic': {
+        'se': 'https://www.alloschool.com/course/allgha-alrbia-alaola-bakaloria-alom-tjribia-biof',
+        'sm': 'https://www.alloschool.com/course/allgha-alrbia-alaola-bakaloria-alom-riadhia-biof',
+        'sh': 'https://www.alloschool.com/course/allgha-alrbia-alaola-bakaloria-adab-alom-ansanit-biof'
+      },
+      'History and Geography': {
+        'se': 'https://www.alloschool.com/course/alijtmaiat-alaola-bakaloria-alom-tjribia-biof',
+        'sm': 'https://www.alloschool.com/course/alijtmaiat-alaola-bakaloria-alom-riadhia-biof',
+        'sh': 'https://www.alloschool.com/course/alijtmaiat-alaola-bakaloria-adab-alom-ansanit-mshrk-biof'
+      },
+      'French': {
+        'se': 'https://www.alloschool.com/course/allgha-alfrnsia-alaola-bakaloria-alom-tjribia-biof',
+        'sm': 'https://www.alloschool.com/course/allgha-alfrnsia-alaola-bakaloria-alom-riadhia-biof',
+        'sh': 'https://www.alloschool.com/course/allgha-alfrnsia-alaola-bakaloria-adab-alom-ansanit-biof'
+      }
+    },
+    
+    // 2BAC (Second Year)
+    '2bac': {
+      'Mathematics': {
+        'smb1': 'https://www.alloschool.com/course/alriadhiat-althania-bakaloria-alom-riadhia-a-biof',
+        'smb2': 'https://www.alloschool.com/course/alriadhiat-althania-bakaloria-alom-riadhia-b-biof',
+        'spc': 'https://www.alloschool.com/course/alriadhiat-althania-bakaloria-alom-fiziai-biof',
+        'svt': 'https://www.alloschool.com/course/alriadhiat-althania-bakaloria-alom-alhiat-walarth-biof',
+        'sh': 'https://www.alloschool.com/course/alriadhiat-althania-bakaloria-alom-alansanit-biof'
+      },
+      'Physics & chemistry': {
+        'smb1': 'https://www.alloschool.com/course/alfizia-walkimia-althania-bakaloria-alom-riadhia-a-biof',
+        'smb2': 'https://www.alloschool.com/course/alfizia-walkimia-althania-bakaloria-alom-riadhia-b-biof',
+        'spc': 'https://www.alloschool.com/course/alfizia-walkimia-althania-bakaloria-alom-fiziai-biof',
+        'svt': 'https://www.alloschool.com/course/alfizia-walkimia-althania-bakaloria-alom-alhiat-walarth-biof'
+      },
+      'SVT': {
+        'svt': 'https://www.alloschool.com/course/alom-alhiat-walarth-althania-bakaloria-alom-alhiat-walarth-biof'
+      },
+      'Arabic': {
+        'al': 'https://www.alloschool.com/course/allgha-alrbia-althania-bakaloria-aladab-biof',
+        'sh': 'https://www.alloschool.com/course/allgha-alrbia-althania-bakaloria-alom-ansanit-biof',
+        'smb1': 'https://www.alloschool.com/course/allgha-alrbia-althania-bakaloria-alom-riadhia-a-biof',
+        'smb2': 'https://www.alloschool.com/course/allgha-alrbia-althania-bakaloria-alom-riadhia-b-biof',
+        'spc': 'https://www.alloschool.com/course/allgha-alrbia-althania-bakaloria-alom-fiziai-biof',
+        'svt': 'https://www.alloschool.com/course/allgha-alrbia-althania-bakaloria-alom-alhiat-walarth-biof'
+      },
+      'History and Geography': {
+        'al': 'https://www.alloschool.com/course/alijtmaiat-althania-bakaloria-aladab-biof',
+        'sh': 'https://www.alloschool.com/course/alijtmaiat-althania-bakaloria-alom-ansanit-biof',
+        'smb1': 'https://www.alloschool.com/course/alijtmaiat-althania-bakaloria-alom-riadhia-a-biof',
+        'smb2': 'https://www.alloschool.com/course/alijtmaiat-althania-bakaloria-alom-riadhia-b-biof',
+        'spc': 'https://www.alloschool.com/course/alijtmaiat-althania-bakaloria-alom-fiziai-biof',
+        'svt': 'https://www.alloschool.com/course/alijtmaiat-althania-bakaloria-alom-alhiat-walarth-biof'
+      },
+      'French': {
+        'al': 'https://www.alloschool.com/course/allgha-alfrnsia-althania-bakaloria-aladab-biof',
+        'sh': 'https://www.alloschool.com/course/allgha-alfrnsia-althania-bakaloria-alom-ansanit-biof',
+        'smb1': 'https://www.alloschool.com/course/allgha-alfrnsia-althania-bakaloria-alom-riadhia-a-biof',
+        'smb2': 'https://www.alloschool.com/course/allgha-alfrnsia-althania-bakaloria-alom-riadhia-b-biof',
+        'spc': 'https://www.alloschool.com/course/allgha-alfrnsia-althania-bakaloria-alom-fiziai-biof',
+        'svt': 'https://www.alloschool.com/course/allgha-alfrnsia-althania-bakaloria-alom-alhiat-walarth-biof'
+      }
+    }
+  };
+
+  // Get AlloSchool link based on current filters
+  const getAlloSchoolLink = () => {
+    const { yearLevel, subject, specialization } = filters;
+    if (!yearLevel || !subject || !specialization) return null;
+    
+    try {
+      return alloSchoolLinks[yearLevel]?.[subject]?.[specialization] || null;
+    } catch (error) {
+      return null;
+    }
+  };
+
   // Filtered specialization options based on selected year level
   const getFilteredSpecializations = () => {
     if (!filters.yearLevel) {
@@ -255,6 +371,23 @@ export default function ResourceViewer() {
             </select>
           </div>
         </div>
+        
+        {/* AlloSchool Link */}
+        {getAlloSchoolLink() && (
+          <div className="mt-4 pt-3 border-t border-gray-200">
+            <a 
+              href={getAlloSchoolLink()} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              View AlloSchool Resources for {filters.subject} - {getYearLevelLabel(filters.yearLevel)} - {getSpecializationLabel(filters.specialization)}
+            </a>
+          </div>
+        )}
       </div>
       
       {/* Error display */}
@@ -344,41 +477,60 @@ export default function ResourceViewer() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredResources.map((resource) => (
-                <tr key={resource.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{resource.title}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{resource.subject}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{getYearLevelLabel(resource.yearLevel)}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{getSpecializationLabel(resource.specialization)}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{formatDate(resource.created_at)}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button 
-                      onClick={() => viewResource(resource)}
-                      className="text-green-600 hover:text-green-900 mr-3"
-                    >
-                      View
-                    </button>
-                    <a 
-                      href={`/api/resources/${resource.id}/download`}
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-orange-600 hover:text-orange-900"
-                    >
-                      Download
-                    </a>
-                  </td>
-                </tr>
-              ))}
+              {filteredResources.map((resource) => {
+                // Get AlloSchool link for this resource
+                const alloSchoolLink = 
+                  resource.yearLevel && 
+                  resource.subject && 
+                  resource.specialization && 
+                  alloSchoolLinks[resource.yearLevel]?.[resource.subject]?.[resource.specialization];
+                
+                return (
+                  <tr key={resource.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{resource.title}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{resource.subject}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{getYearLevelLabel(resource.yearLevel)}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{getSpecializationLabel(resource.specialization)}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{formatDate(resource.created_at)}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button 
+                        onClick={() => viewResource(resource)}
+                        className="text-green-600 hover:text-green-900 mr-3"
+                      >
+                        View
+                      </button>
+                      <a 
+                        href={`/api/resources/${resource.id}/download`}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-orange-600 hover:text-orange-900 mr-3"
+                      >
+                        Download
+                      </a>
+                      {alloSchoolLink && (
+                        <a 
+                          href={alloSchoolLink}
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-900"
+                        >
+                          AlloSchool
+                        </a>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

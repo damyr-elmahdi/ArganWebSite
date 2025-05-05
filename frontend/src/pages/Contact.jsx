@@ -2,7 +2,7 @@ import ContactForm from "../components/ContactForm";
 import { MapPin, Phone, Mail, Clock } from "react-feather";
 
 export default function Contact({ schoolInfo }) {
-  const { name, address, phone, email, operatingHours } = schoolInfo;
+  const { name, address, phone,fax, email, operatingHours } = schoolInfo;
 
   return (
     <main className="flex-grow">
@@ -44,6 +44,16 @@ export default function Contact({ schoolInfo }) {
                   <div>
                     <h3 className="font-bold text-gray-800">Phone</h3>
                     <p className="text-gray-600">{phone}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="mr-4 bg-orange-100 p-3 rounded-full text-orange-600">
+                    <Phone size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-800">Fax</h3>
+                    <p className="text-gray-600">{fax}</p>
                   </div>
                 </div>
 

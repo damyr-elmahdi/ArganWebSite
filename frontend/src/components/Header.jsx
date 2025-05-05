@@ -1,14 +1,13 @@
-// frontend/src/components/Header.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext'; // Import the auth context
+import { useAuth } from '../contexts/AuthContext'; 
 import argan from "../assets/argan.png";
 import Ministry from "../assets/Ministry.png";
 
 export default function Header({ schoolName, ministry, tagline }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { user, isAuthenticated, logout } = useAuth(); // Use the auth context
+  const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   const toggleMenu = () => {
@@ -27,11 +26,11 @@ export default function Header({ schoolName, ministry, tagline }) {
 
   return (
     <header className="bg-white shadow-md">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div className=" mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center space-x-4">
           {/* School Logo - Made clickable with Link */}
           <Link to="/" className="flex items-center justify-center w-20 h-20">
-            <img src={argan} alt="Argan High School" className="w-full h-full object-contain" />
+            <img src={argan} alt="Argane High School" className="w-full h-full object-contain" />
           </Link>
           <div>
             <h1 className="text-xl font-bold text-gray-800">{schoolName}</h1>
@@ -65,12 +64,13 @@ export default function Header({ schoolName, ministry, tagline }) {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-6 items-center">
-          <Link to="/" className="text-gray-800 hover:text-orange-600 font-medium">Home</Link>
+        <Link to="/" className="text-gray-800 hover:text-orange-600 font-medium">Home</Link>
           <Link to="/about" className="text-gray-800 hover:text-orange-600 font-medium">About</Link>
           <Link to="/academics" className="text-gray-800 hover:text-orange-600 font-medium">Academics</Link>
           <Link to="/news" className="text-gray-800 hover:text-orange-600 font-medium">News</Link>
           <Link to="/events" className="text-gray-800 hover:text-orange-600 font-medium">Events</Link>
           <Link to="/library" className="text-gray-800 hover:text-orange-600 font-medium">Library</Link>
+          <Link to="/resources" className="text-gray-800 hover:text-orange-600 font-medium">Resources</Link>
           
           {/* Conditional rendering based on auth context */}
           {isAuthenticated ? (

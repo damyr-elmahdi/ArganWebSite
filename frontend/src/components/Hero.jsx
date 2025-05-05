@@ -9,7 +9,7 @@ export default function Hero({ schoolName, foundedYear }) {
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Welcome to {schoolName}</h2>
             <p className="text-lg mb-6">Providing quality education and fostering academic excellence since {foundedYear}.</p>
             <div className="flex flex-wrap gap-4">
-              <Link to="/register" className="bg-white text-orange-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition">Apply Now</Link>
+              <Link to="/register-student" className="bg-white text-orange-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition">Apply Now</Link>
               <Link to="/about" className="border border-white text-white px-6 py-3 rounded-md font-medium hover:bg-white hover:text-orange-600 transition">Learn More</Link>
             </div>
           </div>

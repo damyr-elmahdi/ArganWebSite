@@ -73,7 +73,7 @@ export default function About() {
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Welcome to Arkan Secondary School</h2>
               <p className="text-gray-600 mb-4">
                 Arkan Secondary School (الثانوية التأهيلية أركان) is an upper-secondary lycée qualifiant 
-                located in the city of Tiznit in the Souss-Massa region of Morocco. Established in the 2010s, 
+                located in the city of Tiznit in the Souss-Massa region of Morocco. Established in the 2014s, 
                 our school has quickly earned a distinguished place among the province's secondary schools 
                 in terms of academic results and educational influence.
               </p>
@@ -92,7 +92,7 @@ export default function About() {
                   <div className="text-sm text-gray-600">Academic Tracks</div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-orange-600">2010s</div>
+                  <div className="text-2xl font-bold text-orange-600">2014s</div>
                   <div className="text-sm text-gray-600">Year Established</div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg text-center">
@@ -129,9 +129,9 @@ export default function About() {
                 <div className="relative">
                   <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-orange-500"></div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-800">2010s: Establishment</h3>
+                    <h3 className="text-xl font-bold text-gray-800">2014s: Establishment</h3>
                     <p className="text-gray-600 mt-2">
-                      Arkan Secondary School was established in the 2010s as a new lycée qualifiant in the city of Tiznit,
+                      Arkan Secondary School was established in the 2014s as a new lycée qualifiant in the city of Tiznit,
                       with a mission to provide quality upper-secondary education to the local community.
                     </p>
                   </div>
@@ -200,7 +200,7 @@ export default function About() {
                   <li>General/Literary Studies</li>
                   <li>Mathematical/Scientific Studies</li>
                   <li>Sciences Expérimentales (Life and Earth Sciences)</li>
-                  <li>Economics and Management</li>
+                  
                 </ul>
               </div>
               
@@ -244,7 +244,7 @@ export default function About() {
                     and included a moral theater performance about exam ethics
                   </li>
                   <li>
-                    <span className="font-semibold">UNESCO's World Argan Tree Day:</span> Organized a cultural week 
+                    <span className="font-semibold">UNESCO's World Argane Tree Day:</span> Organized a cultural week 
                     with exhibitions, mural painting, and scientific talks
                   </li>
                 </ul>

@@ -15,7 +15,7 @@ import Events from "./pages/Events";
 import EventDetail from "./pages/EventDetail";
 import Library from "./pages/Library";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
+// import Register from "./pages/Register";
 import StudentDashboard from "./pages/StudentDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -28,9 +28,9 @@ import QuizResultsViewer from "./components/QuizResultsViewer";
 import QuizEditor from "./components/QuizEditor";
 import TeacherQuizzes from "./components/TeacherQuizzes";
 import QuizCreator from "./components/QuizCreator";
-import Contact from './pages/Contact';
-import ResourceViewer from './components/ResourceViewer';
-import StudentRegistrationForm from './pages/StudentRegistrationForm';
+import Contact from "./pages/Contact";
+import ResourceViewer from "./components/ResourceViewer";
+import StudentRegistrationForm from "./pages/StudentRegistrationForm";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
@@ -81,12 +81,14 @@ export default function App() {
   const schoolInfo = {
     name: "Argan High School",
     ministry: "Ministry of Education and Early Childhood Education",
-    address: "Tiznit, Morocco",
-    phone: "(555) 123-4567",
+    address: "Aska District, Tafraout Road, Tiznit, Morocco",
+    phone: "(+212) 528-860-942",
+    fax: "(+212) 528-867-972",
     email: "info@arganhighschool.edu",
     currentYear: new Date().getFullYear(),
     foundedYear: "2014",
-    operatingHours: "8:30 - 18:30"
+    operatingHours: "8:30 - 18:30",
+    foundingDate: "09/01/2014",
   }
 
   return (
@@ -109,17 +111,19 @@ export default function App() {
             <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/library" element={<Library />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            {/* <Route path="/register" element={<Register />} /> */}
             {/* Password reset routes */}
-
-            <Route path="/contact" element={<Contact schoolInfo={schoolInfo} />} />
-            
+            <Route
+              path="/contact"
+              element={<Contact schoolInfo={schoolInfo} />}
+            />
             {/* Student Registration Form */}
-            <Route path="/register-student" element={<StudentRegistrationForm />} />
-            
+            <Route
+              path="/register-student"
+              element={<StudentRegistrationForm />}
+            />
             {/* Educational Resources route */}
             <Route path="/resources" element={<ResourceViewer />} />
-            
             {/* Protected routes with role-based access */}
             <Route
               path="/student-dashboard"
@@ -178,6 +182,15 @@ export default function App() {
                     <QuizResults />
                   </div>
                 </ProtectedRoute>
+              }
+            />
+            {/* Educational Resources route */}
+            <Route
+              path="/resources"
+              element={
+                <div className="flex-grow container mx-auto px-4 py-8">
+                  <ResourceViewer />
+                </div>
               }
             />
             <Route

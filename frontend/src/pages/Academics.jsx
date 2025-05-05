@@ -1,5 +1,5 @@
 import React from 'react';
-import academics from '../assets/academia.png';
+import academics from '../assets/argane.jpg';
 
 export default function Academics() {
   // Academic programs
@@ -14,7 +14,7 @@ export default function Academics() {
     {
       id: 2,
       title: "Mathematics Stream",
-      description: "The mathematics stream at Argan Secondary School emphasizes advanced mathematical concepts with applications in physics and chemistry. This rigorous program prepares students for competitive university programs.",
+      description: "The mathematics stream at Argane Secondary School emphasizes advanced mathematical concepts with applications in physics and chemistry. This rigorous program prepares students for competitive university programs.",
       icon: "📊",
       color: "bg-green-100"
     },
@@ -96,7 +96,7 @@ export default function Academics() {
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl font-bold mb-4">Academic Excellence</h1>
           <p className="text-xl max-w-3xl mx-auto">
-            At Argan Secondary School in Tiznit, we provide a comprehensive education 
+            At Argane Secondary School in Tiznit, we provide a comprehensive education 
             that prepares students for success in the national Baccalauréat and beyond.
           </p>
         </div>
@@ -109,7 +109,7 @@ export default function Academics() {
             <div className="w-full md:w-1/2">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Our Academic Approach</h2>
               <p className="text-gray-600 mb-4">
-                Argan Secondary School (الثانوية التأهيلية أركان) follows the Moroccan national curriculum 
+                Argane Secondary School (الثانوية التأهيلية أركان) follows the Moroccan national curriculum 
                 with a focus on academic excellence and student engagement. Our lycée offers the standard 
                 three-year upper secondary program with specialty streams.
               </p>
@@ -204,7 +204,7 @@ export default function Academics() {
               <ul className="text-gray-600 space-y-2">
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  Specialized tracks (scientific, literary, economics)
+                  Specialized tracks (scientific, literary)
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
@@ -287,7 +287,7 @@ export default function Academics() {
             <div className="w-full md:w-1/2 grid grid-cols-2 gap-4">
               <div className="bg-blue-100 p-6 rounded-lg flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-blue-600 mb-2">2010s</div>
+                  <div className="text-4xl font-bold text-blue-600 mb-2">2014s</div>
                   <div className="text-sm text-gray-600">Established In</div>
                 </div>
               </div>
@@ -352,7 +352,7 @@ export default function Academics() {
       {/* Call-to-action */}
       <section className="py-12 bg-blue-600 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Join Argan Secondary School?</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to Join Arganee Secondary School?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Begin your journey toward the Baccalauréat at one of Tiznit's distinguished secondary schools.
           </p>

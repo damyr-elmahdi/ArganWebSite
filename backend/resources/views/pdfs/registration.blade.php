@@ -77,7 +77,6 @@
 </head>
 <body>
     <div class="header">
-        <img class="logo" src="{{ public_path('images/logo.png') }}" alt="Logo Lycée Argan">
         <h1 class="school-name">Lycée Argan</h1>
         <p class="ministry">Ministère de l'Éducation et de l'Éducation de la Petite Enfance</p>
     </div>
