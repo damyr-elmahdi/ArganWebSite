@@ -6,31 +6,31 @@ export default function Academics() {
   const programs = [
     {
       id: 1,
-      title: "Scientific Stream",
-      description: "Our scientific program focuses on mathematics, physics, chemistry, and life sciences. Students develop strong analytical and experimental skills in our laboratories, preparing them for university studies in STEM fields.",
+      title: "PC Stream (Physics-Chemistry)",
+      description: "Our PC stream focuses on advanced physics and chemistry concepts with rigorous mathematical applications. Students develop strong analytical and experimental skills in our laboratories, preparing them for university studies in engineering and physical sciences.",
       icon: "🔬",
       color: "bg-blue-100"
     },
     {
       id: 2,
+      title: "SVT Stream (Life & Earth Sciences)",
+      description: "The SVT stream emphasizes biology, geology, and ecological sciences. Students engage in laboratory work and field studies, preparing for university programs in medicine, biology, environmental science, and related fields.",
+      icon: "🧬",
+      color: "bg-teal-100"
+    },
+    {
+      id: 3,
       title: "Mathematics Stream",
       description: "The mathematics stream at Argane Secondary School emphasizes advanced mathematical concepts with applications in physics and chemistry. This rigorous program prepares students for competitive university programs.",
       icon: "📊",
       color: "bg-green-100"
     },
     {
-      id: 3,
+      id: 4,
       title: "Literary Stream",
       description: "Our literary program focuses on Arabic and French literature, philosophy, and humanities. Students develop critical thinking and communication skills while exploring cultural and historical texts.",
       icon: "📚",
       color: "bg-yellow-100"
-    },
-    {
-      id: 4,
-      title: "Economics & Management",
-      description: "The economics and management stream introduces students to economic principles, accounting, and business concepts. This track prepares students for university studies in economics, commerce, and management.",
-      icon: "💼",
-      color: "bg-purple-100"
     },
     {
       id: 5,
@@ -52,30 +52,30 @@ export default function Academics() {
   const faculty = [
     {
       id: 1,
-      name: "Head of Science Department",
-      position: "Scientific Stream Coordinator",
-      credentials: "Specialized in Physics & Chemistry",
+      name: "Head of Physics & Chemistry Department",
+      position: "PC Stream Coordinator",
+      credentials: "Specialized in Physical Sciences",
       image: "/api/placeholder/120/120"
     },
     {
       id: 2,
+      name: "Head of Life & Earth Sciences Department",
+      position: "SVT Stream Coordinator",
+      credentials: "Specialized in Biological Sciences",
+      image: "/api/placeholder/120/120"
+    },
+    {
+      id: 3,
       name: "Head of Mathematics Department",
       position: "Mathematics Stream Coordinator",
       credentials: "Specialized in Advanced Mathematics",
       image: "/api/placeholder/120/120"
     },
     {
-      id: 3,
+      id: 4,
       name: "Head of Humanities Department",
       position: "Literary Stream Coordinator",
       credentials: "Specialized in Language & Literature",
-      image: "/api/placeholder/120/120"
-    },
-    {
-      id: 4,
-      name: "Cultural Affairs Coordinator",
-      position: "Arts & Cultural Activities",
-      credentials: "Specialized in Arts Education",
       image: "/api/placeholder/120/120"
     }
   ];
@@ -124,7 +124,7 @@ export default function Academics() {
                   <div className="text-sm text-gray-600">Years of Upper Secondary</div>
                 </div>
                 <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="text-3xl font-bold text-blue-600">4+</div>
+                  <div className="text-3xl font-bold text-blue-600">5+</div>
                   <div className="text-sm text-gray-600">Specialized Streams</div>
                 </div>
               </div>
@@ -204,7 +204,7 @@ export default function Academics() {
               <ul className="text-gray-600 space-y-2">
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  Specialized tracks (scientific, literary)
+                  Specialized tracks (PC, SVT, literary, mathematics)
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>

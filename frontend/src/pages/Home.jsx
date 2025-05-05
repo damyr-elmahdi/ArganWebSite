@@ -23,7 +23,7 @@ export default function Home({ schoolInfo }) {
       <div className="flex-grow flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4">
-            <img src={argan} alt="Argane High School" className="w-full h-full object-contain animate-pulse" />
+            <img src={argan} alt="Argan High School" className="w-full h-full object-contain animate-pulse" />
           </div>
           <h2 className="text-xl font-semibold text-gray-700">Loading...</h2>
         </div>
@@ -90,6 +90,55 @@ export default function Home({ schoolInfo }) {
       {/* Events section */}
       <EventsSection />
       
+      {/* Featured programs */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">Featured Academic Programs</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-lg overflow-hidden shadow-md">
+              <div className="h-40 bg-green-100 flex items-center justify-center">
+                <span className="text-4xl">🧪</span>
+              </div>
+              <div className="p-4">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Science & Technology</h3>
+                <p className="text-gray-600 mb-4">
+                  State-of-the-art laboratories and innovative teaching approaches 
+                  for future scientists and engineers.
+                </p>
+                <a href="#" className="text-orange-600 hover:underline">Learn more</a>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg overflow-hidden shadow-md">
+              <div className="h-40 bg-blue-100 flex items-center justify-center">
+                <span className="text-4xl">🎭</span>
+              </div>
+              <div className="p-4">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Arts & Humanities</h3>
+                <p className="text-gray-600 mb-4">
+                  Express creativity and develop critical thinking through our 
+                  comprehensive arts and humanities curriculum.
+                </p>
+                <a href="#" className="text-orange-600 hover:underline">Learn more</a>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg overflow-hidden shadow-md">
+              <div className="h-40 bg-yellow-100 flex items-center justify-center">
+                <span className="text-4xl">🌍</span>
+              </div>
+              <div className="p-4">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Global Studies</h3>
+                <p className="text-gray-600 mb-4">
+                  Prepare for the global marketplace with language studies 
+                  and international perspectives.
+                </p>
+                <a href="#" className="text-orange-600 hover:underline">Learn more</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       
       
       {/* Registration CTA */}
