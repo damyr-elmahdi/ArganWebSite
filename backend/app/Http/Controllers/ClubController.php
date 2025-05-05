@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Club;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
+use Exception;
 
 class ClubController extends Controller
 {
@@ -15,7 +18,13 @@ class ClubController extends Controller
      */
     public function index()
     {
-        return Club::all();
+        try {
+            return response()->json(Club::all(), 200);
+        } catch (QueryException $e) {
+            return response()->json(['message' => 'Database error', 'error' => $e->getMessage()], 500);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Server error', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -37,9 +46,14 @@ class ClubController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $club = Club::create($request->all());
-
-        return response()->json($club, 201);
+        try {
+            $club = Club::create($request->all());
+            return response()->json($club, 201);
+        } catch (QueryException $e) {
+            return response()->json(['message' => 'Database error', 'error' => $e->getMessage()], 500);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Server error', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -50,8 +64,14 @@ class ClubController extends Controller
      */
     public function show($id)
     {
-        $club = Club::findOrFail($id);
-        return response()->json($club);
+        try {
+            $club = Club::findOrFail($id);
+            return response()->json($club);
+        } catch (QueryException $e) {
+            return response()->json(['message' => 'Database error', 'error' => $e->getMessage()], 500);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Server error', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -74,10 +94,15 @@ class ClubController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $club = Club::findOrFail($id);
-        $club->update($request->all());
-
-        return response()->json($club);
+        try {
+            $club = Club::findOrFail($id);
+            $club->update($request->all());
+            return response()->json($club);
+        } catch (QueryException $e) {
+            return response()->json(['message' => 'Database error', 'error' => $e->getMessage()], 500);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Server error', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -88,10 +113,15 @@ class ClubController extends Controller
      */
     public function destroy($id)
     {
-        $club = Club::findOrFail($id);
-        $club->delete();
-
-        return response()->json(null, 204);
+        try {
+            $club = Club::findOrFail($id);
+            $club->delete();
+            return response()->json(null, 204);
+        } catch (QueryException $e) {
+            return response()->json(['message' => 'Database error', 'error' => $e->getMessage()], 500);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Server error', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -102,7 +132,13 @@ class ClubController extends Controller
      */
     public function members($id)
     {
-        $club = Club::findOrFail($id);
-        return response()->json($club->members()->with('user')->get());
+        try {
+            $club = Club::findOrFail($id);
+            return response()->json($club->members()->with('user')->get());
+        } catch (QueryException $e) {
+            return response()->json(['message' => 'Database error', 'error' => $e->getMessage()], 500);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Server error', 'error' => $e->getMessage()], 500);
+        }
     }
 }

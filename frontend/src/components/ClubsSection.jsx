@@ -12,11 +12,21 @@ export default function ClubsSection() {
       try {
         setLoading(true);
         const response = await axios.get('/api/clubs');
-        setClubs(response.data);
+        
+        // Check if the response is valid and has data
+        if (response.data && Array.isArray(response.data)) {
+          setClubs(response.data);
+        } else {
+          console.warn('Unexpected response format:', response.data);
+          // Use fallback data
+          setClubs([]);
+        }
+        
         setLoading(false);
       } catch (err) {
         console.error('Error fetching clubs:', err);
-        setError('Failed to load clubs. Please try again later.');
+        setError('Failed to load clubs. Using sample data.');
+        setClubs([]); // Ensure clubs is an array even on error
         setLoading(false);
       }
     };
@@ -59,7 +69,33 @@ export default function ClubsSection() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#18bebc]"></div>
           </div>
         ) : error ? (
-          <div className="text-center text-red-500">{error}</div>
+          <div>
+            <div className="text-center text-yellow-500 mb-4">{error}</div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {fallbackClubs.map(club => (
+                <div key={club.id} className="bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 hover:transform hover:scale-105">
+                  <div className="h-40 bg-teal-100 flex items-center justify-center">
+                    <span className="text-4xl">🧩</span>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">{club.name}</h3>
+                    <p className="text-gray-600 mb-4">
+                      {club.description}
+                    </p>
+                    <Link 
+                      to={`/clubs/${club.id}`} 
+                      className="text-[#18bebc] hover:underline inline-flex items-center"
+                    >
+                      See More
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-6">
             {displayClubs.map(club => (

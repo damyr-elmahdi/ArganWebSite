@@ -31,6 +31,7 @@ import QuizCreator from "./components/QuizCreator";
 import Contact from "./pages/Contact";
 import ResourceViewer from "./components/ResourceViewer";
 import StudentRegistrationForm from "./pages/StudentRegistrationForm";
+import ClubDetails from "./components/ClubDetails"; 
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");

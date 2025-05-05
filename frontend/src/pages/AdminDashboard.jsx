@@ -5,13 +5,14 @@ import NewsManagement from "../components/NewsManagement";
 import EventsManagement from "../components/EventsManagement";
 import AbsenceManagement from "../components/AbsenceManagement";
 import UserManagement from "../components/UserManagement";
+import ClubManagement from "../components/ClubManagement";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("profile"); // 'profile', 'registrations', 'news', 'events', 'absences', 'users'
+  const [activeTab, setActiveTab] = useState("profile"); // 'profile', 'registrations', 'news', 'events', 'absences', 'users', 'clubs'
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -205,6 +206,16 @@ export default function AdminDashboard() {
             >
               Teacher Absences
             </button>
+            <button
+              className={`${
+                activeTab === "clubs"
+                  ? "border-teal-500 text-[#18bebc]"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              onClick={() => setActiveTab("clubs")}
+            >
+              Clubs
+            </button>
           </nav>
         </div>
 
@@ -378,6 +389,9 @@ export default function AdminDashboard() {
 
           {/* Teacher Absences Tab */}
           {activeTab === "absences" && <AbsenceManagement />}
+          
+          {/* Club Management Tab */}
+          {activeTab === "clubs" && <ClubManagement />}
         </div>
       </main>
     </div>
