@@ -68,11 +68,16 @@ export default function ClubManagement() {
     try {
       setLoadingUsers(true);
       const response = await axios.get('/api/users');
-      // Ensure response.data is an array before setting it
-      if (Array.isArray(response.data)) {
+      
+      // Check if response is paginated
+      if (response.data && response.data.data && Array.isArray(response.data.data)) {
+        // Extract users from paginated response
+        setAvailableUsers(response.data.data);
+      } else if (Array.isArray(response.data)) {
+        // Handle case where API might return a direct array
         setAvailableUsers(response.data);
       } else {
-        console.error('Expected array of users but got:', response.data);
+        console.error('Expected paginated users or array but got:', response.data);
         setAvailableUsers([]);
         setError('Received invalid user data format');
       }
@@ -499,7 +504,7 @@ export default function ClubManagement() {
                       {loadingUsers ? (
                         <option disabled>Loading users...</option>
                       ) : (
-                        Array.isArray(availableUsers) && availableUsers.map(user => (
+                        availableUsers.map(user => (
                           <option key={user.id} value={user.id}>{user.name}</option>
                         ))
                       )}
