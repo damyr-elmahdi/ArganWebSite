@@ -47,14 +47,23 @@ Route::get('/library/{libraryItem}', [LibraryController::class, 'show']);
 
 
 // Club routes
-Route::apiResource('clubs', ClubController::class);
-Route::get('clubs/{club}/members', [ClubController::class, 'members']);
+Route::get('/clubs', [ClubController::class, 'index']);
+Route::get('/clubs/{club}', [ClubController::class, 'show']);
+Route::get('/clubs/{club}/members', [ClubController::class, 'members']);
 
-// Club member routes
-Route::post('clubs/{club}/members', [ClubMemberController::class, 'store']);
-Route::put('clubs/{club}/members/{member}', [ClubMemberController::class, 'update']);
-Route::delete('clubs/{club}/members/{member}', [ClubMemberController::class, 'destroy']);
-
+Route::middleware('auth:sanctum')->group(function () {
+    // Club management routes (admin only)
+    Route::middleware('role:administrator')->group(function () {
+        Route::post('/clubs', [ClubController::class, 'store']);
+        Route::put('/clubs/{club}', [ClubController::class, 'update']);
+        Route::delete('/clubs/{club}', [ClubController::class, 'destroy']);
+        
+        // Club member management
+        Route::post('/clubs/{club}/members', [ClubMemberController::class, 'store']);
+        Route::put('/clubs/{club}/members/{member}', [ClubMemberController::class, 'update']);
+        Route::delete('/clubs/{club}/members/{member}', [ClubMemberController::class, 'destroy']);
+    });
+});
 
 
 // Public resource routes
