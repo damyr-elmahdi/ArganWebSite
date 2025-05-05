@@ -18,6 +18,18 @@ export default function OutstandingStudentsManagement() {
     achievement: ''
   });
 
+  // Grade options for Moroccan system
+  const gradeOptions = [
+    { value: "TC-S", label: "TC - Sciences" },
+    { value: "TC-LSH", label: "TC - Lettres et Sciences Humaines" },
+    { value: "1BAC-SE", label: "1BAC - Sciences Expérimentales" },
+    { value: "1BAC-LSH", label: "1BAC - Lettres et Sciences Humaines" },
+    { value: "2BAC-PC", label: "2BAC - PC (Physique-Chimie)" },
+    { value: "2BAC-SVT", label: "2BAC - SVT (Sciences de la Vie et de la Terre)" },
+    { value: "2BAC-SH", label: "2BAC - Sciences Humaines" },
+    { value: "2BAC-L", label: "2BAC - Lettres" },
+  ];
+
   // Fetch students when component mounts
   useEffect(() => {
     fetchOutstandingStudents();
@@ -190,33 +202,39 @@ export default function OutstandingStudentsManagement() {
               <label htmlFor="grade" className="block text-sm font-medium text-gray-700">
                 Grade/Class
               </label>
-              <input
-                type="text"
+              <select
                 name="grade"
                 id="grade"
                 value={formData.grade}
                 onChange={handleInputChange}
                 required
                 className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                placeholder="Enter grade or class"
-              />
+              >
+                <option value="">Select a grade</option>
+                {gradeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
             </div>
             
             <div>
               <label htmlFor="mark" className="block text-sm font-medium text-gray-700">
-                Mark (%)
+                Mark (/20)
               </label>
               <input
                 type="number"
                 name="mark"
                 id="mark"
                 min="0"
-                max="100"
+                max="20"
+                step="0.25"
                 value={formData.mark}
                 onChange={handleInputChange}
                 required
                 className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                placeholder="Enter mark percentage"
+                placeholder="Enter mark (out of 20)"
               />
             </div>
             
@@ -303,7 +321,7 @@ export default function OutstandingStudentsManagement() {
                       {student.grade}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.mark}%
+                      {student.mark}/20
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {student.achievement || 'N/A'}

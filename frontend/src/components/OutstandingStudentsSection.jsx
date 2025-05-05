@@ -6,6 +6,23 @@ export default function OutstandingStudentsSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Function to get the label for a grade code
+  const getGradeLabel = (gradeCode) => {
+    const gradeOptions = [
+      { value: "TC-S", label: "TC - Sciences" },
+      { value: "TC-LSH", label: "TC - Lettres et Sciences Humaines" },
+      { value: "1BAC-SE", label: "1BAC - Sciences Expérimentales" },
+      { value: "1BAC-LSH", label: "1BAC - Lettres et Sciences Humaines" },
+      { value: "2BAC-PC", label: "2BAC - PC (Physique-Chimie)" },
+      { value: "2BAC-SVT", label: "2BAC - SVT (Sciences de la Vie et de la Terre)" },
+      { value: "2BAC-SH", label: "2BAC - Sciences Humaines" },
+      { value: "2BAC-L", label: "2BAC - Lettres" },
+    ];
+    
+    const grade = gradeOptions.find(g => g.value === gradeCode);
+    return grade ? grade.label : gradeCode;
+  };
+
   useEffect(() => {
     const fetchOutstandingStudents = async () => {
       try {
@@ -74,11 +91,11 @@ export default function OutstandingStudentsSection() {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-bold text-gray-800">{student.name}</h3>
                   <span className="bg-[#18bebc] text-white text-sm font-medium px-3 py-1 rounded-full">
-                    {student.mark}%
+                    {student.mark}/20
                   </span>
                 </div>
-                <p className="text-gray-600">{student.grade}</p>
-                <p className="text-gray-500 text-sm mt-2">{student.achievement || 'Outstanding Academic Performance'}</p>
+                <p className="text-gray-600">{getGradeLabel(student.grade)}</p>
+                <p className="text-gray-500 text-sm mt-2">{student.achievement || 'Performance académique exceptionnelle'}</p>
               </div>
               <div className="bg-gradient-to-r from-[#165b9f] to-[#18bebc] h-2"></div>
             </div>

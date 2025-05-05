@@ -30,7 +30,7 @@ class OutstandingStudentController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'grade' => 'required|string|max:255',
-            'mark' => 'required|integer|min:0|max:100',
+            'mark' => 'required|numeric|min:0|max:20', // Changed to max:20
             'student_id' => 'nullable|string|max:255',
             'achievement' => 'nullable|string|max:255',
         ]);
@@ -67,7 +67,7 @@ class OutstandingStudentController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'grade' => 'required|string|max:255',
-            'mark' => 'required|integer|min:0|max:100',
+            'mark' => 'required|numeric|min:0|max:20', // Changed to max:20
             'student_id' => 'nullable|string|max:255',
             'achievement' => 'nullable|string|max:255',
         ]);
