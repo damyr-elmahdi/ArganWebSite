@@ -24,6 +24,8 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubMemberController;
 
+use App\Http\Controllers\OutstandingStudentController;
+
 
 
 // Public routes
@@ -45,6 +47,12 @@ Route::get('/library/categories', [LibraryController::class, 'categories']);
 Route::get('/library/book-requests', [LibraryController::class, 'getBookRequests']);
 Route::get('/library/{libraryItem}', [LibraryController::class, 'show']);
 
+// Outstanding Students routes
+Route::get('/outstanding-students', [OutstandingStudentController::class, 'index']);
+Route::post('/outstanding-students', [OutstandingStudentController::class, 'store'])->middleware(['auth:sanctum', 'admin']);
+Route::get('/outstanding-students/{id}', [OutstandingStudentController::class, 'show']);
+Route::put('/outstanding-students/{id}', [OutstandingStudentController::class, 'update'])->middleware(['auth:sanctum', 'admin']);
+Route::delete('/outstanding-students/{id}', [OutstandingStudentController::class, 'destroy'])->middleware(['auth:sanctum', 'admin']);
 
 // Club routes
 Route::get('/clubs', [ClubController::class, 'index']);
