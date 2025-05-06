@@ -148,6 +148,14 @@ const AdminExamsManagement = () => {
     );
   }
 
+  // Get unique class names
+  const uniqueClasses = [...new Set(exams.map(exam => exam.class_name))];
+
+  // Apply class filter if selected
+  const filteredExams = filterClass 
+    ? exams.filter(exam => exam.class_name === filterClass)
+    : exams;
+
   // Group exams by date
   const examsByDate = filteredExams.reduce((acc, exam) => {
     const date = exam.exam_date;
@@ -165,14 +173,6 @@ const AdminExamsManagement = () => {
   const filterExams = (e) => {
     setFilterClass(e.target.value);
   };
-
-  // Apply class filter if selected
-  const filteredExams = filterClass 
-    ? exams.filter(exam => exam.class_name === filterClass)
-    : exams;
-
-  // Get unique class names
-  const uniqueClasses = [...new Set(exams.map(exam => exam.class_name))];
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -303,3 +303,228 @@ const AdminExamsManagement = () => {
                   </tbody>
                 </table>
               </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Exam Form Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-3xl mx-4">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-gray-800">
+                {editingExam ? 'Edit Exam' : 'Add New Exam'}
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Title */}
+                <div className="col-span-2">
+                  <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                    Exam Title*
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    id="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Description */}
+                <div className="col-span-2">
+                  <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    id="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows="3"
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  ></textarea>
+                </div>
+
+                {/* Exam Date */}
+                <div>
+                  <label htmlFor="exam_date" className="block text-sm font-medium text-gray-700 mb-1">
+                    Exam Date*
+                  </label>
+                  <input
+                    type="date"
+                    name="exam_date"
+                    id="exam_date"
+                    value={formData.exam_date}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Class */}
+                <div>
+                  <label htmlFor="class_name" className="block text-sm font-medium text-gray-700 mb-1">
+                    Class*
+                  </label>
+                  <input
+                    type="text"
+                    name="class_name"
+                    id="class_name"
+                    value={formData.class_name}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="e.g., 10A, 11B"
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Start Time */}
+                <div>
+                  <label htmlFor="start_time" className="block text-sm font-medium text-gray-700 mb-1">
+                    Start Time*
+                  </label>
+                  <input
+                    type="time"
+                    name="start_time"
+                    id="start_time"
+                    value={formData.start_time}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                {/* End Time */}
+                <div>
+                  <label htmlFor="end_time" className="block text-sm font-medium text-gray-700 mb-1">
+                    End Time*
+                  </label>
+                  <input
+                    type="time"
+                    name="end_time"
+                    id="end_time"
+                    value={formData.end_time}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Teacher */}
+                <div>
+                  <label htmlFor="teacher_id" className="block text-sm font-medium text-gray-700 mb-1">
+                    Teacher*
+                  </label>
+                  <select
+                    name="teacher_id"
+                    id="teacher_id"
+                    value={formData.teacher_id}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="">Select Teacher</option>
+                    {teachers.map((teacher) => (
+                      <option key={teacher.id} value={teacher.id}>
+                        {teacher.user?.name || `Teacher ID: ${teacher.id}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Subject */}
+                <div>
+                  <label htmlFor="subject_id" className="block text-sm font-medium text-gray-700 mb-1">
+                    Subject*
+                  </label>
+                  <select
+                    name="subject_id"
+                    id="subject_id"
+                    value={formData.subject_id}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="">Select Subject</option>
+                    {subjects.map((subject) => (
+                      <option key={subject.id} value={subject.id}>
+                        {subject.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Room */}
+                <div>
+                  <label htmlFor="room" className="block text-sm font-medium text-gray-700 mb-1">
+                    Room
+                  </label>
+                  <input
+                    type="text"
+                    name="room"
+                    id="room"
+                    value={formData.room}
+                    onChange={handleInputChange}
+                    placeholder="e.g., A101, Science Lab"
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Status */}
+                <div>
+                  <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                  </label>
+                  <select
+                    name="status"
+                    id="status"
+                    value={formData.status}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="scheduled">Scheduled</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="mt-8 flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                >
+                  {editingExam ? 'Update Exam' : 'Create Exam'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AdminExamsManagement;

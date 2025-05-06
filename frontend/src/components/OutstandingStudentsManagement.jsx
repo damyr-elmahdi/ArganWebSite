@@ -205,12 +205,7 @@ export default function OutstandingStudentsManagement() {
     
     // Show current photo if available
     if (student.photo_path) {
-      // Ensure proper URL formatting
-      const photoUrl = student.photo_path.startsWith('/') 
-        ? student.photo_path 
-        : `/${student.photo_path}`;
-        
-      setPhotoPreview(photoUrl);
+      setPhotoPreview(student.photo_path);
     } else {
       setPhotoPreview(null);
     }
@@ -241,12 +236,26 @@ export default function OutstandingStudentsManagement() {
     }
   };
 
-  // Helper function to format image URL
+  // Improved helper function for image URLs
   const getImageUrl = (path) => {
     if (!path) return null;
     
-    // Ensure proper URL formatting
-    return path.startsWith('/') ? path : `/${path}`;
+    // If it's already a full URL, return it as is
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    
+    // Remove any leading slashes and handle paths with or without 'storage/'
+    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    
+    // Default case - construct complete URL
+    return `${window.location.origin}/${cleanPath}`;
+  };
+
+  // Helper to create placeholder image
+  const createPlaceholderImage = (name) => {
+    const initial = name && name.length > 0 ? name.charAt(0).toUpperCase() : "?";
+    return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='36' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3E${initial}%3C/text%3E%3C/svg%3E`;
   };
 
   return (
@@ -265,7 +274,6 @@ export default function OutstandingStudentsManagement() {
         <h4 className="text-md font-medium text-gray-900 mb-4">
           {formMode === 'add' ? 'Add New Outstanding Student' : `Edit Student: ${formData.name}`}
         </h4>
-        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

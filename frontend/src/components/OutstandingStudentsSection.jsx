@@ -27,29 +27,26 @@ export default function OutstandingStudentsSection() {
     return grade ? grade.label : gradeCode;
   };
 
-  // Improved getImageUrl function for robust path handling
+  // Improved function to handle image URLs
   const getImageUrl = (path) => {
     if (!path) return null;
     
-    // If it's already a full URL, return it as is
+    // Direct URL case (from updated controller)
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
     
-    // Handle paths that start with /storage or storage
-    if (path.startsWith('/storage/')) {
-      return path;
-    } else if (path.startsWith('storage/')) {
-      return `/${path}`;
+    // Handle both storage/path format and /storage/path format
+    const pathWithoutLeadingSlash = path.startsWith('/') ? path.substring(1) : path;
+    
+    if (pathWithoutLeadingSlash.includes('storage/')) {
+      // Extract the part after 'storage/'
+      const pathAfterStorage = pathWithoutLeadingSlash.split('storage/')[1];
+      return `${window.location.origin}/storage/${pathAfterStorage}`;
     }
     
-    // For any other path format, ensure it has correct path format
-    const cleanPath = path.replace(/^\/+/, '');
-    if (cleanPath.includes('student_photos')) {
-      return `/${cleanPath}`;
-    }
-    
-    return `/storage/${cleanPath}`;
+    // Default case - just prepend with origin
+    return `${window.location.origin}/${pathWithoutLeadingSlash}`;
   };
 
   useEffect(() => {
@@ -57,7 +54,6 @@ export default function OutstandingStudentsSection() {
       try {
         setLoading(true);
         const response = await axios.get("/api/outstanding-students");
-        console.log("Fetched students data:", response.data); // Debug log
         setStudents(response.data);
         setLoading(false);
       } catch (err) {
@@ -80,6 +76,12 @@ export default function OutstandingStudentsSection() {
   const closeStudentDetails = () => {
     setActiveStudent(null);
     document.body.style.overflow = "auto"; // Re-enable scrolling
+  };
+
+  // Helper function to create placeholder image when image fails to load
+  const createPlaceholderImage = (name) => {
+    const initial = name && name.length > 0 ? name.charAt(0).toUpperCase() : "?";
+    return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='36' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3E${initial}%3C/text%3E%3C/svg%3E`;
   };
 
   if (loading) {
@@ -158,10 +160,8 @@ export default function OutstandingStudentsSection() {
                     alt={student.name}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      console.error("Image load error:", e);
                       e.target.onerror = null;
-                      e.target.src =
-                        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='14' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
+                      e.target.src = createPlaceholderImage(student.name);
                     }}
                   />
                 ) : (
@@ -244,10 +244,8 @@ export default function OutstandingStudentsSection() {
                       alt={activeStudent.name}
                       className="w-full h-auto rounded-lg object-cover"
                       onError={(e) => {
-                        console.error("Modal image load error:", e);
                         e.target.onerror = null;
-                        e.target.src =
-                          "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='14' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
+                        e.target.src = createPlaceholderImage(activeStudent.name);
                       }}
                     />
                   ) : (

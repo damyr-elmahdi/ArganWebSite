@@ -31,7 +31,9 @@ import QuizCreator from "./components/QuizCreator";
 import Contact from "./pages/Contact";
 import ResourceViewer from "./components/ResourceViewer";
 import StudentRegistrationForm from "./pages/StudentRegistrationForm";
-import ClubDetails from "./components/ClubDetails"; 
+import ClubDetails from "./components/ClubDetails";
+import Exams from "./pages/Exams";
+import AdminExamsManagement from "./components/AdminExamsManagement";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
@@ -90,7 +92,7 @@ export default function App() {
     foundedYear: "2014",
     operatingHours: "8:30 - 18:30",
     foundingDate: "09/01/2014",
-  }
+  };
 
   return (
     <AuthProvider>
@@ -113,12 +115,22 @@ export default function App() {
             <Route path="/library" element={<Library />} />
             <Route path="/clubs/:id" element={<ClubDetails />} />
             <Route path="/login" element={<Login />} />
-
             {/* <Route path="/register" element={<Register />} /> */}
-            {/* Password reset routes */}
+            <Route path="/exams" element={<Exams />} />
             <Route
               path="/contact"
               element={<Contact schoolInfo={schoolInfo} />}
+            />
+            {/* Admin exam management route */}
+            <Route
+              path="/admin/exams"
+              element={
+                <ProtectedRoute allowedRoles={["administrator", "teacher"]}>
+                  <div className="flex-grow container mx-auto px-4 py-8">
+                    <AdminExamsManagement />
+                  </div>
+                </ProtectedRoute>
+              }
             />
             {/* Student Registration Form */}
             <Route
