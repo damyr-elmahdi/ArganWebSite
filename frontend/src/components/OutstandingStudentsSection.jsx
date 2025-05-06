@@ -24,6 +24,14 @@ export default function OutstandingStudentsSection() {
     return grade ? grade.label : gradeCode;
   };
 
+  // Helper function to format image URL
+  const getImageUrl = (path) => {
+    if (!path) return null;
+    
+    // If path already starts with /, just return it, otherwise prepend /
+    return path.startsWith('/') ? path : `/${path}`;
+  };
+
   useEffect(() => {
     const fetchOutstandingStudents = async () => {
       try {
@@ -114,9 +122,14 @@ export default function OutstandingStudentsSection() {
               <div className="relative h-48">
                 {student.photo_path ? (
                   <img 
-                    src={`/${student.photo_path}`} 
+                    src={getImageUrl(student.photo_path)}
                     alt={student.name} 
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      console.error("Image load error:", e);
+                      e.target.onerror = null;
+                      e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='14' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
+                    }}
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-r from-[#165b9f] to-[#18bebc] flex items-center justify-center">
@@ -169,9 +182,14 @@ export default function OutstandingStudentsSection() {
                 <div className="md:w-1/3 mb-4 md:mb-0">
                   {activeStudent.photo_path ? (
                     <img 
-                      src={`/${activeStudent.photo_path}`} 
+                      src={getImageUrl(activeStudent.photo_path)}
                       alt={activeStudent.name} 
                       className="w-full h-auto rounded-lg object-cover"
+                      onError={(e) => {
+                        console.error("Modal image load error:", e);
+                        e.target.onerror = null;
+                        e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='14' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
+                      }}
                     />
                   ) : (
                     <div className="w-full h-64 bg-gradient-to-r from-[#165b9f] to-[#18bebc] rounded-lg flex items-center justify-center">
@@ -211,6 +229,23 @@ export default function OutstandingStudentsSection() {
                         among our outstanding students with a remarkable score of {activeStudent.mark}/20.
                       </p>
                     </div>
+                    
+                    <div className="pt-4">
+                      <h3 className="font-semibold text-gray-800 mb-2">Academic Honors</h3>
+                      <p className="text-gray-600">
+                        Students with exceptional performance like {activeStudent.name} are recognized by our institution
+                        for their dedication to academic excellence and commitment to their education.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 pt-4 border-t border-gray-200">
+                    <button
+                      onClick={closeStudentDetails}
+                      className="px-4 py-2 bg-[#18bebc] text-white rounded-md hover:bg-teal-700 transition-colors"
+                    >
+                      Close
+                    </button>
                   </div>
                 </div>
               </div>
