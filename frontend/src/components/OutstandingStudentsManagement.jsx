@@ -151,7 +151,11 @@ export default function OutstandingStudentsManagement() {
     
     // Show current photo if available
     if (student.photo_path) {
-      setPhotoPreview(`/${student.photo_path}`);
+      // Remove the leading slash if it exists
+      const photoUrl = student.photo_path.startsWith('/') 
+        ? student.photo_path 
+        : `/${student.photo_path}`;
+      setPhotoPreview(photoUrl);
     } else {
       setPhotoPreview(null);
     }
@@ -185,6 +189,14 @@ export default function OutstandingStudentsManagement() {
         setError(null);
       }, 3000);
     }
+  };
+
+  // Helper function to format image URL
+  const getImageUrl = (path) => {
+    if (!path) return null;
+    
+    // If path already starts with /, just return it, otherwise prepend /
+    return path.startsWith('/') ? path : `/${path}`;
   };
 
   return (
@@ -404,9 +416,14 @@ export default function OutstandingStudentsManagement() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       {student.photo_path ? (
                         <img 
-                          src={`/${student.photo_path}`} 
+                          src={getImageUrl(student.photo_path)}
                           alt={student.name} 
                           className="h-12 w-12 rounded-full object-cover"
+                          onError={(e) => {
+                            console.error("Image load error:", e);
+                            e.target.onerror = null;
+                            e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='14' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
+                          }}
                         />
                       ) : (
                         <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
