@@ -23,6 +23,7 @@
     "react-feather": "^2.0.10",
     "react-google-recaptcha": "^3.1.0",
     "react-router-dom": "^7.5.0",
+    "react-toastify": "^11.0.5",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

@@ -1,24 +1,26 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function OutstandingStudentsManagement() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   
   // Form states
-  const [formMode, setFormMode] = useState('add'); // 'add' or 'edit'
+  const [formMode, setFormMode] = useState('add');
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [formData, setFormData] = useState({
     student_id: '',
     name: '',
     grade: '',
-    mark: '',
+    mark: 0,
     achievement: ''
   });
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [errors, setErrors] = useState({});
+  
   const fileInputRef = useRef(null);
 
   // Grade options for Moroccan system
@@ -43,26 +45,59 @@ export default function OutstandingStudentsManagement() {
       setLoading(true);
       const response = await axios.get('/api/outstanding-students');
       setStudents(response.data);
-      setLoading(false);
     } catch (err) {
       console.error('Error fetching outstanding students:', err);
-      setError('Failed to load outstanding students');
+      toast.error('Failed to load outstanding students');
+    } finally {
       setLoading(false);
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value
-    });
+    }));
+    
+    // Clear validation error when field is edited
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: null
+      }));
+    }
   };
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Validate file type and size
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      const maxSize = 2 * 1024 * 1024; // 2MB
+      
+      if (!validTypes.includes(file.type)) {
+        setErrors(prev => ({
+          ...prev,
+          photo: 'Please select a valid image file (JPG, JPEG, or PNG)'
+        }));
+        return;
+      }
+      
+      if (file.size > maxSize) {
+        setErrors(prev => ({
+          ...prev,
+          photo: 'Image file size must be less than 2MB'
+        }));
+        return;
+      }
+      
       setPhoto(file);
+      setErrors(prev => ({
+        ...prev,
+        photo: null
+      }));
+      
       // Create preview URL
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -77,22 +112,40 @@ export default function OutstandingStudentsManagement() {
       student_id: '',
       name: '',
       grade: '',
-      mark: '',
+      mark: 0,
       achievement: ''
     });
     setPhoto(null);
     setPhotoPreview(null);
+    setErrors({});
+    
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    
     setFormMode('add');
     setSelectedStudent(null);
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.grade) newErrors.grade = 'Grade is required';
+    if (formData.mark < 0 || formData.mark > 20) newErrors.mark = 'Mark must be between 0 and 20';
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!validateForm()) return;
+    
     try {
+      setSubmitting(true);
+      
       // Create FormData object for file upload
       const submitData = new FormData();
       Object.keys(formData).forEach(key => {
@@ -104,37 +157,38 @@ export default function OutstandingStudentsManagement() {
         submitData.append('photo', photo);
       }
       
+      let response;
+      
       if (formMode === 'add') {
-        await axios.post('/api/outstanding-students', submitData, {
+        response = await axios.post('/api/outstanding-students', submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
-        setSuccess('Student added successfully!');
+        toast.success('Student added successfully!');
       } else {
-        await axios.post(`/api/outstanding-students/${selectedStudent.id}?_method=PUT`, submitData, {
+        response = await axios.post(`/api/outstanding-students/${selectedStudent.id}?_method=PUT`, submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
-        setSuccess('Student updated successfully!');
+        toast.success('Student updated successfully!');
       }
       
-      fetchOutstandingStudents();
+      await fetchOutstandingStudents();
       resetForm();
       
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        setSuccess(null);
-      }, 3000);
     } catch (err) {
       console.error('Error saving outstanding student:', err);
-      setError('Failed to save student. Please try again.');
       
-      // Clear error message after 3 seconds
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
+      if (err.response && err.response.data && err.response.data.errors) {
+        // Handle validation errors from the server
+        setErrors(err.response.data.errors);
+      } else {
+        toast.error('Failed to save student. Please try again.');
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -151,43 +205,39 @@ export default function OutstandingStudentsManagement() {
     
     // Show current photo if available
     if (student.photo_path) {
-      // Remove the leading slash if it exists
+      // Ensure proper URL formatting
       const photoUrl = student.photo_path.startsWith('/') 
         ? student.photo_path 
         : `/${student.photo_path}`;
+        
       setPhotoPreview(photoUrl);
     } else {
       setPhotoPreview(null);
     }
     
     setPhoto(null);
+    setErrors({});
+    
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to remove this student?')) {
+  const handleDelete = async (id, name) => {
+    if (!window.confirm(`Are you sure you want to remove ${name} from outstanding students?`)) {
       return;
     }
     
     try {
+      setSubmitting(true);
       await axios.delete(`/api/outstanding-students/${id}`);
-      setSuccess('Student removed successfully!');
-      fetchOutstandingStudents();
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        setSuccess(null);
-      }, 3000);
+      toast.success('Student removed successfully');
+      await fetchOutstandingStudents();
     } catch (err) {
       console.error('Error deleting outstanding student:', err);
-      setError('Failed to remove student. Please try again.');
-      
-      // Clear error message after 3 seconds
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
+      toast.error('Failed to remove student. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -195,7 +245,7 @@ export default function OutstandingStudentsManagement() {
   const getImageUrl = (path) => {
     if (!path) return null;
     
-    // If path already starts with /, just return it, otherwise prepend /
+    // Ensure proper URL formatting
     return path.startsWith('/') ? path : `/${path}`;
   };
 
@@ -210,23 +260,10 @@ export default function OutstandingStudentsManagement() {
         </p>
       </div>
 
-      {/* Success or Error Messages */}
-      {success && (
-        <div className="mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700">
-          <p>{success}</p>
-        </div>
-      )}
-      
-      {error && (
-        <div className="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
-          <p>{error}</p>
-        </div>
-      )}
-
       {/* Form for adding/editing outstanding students */}
       <div className="border-t border-gray-200 p-4">
         <h4 className="text-md font-medium text-gray-900 mb-4">
-          {formMode === 'add' ? 'Add New Outstanding Student' : 'Edit Student'}
+          {formMode === 'add' ? 'Add New Outstanding Student' : `Edit Student: ${formData.name}`}
         </h4>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -241,14 +278,19 @@ export default function OutstandingStudentsManagement() {
                 id="student_id"
                 value={formData.student_id}
                 onChange={handleInputChange}
-                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md"
+                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+                  errors.student_id ? 'border-red-500' : ''
+                }`}
                 placeholder="Enter student ID"
               />
+              {errors.student_id && (
+                <p className="mt-1 text-sm text-red-600">{errors.student_id}</p>
+              )}
             </div>
             
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Name
+                Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -257,14 +299,19 @@ export default function OutstandingStudentsManagement() {
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md"
+                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+                  errors.name ? 'border-red-500' : ''
+                }`}
                 placeholder="Enter student name"
               />
+              {errors.name && (
+                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+              )}
             </div>
             
             <div>
               <label htmlFor="grade" className="block text-sm font-medium text-gray-700">
-                Grade/Class
+                Grade/Class <span className="text-red-500">*</span>
               </label>
               <select
                 name="grade"
@@ -272,7 +319,9 @@ export default function OutstandingStudentsManagement() {
                 value={formData.grade}
                 onChange={handleInputChange}
                 required
-                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md"
+                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+                  errors.grade ? 'border-red-500' : ''
+                }`}
               >
                 <option value="">Select a grade</option>
                 {gradeOptions.map((option) => (
@@ -281,11 +330,14 @@ export default function OutstandingStudentsManagement() {
                   </option>
                 ))}
               </select>
+              {errors.grade && (
+                <p className="mt-1 text-sm text-red-600">{errors.grade}</p>
+              )}
             </div>
             
             <div>
               <label htmlFor="mark" className="block text-sm font-medium text-gray-700">
-                Mark (/20)
+                Mark (/20) <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -297,9 +349,14 @@ export default function OutstandingStudentsManagement() {
                 value={formData.mark}
                 onChange={handleInputChange}
                 required
-                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md"
+                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+                  errors.mark ? 'border-red-500' : ''
+                }`}
                 placeholder="Enter mark (out of 20)"
               />
+              {errors.mark && (
+                <p className="mt-1 text-sm text-red-600">{errors.mark}</p>
+              )}
             </div>
             
             <div className="md:col-span-2">
@@ -312,9 +369,14 @@ export default function OutstandingStudentsManagement() {
                 id="achievement"
                 value={formData.achievement}
                 onChange={handleInputChange}
-                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md"
+                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+                  errors.achievement ? 'border-red-500' : ''
+                }`}
                 placeholder="Enter specific achievement or leave blank"
               />
+              {errors.achievement && (
+                <p className="mt-1 text-sm text-red-600">{errors.achievement}</p>
+              )}
             </div>
             
             {/* Photo Upload Field */}
@@ -329,6 +391,10 @@ export default function OutstandingStudentsManagement() {
                       src={photoPreview} 
                       alt="Preview" 
                       className="h-24 w-24 object-cover rounded-md" 
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='14' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
+                      }}
                     />
                   </div>
                 )}
@@ -339,14 +405,19 @@ export default function OutstandingStudentsManagement() {
                   id="photo"
                   accept="image/jpeg,image/png,image/jpg"
                   onChange={handlePhotoChange}
-                  className="mt-1 block w-full text-sm text-gray-500
+                  className={`mt-1 block w-full text-sm text-gray-500
                     file:mr-4 file:py-2 file:px-4
                     file:rounded-md file:border-0
                     file:text-sm file:font-medium
                     file:bg-[#18bebc] file:text-white
-                    hover:file:bg-teal-700"
+                    hover:file:bg-teal-700 ${
+                      errors.photo ? 'border border-red-500 rounded-md' : ''
+                    }`}
                 />
               </div>
+              {errors.photo && (
+                <p className="mt-1 text-sm text-red-600">{errors.photo}</p>
+              )}
               <p className="mt-2 text-sm text-gray-500">
                 JPG, JPEG or PNG. Max 2MB.
               </p>
@@ -356,15 +427,29 @@ export default function OutstandingStudentsManagement() {
           <div className="flex space-x-3">
             <button
               type="submit"
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+              disabled={submitting}
+              className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 ${
+                submitting ? 'opacity-75 cursor-not-allowed' : ''
+              }`}
             >
-              {formMode === 'add' ? 'Add Student' : 'Update Student'}
+              {submitting ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {formMode === 'add' ? 'Adding...' : 'Updating...'}
+                </>
+              ) : (
+                formMode === 'add' ? 'Add Student' : 'Update Student'
+              )}
             </button>
             
             {formMode === 'edit' && (
               <button
                 type="button"
                 onClick={resetForm}
+                disabled={submitting}
                 className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
               >
                 Cancel
@@ -379,9 +464,13 @@ export default function OutstandingStudentsManagement() {
         <h4 className="text-md font-medium text-gray-900 mb-4">Current Outstanding Students</h4>
         
         {loading ? (
-          <p className="text-gray-500">Loading students...</p>
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#18bebc]"></div>
+          </div>
         ) : students.length === 0 ? (
-          <p className="text-gray-500">No outstanding students added yet.</p>
+          <div className="bg-gray-50 p-4 text-center rounded-md">
+            <p className="text-gray-500">No outstanding students added yet.</p>
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
@@ -411,57 +500,66 @@ export default function OutstandingStudentsManagement() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {students.map((student) => (
-                  <tr key={student.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {student.photo_path ? (
-                        <img 
-                          src={getImageUrl(student.photo_path)}
-                          alt={student.name} 
-                          className="h-12 w-12 rounded-full object-cover"
-                          onError={(e) => {
-                            console.error("Image load error:", e);
-                            e.target.onerror = null;
-                            e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='14' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
-                          }}
-                        />
-                      ) : (
-                        <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
-                          <span className="text-gray-500 text-xs">No photo</span>
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.student_id || 'N/A'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {student.name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.grade}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.mark}/20
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.achievement || 'N/A'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleEdit(student)}
-                        className="text-[#18bebc] hover:text-teal-900 mr-3"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(student.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {students.map((student) => {
+                  // Find grade label
+                  const gradeObj = gradeOptions.find(g => g.value === student.grade);
+                  const gradeLabel = gradeObj ? gradeObj.label : student.grade;
+                  
+                  return (
+                    <tr key={student.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {student.photo_path ? (
+                          <img 
+                            src={getImageUrl(student.photo_path)}
+                            alt={student.name} 
+                            className="h-12 w-12 rounded-full object-cover border border-gray-200"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='14' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
+                            }}
+                          />
+                        ) : (
+                          <div className="h-12 w-12 rounded-full bg-gradient-to-r from-[#165b9f] to-[#18bebc] flex items-center justify-center">
+                            <span className="text-white font-bold">{student.name.charAt(0)}</span>
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {student.student_id || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {student.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {gradeLabel}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <span className="px-2 py-1 bg-[#18bebc] bg-opacity-10 text-[#18bebc] rounded-md font-medium">
+                          {student.mark}/20
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-xs truncate">
+                        {student.achievement || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={() => handleEdit(student)}
+                          disabled={submitting}
+                          className="text-[#18bebc] hover:text-teal-900 mr-3 transition-colors"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(student.id, student.name)}
+                          disabled={submitting}
+                          className="text-red-600 hover:text-red-900 transition-colors"
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

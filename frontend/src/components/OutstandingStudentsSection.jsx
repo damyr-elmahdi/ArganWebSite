@@ -27,20 +27,24 @@ export default function OutstandingStudentsSection() {
     return grade ? grade.label : gradeCode;
   };
 
-// Helper function to correctly format image paths
-const getImageUrl = (path) => {
-  if (!path) return null;
-  
-  // Make sure path has a leading slash and doesn't have "storage/" duplicated
-  if (path.includes('storage/')) {
-    // If path already includes storage/, ensure it has a leading slash
-    return path.startsWith('/') ? path : `/${path}`;
-  } else {
-    // If path doesn't include storage/, correctly format it
-    const trimmedPath = path.startsWith('/') ? path.substring(1) : path;
-    return `/storage/${trimmedPath}`;
-  }
-};
+  const getImageUrl = (path) => {
+    if (!path) return null;
+    
+    // If it's already a full URL, return it as is
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    
+    // Remove any leading slashes
+    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    
+    // Make sure the path has the correct storage prefix
+    if (cleanPath.startsWith('storage/')) {
+      return `/${cleanPath}`;
+    } else {
+      return `/storage/${cleanPath}`;
+    }
+  };
 
   useEffect(() => {
     const fetchOutstandingStudents = async () => {
