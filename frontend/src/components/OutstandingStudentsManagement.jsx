@@ -229,7 +229,7 @@ export default function OutstandingStudentsManagement() {
                 id="student_id"
                 value={formData.student_id}
                 onChange={handleInputChange}
-                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md"
                 placeholder="Enter student ID"
               />
             </div>
@@ -245,7 +245,7 @@ export default function OutstandingStudentsManagement() {
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md"
                 placeholder="Enter student name"
               />
             </div>
@@ -260,7 +260,7 @@ export default function OutstandingStudentsManagement() {
                 value={formData.grade}
                 onChange={handleInputChange}
                 required
-                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md"
               >
                 <option value="">Select a grade</option>
                 {gradeOptions.map((option) => (
@@ -285,7 +285,7 @@ export default function OutstandingStudentsManagement() {
                 value={formData.mark}
                 onChange={handleInputChange}
                 required
-                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md"
                 placeholder="Enter mark (out of 20)"
               />
             </div>
@@ -300,7 +300,7 @@ export default function OutstandingStudentsManagement() {
                 id="achievement"
                 value={formData.achievement}
                 onChange={handleInputChange}
-                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                className="mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md"
                 placeholder="Enter specific achievement or leave blank"
               />
             </div>

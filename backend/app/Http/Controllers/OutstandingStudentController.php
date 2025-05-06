@@ -6,9 +6,34 @@ use App\Models\OutstandingStudent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class OutstandingStudentController extends Controller
 {
+    /**
+     * Create the controller instance and ensure storage directory exists.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        // Ensure the student_photos directory exists
+        $this->ensureDirectoryExists('public/student_photos');
+    }
+    
+    /**
+     * Ensure that the given directory exists in storage.
+     *
+     * @param  string  $path
+     * @return void
+     */
+    protected function ensureDirectoryExists($path)
+    {
+        if (!Storage::exists($path)) {
+            Storage::makeDirectory($path);
+        }
+    }
+
     /**
      * Display a listing of the outstanding students.
      *
@@ -34,7 +59,7 @@ class OutstandingStudentController extends Controller
             'mark' => 'required|numeric|min:0|max:20',
             'student_id' => 'nullable|string|max:255',
             'achievement' => 'nullable|string|max:255',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Add this line for photo validation
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
         ]);
 
         if ($validator->fails()) {
@@ -44,7 +69,8 @@ class OutstandingStudentController extends Controller
         // Handle photo upload if provided
         $photoPath = null;
         if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
-            $photoName = time() . '_' . $request->file('photo')->getClientOriginalName();
+            // Generate a unique filename to avoid collisions
+            $photoName = time() . '_' . uniqid() . '_' . $request->file('photo')->getClientOriginalName();
             $photoPath = $request->file('photo')->storeAs('public/student_photos', $photoName);
             // Convert storage path to URL path
             $photoPath = str_replace('public/', 'storage/', $photoPath);
@@ -104,8 +130,8 @@ class OutstandingStudentController extends Controller
                 }
             }
             
-            // Upload new photo
-            $photoName = time() . '_' . $request->file('photo')->getClientOriginalName();
+            // Upload new photo with a unique filename
+            $photoName = time() . '_' . uniqid() . '_' . $request->file('photo')->getClientOriginalName();
             $photoPath = $request->file('photo')->storeAs('public/student_photos', $photoName);
             // Convert storage path to URL path
             $photoPath = str_replace('public/', 'storage/', $photoPath);

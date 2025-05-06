@@ -5,6 +5,7 @@ export default function OutstandingStudentsSection() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeStudent, setActiveStudent] = useState(null);
 
   // Function to get the label for a grade code
   const getGradeLabel = (gradeCode) => {
@@ -40,12 +41,26 @@ export default function OutstandingStudentsSection() {
     fetchOutstandingStudents();
   }, []);
 
+  // Function to open student details modal
+  const openStudentDetails = (student) => {
+    setActiveStudent(student);
+    document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+  };
+
+  // Function to close student details modal
+  const closeStudentDetails = () => {
+    setActiveStudent(null);
+    document.body.style.overflow = 'auto'; // Re-enable scrolling
+  };
+
   if (loading) {
     return (
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Outstanding Students</h2>
-          <div className="text-center py-8">Loading outstanding students...</div>
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#18bebc]"></div>
+          </div>
         </div>
       </section>
     );
@@ -56,7 +71,15 @@ export default function OutstandingStudentsSection() {
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Outstanding Students</h2>
-          <div className="text-center py-8 text-red-500">{error}</div>
+          <div className="text-center py-8 text-red-500">
+            <p>{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 px-4 py-2 bg-[#18bebc] text-white rounded-md hover:bg-teal-700 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
         </div>
       </section>
     );
@@ -86,22 +109,116 @@ export default function OutstandingStudentsSection() {
             <div 
               key={student.id} 
               className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105"
+              onClick={() => openStudentDetails(student)}
             >
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold text-gray-800">{student.name}</h3>
+              <div className="relative h-48">
+                {student.photo_path ? (
+                  <img 
+                    src={`/${student.photo_path}`} 
+                    alt={student.name} 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-r from-[#165b9f] to-[#18bebc] flex items-center justify-center">
+                    <span className="text-white text-xl font-bold">{student.name.charAt(0)}</span>
+                  </div>
+                )}
+                <div className="absolute top-0 right-0 m-2">
                   <span className="bg-[#18bebc] text-white text-sm font-medium px-3 py-1 rounded-full">
                     {student.mark}/20
                   </span>
                 </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">{student.name}</h3>
                 <p className="text-gray-600">{getGradeLabel(student.grade)}</p>
-                <p className="text-gray-500 text-sm mt-2">{student.achievement || 'Performance académique exceptionnelle'}</p>
+                <p className="text-gray-500 text-sm mt-2">
+                  {student.achievement || 'Performance académique exceptionnelle'}
+                </p>
+                <button 
+                  className="mt-4 text-[#18bebc] hover:text-teal-700 text-sm font-medium flex items-center"
+                >
+                  View Details
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
               </div>
               <div className="bg-gradient-to-r from-[#165b9f] to-[#18bebc] h-2"></div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Student Details Modal */}
+      {activeStudent && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-end p-2">
+              <button 
+                onClick={closeStudentDetails}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="px-6 pb-6">
+              <div className="flex flex-col md:flex-row">
+                <div className="md:w-1/3 mb-4 md:mb-0">
+                  {activeStudent.photo_path ? (
+                    <img 
+                      src={`/${activeStudent.photo_path}`} 
+                      alt={activeStudent.name} 
+                      className="w-full h-auto rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-64 bg-gradient-to-r from-[#165b9f] to-[#18bebc] rounded-lg flex items-center justify-center">
+                      <span className="text-white text-4xl font-bold">{activeStudent.name.charAt(0)}</span>
+                    </div>
+                  )}
+
+                  <div className="mt-4 text-center">
+                    <span className="bg-[#18bebc] text-white text-lg font-medium px-4 py-2 rounded-full">
+                      {activeStudent.mark}/20
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="md:w-2/3 md:pl-6">
+                  <h2 className="text-2xl font-bold text-gray-800 mb-2">{activeStudent.name}</h2>
+
+                  <div className="space-y-3">
+                    {activeStudent.student_id && (
+                      <p className="text-gray-700">
+                        <span className="font-semibold">Student ID:</span> {activeStudent.student_id}
+                      </p>
+                    )}
+                    
+                    <p className="text-gray-700">
+                      <span className="font-semibold">Grade/Class:</span> {getGradeLabel(activeStudent.grade)}
+                    </p>
+                    
+                    <p className="text-gray-700">
+                      <span className="font-semibold">Achievement:</span> {activeStudent.achievement || 'Performance académique exceptionnelle'}
+                    </p>
+
+                    <div className="pt-4">
+                      <h3 className="font-semibold text-gray-800 mb-2">Recognition</h3>
+                      <p className="text-gray-600">
+                        This student has demonstrated exceptional academic performance, earning recognition
+                        among our outstanding students with a remarkable score of {activeStudent.mark}/20.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-gradient-to-r from-[#165b9f] to-[#18bebc] h-2"></div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

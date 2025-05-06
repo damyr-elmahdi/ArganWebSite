@@ -20,8 +20,10 @@ export default function ClubManagement() {
     user_id: '',
     role: 'member'
   });
+  const [userSearchInput, setUserSearchInput] = useState('');
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [showUserSuggestions, setShowUserSuggestions] = useState(false);
   const [availableUsers, setAvailableUsers] = useState([]);
-  const [loadingUsers, setLoadingUsers] = useState(false);
   
   const navigate = useNavigate();
 
@@ -66,7 +68,6 @@ export default function ClubManagement() {
   // Fetch all users for member assignment
   const fetchUsers = async () => {
     try {
-      setLoadingUsers(true);
       const response = await axios.get('/api/users');
       
       // Check if response is paginated
@@ -85,9 +86,37 @@ export default function ClubManagement() {
       console.error('Error fetching users:', err);
       setError('Failed to load users');
       setAvailableUsers([]);
-    } finally {
-      setLoadingUsers(false);
     }
+  };
+
+  // Handle user search and filtering
+  const handleUserSearch = (e) => {
+    const searchTerm = e.target.value;
+    setUserSearchInput(searchTerm);
+    
+    if (searchTerm.trim() === '') {
+      setFilteredUsers([]);
+      setShowUserSuggestions(false);
+      return;
+    }
+    
+    const filtered = availableUsers.filter(user => 
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      user.id.toString().includes(searchTerm)
+    );
+    
+    setFilteredUsers(filtered);
+    setShowUserSuggestions(true);
+  };
+
+  // Select a user from the suggestions
+  const selectUser = (user) => {
+    setMemberFormData({
+      ...memberFormData,
+      user_id: user.id
+    });
+    setUserSearchInput(user.name);
+    setShowUserSuggestions(false);
   };
 
   // Handle club selection
@@ -122,6 +151,9 @@ export default function ClubManagement() {
         user_id: '',
         role: 'member'
       });
+      setUserSearchInput('');
+      setFilteredUsers([]);
+      setShowUserSuggestions(false);
     }
   };
 
@@ -204,6 +236,13 @@ export default function ClubManagement() {
   // Add a member to the selected club
   const handleAddMember = async (e) => {
     e.preventDefault();
+    
+    // Validate that a valid user was selected
+    if (!memberFormData.user_id) {
+      setError('Please select a valid user from the suggestions');
+      return;
+    }
+    
     try {
       const response = await axios.post(`/api/clubs/${selectedClub.id}/members`, memberFormData);
       setClubMembers(prev => [...prev, response.data]);
@@ -488,27 +527,39 @@ export default function ClubManagement() {
                 </div>
               ) : modalType === 'member' ? (
                 <form onSubmit={handleAddMember}>
-                  <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="user_id">
+                  <div className="mb-4 relative">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="user_search">
                       User
                     </label>
-                    <select
-                      id="user_id"
-                      name="user_id"
-                      value={memberFormData.user_id}
-                      onChange={handleMemberInputChange}
+                    <input
+                      type="text"
+                      id="user_search"
+                      name="user_search"
+                      value={userSearchInput}
+                      onChange={handleUserSearch}
+                      onFocus={() => userSearchInput.trim() !== '' && setShowUserSuggestions(true)}
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      placeholder="Search for user by name or ID"
                       required
-                    >
-                      <option value="">Select a user</option>
-                      {loadingUsers ? (
-                        <option disabled>Loading users...</option>
-                      ) : (
-                        availableUsers.map(user => (
-                          <option key={user.id} value={user.id}>{user.name}</option>
-                        ))
-                      )}
-                    </select>
+                    />
+                    {showUserSuggestions && filteredUsers.length > 0 && (
+                      <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md max-h-48 overflow-y-auto border border-gray-300">
+                        {filteredUsers.map(user => (
+                          <div 
+                            key={user.id} 
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                            onClick={() => selectUser(user)}
+                          >
+                            {user.name} (ID: {user.id})
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {showUserSuggestions && filteredUsers.length === 0 && (
+                      <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-300">
+                        <div className="px-4 py-2 text-gray-500">No users found</div>
+                      </div>
+                    )}
                   </div>
                   <div className="mb-6">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
