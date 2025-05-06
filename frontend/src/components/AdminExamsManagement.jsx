@@ -6,6 +6,7 @@ import {
   updateExam, 
   deleteExam 
 } from '../services/examService';
+import { getSubjects } from '../services/subjectService';
 import { format } from 'date-fns';
 import axios from 'axios';
 
@@ -38,15 +39,25 @@ const AdminExamsManagement = () => {
         
         // Fetch exams
         const { data: examsData } = await getExams();
-        setExams(examsData);
+        setExams(examsData.data || []);
         
         // Fetch teachers
-        const teachersResponse = await axios.get('/api/teachers');
-        setTeachers(teachersResponse.data);
+        try {
+          const teachersResponse = await axios.get('/api/teachers');
+          setTeachers(teachersResponse.data);
+        } catch (teacherError) {
+          console.error('Failed to fetch teachers:', teacherError);
+          setTeachers([]);
+        }
         
         // Fetch subjects
-        const subjectsResponse = await axios.get('/api/subjects');
-        setSubjects(subjectsResponse.data);
+        try {
+          const { data: subjectsData } = await getSubjects();
+          setSubjects(subjectsData);
+        } catch (subjectError) {
+          console.error('Failed to fetch subjects:', subjectError);
+          setSubjects([]);
+        }
         
         setLoading(false);
       } catch (err) {
@@ -76,7 +87,7 @@ const AdminExamsManagement = () => {
       
       // Refresh exam list
       const { data } = await getExams();
-      setExams(data);
+      setExams(data.data || []);
       
       // Close modal and reset form
       setShowModal(false);
@@ -110,7 +121,7 @@ const AdminExamsManagement = () => {
         await deleteExam(id);
         // Refresh exam list
         const { data } = await getExams();
-        setExams(data);
+        setExams(data.data || []);
       } catch (err) {
         setError('Failed to delete exam. Please try again later.');
         console.error(err);
@@ -206,6 +217,21 @@ const AdminExamsManagement = () => {
         </div>
       )}
 
+      {/* Missing API warning */}
+      {(subjects.length === 0 || teachers.length === 0) && (
+        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
+          <p className="font-bold">Warning</p>
+          <p>
+            {subjects.length === 0 && teachers.length === 0 
+              ? "Subjects and teachers data couldn't be loaded. Some functions may be limited."
+              : subjects.length === 0 
+                ? "Subjects data couldn't be loaded. Some functions may be limited."
+                : "Teachers data couldn't be loaded. Some functions may be limited."
+            }
+          </p>
+        </div>
+      )}
+
       {filteredExams.length === 0 ? (
         <div className="text-center py-10 bg-gray-50 rounded-lg">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -254,7 +280,7 @@ const AdminExamsManagement = () => {
                     {examsByDate[date].map((exam) => (
                       <tr key={exam.id} className="hover:bg-gray-50">
                         <td className="py-4 px-4 text-sm text-gray-900 border-b">
-                          <div className="font-medium">{exam.subject.name}</div>
+                          <div className="font-medium">{exam.subject?.name || 'Unknown Subject'}</div>
                           <div className="text-gray-500 text-xs mt-1">{exam.title}</div>
                         </td>
                         <td className="py-4 px-4 text-sm text-gray-900 border-b">
@@ -262,7 +288,7 @@ const AdminExamsManagement = () => {
                           {format(new Date(`2021-01-01T${exam.end_time}`), ' h:mm a')}
                         </td>
                         <td className="py-4 px-4 text-sm text-gray-900 border-b">
-                          {exam.teacher.user?.name || 'Unknown Teacher'}
+                          {exam.teacher?.user?.name || 'Unknown Teacher'}
                         </td>
                         <td className="py-4 px-4 text-sm text-gray-900 border-b">
                           {exam.class_name}
@@ -436,6 +462,7 @@ const AdminExamsManagement = () => {
                     onChange={handleInputChange}
                     required
                     className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    disabled={teachers.length === 0}
                   >
                     <option value="">Select Teacher</option>
                     {teachers.map((teacher) => (
@@ -444,6 +471,9 @@ const AdminExamsManagement = () => {
                       </option>
                     ))}
                   </select>
+                  {teachers.length === 0 && (
+                    <p className="text-red-500 text-xs mt-1">Teacher data not available. Please check the API.</p>
+                  )}
                 </div>
 
                 {/* Subject */}
@@ -458,6 +488,7 @@ const AdminExamsManagement = () => {
                     onChange={handleInputChange}
                     required
                     className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    disabled={subjects.length === 0}
                   >
                     <option value="">Select Subject</option>
                     {subjects.map((subject) => (
@@ -466,6 +497,9 @@ const AdminExamsManagement = () => {
                       </option>
                     ))}
                   </select>
+                  {subjects.length === 0 && (
+                    <p className="text-red-500 text-xs mt-1">Subject data not available. Please check the API.</p>
+                  )}
                 </div>
 
                 {/* Room */}
@@ -515,6 +549,7 @@ const AdminExamsManagement = () => {
                 <button
                   type="submit"
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                  disabled={subjects.length === 0 || teachers.length === 0}
                 >
                   {editingExam ? 'Update Exam' : 'Create Exam'}
                 </button>

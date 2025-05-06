@@ -25,8 +25,7 @@ use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubMemberController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\OutstandingStudentController;
-
-
+use App\Http\Controllers\SubjectController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -66,11 +65,19 @@ Route::get('/exams/{exam}', [ExamController::class, 'show']);
 Route::get('/exams/classes/list', [ExamController::class, 'getClasses']);
 Route::get('/exams/class/{class}', [ExamController::class, 'getExamsByClass']);
 
+// Public subject routes
+Route::get('/subjects', [SubjectController::class, 'index']);
+Route::get('/subjects/{subject}', [SubjectController::class, 'show']);
+
 // Protected exam routes (for administrators and teachers)
 Route::middleware(['auth:sanctum', 'role:administrator,teacher'])->group(function () {
     Route::post('/exams', [ExamController::class, 'store']);
     Route::put('/exams/{exam}', [ExamController::class, 'update']);
     Route::delete('/exams/{exam}', [ExamController::class, 'destroy']);
+
+    Route::post('/subjects', [SubjectController::class, 'store']);
+    Route::put('/subjects/{subject}', [SubjectController::class, 'update']);
+    Route::delete('/subjects/{subject}', [SubjectController::class, 'destroy']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
