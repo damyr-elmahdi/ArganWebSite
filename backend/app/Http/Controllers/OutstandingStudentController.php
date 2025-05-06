@@ -43,6 +43,9 @@ class OutstandingStudentController extends Controller
 
         $data = $request->only(['student_id', 'name', 'grade', 'mark', 'achievement']);
         
+        // Convert mark to float explicitly
+        $data['mark'] = (float) $data['mark'];
+        
         // Handle photo upload
         if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
             $photo = $request->file('photo');
@@ -95,6 +98,9 @@ class OutstandingStudentController extends Controller
         }
 
         $data = $request->only(['student_id', 'name', 'grade', 'mark', 'achievement']);
+        
+        // Convert mark to float explicitly
+        $data['mark'] = (float) $data['mark'];
         
         // Handle photo upload
         if ($request->hasFile('photo') && $request->file('photo')->isValid()) {

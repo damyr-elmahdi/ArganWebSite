@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('student_id')->nullable();
             $table->string('name');
             $table->string('grade');
-            $table->integer('mark');
+            $table->decimal('mark', 5, 2); 
             $table->string('achievement')->nullable();
             $table->string('photo_path')->nullable(); 
             $table->timestamps();

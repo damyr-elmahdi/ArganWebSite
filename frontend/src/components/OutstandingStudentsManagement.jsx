@@ -55,10 +55,21 @@ export default function OutstandingStudentsManagement() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Special handling for mark to ensure it's treated as a float
+    if (name === 'mark') {
+      // Convert to float and handle empty string case
+      const floatValue = value === '' ? '' : parseFloat(value);
+      setFormData(prev => ({
+        ...prev,
+        [name]: floatValue
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
     
     // Clear validation error when field is edited
     if (errors[name]) {
@@ -132,7 +143,14 @@ export default function OutstandingStudentsManagement() {
     
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.grade) newErrors.grade = 'Grade is required';
-    if (formData.mark < 0 || formData.mark > 20) newErrors.mark = 'Mark must be between 0 and 20';
+    
+    // Validate mark as a float between 0 and 20
+    const mark = parseFloat(formData.mark);
+    if (isNaN(mark)) {
+      newErrors.mark = 'Mark must be a valid number';
+    } else if (mark < 0 || mark > 20) {
+      newErrors.mark = 'Mark must be between 0 and 20';
+    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -148,8 +166,15 @@ export default function OutstandingStudentsManagement() {
       
       // Create FormData object for file upload
       const submitData = new FormData();
-      Object.keys(formData).forEach(key => {
-        submitData.append(key, formData[key]);
+      
+      // Ensure mark is properly formatted as a float
+      const formDataToSubmit = {
+        ...formData,
+        mark: parseFloat(formData.mark)
+      };
+      
+      Object.keys(formDataToSubmit).forEach(key => {
+        submitData.append(key, formDataToSubmit[key]);
       });
       
       // Add photo to form data if exists
@@ -199,7 +224,7 @@ export default function OutstandingStudentsManagement() {
       student_id: student.student_id || '',
       name: student.name,
       grade: student.grade,
-      mark: student.mark,
+      mark: parseFloat(student.mark), // Ensure mark is treated as a float
       achievement: student.achievement || ''
     });
     
@@ -256,6 +281,13 @@ export default function OutstandingStudentsManagement() {
   const createPlaceholderImage = (name) => {
     const initial = name && name.length > 0 ? name.charAt(0).toUpperCase() : "?";
     return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='36' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3E${initial}%3C/text%3E%3C/svg%3E`;
+  };
+
+  // Format mark display to handle float values properly
+  const formatMark = (mark) => {
+    const numMark = parseFloat(mark);
+    // Display with 2 decimal places if it has a fractional part
+    return numMark % 1 === 0 ? numMark : numMark.toFixed(2);
   };
 
   return (
@@ -353,7 +385,7 @@ export default function OutstandingStudentsManagement() {
                 id="mark"
                 min="0"
                 max="20"
-                step="0.25"
+                step="0.01" // Changed from 0.25 to 0.01 to allow more precise float values
                 value={formData.mark}
                 onChange={handleInputChange}
                 required
@@ -543,7 +575,7 @@ export default function OutstandingStudentsManagement() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                         <span className="px-2 py-1 bg-[#18bebc] bg-opacity-10 text-[#18bebc] rounded-md font-medium">
-                          {student.mark}/20
+                          {formatMark(student.mark)}/20
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-xs truncate">

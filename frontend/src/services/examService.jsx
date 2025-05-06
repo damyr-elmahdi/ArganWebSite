@@ -1,12 +1,14 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+// Use a default API URL if the environment variable is not available
+const API_URL = window.env?.REACT_APP_API_URL || '/api';
 
 export const getExams = async (filters = {}) => {
   try {
     let url = `${API_URL}/exams`;
     const queryParams = new URLSearchParams();
     
+    // Add filters to query parameters
     if (filters.class) queryParams.append('class', filters.class);
     if (filters.start_date) queryParams.append('start_date', filters.start_date);
     if (filters.end_date) queryParams.append('end_date', filters.end_date);

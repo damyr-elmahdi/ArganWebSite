@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import StudentQuizTab from '../components/StudentQuizTab';
+import StudentExamsWidget from '../components/StudentExamsWidget';
 
 export default function StudentDashboard() {
   const [user, setUser] = useState(null);
@@ -180,96 +181,105 @@ export default function StudentDashboard() {
           {/* Profile Tab */}
           {activeTab === 'profile' && (
             <>
-              <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                <div className="px-4 py-5 sm:px-6">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Student Information</h3>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and academic information.</p>
-                </div>
-                <div className="border-t border-gray-200">
-                  <dl>
-                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Full name</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.name}</dd>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div className="px-4 py-5 sm:px-6">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">Student Information</h3>
+                      <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and academic information.</p>
                     </div>
-                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Email address</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.email}</dd>
+                    <div className="border-t border-gray-200">
+                      <dl>
+                        <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500">Full name</dt>
+                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.name}</dd>
+                        </div>
+                        <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500">Email address</dt>
+                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.email}</dd>
+                        </div>
+                        <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500">Student ID</dt>
+                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.student?.student_id}</dd>
+                        </div>
+                        <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500">Grade</dt>
+                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.student?.grade}</dd>
+                        </div>
+                      </dl>
                     </div>
-                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Student ID</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.student?.student_id}</dd>
-                    </div>
-                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Grade</dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.student?.grade}</dd>
-                    </div>
-                  </dl>
-                </div>
-              </div>
-              
-              {/* Show latest 3 unread notifications if any */}
-              {getUnreadNotificationsCount() > 0 && (
-                <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
-                  <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
-                    <div>
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">
-                        Teacher Absence Notifications
-                      </h3>
-                      <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                        Recent teacher absence announcements.
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => setActiveTab('notifications')}
-                      className="text-sm text-[#18bebc] hover:text-teal-400"
-                    >
-                      View all
-                    </button>
                   </div>
-                  <div className="border-t border-gray-200">
-                    <ul className="divide-y divide-gray-200">
-                      {absenceNotifications
-                        .filter(notification => !notification.is_read)
-                        .slice(0, 3)
-                        .map((notification) => (
-                          <li key={notification.id} className="px-4 py-4">
-                            <div className="flex justify-between">
-                              <div>
-                                <p className="text-sm font-medium text-gray-900">
-                                  Teacher {notification.teacher_name} will be absent
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                  From {new Date(notification.start_date).toLocaleDateString()} to {new Date(notification.end_date).toLocaleDateString()}
-                                </p>
-                                {notification.reason && (
-                                  <p className="mt-1 text-sm text-gray-500">
-                                    Reason: {notification.reason}
-                                  </p>
-                                )}
-                              </div>
-                              <button
-                                onClick={() => handleMarkAsRead(notification.id)}
-                                className="text-xs text-[#18bebc] hover:text-teal-400"
-                              >
-                                Mark as read
-                              </button>
-                            </div>
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
+                  
+                  {/* Show latest 3 unread notifications if any */}
+                  {getUnreadNotificationsCount() > 0 && (
+                    <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
+                      <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
+                        <div>
+                          <h3 className="text-lg leading-6 font-medium text-gray-900">
+                            Teacher Absence Notifications
+                          </h3>
+                          <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                            Recent teacher absence announcements.
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setActiveTab('notifications')}
+                          className="text-sm text-[#18bebc] hover:text-teal-400"
+                        >
+                          View all
+                        </button>
+                      </div>
+                      <div className="border-t border-gray-200">
+                        <ul className="divide-y divide-gray-200">
+                          {absenceNotifications
+                            .filter(notification => !notification.is_read)
+                            .slice(0, 3)
+                            .map((notification) => (
+                              <li key={notification.id} className="px-4 py-4">
+                                <div className="flex justify-between">
+                                  <div>
+                                    <p className="text-sm font-medium text-gray-900">
+                                      Teacher {notification.teacher_name} will be absent
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                      From {new Date(notification.start_date).toLocaleDateString()} to {new Date(notification.end_date).toLocaleDateString()}
+                                    </p>
+                                    {notification.reason && (
+                                      <p className="mt-1 text-sm text-gray-500">
+                                        Reason: {notification.reason}
+                                      </p>
+                                    )}
+                                  </div>
+                                  <button
+                                    onClick={() => handleMarkAsRead(notification.id)}
+                                    className="text-xs text-[#18bebc] hover:text-teal-400"
+                                  >
+                                    Mark as read
+                                  </button>
+                                </div>
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-              
-              {/* Placeholder for courses section */}
-              <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
-                <div className="px-4 py-5 sm:px-6">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Your Courses</h3>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">Current courses and progress.</p>
-                </div>
-                <div className="border-t border-gray-200">
-                  <div className="px-4 py-5">
-                    <p className="text-sm text-gray-500">You are not enrolled in any courses yet.</p>
+                
+                {/* StudentExamsWidget - Added to the right column */}
+                <div className="lg:col-span-1">
+                  <StudentExamsWidget className="mb-6" />
+                  
+                  {/* Placeholder for courses section */}
+                  <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div className="px-4 py-5 sm:px-6">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">Your Courses</h3>
+                      <p className="mt-1 max-w-2xl text-sm text-gray-500">Current courses and progress.</p>
+                    </div>
+                    <div className="border-t border-gray-200">
+                      <div className="px-4 py-5">
+                        <p className="text-sm text-gray-500">You are not enrolled in any courses yet.</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
