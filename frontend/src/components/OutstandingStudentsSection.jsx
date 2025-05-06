@@ -24,12 +24,13 @@ export default function OutstandingStudentsSection() {
     return grade ? grade.label : gradeCode;
   };
 
-  // Helper function to format image URL
+  // FIXED: Helper function to normalize image paths
   const getImageUrl = (path) => {
     if (!path) return null;
     
-    // If path already starts with /, just return it, otherwise prepend /
-    return path.startsWith('/') ? path : `/${path}`;
+    // Remove starting slash if it exists, then add one to ensure consistent format
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+    return normalizedPath;
   };
 
   useEffect(() => {
@@ -116,7 +117,7 @@ export default function OutstandingStudentsSection() {
           {students.map((student) => (
             <div 
               key={student.id} 
-              className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105"
+              className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 cursor-pointer"
               onClick={() => openStudentDetails(student)}
             >
               <div className="relative h-48">
@@ -229,23 +230,6 @@ export default function OutstandingStudentsSection() {
                         among our outstanding students with a remarkable score of {activeStudent.mark}/20.
                       </p>
                     </div>
-                    
-                    <div className="pt-4">
-                      <h3 className="font-semibold text-gray-800 mb-2">Academic Honors</h3>
-                      <p className="text-gray-600">
-                        Students with exceptional performance like {activeStudent.name} are recognized by our institution
-                        for their dedication to academic excellence and commitment to their education.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6 pt-4 border-t border-gray-200">
-                    <button
-                      onClick={closeStudentDetails}
-                      className="px-4 py-2 bg-[#18bebc] text-white rounded-md hover:bg-teal-700 transition-colors"
-                    >
-                      Close
-                    </button>
                   </div>
                 </div>
               </div>
