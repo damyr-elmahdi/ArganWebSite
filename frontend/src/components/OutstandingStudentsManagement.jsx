@@ -284,11 +284,12 @@ export default function OutstandingStudentsManagement() {
   };
 
   // Format mark display to handle float values properly
-  const formatMark = (mark) => {
-    const numMark = parseFloat(mark);
-    // Display with 2 decimal places if it has a fractional part
-    return numMark % 1 === 0 ? numMark : numMark.toFixed(2);
-  };
+// Format mark display to handle float values properly
+const formatMark = (mark) => {
+  const numMark = parseFloat(mark);
+  // Display with 2 decimal places if it has a fractional part
+  return numMark % 1 === 0 ? numMark.toFixed(0) : numMark.toFixed(2);
+};
 
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg p-4">

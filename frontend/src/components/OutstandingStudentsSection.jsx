@@ -6,6 +6,7 @@ export default function OutstandingStudentsSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeStudent, setActiveStudent] = useState(null);
+  const [rankedStudents, setRankedStudents] = useState([]);
 
   // Function to get the label for a grade code
   const getGradeLabel = (gradeCode) => {
@@ -49,12 +50,29 @@ export default function OutstandingStudentsSection() {
     return `${window.location.origin}/${pathWithoutLeadingSlash}`;
   };
 
+  // Format mark to always show decimal places when they exist
+  const formatMark = (mark) => {
+    const numMark = parseFloat(mark);
+    // Display with 2 decimal places if it has a fractional part
+    return numMark % 1 === 0 ? numMark.toFixed(0) : numMark.toFixed(2);
+  };
+
   useEffect(() => {
     const fetchOutstandingStudents = async () => {
       try {
         setLoading(true);
         const response = await axios.get("/api/outstanding-students");
+        
+        // Students are already sorted by mark in descending order from the backend
         setStudents(response.data);
+        
+        // Create ranked students array with rank property
+        const ranked = response.data.map((student, index) => ({
+          ...student,
+          rank: index + 1 // Add rank based on position (1-based)
+        }));
+        
+        setRankedStudents(ranked);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching outstanding students:", err);
@@ -82,6 +100,48 @@ export default function OutstandingStudentsSection() {
   const createPlaceholderImage = (name) => {
     const initial = name && name.length > 0 ? name.charAt(0).toUpperCase() : "?";
     return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='36' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3E${initial}%3C/text%3E%3C/svg%3E`;
+  };
+
+  // Render stars based on student rank
+  const renderStars = (rank) => {
+    if (rank === 1) {
+      // First place - one big star
+      return (
+        <div className="absolute -top-3 -right-3 transform rotate-12">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-12 h-12 text-yellow-500 fill-current">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+        </div>
+      );
+    } else if (rank === 2) {
+      // Second place - two medium stars
+      return (
+        <div className="absolute -top-2 -right-2 flex">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-8 h-8 text-gray-300 fill-current">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-8 h-8 -ml-4 text-yellow-400 fill-current">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+        </div>
+      );
+    } else if (rank === 3) {
+      // Third place - three small stars
+      return (
+        <div className="absolute -top-2 -right-3 flex">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6 text-yellow-300 fill-current">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6 -ml-2 text-yellow-300 fill-current">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6 -ml-2 text-yellow-300 fill-current">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+        </div>
+      );
+    }
+    return null;
   };
 
   if (loading) {
@@ -120,7 +180,7 @@ export default function OutstandingStudentsSection() {
     );
   }
 
-  if (students.length === 0) {
+  if (rankedStudents.length === 0) {
     return (
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -146,63 +206,76 @@ export default function OutstandingStudentsSection() {
           achievements.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {students.map((student) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {rankedStudents.map((student) => (
             <div
               key={student.id}
               className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 cursor-pointer"
               onClick={() => openStudentDetails(student)}
             >
-              <div className="relative h-48">
-                {student.photo_path ? (
-                  <img
-                    src={getImageUrl(student.photo_path)}
-                    alt={student.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = createPlaceholderImage(student.name);
-                    }}
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-r from-[#165b9f] to-[#18bebc] flex items-center justify-center">
-                    <span className="text-white text-xl font-bold">
-                      {student.name.charAt(0)}
-                    </span>
-                  </div>
-                )}
-                <div className="absolute top-0 right-0 m-2">
-                  <span className="bg-[#18bebc] text-white text-sm font-medium px-3 py-1 rounded-full">
-                    {student.mark}/20
-                  </span>
-                </div>
-              </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-2">
-                  {student.name}
-                </h3>
-                <p className="text-gray-600">{getGradeLabel(student.grade)}</p>
-                <p className="text-gray-500 text-sm mt-2">
-                  {student.achievement ||
-                    "Performance académique exceptionnelle"}
-                </p>
-                <button className="mt-4 text-[#18bebc] hover:text-teal-700 text-sm font-medium flex items-center">
-                  View Details
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 ml-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
+                <div className="flex flex-col items-center">
+                  {/* Circular Image with Stars */}
+                  <div className="relative mb-4">
+                    {student.photo_path ? (
+                      <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#18bebc] relative">
+                        <img
+                          src={getImageUrl(student.photo_path)}
+                          alt={student.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = createPlaceholderImage(student.name);
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-32 h-32 rounded-full bg-gradient-to-r from-[#165b9f] to-[#18bebc] flex items-center justify-center border-4 border-[#18bebc]">
+                        <span className="text-white text-3xl font-bold">
+                          {student.name.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    
+                    {/* Render stars based on rank */}
+                    {renderStars(student.rank)}
+                    
+                    {/* Circular rank badge */}
+                    <div className="absolute -bottom-2 -right-2 bg-[#18bebc] text-white text-sm font-bold w-8 h-8 flex items-center justify-center rounded-full border-2 border-white">
+                      {student.rank}
+                    </div>
+                  </div>
+                  
+                  <span className="bg-[#18bebc] text-white text-sm font-medium px-3 py-1 rounded-full mb-3">
+                    {formatMark(student.mark)}/20
+                  </span>
+                  
+                  <h3 className="text-xl font-bold text-center text-gray-800 mb-2">
+                    {student.name}
+                  </h3>
+                  <p className="text-gray-600 text-center">{getGradeLabel(student.grade)}</p>
+                  <p className="text-gray-500 text-sm mt-2 text-center">
+                    {student.achievement ||
+                      "Performance académique exceptionnelle"}
+                  </p>
+                  <button className="mt-4 text-[#18bebc] hover:text-teal-700 text-sm font-medium flex items-center">
+                    View Details
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 ml-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
               <div className="bg-gradient-to-r from-[#165b9f] to-[#18bebc] h-2"></div>
             </div>
@@ -237,28 +310,41 @@ export default function OutstandingStudentsSection() {
             </div>
             <div className="px-6 pb-6">
               <div className="flex flex-col md:flex-row">
-                <div className="md:w-1/3 mb-4 md:mb-0">
-                  {activeStudent.photo_path ? (
-                    <img
-                      src={getImageUrl(activeStudent.photo_path)}
-                      alt={activeStudent.name}
-                      className="w-full h-auto rounded-lg object-cover"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = createPlaceholderImage(activeStudent.name);
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-64 bg-gradient-to-r from-[#165b9f] to-[#18bebc] rounded-lg flex items-center justify-center">
-                      <span className="text-white text-4xl font-bold">
-                        {activeStudent.name.charAt(0)}
-                      </span>
+                <div className="md:w-1/3 mb-4 md:mb-0 flex flex-col items-center">
+                  {/* Circular image with stars in modal */}
+                  <div className="relative mb-4">
+                    {activeStudent.photo_path ? (
+                      <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-[#18bebc]">
+                        <img
+                          src={getImageUrl(activeStudent.photo_path)}
+                          alt={activeStudent.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = createPlaceholderImage(activeStudent.name);
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-40 h-40 rounded-full bg-gradient-to-r from-[#165b9f] to-[#18bebc] flex items-center justify-center border-4 border-[#18bebc]">
+                        <span className="text-white text-5xl font-bold">
+                          {activeStudent.name.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    
+                    {/* Render stars based on rank in modal */}
+                    {renderStars(activeStudent.rank)}
+                    
+                    {/* Rank badge */}
+                    <div className="absolute -bottom-2 -right-2 bg-[#18bebc] text-white text-md font-bold w-10 h-10 flex items-center justify-center rounded-full border-2 border-white">
+                      {activeStudent.rank}
                     </div>
-                  )}
+                  </div>
 
                   <div className="mt-4 text-center">
                     <span className="bg-[#18bebc] text-white text-lg font-medium px-4 py-2 rounded-full">
-                      {activeStudent.mark}/20
+                      {formatMark(activeStudent.mark)}/20
                     </span>
                   </div>
                 </div>
@@ -293,8 +379,8 @@ export default function OutstandingStudentsSection() {
                       </h3>
                       <p className="text-gray-600">
                         This student has demonstrated exceptional academic
-                        performance, earning recognition among our outstanding
-                        students with a remarkable score of {activeStudent.mark}
+                        performance, earning recognition as #{activeStudent.rank} among our outstanding
+                        students with a remarkable score of {formatMark(activeStudent.mark)}
                         /20.
                       </p>
                     </div>
