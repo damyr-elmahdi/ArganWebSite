@@ -23,7 +23,7 @@ use App\Http\Controllers\UserManagementController;
 
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubMemberController;
-
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\OutstandingStudentController;
 
 
@@ -58,6 +58,20 @@ Route::delete('/outstanding-students/{id}', [OutstandingStudentController::class
 Route::get('/clubs', [ClubController::class, 'index']);
 Route::get('/clubs/{club}', [ClubController::class, 'show']);
 Route::get('/clubs/{club}/members', [ClubController::class, 'members']);
+
+
+// Public exam routes
+Route::get('/exams', [ExamController::class, 'index']);
+Route::get('/exams/{exam}', [ExamController::class, 'show']);
+Route::get('/exams/classes/list', [ExamController::class, 'getClasses']);
+Route::get('/exams/class/{class}', [ExamController::class, 'getExamsByClass']);
+
+// Protected exam routes (for administrators and teachers)
+Route::middleware(['auth:sanctum', 'role:administrator,teacher'])->group(function () {
+    Route::post('/exams', [ExamController::class, 'store']);
+    Route::put('/exams/{exam}', [ExamController::class, 'update']);
+    Route::delete('/exams/{exam}', [ExamController::class, 'destroy']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     // Club management routes (admin only)

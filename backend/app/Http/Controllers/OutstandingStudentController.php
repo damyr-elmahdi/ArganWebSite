@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OutstandingStudent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;  // Add this for directory operations
 use Illuminate\Support\Facades\Validator;
 
 class OutstandingStudentController extends Controller
@@ -45,10 +46,16 @@ class OutstandingStudentController extends Controller
         
         // Handle photo upload
         if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+            // Ensure the directory exists
+            $directory = 'public/student_photos';
+            if (!Storage::exists($directory)) {
+                Storage::makeDirectory($directory);
+            }
+            
             $photo = $request->file('photo');
             $fileName = time() . '_' . $photo->getClientOriginalName();
-            $path = $photo->storeAs('public/student_photos', $fileName);
-            $data['photo_path'] = 'storage/student_photos/' . $fileName;
+            $path = $photo->storeAs($directory, $fileName);
+            $data['photo_path'] = Storage::url('student_photos/' . $fileName);
         }
 
         $student = OutstandingStudent::create($data);
@@ -96,9 +103,15 @@ class OutstandingStudentController extends Controller
         
         // Handle photo upload
         if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+            // Ensure the directory exists
+            $directory = 'public/student_photos';
+            if (!Storage::exists($directory)) {
+                Storage::makeDirectory($directory);
+            }
+            
             // Delete old photo if it exists
             if ($student->photo_path) {
-                $oldPath = str_replace('storage/', 'public/', $student->photo_path);
+                $oldPath = str_replace('/storage/', 'public/', $student->photo_path);
                 if (Storage::exists($oldPath)) {
                     Storage::delete($oldPath);
                 }
@@ -106,8 +119,8 @@ class OutstandingStudentController extends Controller
             
             $photo = $request->file('photo');
             $fileName = time() . '_' . $photo->getClientOriginalName();
-            $path = $photo->storeAs('public/student_photos', $fileName);
-            $data['photo_path'] = 'storage/student_photos/' . $fileName;
+            $path = $photo->storeAs($directory, $fileName);
+            $data['photo_path'] = Storage::url('student_photos/' . $fileName);
         }
 
         $student->update($data);
@@ -127,7 +140,7 @@ class OutstandingStudentController extends Controller
         
         // Delete the photo if it exists
         if ($student->photo_path) {
-            $path = str_replace('storage/', 'public/', $student->photo_path);
+            $path = str_replace('/storage/', 'public/', $student->photo_path);
             if (Storage::exists($path)) {
                 Storage::delete($path);
             }

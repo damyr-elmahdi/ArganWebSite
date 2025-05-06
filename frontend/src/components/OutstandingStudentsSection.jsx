@@ -27,6 +27,7 @@ export default function OutstandingStudentsSection() {
     return grade ? grade.label : gradeCode;
   };
 
+  // Improved getImageUrl function for robust path handling
   const getImageUrl = (path) => {
     if (!path) return null;
     
@@ -35,15 +36,20 @@ export default function OutstandingStudentsSection() {
       return path;
     }
     
-    // Remove any leading slashes
-    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
-    
-    // Make sure the path has the correct storage prefix
-    if (cleanPath.startsWith('storage/')) {
-      return `/${cleanPath}`;
-    } else {
-      return `/storage/${cleanPath}`;
+    // Handle paths that start with /storage or storage
+    if (path.startsWith('/storage/')) {
+      return path;
+    } else if (path.startsWith('storage/')) {
+      return `/${path}`;
     }
+    
+    // For any other path format, ensure it has correct path format
+    const cleanPath = path.replace(/^\/+/, '');
+    if (cleanPath.includes('student_photos')) {
+      return `/${cleanPath}`;
+    }
+    
+    return `/storage/${cleanPath}`;
   };
 
   useEffect(() => {
@@ -51,6 +57,7 @@ export default function OutstandingStudentsSection() {
       try {
         setLoading(true);
         const response = await axios.get("/api/outstanding-students");
+        console.log("Fetched students data:", response.data); // Debug log
         setStudents(response.data);
         setLoading(false);
       } catch (err) {
