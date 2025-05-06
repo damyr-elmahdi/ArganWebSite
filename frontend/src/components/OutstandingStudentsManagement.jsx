@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 export default function OutstandingStudentsManagement() {
@@ -17,6 +17,9 @@ export default function OutstandingStudentsManagement() {
     mark: '',
     achievement: ''
   });
+  const [photo, setPhoto] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const fileInputRef = useRef(null);
 
   // Grade options for Moroccan system
   const gradeOptions = [
@@ -56,6 +59,19 @@ export default function OutstandingStudentsManagement() {
     });
   };
 
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPhoto(file);
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       student_id: '',
@@ -64,6 +80,11 @@ export default function OutstandingStudentsManagement() {
       mark: '',
       achievement: ''
     });
+    setPhoto(null);
+    setPhotoPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     setFormMode('add');
     setSelectedStudent(null);
   };
@@ -72,11 +93,30 @@ export default function OutstandingStudentsManagement() {
     e.preventDefault();
     
     try {
+      // Create FormData object for file upload
+      const submitData = new FormData();
+      Object.keys(formData).forEach(key => {
+        submitData.append(key, formData[key]);
+      });
+      
+      // Add photo to form data if exists
+      if (photo) {
+        submitData.append('photo', photo);
+      }
+      
       if (formMode === 'add') {
-        await axios.post('/api/outstanding-students', formData);
+        await axios.post('/api/outstanding-students', submitData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
         setSuccess('Student added successfully!');
       } else {
-        await axios.put(`/api/outstanding-students/${selectedStudent.id}`, formData);
+        await axios.post(`/api/outstanding-students/${selectedStudent.id}?_method=PUT`, submitData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
         setSuccess('Student updated successfully!');
       }
       
@@ -108,6 +148,18 @@ export default function OutstandingStudentsManagement() {
       mark: student.mark,
       achievement: student.achievement || ''
     });
+    
+    // Show current photo if available
+    if (student.photo_path) {
+      setPhotoPreview(`/${student.photo_path}`);
+    } else {
+      setPhotoPreview(null);
+    }
+    
+    setPhoto(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const handleDelete = async (id) => {
@@ -252,6 +304,41 @@ export default function OutstandingStudentsManagement() {
                 placeholder="Enter specific achievement or leave blank"
               />
             </div>
+            
+            {/* Photo Upload Field */}
+            <div className="md:col-span-2">
+              <label htmlFor="photo" className="block text-sm font-medium text-gray-700">
+                Student Photo (Optional)
+              </label>
+              <div className="mt-1 flex items-center space-x-6">
+                {photoPreview && (
+                  <div className="flex-shrink-0">
+                    <img 
+                      src={photoPreview} 
+                      alt="Preview" 
+                      className="h-24 w-24 object-cover rounded-md" 
+                    />
+                  </div>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  name="photo"
+                  id="photo"
+                  accept="image/jpeg,image/png,image/jpg"
+                  onChange={handlePhotoChange}
+                  className="mt-1 block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-medium
+                    file:bg-[#18bebc] file:text-white
+                    hover:file:bg-teal-700"
+                />
+              </div>
+              <p className="mt-2 text-sm text-gray-500">
+                JPG, JPEG or PNG. Max 2MB.
+              </p>
+            </div>
           </div>
           
           <div className="flex space-x-3">
@@ -289,6 +376,9 @@ export default function OutstandingStudentsManagement() {
               <thead className="bg-gray-50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Photo
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Student ID
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -311,6 +401,19 @@ export default function OutstandingStudentsManagement() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {students.map((student) => (
                   <tr key={student.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {student.photo_path ? (
+                        <img 
+                          src={`/${student.photo_path}`} 
+                          alt={student.name} 
+                          className="h-12 w-12 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
+                          <span className="text-gray-500 text-xs">No photo</span>
+                        </div>
+                      )}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {student.student_id || 'N/A'}
                     </td>

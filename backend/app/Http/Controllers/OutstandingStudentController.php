@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OutstandingStudent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class OutstandingStudentController extends Controller
 {
@@ -30,16 +31,30 @@ class OutstandingStudentController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'grade' => 'required|string|max:255',
-            'mark' => 'required|numeric|min:0|max:20', // Changed to max:20
+            'mark' => 'required|numeric|min:0|max:20',
             'student_id' => 'nullable|string|max:255',
             'achievement' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Add this line for photo validation
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $student = OutstandingStudent::create($request->all());
+        // Handle photo upload if provided
+        $photoPath = null;
+        if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+            $photoName = time() . '_' . $request->file('photo')->getClientOriginalName();
+            $photoPath = $request->file('photo')->storeAs('public/student_photos', $photoName);
+            // Convert storage path to URL path
+            $photoPath = str_replace('public/', 'storage/', $photoPath);
+        }
+
+        // Create student with photo path
+        $studentData = $request->except('photo');
+        $studentData['photo_path'] = $photoPath;
+        
+        $student = OutstandingStudent::create($studentData);
         return response()->json($student, 201);
     }
 
@@ -67,9 +82,10 @@ class OutstandingStudentController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'grade' => 'required|string|max:255',
-            'mark' => 'required|numeric|min:0|max:20', // Changed to max:20
+            'mark' => 'required|numeric|min:0|max:20',
             'student_id' => 'nullable|string|max:255',
             'achievement' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
         ]);
 
         if ($validator->fails()) {
@@ -77,7 +93,32 @@ class OutstandingStudentController extends Controller
         }
 
         $student = OutstandingStudent::findOrFail($id);
-        $student->update($request->all());
+        
+        // Handle photo upload if provided
+        if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+            // Delete old photo if exists
+            if ($student->photo_path) {
+                $oldPath = str_replace('storage/', 'public/', $student->photo_path);
+                if (Storage::exists($oldPath)) {
+                    Storage::delete($oldPath);
+                }
+            }
+            
+            // Upload new photo
+            $photoName = time() . '_' . $request->file('photo')->getClientOriginalName();
+            $photoPath = $request->file('photo')->storeAs('public/student_photos', $photoName);
+            // Convert storage path to URL path
+            $photoPath = str_replace('public/', 'storage/', $photoPath);
+            $student->photo_path = $photoPath;
+        }
+        
+        // Update other student data
+        $student->name = $request->name;
+        $student->grade = $request->grade;
+        $student->mark = $request->mark;
+        $student->student_id = $request->student_id;
+        $student->achievement = $request->achievement;
+        $student->save();
         
         return response()->json($student);
     }
@@ -91,6 +132,15 @@ class OutstandingStudentController extends Controller
     public function destroy($id)
     {
         $student = OutstandingStudent::findOrFail($id);
+        
+        // Delete photo if exists
+        if ($student->photo_path) {
+            $path = str_replace('storage/', 'public/', $student->photo_path);
+            if (Storage::exists($path)) {
+                Storage::delete($path);
+            }
+        }
+        
         $student->delete();
         
         return response()->json(null, 204);

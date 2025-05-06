@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('grade');
             $table->integer('mark');
             $table->string('achievement')->nullable();
+            $table->string('photo_path')->nullable(); 
             $table->timestamps();
         });
     }

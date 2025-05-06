@@ -20,5 +20,6 @@ class OutstandingStudent extends Model
         'grade',
         'mark',
         'achievement',
+        'photo_path',
     ];
 }
