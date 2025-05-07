@@ -73,28 +73,17 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-    // Exam period routes
-    Route::get('/exam-periods', [ExamController::class, 'getExamPeriods']);
-    Route::get('/exam-periods/{id}', [ExamController::class, 'getExamPeriodDetails']);
-    
-    // Reference data routes
-    Route::get('/exam/class-codes', [ExamController::class, 'getClassCodes']);
-    Route::get('/exam/subjects', [ExamController::class, 'getSubjects']);
-    
-    // Admin routes for exam management
-    Route::middleware('role:administrator')->group(function () {
-        // Teachers list for admin use
-        Route::get('/exam/teachers', [ExamController::class, 'getTeachersList']);
-        
-        // Exam periods CRUD
-        Route::post('/exam-periods', [ExamController::class, 'createExamPeriod']);
-        Route::put('/exam-periods/{id}', [ExamController::class, 'updateExamPeriod']);
-        Route::delete('/exam-periods/{id}', [ExamController::class, 'deleteExamPeriod']);
-        
-        // Exam schedules management
-        Route::post('/exam-periods/{examPeriodId}/schedules', [ExamController::class, 'updateExamSchedules']);
-        Route::delete('/exam-schedules/{id}', [ExamController::class, 'deleteExamSchedule']);
+Route::middleware(['auth:sanctum'])->group(function () {
+    // Routes accessible to both administrators and students
+    Route::get('/exams', [ExamController::class, 'index']);
+    Route::get('/exams/{id}', [ExamController::class, 'show']);
+    Route::get('/exams/{id}/download', [ExamController::class, 'download']);
+
+    // Routes accessible only to administrators
+    Route::middleware(['role:administrator'])->group(function () {
+        Route::post('/exams', [ExamController::class, 'store']);
+        Route::put('/exams/{id}', [ExamController::class, 'update']);
+        Route::delete('/exams/{id}', [ExamController::class, 'destroy']);
     });
 });
 // Public resource routes
