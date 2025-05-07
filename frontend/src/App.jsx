@@ -32,7 +32,7 @@ import Contact from "./pages/Contact";
 import ResourceViewer from "./components/ResourceViewer";
 import StudentRegistrationForm from "./pages/StudentRegistrationForm";
 import ClubDetails from "./components/ClubDetails";
-
+import ExamRoutes from "./routes/ExamRoutes";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
@@ -128,9 +128,17 @@ export default function App() {
             {/* Educational Resources route */}
             <Route path="/resources" element={<ResourceViewer />} />
 
-
-
-
+            {/* Exam routes */}
+            <Route
+              path="/exams/*"
+              element={
+                <ProtectedRoute>
+                  <Dashboard>
+                    <ExamRoutes />
+                  </Dashboard>
+                </ProtectedRoute>
+              }
+            />
 
             {/* Protected routes with role-based access */}
             <Route
