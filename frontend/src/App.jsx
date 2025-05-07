@@ -33,6 +33,35 @@ import ResourceViewer from "./components/ResourceViewer";
 import StudentRegistrationForm from "./pages/StudentRegistrationForm";
 import ClubDetails from "./components/ClubDetails";
 import ExamRoutes from "./routes/ExamRoutes";
+import axios from "axios";
+
+
+axios.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
+
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    // Handle 401 (Unauthorized) responses
+    if (error.response && error.response.status === 401) {
+      // Redirect to login or handle token expiration
+      console.log('Authentication failed - redirecting to login');
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");

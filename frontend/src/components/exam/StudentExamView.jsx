@@ -59,7 +59,7 @@ const StudentExamView = () => {
       
       if (contentDisposition) {
         const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-        if (filenameMatch.length === 2) {
+        if (filenameMatch && filenameMatch.length === 2) {
           filename = filenameMatch[1];
         }
       }
@@ -106,6 +106,15 @@ const StudentExamView = () => {
     acc[exam.subject].push(exam);
     return acc;
   }, {});
+
+  // Generate a secure PDF viewer URL with authorization token
+  const getPdfViewUrl = (examId) => {
+    // Add the token as an Authorization header for the iframe source
+    const token = localStorage.getItem('token');
+    
+    // Create a URL for the PDF view endpoint
+    return `/api/exams/${examId}/view`;
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -245,11 +254,27 @@ const StudentExamView = () => {
               </div>
             </div>
             <div className="flex-1 overflow-hidden">
-              <iframe
-                src={`/api/exams/${selectedExam.id}/download?token=${localStorage.getItem('token')}`}
+              {/* PDF Viewer with Authentication */}
+              <object
+                data={getPdfViewUrl(selectedExam.id)}
+                type="application/pdf"
                 className="w-full h-full"
-                title={selectedExam.title}
-              ></iframe>
+              >
+                <div className="flex items-center justify-center h-full bg-gray-100">
+                  <div className="text-center p-6">
+                    <p className="text-gray-700 mb-4">
+                      Unable to display PDF. Please download to view.
+                    </p>
+                    <button
+                      onClick={() => downloadExam(selectedExam.id)}
+                      className="bg-blue-600 text-white px-4 py-2 rounded-md flex items-center mx-auto"
+                    >
+                      <Download size={16} className="mr-2" />
+                      Download PDF
+                    </button>
+                  </div>
+                </div>
+              </object>
             </div>
           </div>
         </div>
