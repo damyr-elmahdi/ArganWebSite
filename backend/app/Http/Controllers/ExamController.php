@@ -30,7 +30,7 @@ class ExamController extends Controller
             }
             
             $exams = Exam::where('grade', $student->grade)
-                ->where('class_name', $student->class_name)
+                ->where('class_name', $student->class_code) // Changed from class_name to class_code to match the students table
                 ->latest()
                 ->get();
         } else {
@@ -91,7 +91,7 @@ class ExamController extends Controller
         // Check if user is authorized to view this exam
         if ($user->role === 'student') {
             $student = Student::where('user_id', $user->id)->first();
-            if (!$student || $student->grade !== $exam->grade || $student->class_name !== $exam->class_name) {
+            if (!$student || $student->grade !== $exam->grade || $student->class_code !== $exam->class_name) {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
         }
@@ -173,7 +173,7 @@ class ExamController extends Controller
         // Check if user is authorized to download this exam
         if ($user->role === 'student') {
             $student = Student::where('user_id', $user->id)->first();
-            if (!$student || $student->grade !== $exam->grade || $student->class_name !== $exam->class_name) {
+            if (!$student || $student->grade !== $exam->grade || $student->class_code !== $exam->class_name) {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
         }
