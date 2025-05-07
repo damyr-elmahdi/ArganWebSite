@@ -45,7 +45,6 @@ export function AuthProvider({ children }) {
   const login = async (email, password, remember = false) => {
     try {
       setLoading(true);
-      setError(null);
       const response = await axios.post("/api/login", {
         email,
         password,
@@ -54,11 +53,7 @@ export function AuthProvider({ children }) {
 
       // Save token and user data
       localStorage.setItem("token", response.data.token);
-      
-      // Only store user in localStorage if remember is true
-      if (remember) {
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-      }
+      localStorage.setItem("user", JSON.stringify(response.data.user));
 
       // Set auth header
       axios.defaults.headers.common[
@@ -67,15 +62,15 @@ export function AuthProvider({ children }) {
 
       // Update the user state
       setUser(response.data.user);
-      return true;
+      setError(null);
+      return response.data;
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
-      return false;
+      throw err;
     } finally {
       setLoading(false);
     }
   };
-
   const logout = async () => {
     try {
       setLoading(true);
@@ -85,7 +80,6 @@ export function AuthProvider({ children }) {
     } finally {
       // Clear everything regardless of API success
       localStorage.removeItem("token");
-      localStorage.removeItem("user");
       delete axios.defaults.headers.common["Authorization"];
       setUser(null);
       setLoading(false);
@@ -95,7 +89,6 @@ export function AuthProvider({ children }) {
   const register = async (userData) => {
     try {
       setLoading(true);
-      setError(null);
       const response = await axios.post("/api/register", userData);
 
       // Save token and user data
@@ -107,6 +100,7 @@ export function AuthProvider({ children }) {
         "Authorization"
       ] = `Bearer ${response.data.token}`;
 
+      setError(null);
       return response.data;
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
@@ -119,8 +113,6 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     isAuthenticated: !!user,
-    isAdmin: user?.role === 'administrator',
-    isStudent: user?.role === 'student',
     loading,
     error,
     login,
@@ -130,5 +122,3 @@ export function AuthProvider({ children }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
-export default AuthContext;

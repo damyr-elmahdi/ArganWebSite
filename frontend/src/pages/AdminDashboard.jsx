@@ -7,13 +7,14 @@ import AbsenceManagement from "../components/AbsenceManagement";
 import UserManagement from "../components/UserManagement";
 import ClubManagement from "../components/ClubManagement";
 import OutstandingStudentsManagement from "../components/OutstandingStudentsManagement";
+import ExamManagement from "../components/exam/ExamManagement"; // Import ExamManagement component
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("profile"); // 'profile', 'registrations', 'news', 'events', 'absences', 'users', 'clubs', 'outstanding'
+  const [activeTab, setActiveTab] = useState("profile"); // 'profile', 'registrations', 'news', 'events', 'absences', 'users', 'clubs', 'outstanding', 'exams'
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -196,6 +197,16 @@ export default function AdminDashboard() {
               onClick={() => setActiveTab("events")}
             >
               Events Management
+            </button>
+            <button
+              className={`${
+                activeTab === "exams"
+                  ? "border-teal-500 text-[#18bebc]"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              onClick={() => setActiveTab("exams")}
+            >
+              Exam Management
             </button>
             <button
               className={`${
@@ -397,6 +408,9 @@ export default function AdminDashboard() {
 
           {/* Events Management Tab */}
           {activeTab === "events" && <EventsManagement />}
+
+          {/* Exam Management Tab */}
+          {activeTab === "exams" && <ExamManagement />}
 
           {/* Teacher Absences Tab */}
           {activeTab === "absences" && <AbsenceManagement />}

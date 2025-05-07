@@ -133,9 +133,9 @@ export default function App() {
               path="/exams/*"
               element={
                 <ProtectedRoute>
-                  <Dashboard>
+        
                     <ExamRoutes />
-                  </Dashboard>
+               
                 </ProtectedRoute>
               }
             />
