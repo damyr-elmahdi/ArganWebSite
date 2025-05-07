@@ -1,92 +1,56 @@
 import { useState } from 'react';
+import { ImageUnity } from '../utils/ImageUnity';
 
-export default function ImageDebugger({ path }) {
-  const [showDebug, setShowDebug] = useState(false);
+export default function ImageDebugger() {
+  const [imagePath, setImagePath] = useState('/storage/student_photos/example.jpg');
+  const [resolvedUrl, setResolvedUrl] = useState('');
   
-  // Get various versions of the URL to see which one works
-  const getUrlVariations = (path) => {
-    if (!path) return [];
-    
-    const baseUrl = import.meta.env.VITE_API_URL || window.location.origin;
-    const variations = [];
-    
-    // Original path
-    variations.push({
-      label: "Original path",
-      url: path
-    });
-    
-    // With base URL
-    if (!path.startsWith('http')) {
-      variations.push({
-        label: "With base URL",
-        url: `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`
-      });
-    }
-    
-    // With /storage/ prefix
-    if (!path.includes('/storage/')) {
-      variations.push({
-        label: "With /storage/ prefix",
-        url: `${baseUrl}/storage/${path.startsWith('/') ? path.substring(1) : path}`
-      });
-    }
-    
-    // Without /storage/ prefix if it exists
-    if (path.includes('/storage/')) {
-      const pathAfterStorage = path.split('/storage/')[1];
-      variations.push({
-        label: "Without /storage/ prefix",
-        url: `${baseUrl}/${pathAfterStorage}`
-      });
-    }
-    
-    return variations;
+  const checkImage = () => {
+    const url = ImageUnity.getImageUrl(imagePath);
+    setResolvedUrl(url);
   };
-  
-  const variations = getUrlVariations(path);
-  
+
   return (
-    <div className="mb-4">
-      <button 
-        onClick={() => setShowDebug(!showDebug)} 
-        className="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
+    <div className="p-4 border rounded-lg shadow-md bg-white">
+      <h2 className="text-xl font-bold mb-4">Image Path Debugger</h2>
+      
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Enter image path:
+        </label>
+        <input
+          type="text"
+          value={imagePath}
+          onChange={(e) => setImagePath(e.target.value)}
+          className="w-full p-2 border rounded-md"
+        />
+      </div>
+      
+      <button
+        onClick={checkImage}
+        className="px-4 py-2 bg-teal-600 text-white rounded-md mb-4 hover:bg-teal-700"
       >
-        {showDebug ? 'Hide' : 'Debug'} Image Path
+        Resolve URL
       </button>
       
-      {showDebug && (
-        <div className="mt-2 p-3 bg-gray-100 rounded border border-gray-300 text-xs">
-          <div className="mb-2">
-            <strong>Original Path:</strong> {path || 'null'}
+      {resolvedUrl && (
+        <div className="mt-4">
+          <h3 className="font-semibold mb-2">Resolved URL:</h3>
+          <div className="p-2 bg-gray-100 rounded-md break-all mb-4">
+            {resolvedUrl}
           </div>
           
-          <div className="mb-2">
-            <strong>Base URL:</strong> {import.meta.env.VITE_API_URL || window.location.origin}
-          </div>
-          
-          <div className="mt-3 space-y-4">
-            {variations.map((v, i) => (
-              <div key={i} className="pb-2 border-b border-gray-200">
-                <div><strong>{v.label}:</strong> {v.url}</div>
-                <div className="mt-1">
-                  <img 
-                    src={v.url} 
-                    alt={`Test ${i}`} 
-                    className="h-8 w-8 object-cover rounded"
-                    onError={(e) => {
-                      e.target.style.border = '1px solid red';
-                      e.target.style.backgroundColor = '#ffe6e6';
-                      e.target.alt = 'Failed to load';
-                    }}
-                    onLoad={(e) => {
-                      e.target.style.border = '1px solid green';
-                      e.target.style.backgroundColor = '#e6ffe6';
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
+          <h3 className="font-semibold mb-2">Image preview:</h3>
+          <div className="border rounded-md p-2 bg-gray-50">
+            <img
+              src={resolvedUrl}
+              alt="Preview"
+              className="max-h-64 mx-auto"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = ImageUnity.createPlaceholder("Image Not Found");
+              }}
+            />
           </div>
         </div>
       )}
