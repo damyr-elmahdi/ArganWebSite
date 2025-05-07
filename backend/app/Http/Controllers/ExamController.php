@@ -38,8 +38,7 @@ class ExamController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'exam_date' => 'required|date',
             'number_of_exams' => 'required|integer|min:1|max:10',
             'is_active' => 'boolean',
         ]);
@@ -51,8 +50,7 @@ class ExamController extends Controller
         $examPeriod = ExamPeriod::create([
             'name' => $request->name,
             'description' => $request->description,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
+            'exam_date' => $request->exam_date,
             'number_of_exams' => $request->number_of_exams,
             'is_active' => $request->is_active ?? true,
             'created_by' => Auth::id(),
@@ -77,7 +75,6 @@ class ExamController extends Controller
                 ->where('class_code', $classCode)
                 ->with('teacher.user')
                 ->orderBy('exam_order')
-                ->orderBy('exam_date')
                 ->get();
                 
             return response()->json([
@@ -91,7 +88,6 @@ class ExamController extends Controller
             ->with('teacher.user')
             ->orderBy('class_code')
             ->orderBy('exam_order')
-            ->orderBy('exam_date')
             ->get()
             ->groupBy('class_code');
             
@@ -111,8 +107,7 @@ class ExamController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'exam_date' => 'required|date',
             'number_of_exams' => 'required|integer|min:1|max:10',
             'is_active' => 'boolean',
         ]);
@@ -149,7 +144,6 @@ class ExamController extends Controller
             'schedules.*.class_code' => 'required|string|max:10',
             'schedules.*.subject' => 'required|string|max:255',
             'schedules.*.teacher_id' => 'nullable|exists:teachers,id',
-            'schedules.*.exam_date' => 'required|date',
             'schedules.*.exam_order' => 'required|integer|min:1|max:' . $examPeriod->number_of_exams,
             'schedules.*.notes' => 'nullable|string',
         ]);
@@ -171,7 +165,7 @@ class ExamController extends Controller
                     ],
                     [
                         'teacher_id' => $scheduleData['teacher_id'],
-                        'exam_date' => $scheduleData['exam_date'],
+                        'exam_date' => $examPeriod->exam_date, // Use the exam period's date
                         'notes' => $scheduleData['notes'] ?? null,
                     ]
                 );

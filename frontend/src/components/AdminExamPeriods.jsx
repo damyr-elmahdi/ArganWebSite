@@ -24,8 +24,7 @@ const AdminExamPeriods = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    start_date: '',
-    end_date: '',
+    exam_date: '',
     number_of_exams: 3,
     is_active: true
   });
@@ -60,8 +59,7 @@ const AdminExamPeriods = () => {
     setFormData({
       name: '',
       description: '',
-      start_date: '',
-      end_date: '',
+      exam_date: '',
       number_of_exams: 3,
       is_active: true
     });
@@ -73,8 +71,7 @@ const AdminExamPeriods = () => {
     setFormData({
       name: period.name,
       description: period.description || '',
-      start_date: format(new Date(period.start_date), 'yyyy-MM-dd'),
-      end_date: format(new Date(period.end_date), 'yyyy-MM-dd'),
+      exam_date: format(new Date(period.exam_date), 'yyyy-MM-dd'),
       number_of_exams: period.number_of_exams,
       is_active: period.is_active
     });
@@ -178,8 +175,7 @@ const AdminExamPeriods = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
-                  <TableCell>Start Date</TableCell>
-                  <TableCell>End Date</TableCell>
+                  <TableCell>Exam Date</TableCell>
                   <TableCell>Number of Exams</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell align="center">Actions</TableCell>
@@ -189,8 +185,7 @@ const AdminExamPeriods = () => {
                 {examPeriods.map((period) => (
                   <TableRow key={period.id}>
                     <TableCell>{period.name}</TableCell>
-                    <TableCell>{format(new Date(period.start_date), 'MMM d, yyyy')}</TableCell>
-                    <TableCell>{format(new Date(period.end_date), 'MMM d, yyyy')}</TableCell>
+                    <TableCell>{format(new Date(period.exam_date), 'MMM d, yyyy')}</TableCell>
                     <TableCell>{period.number_of_exams}</TableCell>
                     <TableCell>
                       {period.is_active ? (
@@ -263,33 +258,20 @@ const AdminExamPeriods = () => {
                   margin="normal"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
-                  name="start_date"
-                  label="Start Date"
+                  name="exam_date"
+                  label="Exam Date"
                   type="date"
                   fullWidth
                   required
-                  value={formData.start_date}
+                  value={formData.exam_date}
                   onChange={handleInputChange}
                   margin="normal"
                   InputLabelProps={{ shrink: true }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  name="end_date"
-                  label="End Date"
-                  type="date"
-                  fullWidth
-                  required
-                  value={formData.end_date}
-                  onChange={handleInputChange}
-                  margin="normal"
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   name="number_of_exams"
                   label="Number of Exams"
@@ -300,9 +282,10 @@ const AdminExamPeriods = () => {
                   onChange={handleInputChange}
                   margin="normal"
                   inputProps={{ min: 1, max: 10 }}
+                  helperText="Number of exams to be conducted on this day"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -358,4 +341,4 @@ const AdminExamPeriods = () => {
     </Container>
   );
 }
-export default AdminExamPeriods ;
+export default AdminExamPeriods;

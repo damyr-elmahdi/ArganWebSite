@@ -12,16 +12,14 @@ class ExamPeriod extends Model
     protected $fillable = [
         'name',
         'description',
-        'start_date',
-        'end_date',
+        'exam_date',
         'number_of_exams',
         'is_active',
         'created_by'
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'exam_date' => 'date',
         'is_active' => 'boolean',
     ];
 
