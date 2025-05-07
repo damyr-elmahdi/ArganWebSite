@@ -1,9 +1,36 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { ImageUnity } from "../utils/ImageUnity";
 
 export default function OutstandingStudentsManagement() {
+  // New utility functions to replace ImageUnity
+  const getImageUrl = (path) => {
+    // If the path already includes the domain or is a full URL, return as is
+    if (path.startsWith('http') || path.startsWith('data:')) {
+      return path;
+    }
+    // Otherwise, return the path as is (assuming it's a relative path like /storage/...)
+    return path;
+  };
+
+  const createPlaceholder = (name) => {
+    // Return a data URL for a placeholder with the first letter of the name
+    const letter = name ? name.charAt(0).toUpperCase() : 'A';
+    // Create a simple SVG placeholder with the first letter
+    const svgContent = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+        <rect width="200" height="200" fill="#18bebc"/>
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="80" fill="white">${letter}</text>
+      </svg>
+    `;
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgContent)}`;
+  };
+
+  const formatMark = (mark) => {
+    // Format the mark to have one decimal place if it's not a whole number
+    return Number.isInteger(parseFloat(mark)) ? parseInt(mark) : parseFloat(mark).toFixed(1);
+  };
+
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -437,12 +464,12 @@ export default function OutstandingStudentsManagement() {
                 {photoPreview && (
                   <div className="flex-shrink-0">
                     <img 
-                      src={photoPreview.startsWith('data:') ? photoPreview : ImageUnity.getImageUrl(photoPreview)} 
+                      src={photoPreview.startsWith('data:') ? photoPreview : getImageUrl(photoPreview)} 
                       alt="Preview" 
                       className="h-24 w-24 object-cover rounded-md" 
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = ImageUnity.createPlaceholder(formData.name);
+                        e.target.src = createPlaceholder(formData.name);
                       }}
                     />
                   </div>
@@ -554,12 +581,12 @@ export default function OutstandingStudentsManagement() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         {student.photo_path ? (
                           <img 
-                            src={ImageUnity.getImageUrl(student.photo_path)}
+                            src={getImageUrl(student.photo_path)}
                             alt={student.name} 
                             className="h-12 w-12 rounded-full object-cover border border-gray-200"
                             onError={(e) => {
                               e.target.onerror = null;
-                              e.target.src = ImageUnity.createPlaceholder(student.name);
+                              e.target.src = createPlaceholder(student.name);
                             }}
                           />
                         ) : (
@@ -579,7 +606,7 @@ export default function OutstandingStudentsManagement() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                         <span className="px-2 py-1 bg-[#18bebc] bg-opacity-10 text-[#18bebc] rounded-md font-medium">
-                          {ImageUnity.formatMark(student.mark)}/20
+                          {formatMark(student.mark)}/20
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-xs truncate">

@@ -23,7 +23,7 @@ use App\Http\Controllers\UserManagementController;
 
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubMemberController;
-
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\OutstandingStudentController;
 
 
@@ -65,7 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/clubs', [ClubController::class, 'store']);
         Route::put('/clubs/{club}', [ClubController::class, 'update']);
         Route::delete('/clubs/{club}', [ClubController::class, 'destroy']);
-        
+
         // Club member management
         Route::post('/clubs/{club}/members', [ClubMemberController::class, 'store']);
         Route::put('/clubs/{club}/members/{member}', [ClubMemberController::class, 'update']);
@@ -73,7 +73,30 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-
+Route::middleware('auth:sanctum')->group(function () {
+    // Exam period routes
+    Route::get('/exam-periods', [ExamController::class, 'getExamPeriods']);
+    Route::get('/exam-periods/{id}', [ExamController::class, 'getExamPeriodDetails']);
+    
+    // Reference data routes
+    Route::get('/exam/class-codes', [ExamController::class, 'getClassCodes']);
+    Route::get('/exam/subjects', [ExamController::class, 'getSubjects']);
+    
+    // Admin routes for exam management
+    Route::middleware('role:administrator')->group(function () {
+        // Teachers list for admin use
+        Route::get('/exam/teachers', [ExamController::class, 'getTeachersList']);
+        
+        // Exam periods CRUD
+        Route::post('/exam-periods', [ExamController::class, 'createExamPeriod']);
+        Route::put('/exam-periods/{id}', [ExamController::class, 'updateExamPeriod']);
+        Route::delete('/exam-periods/{id}', [ExamController::class, 'deleteExamPeriod']);
+        
+        // Exam schedules management
+        Route::post('/exam-periods/{examPeriodId}/schedules', [ExamController::class, 'updateExamSchedules']);
+        Route::delete('/exam-schedules/{id}', [ExamController::class, 'deleteExamSchedule']);
+    });
+});
 // Public resource routes
 Route::get('/resources', [ResourceController::class, 'index']);
 Route::get('/resources/{resource}', [ResourceController::class, 'show']);
@@ -143,7 +166,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/attempts/{attempt}/results', [QuizAttemptController::class, 'results']);
         Route::get('/user/quiz-attempts', [QuizAttemptController::class, 'userAttempts']);
     });
-
 });
 
 // News routes
@@ -187,10 +209,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Teacher routes
     Route::middleware(['role:teacher'])->group(function () {
         Route::post('/quizzes', [QuizController::class, 'store']);
-        Route::put('/quizzes/{quiz}', [QuizController::class, 'update']); 
+        Route::put('/quizzes/{quiz}', [QuizController::class, 'update']);
         Route::get('/results', [ResultsController::class, 'index']);
         Route::get('/results/{attempt}', [ResultsController::class, 'show']);
-        
+
         Route::get('/teacher/quizzes', [QuizController::class, 'teacherQuizzes']);
     });
 

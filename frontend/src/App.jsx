@@ -31,8 +31,10 @@ import QuizCreator from "./components/QuizCreator";
 import Contact from "./pages/Contact";
 import ResourceViewer from "./components/ResourceViewer";
 import StudentRegistrationForm from "./pages/StudentRegistrationForm";
-import ClubDetails from "./components/ClubDetails"; 
-
+import ClubDetails from "./components/ClubDetails";
+import StudentExamSchedule from "./components/student/ExamSchedule";
+import AdminExamPeriods from "./components/admin/ExamPeriods";
+import AdminExamSchedules from "./components/admin/ExamSchedules";
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -90,7 +92,7 @@ export default function App() {
     foundedYear: "2014",
     operatingHours: "8:30 - 18:30",
     foundingDate: "09/01/2014",
-  }
+  };
 
   return (
     <AuthProvider>
@@ -113,7 +115,6 @@ export default function App() {
             <Route path="/library" element={<Library />} />
             <Route path="/clubs/:id" element={<ClubDetails />} />
             <Route path="/login" element={<Login />} />
-
             {/* <Route path="/register" element={<Register />} /> */}
             {/* Password reset routes */}
             <Route
@@ -127,6 +128,32 @@ export default function App() {
             />
             {/* Educational Resources route */}
             <Route path="/resources" element={<ResourceViewer />} />
+            // Student routes
+            <Route
+              path="/student/exams"
+              element={
+                <ProtectedRoute requiredRole="student">
+                  <StudentExamSchedule />
+                </ProtectedRoute>
+              }
+            />
+            // Admin routes
+            <Route
+              path="/admin/exam-periods"
+              element={
+                <ProtectedRoute requiredRole="administrator">
+                  <AdminExamPeriods />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/exam-schedules/:periodId"
+              element={
+                <ProtectedRoute requiredRole="administrator">
+                  <AdminExamSchedules />
+                </ProtectedRoute>
+              }
+            />
             {/* Protected routes with role-based access */}
             <Route
               path="/student-dashboard"

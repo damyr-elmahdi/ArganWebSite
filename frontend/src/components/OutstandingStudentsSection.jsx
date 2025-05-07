@@ -1,8 +1,35 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { ImageUnity } from "../utils/ImageUnity";
 
 export default function OutstandingStudentsSection() {
+  // Utility functions (replacing ImageUnity)
+  const getImageUrl = (path) => {
+    // If the path already includes the domain or is a full URL, return as is
+    if (path?.startsWith('http') || path?.startsWith('data:')) {
+      return path;
+    }
+    // Otherwise, return the path as is (assuming it's a relative path like /storage/...)
+    return path;
+  };
+
+  const createPlaceholder = (name) => {
+    // Return a data URL for a placeholder with the first letter of the name
+    const letter = name ? name.charAt(0).toUpperCase() : 'A';
+    // Create a simple SVG placeholder with the first letter
+    const svgContent = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+        <rect width="200" height="200" fill="#18bebc"/>
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="80" fill="white">${letter}</text>
+      </svg>
+    `;
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgContent)}`;
+  };
+
+  const formatMark = (mark) => {
+    // Format the mark to have one decimal place if it's not a whole number
+    return Number.isInteger(parseFloat(mark)) ? parseInt(mark) : parseFloat(mark).toFixed(1);
+  };
+
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -299,12 +326,12 @@ export default function OutstandingStudentsSection() {
                               {student.photo_path ? (
                                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#18bebc] relative">
                                   <img
-                                    src={ImageUnity.getImageUrl(student.photo_path)}
+                                    src={getImageUrl(student.photo_path)}
                                     alt={student.name}
                                     className="w-full h-full object-cover"
                                     onError={(e) => {
                                       e.target.onerror = null;
-                                      e.target.src = ImageUnity.createPlaceholder(student.name);
+                                      e.target.src = createPlaceholder(student.name);
                                     }}
                                   />
                                 </div>
@@ -326,7 +353,7 @@ export default function OutstandingStudentsSection() {
                             </div>
                             
                             <span className="bg-[#18bebc] text-white text-sm font-medium px-3 py-1 rounded-full mb-3">
-                              {ImageUnity.formatMark(student.mark)}/20
+                              {formatMark(student.mark)}/20
                             </span>
                             
                             <h3 className="text-xl font-bold text-center text-gray-800 mb-2">
@@ -398,12 +425,12 @@ export default function OutstandingStudentsSection() {
                     {activeStudent.photo_path ? (
                       <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-[#18bebc]">
                         <img
-                          src={ImageUnity.getImageUrl(activeStudent.photo_path)}
+                          src={getImageUrl(activeStudent.photo_path)}
                           alt={activeStudent.name}
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = ImageUnity.createPlaceholder(activeStudent.name);
+                            e.target.src = createPlaceholder(activeStudent.name);
                           }}
                         />
                       </div>
@@ -426,7 +453,7 @@ export default function OutstandingStudentsSection() {
 
                   <div className="mt-4 text-center">
                     <span className="bg-[#18bebc] text-white text-lg font-medium px-4 py-2 rounded-full">
-                      {ImageUnity.formatMark(activeStudent.mark)}/20
+                      {formatMark(activeStudent.mark)}/20
                     </span>
                   </div>
                 </div>
@@ -461,7 +488,7 @@ export default function OutstandingStudentsSection() {
                       </h3>
                       <p className="text-gray-600">
                         This student has demonstrated exceptional academic
-                        performance, earning recognition as #{activeStudent.classRank} in {getShortGradeLabel(activeStudent.grade)} with a remarkable score of {ImageUnity.formatMark(activeStudent.mark)}
+                        performance, earning recognition as #{activeStudent.classRank} in {getShortGradeLabel(activeStudent.grade)} with a remarkable score of {formatMark(activeStudent.mark)}
                         /20.
                       </p>
                     </div>
