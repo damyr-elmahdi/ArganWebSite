@@ -110,8 +110,7 @@ const StudentExamView = () => {
   // Generate a secure PDF viewer URL with authorization token
   const getPdfViewUrl = (examId) => {
     const token = localStorage.getItem('token');
-    // Add token as query parameter for authentication
-    return `/api/exams/${examId}/view?token=${token}`;
+    return `/api/exams/${examId}/view?token=${encodeURIComponent(token)}`;
   };
 
   return (
@@ -256,6 +255,7 @@ const StudentExamView = () => {
                 src={getPdfViewUrl(selectedExam.id)}
                 className="w-full h-full border-none"
                 title={`PDF Viewer - ${selectedExam.title}`}
+                sandbox="allow-same-origin allow-scripts"
               ></iframe>
             </div>
           </div>

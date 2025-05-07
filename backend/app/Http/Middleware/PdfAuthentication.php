@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class PdfAuthentication
 {
@@ -27,11 +28,13 @@ class PdfAuthentication
             if ($request->filled('token')) {
                 $token = $request->query('token');
                 
-                // Set the token in the Authorization header
-                $request->headers->set('Authorization', 'Bearer ' . $token);
+                // Try to find and validate the token manually
+                $accessToken = PersonalAccessToken::findToken($token);
                 
-                // Attempt to authenticate using Sanctum
-                if (Auth::guard('sanctum')->check()) {
+                if ($accessToken) {
+                    // Set the authenticated user
+                    $user = $accessToken->tokenable;
+                    Auth::login($user);
                     return $next($request);
                 }
             }

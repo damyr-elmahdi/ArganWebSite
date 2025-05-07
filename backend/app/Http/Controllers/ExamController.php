@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExamController extends Controller
 {
@@ -185,33 +186,38 @@ class ExamController extends Controller
         return response()->download(storage_path('app/public/' . $exam->file_path), $exam->title . '.pdf');
     }
 
-/**
- * View the exam file.
- */
-public function view($id)
-{
-    $exam = Exam::findOrFail($id);
-    $user = Auth::user();
-    
-    // Check if user is authorized to view this exam
-    if ($user->role === 'student') {
-        $student = Student::where('user_id', $user->id)->first();
-        if (!$student || $student->grade !== $exam->grade || $student->class_code !== $exam->class_name) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+    /**
+     * View the exam file.
+     */
+    public function view($id)
+    {
+        $exam = Exam::findOrFail($id);
+        $user = Auth::user();
+        
+        // Check if user is authorized to view this exam
+        if ($user->role === 'student') {
+            $student = Student::where('user_id', $user->id)->first();
+            if (!$student || $student->grade !== $exam->grade || $student->class_code !== $exam->class_name) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
         }
-    }
-    
-    if (!Storage::disk('public')->exists($exam->file_path)) {
-        return response()->json(['message' => 'File not found'], 404);
-    }
-    
-    // Return the file with content-type appropriate for viewing in browser
-    return response()->file(
-        storage_path('app/public/' . $exam->file_path),
-        [
+        
+        if (!Storage::disk('public')->exists($exam->file_path)) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+        
+        // Use StreamedResponse for better handling of PDF files
+        $filePath = storage_path('app/public/' . $exam->file_path);
+        $headers = [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="' . $exam->title . '.pdf"',
-        ]
-    );
-}
+            'Cache-Control' => 'public, max-age=60',
+        ];
+        
+        return new StreamedResponse(function() use ($filePath) {
+            $handle = fopen($filePath, 'rb');
+            fpassthru($handle);
+            fclose($handle);
+        }, 200, $headers);
+    }
 }
