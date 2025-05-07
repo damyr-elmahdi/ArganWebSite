@@ -73,7 +73,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-// Apply the PdfAuthentication middleware to these routes
 Route::middleware(['pdf.auth'])->group(function () {
     Route::get('/exams/{id}/download', [ExamController::class, 'download']);
     Route::get('/exams/{id}/view', [ExamController::class, 'view']);

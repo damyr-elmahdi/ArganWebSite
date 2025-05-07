@@ -2,12 +2,11 @@
 
 namespace App\Providers;
 
-use App\Http\Middleware\PdfAuthentication;
 use App\Models\Event;
 use App\Models\News;
 use App\Models\Registration;
 use App\Models\LibraryItem;
-use Illuminate\Support\Facades\Route;
+use App\Models\Librarian;
 use App\Models\User;
 use App\Policies\EventPolicy;
 use App\Policies\NewsPolicy;
@@ -37,7 +36,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
-        Route::middlewareAlias('pdf.auth', PdfAuthentication::class);
+
         // Define gates for role-based permissions
         Gate::define('manage-librarians', function (User $user) {
             return $user->role === 'administrator';
