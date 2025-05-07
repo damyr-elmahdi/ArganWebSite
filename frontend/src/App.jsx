@@ -32,9 +32,10 @@ import Contact from "./pages/Contact";
 import ResourceViewer from "./components/ResourceViewer";
 import StudentRegistrationForm from "./pages/StudentRegistrationForm";
 import ClubDetails from "./components/ClubDetails";
-import StudentExamSchedule from "./components/student/ExamSchedule";
-import AdminExamPeriods from "./components/admin/ExamPeriods";
-import AdminExamSchedules from "./components/admin/ExamSchedules";
+import StudentExamSchedule from "./components/StudentExamSchedule";
+import AdminExamPeriods from "./components/AdminExamPeriods";
+import AdminExamSchedules  from "./components/AdminExamSchedules"
+
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -103,45 +104,52 @@ export default function App() {
             ministry={schoolInfo.ministry}
             tagline={schoolInfo.tagline}
           />
+          // Routes section from App.jsx with corrected import path for
+          StudentExamSchedule import StudentExamSchedule from
+          "./components/student/ExamSchedule"; // ...
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<Home schoolInfo={schoolInfo} />} />
             <Route path="/about" element={<About />} />
             <Route path="/academics" element={<Academics />} />
             <Route path="/news" element={<News />} />
-            <Route path="/news/:id" element={<News />} />{" "}
+            <Route path="/news/:id" element={<News />} />
             <Route path="/events" element={<Events />} />
             <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/library" element={<Library />} />
             <Route path="/clubs/:id" element={<ClubDetails />} />
             <Route path="/login" element={<Login />} />
-            {/* <Route path="/register" element={<Register />} /> */}
-            {/* Password reset routes */}
             <Route
               path="/contact"
               element={<Contact schoolInfo={schoolInfo} />}
             />
+
             {/* Student Registration Form */}
             <Route
               path="/register-student"
               element={<StudentRegistrationForm />}
             />
+
             {/* Educational Resources route */}
             <Route path="/resources" element={<ResourceViewer />} />
-            // Student routes
+
+            {/* Student routes */}
             <Route
               path="/student/exams"
               element={
-                <ProtectedRoute requiredRole="student">
-                  <StudentExamSchedule />
+                <ProtectedRoute allowedRoles={["student"]}>
+                  <div className="flex-grow container mx-auto px-4 py-8">
+                    <StudentExamSchedule />
+                  </div>
                 </ProtectedRoute>
               }
             />
-            // Admin routes
+
+            {/* Admin routes */}
             <Route
               path="/admin/exam-periods"
               element={
-                <ProtectedRoute requiredRole="administrator">
+                <ProtectedRoute allowedRoles={["administrator"]}>
                   <AdminExamPeriods />
                 </ProtectedRoute>
               }
@@ -149,11 +157,12 @@ export default function App() {
             <Route
               path="/admin/exam-schedules/:periodId"
               element={
-                <ProtectedRoute requiredRole="administrator">
+                <ProtectedRoute allowedRoles={["administrator"]}>
                   <AdminExamSchedules />
                 </ProtectedRoute>
               }
             />
+
             {/* Protected routes with role-based access */}
             <Route
               path="/student-dashboard"
@@ -171,6 +180,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/librarian-dashboard"
               element={
