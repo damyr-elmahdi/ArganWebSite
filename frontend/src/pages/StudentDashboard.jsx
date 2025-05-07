@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import StudentQuizTab from '../components/StudentQuizTab';
-import StudentExamSchedule from '../components/student/ExamSchedule';
+import StudentExamSchedule from '../components/StudentExamSchedule';
 
 export default function StudentDashboard() {
   const [user, setUser] = useState(null);

@@ -104,9 +104,6 @@ export default function App() {
             ministry={schoolInfo.ministry}
             tagline={schoolInfo.tagline}
           />
-          // Routes section from App.jsx with corrected import path for
-          StudentExamSchedule import StudentExamSchedule from
-          "./components/student/ExamSchedule"; // ...
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<Home schoolInfo={schoolInfo} />} />
