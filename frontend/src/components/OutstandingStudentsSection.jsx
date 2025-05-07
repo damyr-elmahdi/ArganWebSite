@@ -1,60 +1,56 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { ImageUnity } from "../utils/ImageUnity";
 
 export default function OutstandingStudentsSection() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeStudent, setActiveStudent] = useState(null);
-  const [rankedStudents, setRankedStudents] = useState([]);
+  const [studentsByGrade, setStudentsByGrade] = useState({});
+  const [expandedGrades, setExpandedGrades] = useState({});
 
-  // Function to get the label for a grade code
+  // Grade grouping and labeling
+  const gradeOptions = [
+    { value: "TC-S", label: "TC - Sciences" },
+    { value: "TC-LSH", label: "TC - Lettres et Sciences Humaines" },
+    { value: "1BAC-SE", label: "1BAC - Sciences Expérimentales" },
+    { value: "1BAC-LSH", label: "1BAC - Lettres et Sciences Humaines" },
+    { value: "2BAC-PC", label: "2BAC - PC (Physique-Chimie)" },
+    { value: "2BAC-SVT", label: "2BAC - SVT (Sciences de la Vie et de la Terre)" },
+    { value: "2BAC-SH", label: "2BAC - Sciences Humaines" },
+    { value: "2BAC-L", label: "2BAC - Lettres" }
+  ];
+
+  // Get the base grade for grouping
+  const getBaseGrade = (gradeWithClass) => {
+    const match = gradeWithClass.match(/^(\d*[A-Z]+-[A-Z]+)/);
+    return match ? match[1] : gradeWithClass;
+  };
+
+  // Get a more readable grade label from a grade code
   const getGradeLabel = (gradeCode) => {
-    const gradeOptions = [
-      { value: "TC-S", label: "TC - Sciences" },
-      { value: "TC-LSH", label: "TC - Lettres et Sciences Humaines" },
-      { value: "1BAC-SE", label: "1BAC - Sciences Expérimentales" },
-      { value: "1BAC-LSH", label: "1BAC - Lettres et Sciences Humaines" },
-      { value: "2BAC-PC", label: "2BAC - PC (Physique-Chimie)" },
-      {
-        value: "2BAC-SVT",
-        label: "2BAC - SVT (Sciences de la Vie et de la Terre)",
-      },
-      { value: "2BAC-SH", label: "2BAC - Sciences Humaines" },
-      { value: "2BAC-L", label: "2BAC - Lettres" },
-    ];
-
-    const grade = gradeOptions.find((g) => g.value === gradeCode);
-    return grade ? grade.label : gradeCode;
+    const baseGrade = getBaseGrade(gradeCode);
+    
+    // Find matching grade in options
+    const grade = gradeOptions.find(g => g.value === baseGrade);
+    
+    // Get class suffix (e.g., "1" from "2BAC-PC1")
+    const classSuffix = gradeCode.replace(baseGrade, "");
+    
+    // Return formatted grade label with class number
+    return grade ? `${grade.label}${classSuffix}` : gradeCode;
   };
 
-  // Improved function to handle image URLs
-  const getImageUrl = (path) => {
-    if (!path) return null;
+  // Get shorter grade label for section headers
+  const getShortGradeLabel = (gradeCode) => {
+    const baseGrade = getBaseGrade(gradeCode);
     
-    // Direct URL case (from updated controller)
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-      return path;
-    }
+    // Get class suffix (e.g., "1" from "2BAC-PC1")
+    const classSuffix = gradeCode.replace(baseGrade, "");
     
-    // Handle both storage/path format and /storage/path format
-    const pathWithoutLeadingSlash = path.startsWith('/') ? path.substring(1) : path;
-    
-    if (pathWithoutLeadingSlash.includes('storage/')) {
-      // Extract the part after 'storage/'
-      const pathAfterStorage = pathWithoutLeadingSlash.split('storage/')[1];
-      return `${window.location.origin}/storage/${pathAfterStorage}`;
-    }
-    
-    // Default case - just prepend with origin
-    return `${window.location.origin}/${pathWithoutLeadingSlash}`;
-  };
-
-  // Format mark to always show decimal places when they exist
-  const formatMark = (mark) => {
-    const numMark = parseFloat(mark);
-    // Display with 2 decimal places if it has a fractional part
-    return numMark % 1 === 0 ? numMark.toFixed(0) : numMark.toFixed(2);
+    // Return simple formatted name for header
+    return `${baseGrade}${classSuffix}`;
   };
 
   useEffect(() => {
@@ -63,16 +59,42 @@ export default function OutstandingStudentsSection() {
         setLoading(true);
         const response = await axios.get("/api/outstanding-students");
         
-        // Students are already sorted by mark in descending order from the backend
+        // Store all students
         setStudents(response.data);
         
-        // Create ranked students array with rank property
-        const ranked = response.data.map((student, index) => ({
-          ...student,
-          rank: index + 1 // Add rank based on position (1-based)
-        }));
+        // Group students by grade/class
+        const groupedStudents = {};
         
-        setRankedStudents(ranked);
+        response.data.forEach(student => {
+          const gradeClass = student.grade;
+          
+          if (!groupedStudents[gradeClass]) {
+            groupedStudents[gradeClass] = [];
+          }
+          
+          groupedStudents[gradeClass].push(student);
+        });
+        
+        // Sort students within each class by mark
+        Object.keys(groupedStudents).forEach(grade => {
+          groupedStudents[grade].sort((a, b) => parseFloat(b.mark) - parseFloat(a.mark));
+          
+          // Add rank within class
+          groupedStudents[grade] = groupedStudents[grade].map((student, index) => ({
+            ...student,
+            classRank: index + 1
+          }));
+        });
+        
+        setStudentsByGrade(groupedStudents);
+        
+        // Initialize expanded states for all grades (show all by default)
+        const initialExpandedState = {};
+        Object.keys(groupedStudents).forEach(grade => {
+          initialExpandedState[grade] = true;
+        });
+        setExpandedGrades(initialExpandedState);
+        
         setLoading(false);
       } catch (err) {
         console.error("Error fetching outstanding students:", err);
@@ -96,10 +118,12 @@ export default function OutstandingStudentsSection() {
     document.body.style.overflow = "auto"; // Re-enable scrolling
   };
 
-  // Helper function to create placeholder image when image fails to load
-  const createPlaceholderImage = (name) => {
-    const initial = name && name.length > 0 ? name.charAt(0).toUpperCase() : "?";
-    return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='36' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3E${initial}%3C/text%3E%3C/svg%3E`;
+  // Toggle expanded state for a grade
+  const toggleGradeExpansion = (grade) => {
+    setExpandedGrades(prev => ({
+      ...prev,
+      [grade]: !prev[grade]
+    }));
   };
 
   // Render stars based on student rank
@@ -144,6 +168,7 @@ export default function OutstandingStudentsSection() {
     return null;
   };
 
+  // Render loading state
   if (loading) {
     return (
       <section className="py-12 bg-gray-50">
@@ -159,6 +184,7 @@ export default function OutstandingStudentsSection() {
     );
   }
 
+  // Render error state
   if (error) {
     return (
       <section className="py-12 bg-gray-50">
@@ -180,7 +206,8 @@ export default function OutstandingStudentsSection() {
     );
   }
 
-  if (rankedStudents.length === 0) {
+  // Render empty state
+  if (students.length === 0) {
     return (
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -195,6 +222,7 @@ export default function OutstandingStudentsSection() {
     );
   }
 
+  // Main render - group students by class
   return (
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -202,85 +230,139 @@ export default function OutstandingStudentsSection() {
           Outstanding Students
         </h2>
         <p className="text-center text-gray-600 mb-8">
-          Recognizing our top-performing students for their exceptional academic
-          achievements.
+          Recognizing our top-performing students for their exceptional academic achievements, organized by class.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {rankedStudents.map((student) => (
-            <div
-              key={student.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 cursor-pointer"
-              onClick={() => openStudentDetails(student)}
-            >
-              <div className="p-6">
-                <div className="flex flex-col items-center">
-                  {/* Circular Image with Stars */}
-                  <div className="relative mb-4">
-                    {student.photo_path ? (
-                      <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#18bebc] relative">
-                        <img
-                          src={getImageUrl(student.photo_path)}
-                          alt={student.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = createPlaceholderImage(student.name);
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-32 h-32 rounded-full bg-gradient-to-r from-[#165b9f] to-[#18bebc] flex items-center justify-center border-4 border-[#18bebc]">
-                        <span className="text-white text-3xl font-bold">
-                          {student.name.charAt(0)}
-                        </span>
-                      </div>
-                    )}
-                    
-                    {/* Render stars based on rank */}
-                    {renderStars(student.rank)}
-                    
-                    {/* Circular rank badge */}
-                    <div className="absolute -bottom-2 -right-2 bg-[#18bebc] text-white text-sm font-bold w-8 h-8 flex items-center justify-center rounded-full border-2 border-white">
-                      {student.rank}
-                    </div>
-                  </div>
-                  
-                  <span className="bg-[#18bebc] text-white text-sm font-medium px-3 py-1 rounded-full mb-3">
-                    {formatMark(student.mark)}/20
+        {/* Sort grade keys for consistent ordering */}
+        {Object.keys(studentsByGrade)
+          .sort((a, b) => {
+            // Sort by grade level first (2BAC > 1BAC > TC)
+            const gradeOrderA = a.startsWith('2') ? 3 : a.startsWith('1') ? 2 : 1;
+            const gradeOrderB = b.startsWith('2') ? 3 : b.startsWith('1') ? 2 : 1;
+            
+            if (gradeOrderA !== gradeOrderB) {
+              return gradeOrderB - gradeOrderA; // Higher grades first
+            }
+            
+            // If same grade level, sort alphabetically
+            return a.localeCompare(b);
+          })
+          .map((grade) => (
+            <div key={grade} className="mb-12">
+              <div 
+                className="flex items-center justify-between bg-white rounded-lg shadow-md px-6 py-4 cursor-pointer hover:bg-gray-50 transition-colors mb-6"
+                onClick={() => toggleGradeExpansion(grade)}
+              >
+                <h3 className="text-2xl font-bold text-gray-800">
+                  {getGradeLabel(grade)}
+                </h3>
+                <div className="flex items-center">
+                  <span className="text-gray-500 mr-2">
+                    {studentsByGrade[grade].length} Students
                   </span>
-                  
-                  <h3 className="text-xl font-bold text-center text-gray-800 mb-2">
-                    {student.name}
-                  </h3>
-                  <p className="text-gray-600 text-center">{getGradeLabel(student.grade)}</p>
-                  <p className="text-gray-500 text-sm mt-2 text-center">
-                    {student.achievement ||
-                      "Performance académique exceptionnelle"}
-                  </p>
-                  <button className="mt-4 text-[#18bebc] hover:text-teal-700 text-sm font-medium flex items-center">
-                    View Details
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 ml-1"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={`h-6 w-6 text-gray-500 transform transition-transform ${
+                      expandedGrades[grade] ? 'rotate-180' : ''
+                    }`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
                 </div>
               </div>
-              <div className="bg-gradient-to-r from-[#165b9f] to-[#18bebc] h-2"></div>
+
+              {expandedGrades[grade] && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {studentsByGrade[grade]
+                    // Sort by mark in descending order within each class
+                    .sort((a, b) => parseFloat(b.mark) - parseFloat(a.mark))
+                    // Take top 3 students per class
+                    .slice(0, 3)
+                    .map((student) => (
+                      <div
+                        key={student.id}
+                        className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 cursor-pointer"
+                        onClick={() => openStudentDetails(student)}
+                      >
+                        <div className="p-6">
+                          <div className="flex flex-col items-center">
+                            {/* Circular Image with Stars */}
+                            <div className="relative mb-4">
+                              {student.photo_path ? (
+                                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#18bebc] relative">
+                                  <img
+                                    src={ImageUnity.getImageUrl(student.photo_path)}
+                                    alt={student.name}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      e.target.onerror = null;
+                                      e.target.src = ImageUnity.createPlaceholder(student.name);
+                                    }}
+                                  />
+                                </div>
+                              ) : (
+                                <div className="w-32 h-32 rounded-full bg-gradient-to-r from-[#165b9f] to-[#18bebc] flex items-center justify-center border-4 border-[#18bebc]">
+                                  <span className="text-white text-3xl font-bold">
+                                    {student.name.charAt(0)}
+                                  </span>
+                                </div>
+                              )}
+                              
+                              {/* Render stars based on class rank */}
+                              {renderStars(student.classRank)}
+                              
+                              {/* Circular rank badge */}
+                              <div className="absolute -bottom-2 -right-2 bg-[#18bebc] text-white text-sm font-bold w-8 h-8 flex items-center justify-center rounded-full border-2 border-white">
+                                {student.classRank}
+                              </div>
+                            </div>
+                            
+                            <span className="bg-[#18bebc] text-white text-sm font-medium px-3 py-1 rounded-full mb-3">
+                              {ImageUnity.formatMark(student.mark)}/20
+                            </span>
+                            
+                            <h3 className="text-xl font-bold text-center text-gray-800 mb-2">
+                              {student.name}
+                            </h3>
+                            <p className="text-gray-600 text-center">{getShortGradeLabel(student.grade)}</p>
+                            <p className="text-gray-500 text-sm mt-2 text-center">
+                              {student.achievement ||
+                                "Performance académique exceptionnelle"}
+                            </p>
+                            <button className="mt-4 text-[#18bebc] hover:text-teal-700 text-sm font-medium flex items-center">
+                              View Details
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4 ml-1"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M9 5l7 7-7 7"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                        <div className="bg-gradient-to-r from-[#165b9f] to-[#18bebc] h-2"></div>
+                      </div>
+                    ))}
+                </div>
+              )}
             </div>
           ))}
-        </div>
       </div>
 
       {/* Student Details Modal */}
@@ -316,12 +398,12 @@ export default function OutstandingStudentsSection() {
                     {activeStudent.photo_path ? (
                       <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-[#18bebc]">
                         <img
-                          src={getImageUrl(activeStudent.photo_path)}
+                          src={ImageUnity.getImageUrl(activeStudent.photo_path)}
                           alt={activeStudent.name}
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = createPlaceholderImage(activeStudent.name);
+                            e.target.src = ImageUnity.createPlaceholder(activeStudent.name);
                           }}
                         />
                       </div>
@@ -333,18 +415,18 @@ export default function OutstandingStudentsSection() {
                       </div>
                     )}
                     
-                    {/* Render stars based on rank in modal */}
-                    {renderStars(activeStudent.rank)}
+                    {/* Render stars based on class rank in modal */}
+                    {renderStars(activeStudent.classRank)}
                     
                     {/* Rank badge */}
                     <div className="absolute -bottom-2 -right-2 bg-[#18bebc] text-white text-md font-bold w-10 h-10 flex items-center justify-center rounded-full border-2 border-white">
-                      {activeStudent.rank}
+                      {activeStudent.classRank}
                     </div>
                   </div>
 
                   <div className="mt-4 text-center">
                     <span className="bg-[#18bebc] text-white text-lg font-medium px-4 py-2 rounded-full">
-                      {formatMark(activeStudent.mark)}/20
+                      {ImageUnity.formatMark(activeStudent.mark)}/20
                     </span>
                   </div>
                 </div>
@@ -379,8 +461,7 @@ export default function OutstandingStudentsSection() {
                       </h3>
                       <p className="text-gray-600">
                         This student has demonstrated exceptional academic
-                        performance, earning recognition as #{activeStudent.rank} among our outstanding
-                        students with a remarkable score of {formatMark(activeStudent.mark)}
+                        performance, earning recognition as #{activeStudent.classRank} in {getShortGradeLabel(activeStudent.grade)} with a remarkable score of {ImageUnity.formatMark(activeStudent.mark)}
                         /20.
                       </p>
                     </div>
