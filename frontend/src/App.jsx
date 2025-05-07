@@ -32,9 +32,7 @@ import Contact from "./pages/Contact";
 import ResourceViewer from "./components/ResourceViewer";
 import StudentRegistrationForm from "./pages/StudentRegistrationForm";
 import ClubDetails from "./components/ClubDetails";
-import StudentExamSchedule from "./components/StudentExamSchedule";
-import AdminExamPeriods from "./components/AdminExamPeriods";
-import AdminExamSchedules  from "./components/AdminExamSchedules"
+
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
@@ -130,35 +128,9 @@ export default function App() {
             {/* Educational Resources route */}
             <Route path="/resources" element={<ResourceViewer />} />
 
-            {/* Student routes */}
-            <Route
-              path="/student/exams"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <div className="flex-grow container mx-auto px-4 py-8">
-                    <StudentExamSchedule />
-                  </div>
-                </ProtectedRoute>
-              }
-            />
 
-            {/* Admin routes */}
-            <Route
-              path="/admin/exam-periods"
-              element={
-                <ProtectedRoute allowedRoles={["administrator"]}>
-                  <AdminExamPeriods />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/exam-schedules/:periodId"
-              element={
-                <ProtectedRoute allowedRoles={["administrator"]}>
-                  <AdminExamSchedules />
-                </ProtectedRoute>
-              }
-            />
+
+
 
             {/* Protected routes with role-based access */}
             <Route
