@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ImageUnity } from "../utils/ImageUnity";
 
 export default function OutstandingStudentsManagement() {
   const [students, setStudents] = useState([]);
@@ -23,16 +24,16 @@ export default function OutstandingStudentsManagement() {
   
   const fileInputRef = useRef(null);
 
-  // Grade options for Moroccan system
-  const gradeOptions = [
-    { value: "TC-S", label: "TC - Sciences" },
-    { value: "TC-LSH", label: "TC - Lettres et Sciences Humaines" },
-    { value: "1BAC-SE", label: "1BAC - Sciences Expérimentales" },
-    { value: "1BAC-LSH", label: "1BAC - Lettres et Sciences Humaines" },
-    { value: "2BAC-PC", label: "2BAC - PC (Physique-Chimie)" },
-    { value: "2BAC-SVT", label: "2BAC - SVT (Sciences de la Vie et de la Terre)" },
-    { value: "2BAC-SH", label: "2BAC - Sciences Humaines" },
-    { value: "2BAC-L", label: "2BAC - Lettres" },
+  // Grade suggestions for Moroccan system (now used as suggestions only)
+  const gradeSuggestions = [
+    "TC-S1", "TC-S2", "TC-S3", "TC-S4",
+    "TC-LSH1", "TC-LSH2",
+    "1BAC-SE1", "1BAC-SE2", "1BAC-SE3",
+    "1BAC-LSH1", "1BAC-LSH2",
+    "2BAC-PC1", "2BAC-PC2",
+    "2BAC-SVT1", "2BAC-SVT2",
+    "2BAC-SH1", "2BAC-SH2",
+    "2BAC-L1", "2BAC-L2"
   ];
 
   // Fetch students when component mounts
@@ -142,7 +143,7 @@ export default function OutstandingStudentsManagement() {
     const newErrors = {};
     
     if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.grade) newErrors.grade = 'Grade is required';
+    if (!formData.grade.trim()) newErrors.grade = 'Grade/Class is required';
     
     // Validate mark as a float between 0 and 20
     const mark = parseFloat(formData.mark);
@@ -261,35 +262,36 @@ export default function OutstandingStudentsManagement() {
     }
   };
 
-  // Improved helper function for image URLs
-  const getImageUrl = (path) => {
-    if (!path) return null;
-    
-    // If it's already a full URL, return it as is
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-      return path;
-    }
-    
-    // Remove any leading slashes and handle paths with or without 'storage/'
-    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
-    
-    // Default case - construct complete URL
-    return `${window.location.origin}/${cleanPath}`;
+  // Extract base grade (for grouping in the table)
+  const getBaseGrade = (gradeWithClass) => {
+    // Extract base grade (e.g., "2BAC-PC" from "2BAC-PC1")
+    const match = gradeWithClass.match(/^(\d*[A-Z]+-[A-Z]+)/);
+    return match ? match[1] : gradeWithClass;
   };
-
-  // Helper to create placeholder image
-  const createPlaceholderImage = (name) => {
-    const initial = name && name.length > 0 ? name.charAt(0).toUpperCase() : "?";
-    return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='55' font-family='Arial' font-size='36' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3E${initial}%3C/text%3E%3C/svg%3E`;
+  
+  // Get a more readable grade label from a grade code
+  const getGradeLabel = (gradeCode) => {
+    // Extract base grade
+    const baseGrade = getBaseGrade(gradeCode);
+    
+    // Grade label mapping
+    const gradeMappings = {
+      "TC-S": "TC - Sciences",
+      "TC-LSH": "TC - Lettres et Sciences Humaines",
+      "1BAC-SE": "1BAC - Sciences Expérimentales",
+      "1BAC-LSH": "1BAC - Lettres et Sciences Humaines",
+      "2BAC-PC": "2BAC - PC (Physique-Chimie)",
+      "2BAC-SVT": "2BAC - SVT (Sciences de la Vie et de la Terre)",
+      "2BAC-SH": "2BAC - Sciences Humaines",
+      "2BAC-L": "2BAC - Lettres"
+    };
+    
+    // Get class suffix (e.g., "1" from "2BAC-PC1")
+    const classSuffix = gradeCode.replace(baseGrade, "");
+    
+    // Return formatted grade label with class number
+    return (gradeMappings[baseGrade] || baseGrade) + classSuffix;
   };
-
-  // Format mark display to handle float values properly
-// Format mark display to handle float values properly
-const formatMark = (mark) => {
-  const numMark = parseFloat(mark);
-  // Display with 2 decimal places if it has a fractional part
-  return numMark % 1 === 0 ? numMark.toFixed(0) : numMark.toFixed(2);
-};
 
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg p-4">
@@ -354,26 +356,32 @@ const formatMark = (mark) => {
               <label htmlFor="grade" className="block text-sm font-medium text-gray-700">
                 Grade/Class <span className="text-red-500">*</span>
               </label>
-              <select
-                name="grade"
-                id="grade"
-                value={formData.grade}
-                onChange={handleInputChange}
-                required
-                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
-                  errors.grade ? 'border-red-500' : ''
-                }`}
-              >
-                <option value="">Select a grade</option>
-                {gradeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="grade"
+                  id="grade"
+                  value={formData.grade}
+                  onChange={handleInputChange}
+                  required
+                  list="grade-suggestions"
+                  className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+                    errors.grade ? 'border-red-500' : ''
+                  }`}
+                  placeholder="Enter grade/class (e.g., 2BAC-PC1)"
+                />
+                <datalist id="grade-suggestions">
+                  {gradeSuggestions.map((grade) => (
+                    <option key={grade} value={grade} />
+                  ))}
+                </datalist>
+              </div>
               {errors.grade && (
                 <p className="mt-1 text-sm text-red-600">{errors.grade}</p>
               )}
+              <p className="mt-1 text-xs text-gray-500">
+                Examples: TC-S1, 1BAC-SE2, 2BAC-PC1, etc.
+              </p>
             </div>
             
             <div>
@@ -386,7 +394,7 @@ const formatMark = (mark) => {
                 id="mark"
                 min="0"
                 max="20"
-                step="0.01" // Changed from 0.25 to 0.01 to allow more precise float values
+                step="0.01"
                 value={formData.mark}
                 onChange={handleInputChange}
                 required
@@ -429,12 +437,12 @@ const formatMark = (mark) => {
                 {photoPreview && (
                   <div className="flex-shrink-0">
                     <img 
-                      src={photoPreview} 
+                      src={photoPreview.startsWith('data:') ? photoPreview : ImageUnity.getImageUrl(photoPreview)} 
                       alt="Preview" 
                       className="h-24 w-24 object-cover rounded-md" 
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='14' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
+                        e.target.src = ImageUnity.createPlaceholder(formData.name);
                       }}
                     />
                   </div>
@@ -541,22 +549,17 @@ const formatMark = (mark) => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {students.map((student) => {
-                  // Find grade label
-                  const gradeObj = gradeOptions.find(g => g.value === student.grade);
-                  const gradeLabel = gradeObj ? gradeObj.label : student.grade;
-                  
-                  return (
+                {students.map((student) => (
                     <tr key={student.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         {student.photo_path ? (
                           <img 
-                            src={getImageUrl(student.photo_path)}
+                            src={ImageUnity.getImageUrl(student.photo_path)}
                             alt={student.name} 
                             className="h-12 w-12 rounded-full object-cover border border-gray-200"
                             onError={(e) => {
                               e.target.onerror = null;
-                              e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='14' text-anchor='middle' dominant-baseline='middle' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
+                              e.target.src = ImageUnity.createPlaceholder(student.name);
                             }}
                           />
                         ) : (
@@ -572,11 +575,11 @@ const formatMark = (mark) => {
                         {student.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                        {gradeLabel}
+                        {getGradeLabel(student.grade)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                         <span className="px-2 py-1 bg-[#18bebc] bg-opacity-10 text-[#18bebc] rounded-md font-medium">
-                          {formatMark(student.mark)}/20
+                          {ImageUnity.formatMark(student.mark)}/20
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-xs truncate">
@@ -599,8 +602,8 @@ const formatMark = (mark) => {
                         </button>
                       </td>
                     </tr>
-                  );
-                })}
+                  )
+                )}
               </tbody>
             </table>
           </div>
