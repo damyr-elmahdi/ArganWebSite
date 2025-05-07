@@ -73,12 +73,17 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
+// Apply the PdfAuthentication middleware to these routes
+Route::middleware(['pdf.auth'])->group(function () {
+    Route::get('/exams/{id}/download', [ExamController::class, 'download']);
+    Route::get('/exams/{id}/view', [ExamController::class, 'view']);
+});
+
+// Your existing routes for exams
 Route::middleware(['auth:sanctum'])->group(function () {
     // Routes accessible to both administrators and students
     Route::get('/exams', [ExamController::class, 'index']);
     Route::get('/exams/{id}', [ExamController::class, 'show']);
-    Route::get('/exams/{id}/download', [ExamController::class, 'download']);
-    Route::get('/exams/{id}/view', [ExamController::class, 'view']);  // New route for viewing exams
 
     // Routes accessible only to administrators
     Route::middleware(['role:administrator'])->group(function () {
@@ -87,7 +92,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/exams/{id}', [ExamController::class, 'destroy']);
     });
 });
-
 // Public resource routes
 Route::get('/resources', [ResourceController::class, 'index']);
 Route::get('/resources/{resource}', [ResourceController::class, 'show']);

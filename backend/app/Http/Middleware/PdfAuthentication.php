@@ -26,15 +26,17 @@ class PdfAuthentication
             // Otherwise check for token as query parameter
             if ($request->filled('token')) {
                 $token = $request->query('token');
+                
+                // Set the token in the Authorization header
                 $request->headers->set('Authorization', 'Bearer ' . $token);
                 
-                // Temporarily authenticate with token for this request
+                // Attempt to authenticate using Sanctum
                 if (Auth::guard('sanctum')->check()) {
                     return $next($request);
                 }
             }
             
-            // Not authenticated
+            // If we reach here, authentication failed
             return response()->json(['message' => 'Unauthenticated'], 401);
         }
 

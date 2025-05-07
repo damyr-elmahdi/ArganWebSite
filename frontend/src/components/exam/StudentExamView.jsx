@@ -109,11 +109,9 @@ const StudentExamView = () => {
 
   // Generate a secure PDF viewer URL with authorization token
   const getPdfViewUrl = (examId) => {
-    // Add the token as an Authorization header for the iframe source
     const token = localStorage.getItem('token');
-    
-    // Create a URL for the PDF view endpoint
-    return `/api/exams/${examId}/view`;
+    // Add token as query parameter for authentication
+    return `/api/exams/${examId}/view?token=${token}`;
   };
 
   return (
@@ -254,27 +252,11 @@ const StudentExamView = () => {
               </div>
             </div>
             <div className="flex-1 overflow-hidden">
-              {/* PDF Viewer with Authentication */}
-              <object
-                data={getPdfViewUrl(selectedExam.id)}
-                type="application/pdf"
-                className="w-full h-full"
-              >
-                <div className="flex items-center justify-center h-full bg-gray-100">
-                  <div className="text-center p-6">
-                    <p className="text-gray-700 mb-4">
-                      Unable to display PDF. Please download to view.
-                    </p>
-                    <button
-                      onClick={() => downloadExam(selectedExam.id)}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-md flex items-center mx-auto"
-                    >
-                      <Download size={16} className="mr-2" />
-                      Download PDF
-                    </button>
-                  </div>
-                </div>
-              </object>
+              <iframe
+                src={getPdfViewUrl(selectedExam.id)}
+                className="w-full h-full border-none"
+                title={`PDF Viewer - ${selectedExam.title}`}
+              ></iframe>
             </div>
           </div>
         </div>
