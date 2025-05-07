@@ -30,67 +30,91 @@ class UserSeeder extends Seeder
             'department' => 'management',
         ]);
 
-        // Create multiple students
+        // Define grade structure to match the ExamManagement component
+        $grades = [
+            "TC-S" => "TC - Sciences",
+            "TC-LSH" => "TC - Lettres et Sciences Humaines",
+            "1BAC-SE" => "1BAC - Sciences Expérimentales",
+            "1BAC-LSH" => "1BAC - Lettres et Sciences Humaines",
+            "2BAC-PC" => "2BAC - PC (Physique-Chimie)",
+            "2BAC-SVT" => "2BAC - SVT (Sciences de la Vie et de la Terre)",
+            "2BAC-SH" => "2BAC - Sciences Humaines",
+            "2BAC-L" => "2BAC - Lettres",
+        ];
+
+        // Create multiple students with consistent class naming
         $students = [
             [
                 'name' => 'Ahmed Bensouda',
                 'email' => 'ahmed.bensouda@argan.edu',
                 'grade' => 'TC-S',
+                'class_code' => 'TC1', // Changed from class_name to class_code
             ],
             [
                 'name' => 'Fatima Zahra',
                 'email' => 'fatima.zahra@argan.edu',
                 'grade' => 'TC-LSH',
+                'class_code' => 'TC2', // Changed from class_name to class_code
             ],
             [
                 'name' => 'Youssef Alami',
                 'email' => 'youssef.alami@argan.edu',
                 'grade' => '1BAC-SE',
+                'class_code' => '1BAC1', // Changed from class_name to class_code
             ],
             [
                 'name' => 'Amina Tazi',
                 'email' => 'amina.tazi@argan.edu',
                 'grade' => '1BAC-LSH',
+                'class_code' => '1BAC2', // Changed from class_name to class_code
             ],
             [
                 'name' => 'Omar El Fassi',
                 'email' => 'omar.elfassi@argan.edu',
                 'grade' => '2BAC-PC',
+                'class_code' => '2BAC1', // Changed from class_name to class_code
             ],
             [
                 'name' => 'Salma Idrissi',
                 'email' => 'salma.idrissi@argan.edu',
                 'grade' => '2BAC-SVT',
+                'class_code' => '2BAC2', // Changed from class_name to class_code
             ],
             [
                 'name' => 'Karim Benjelloun',
                 'email' => 'karim.benjelloun@argan.edu',
                 'grade' => '2BAC-SH',
+                'class_code' => '2BAC3', // Changed from class_name to class_code
             ],
             [
                 'name' => 'Layla Mansouri',
                 'email' => 'layla.mansouri@argan.edu',
                 'grade' => '2BAC-L',
+                'class_code' => '2BAC4', // Changed from class_name to class_code
             ],
             [
                 'name' => 'Mehdi Berrada',
                 'email' => 'mehdi.berrada@argan.edu',
                 'grade' => 'TC-S',
+                'class_code' => 'TC3', // Changed from class_name to class_code
             ],
             [
                 'name' => 'Nadia El Khattabi',
                 'email' => 'nadia.elkhattabi@argan.edu',
                 'grade' => '1BAC-SE',
+                'class_code' => '1BAC3', // Changed from class_name to class_code
             ],
             [
                 'name' => 'Younes Saidi',
                 'email' => 'younes.saidi@argan.edu',
                 'grade' => '2BAC-PC',
+                'class_code' => '2BAC5', // Changed from class_name to class_code
             ],
             [
                 'name' => 'Sara Bennani',
                 'email' => 'sara.bennani@argan.edu',
                 'grade' => '1BAC-LSH',
+                'class_code' => '1BAC4', // Changed from class_name to class_code
             ],
         ];
 
@@ -114,6 +138,7 @@ class UserSeeder extends Seeder
                 'user_id' => $user->id,
                 'student_id' => 'S' . $currentYear . str_pad($user->id, 4, '0', STR_PAD_LEFT),
                 'grade' => $studentData['grade'],
+                'class_code' => $studentData['class_code'], // Changed from class_name to class_code
                 'recovery_email' => $recoveryEmail,
             ]);
         }
