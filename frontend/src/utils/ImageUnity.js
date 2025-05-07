@@ -14,20 +14,36 @@ export const ImageUnity = {
      
      // Direct URL case (already full URL)
      if (path.startsWith('http://') || path.startsWith('https://')) {
+       // For URL-based paths, we need to ensure they're properly handled
+       // Some Laravel Storage::url paths might contain full URLs but need proper formatting
+       
+       // Check if this is coming from Laravel's Storage::url which might include the base URL
+       const baseUrl = import.meta.env.VITE_API_URL || window.location.origin;
+       if (path.includes(baseUrl) && path.includes('/storage/')) {
+         // Path already has base URL and storage, no need to modify
+         return path;
+       }
+       
        return path;
      }
      
      // Get the base URL from environment or fallback to window origin
      const baseUrl = import.meta.env.VITE_API_URL || window.location.origin;
      
+     // If the path starts with /storage/, just add the base URL
+     if (path.startsWith('/storage/')) {
+       return `${baseUrl}${path}`;
+     }
+     
      // Handle different path formats
      const cleanPath = path.startsWith('/') ? path.substring(1) : path;
      
-     // Check if the path already contains 'storage/'
+     // Check if the path contains a storage reference
      if (cleanPath.includes('storage/')) {
-       // If it does, make sure we don't duplicate it
-       const pathParts = cleanPath.split('storage/');
-       return `${baseUrl}/storage/${pathParts[pathParts.length - 1]}`;
+       // Extract just the filename part after storage/
+       const storageIndex = cleanPath.indexOf('storage/');
+       const pathAfterStorage = cleanPath.substring(storageIndex);
+       return `${baseUrl}/${pathAfterStorage}`;
      }
      
      // If the path is for student_photos but doesn't have storage/ prefix

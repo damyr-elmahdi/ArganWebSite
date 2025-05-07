@@ -53,7 +53,8 @@ class OutstandingStudentController extends Controller
             
             // Store in public disk directly
             $path = $photo->storeAs('student_photos', $fileName, 'public');
-            $data['photo_path'] = Storage::disk('public')->url($path);
+            // Make sure we're using the URL not just the path
+            $data['photo_path'] = '/storage/' . $path;
         }
 
         $student = OutstandingStudent::create($data);
@@ -106,10 +107,10 @@ class OutstandingStudentController extends Controller
         if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
             // Delete old photo if it exists
             if ($student->photo_path) {
-                // Extract the filename from the URL or path
-                $oldPath = basename(parse_url($student->photo_path, PHP_URL_PATH));
-                if (Storage::disk('public')->exists('student_photos/' . $oldPath)) {
-                    Storage::disk('public')->delete('student_photos/' . $oldPath);
+                // Strip '/storage/' prefix if present to get the actual path
+                $oldPath = str_replace('/storage/', '', $student->photo_path);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
                 }
             }
             
@@ -118,7 +119,8 @@ class OutstandingStudentController extends Controller
             
             // Store in public disk directly
             $path = $photo->storeAs('student_photos', $fileName, 'public');
-            $data['photo_path'] = Storage::disk('public')->url($path);
+            // Use a consistent format with leading slash
+            $data['photo_path'] = '/storage/' . $path;
         }
 
         $student->update($data);
@@ -138,10 +140,10 @@ class OutstandingStudentController extends Controller
         
         // Delete the photo if it exists
         if ($student->photo_path) {
-            // Extract the filename from the URL or path
-            $oldPath = basename(parse_url($student->photo_path, PHP_URL_PATH));
-            if (Storage::disk('public')->exists('student_photos/' . $oldPath)) {
-                Storage::disk('public')->delete('student_photos/' . $oldPath);
+            // Strip '/storage/' prefix if present to get the actual path
+            $oldPath = str_replace('/storage/', '', $student->photo_path);
+            if (Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->delete($oldPath);
             }
         }
         
