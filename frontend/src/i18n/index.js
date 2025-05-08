@@ -35,6 +35,18 @@ i18n
     react: {
       useSuspense: true,
     },
+    
+    // Language direction detection
+    detection: {
+      order: ['querystring', 'cookie', 'localStorage', 'navigator'],
+      caches: ['cookie'],
+    },
   });
+
+// Set HTML direction based on language
+i18n.on('languageChanged', (lng) => {
+  document.documentElement.dir = i18n.dir(lng);
+  document.documentElement.lang = lng;
+});
 
 export default i18n;

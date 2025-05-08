@@ -110,7 +110,7 @@ export default function App() {
   // School information as a central source of truth
 
   const schoolInfo = {
-    name: "Argan High School",
+    name: "Argane High School",
     ministry: "Ministry of Education and Early Childhood Education",
     address: "Aska District, Tafraout Road, Tiznit, Morocco",
     phone: "(+212) 528-860-942",

@@ -8,9 +8,10 @@ import Ministry from "../assets/Ministry.png";
 export default function Header({ schoolName, ministry, tagline }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -20,10 +21,32 @@ export default function Header({ schoolName, ministry, tagline }) {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const toggleLangDropdown = () => {
+    setIsLangDropdownOpen(!isLangDropdownOpen);
+  };
+
   const handleLogout = async () => {
     await logout();
     setIsDropdownOpen(false);
     navigate('/');
+  };
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    // Update the document direction for RTL support (Arabic)
+    document.documentElement.dir = lng === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lng;
+    setIsLangDropdownOpen(false);
+  };
+
+  // Get current language name for display
+  const getCurrentLanguageName = () => {
+    switch (i18n.language) {
+      case 'en': return t('common.english');
+      case 'fr': return t('common.french');
+      case 'ar': return t('common.arabic');
+      default: return t('common.english');
+    }
   };
 
   return (
@@ -74,6 +97,42 @@ export default function Header({ schoolName, ministry, tagline }) {
           <Link to="/events" className="text-gray-800 hover:text-[#18bebc] font-medium">{t('nav.events')}</Link>
           <Link to="/library" className="text-gray-800 hover:text-[#18bebc] font-medium">{t('nav.library')}</Link>
           <Link to="/resources" className="text-gray-800 hover:text-[#18bebc] font-medium">{t('nav.resources')}</Link>
+          
+          {/* Language Switcher - Desktop */}
+          <div className="relative">
+            <button 
+              onClick={toggleLangDropdown}
+              className="text-gray-800 hover:text-[#18bebc] font-medium flex items-center"
+            >
+              {getCurrentLanguageName()}
+              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isLangDropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}></path>
+              </svg>
+            </button>
+            
+            {isLangDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-36 bg-white rounded-md shadow-lg py-1 z-10">
+                <button 
+                  onClick={() => changeLanguage('en')}
+                  className={`block w-full text-left px-4 py-2 text-sm ${i18n.language === 'en' ? 'bg-[#18bebc] text-white' : 'text-gray-700 hover:bg-gray-100'}`}
+                >
+                  {t('common.english')}
+                </button>
+                <button 
+                  onClick={() => changeLanguage('fr')}
+                  className={`block w-full text-left px-4 py-2 text-sm ${i18n.language === 'fr' ? 'bg-[#18bebc] text-white' : 'text-gray-700 hover:bg-gray-100'}`}
+                >
+                  {t('common.french')}
+                </button>
+                <button 
+                  onClick={() => changeLanguage('ar')}
+                  className={`block w-full text-left px-4 py-2 text-sm ${i18n.language === 'ar' ? 'bg-[#18bebc] text-white' : 'text-gray-700 hover:bg-gray-100'}`}
+                >
+                  {t('common.arabic')}
+                </button>
+              </div>
+            )}
+          </div>
           
           {isAuthenticated ? (
             <div className="relative">
@@ -132,27 +191,54 @@ export default function Header({ schoolName, ministry, tagline }) {
                 onClick={() => setIsMenuOpen(false)} 
                 className="text-gray-800 hover:text-[#18bebc] font-medium py-1">{t('nav.resources')}</Link>
               
-              {/* Conditional rendering for mobile menu */}
-              {isAuthenticated ? (
-                <>
-                  <Link to="/dashboard" 
-                    onClick={() => setIsMenuOpen(false)} 
-                    className="text-gray-800 hover:text-[#18bebc] font-medium py-1">{t('auth.dashboard')}</Link>
+              {/* Language Switcher - Mobile */}
+              <div className="py-1 border-t border-gray-100 mt-1">
+                <p className="text-sm text-gray-500 mb-2">{t('common.language')}</p>
+                <div className="flex space-x-2">
                   <button 
-                    onClick={() => {
-                      handleLogout();
-                      setIsMenuOpen(false);
-                    }}
-                    className="text-left text-gray-800 hover:text-[#18bebc] font-medium py-1"
+                    onClick={() => changeLanguage('en')}
+                    className={`px-3 py-1 text-sm rounded ${i18n.language === 'en' ? 'bg-[#18bebc] text-white' : 'bg-gray-200 text-gray-700'}`}
                   >
-                    {t('auth.logout')}
+                    {t('common.english')}
                   </button>
-                </>
-              ) : (
-                <Link to="/login" 
-                  onClick={() => setIsMenuOpen(false)} 
-                  className="bg-[#165b9f] text-white px-4 py-2 rounded-md hover:bg-[#18395a] transition w-full text-center">{t('auth.login')}</Link>
-              )}
+                  <button 
+                    onClick={() => changeLanguage('fr')}
+                    className={`px-3 py-1 text-sm rounded ${i18n.language === 'fr' ? 'bg-[#18bebc] text-white' : 'bg-gray-200 text-gray-700'}`}
+                  >
+                    {t('common.french')}
+                  </button>
+                  <button 
+                    onClick={() => changeLanguage('ar')}
+                    className={`px-3 py-1 text-sm rounded ${i18n.language === 'ar' ? 'bg-[#18bebc] text-white' : 'bg-gray-200 text-gray-700'}`}
+                  >
+                    {t('common.arabic')}
+                  </button>
+                </div>
+              </div>
+              
+              {/* Conditional rendering for mobile menu */}
+              <div className="pt-2 border-t border-gray-100">
+                {isAuthenticated ? (
+                  <>
+                    <Link to="/dashboard" 
+                      onClick={() => setIsMenuOpen(false)} 
+                      className="text-gray-800 hover:text-[#18bebc] font-medium py-1">{t('auth.dashboard')}</Link>
+                    <button 
+                      onClick={() => {
+                        handleLogout();
+                        setIsMenuOpen(false);
+                      }}
+                      className="text-left text-gray-800 hover:text-[#18bebc] font-medium py-1"
+                    >
+                      {t('auth.logout')}
+                    </button>
+                  </>
+                ) : (
+                  <Link to="/login" 
+                    onClick={() => setIsMenuOpen(false)} 
+                    className="bg-[#165b9f] text-white px-4 py-2 rounded-md hover:bg-[#18395a] transition block text-center">{t('auth.login')}</Link>
+                )}
+              </div>
             </nav>
             
             {/* Ministry Logo (Mobile) */}

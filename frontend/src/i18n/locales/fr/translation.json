@@ -1,10 +1,25 @@
 {
   "common": {
-    "welcome": "Bienvenue sur notre site",
+    "welcome": "Bienvenue sur notre site web",
     "language": "Langue",
     "english": "Anglais",
     "french": "Français",
-    "arabic": "Arabe"
+    "arabic": "Arabe",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "view": "Voir",
+    "download": "Télécharger",
+    "edit": "Modifier",
+    "update": "Mettre à jour",
+    "remove": "Retirer",
+    "loading": "Chargement...",
+    "close": "Fermer",
+    "errors": {
+      "generic": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "students": "Étudiants",
+    "view_details": "Voir les détails",
+    "try_again": "Réessayer"
   },
   "nav": {
     "home": "Accueil",
@@ -17,7 +32,7 @@
     "contact": "Contact",
     "newsEvents": "Actualités & Événements",
     "admissions": "Admissions",
-    "toggleMenu": "Basculer le menu"
+    "toggleMenu": "Afficher/masquer le menu"
   },
   "auth": {
     "login": "Connexion",
@@ -34,17 +49,17 @@
   },
   "hero": {
     "welcome": "Bienvenue à {{schoolName}}",
-    "tagline": "Excellence en Éducation Depuis {{foundedYear}}",
-    "applyNow": "Postulez Maintenant",
-    "learnMore": "En Savoir Plus",
-    "quickLinks": "Liens Rapides",
-    "registrationInfo": "Informations d'Inscription",
-    "academicResources": "Ressources Académiques",
-    "latestNews": "Dernières Actualités",
-    "contactAdmin": "Contacter l'Administration"
+    "tagline": "Excellence académique depuis {{foundedYear}}",
+    "applyNow": "Postulez maintenant",
+    "learnMore": "En savoir plus",
+    "quickLinks": "Liens rapides",
+    "registrationInfo": "Informations d'inscription",
+    "academicResources": "Ressources académiques",
+    "latestNews": "Dernières actualités",
+    "contactAdmin": "Contacter l'administration"
   },
   "footer": {
-    "quickLinks": "Liens Rapides",
+    "quickLinks": "Liens rapides",
     "resources": "Ressources",
     "accreditedBy": "Accrédité par {{ministry}}",
     "copyright": "© {{year}} {{name}}. Tous droits réservés."
@@ -54,22 +69,22 @@
     "fax": "Fax",
     "email": "Email",
     "form": {
-      "name": "Votre Nom",
-      "email": "Adresse Email",
+      "name": "Votre nom",
+      "email": "Adresse e-mail",
       "subject": "Sujet",
       "message": "Message",
-      "send": "Envoyer le Message",
+      "send": "Envoyer le message",
       "sending": "Envoi en cours..."
     },
     "success": {
-      "title": "Message Envoyé!",
+      "title": "Message envoyé !",
       "message": "Merci de nous avoir contactés. Nous vous répondrons bientôt.",
-      "sendAnother": "Envoyer un Autre Message"
+      "sendAnother": "Envoyer un autre message"
     },
     "errors": {
       "nameRequired": "Le nom est requis",
-      "emailRequired": "L'email est requis",
-      "emailInvalid": "Adresse email invalide",
+      "emailRequired": "L'e-mail est requis",
+      "emailInvalid": "Adresse e-mail invalide",
       "subjectRequired": "Le sujet est requis",
       "messageRequired": "Le message est requis",
       "messageLength": "Le message doit contenir au moins 10 caractères",
@@ -82,27 +97,27 @@
     "instagram": "Instagram"
   },
   "resources": {
-    "title": "Ressources Éducatives",
-    "upload": "Télécharger des Ressources",
-    "view": "Voir les Ressources",
+    "title": "Ressources éducatives",
+    "upload": "Téléverser des ressources",
+    "view": "Consulter les ressources",
     "curriculum": "Programme",
-    "schedule": "Horaire",
-    "bookCatalog": "Catalogue de Livres",
-    "upcomingEvents": "Événements à Venir",
-    "supportServices": "Services de Soutien"
+    "schedule": "Emploi du temps",
+    "bookCatalog": "Catalogue des livres",
+    "upcomingEvents": "Événements à venir",
+    "supportServices": "Services d'appui"
   },
   "quiz": {
     "student": {
-      "history": "Historique des Quiz",
-      "loading": "Chargement de votre historique de quiz...",
-      "noAttempts": "Vous n'avez pas encore fait de quiz."
+      "history": "Historique des quiz",
+      "loading": "Chargement de votre historique...",
+      "noAttempts": "Vous n'avez encore passé aucun quiz."
     },
     "table": {
       "quiz": "Quiz",
       "date": "Date",
-      "score": "Score",
+      "score": "Note",
       "result": "Résultat",
-      "viewResults": "Voir les Résultats"
+      "viewResults": "Voir les résultats"
     },
     "errors": {
       "loadFailed": "Échec du chargement de l'historique des quiz."
@@ -111,17 +126,568 @@
       "yourQuizzes": "Vos Quiz",
       "loading": "Chargement des quiz...",
       "loadError": "Échec du chargement des quiz. Veuillez réessayer.",
-      "noQuizzes": "Vous n'avez pas encore créé de quiz.",
-      "viewResults": "Voir les Résultats",
+      "noQuizzes": "Vous n'avez créé aucun quiz.",
+      "viewResults": "Voir les résultats",
       "edit": "Modifier",
       "table": {
         "title": "Titre",
-        "subject": "Sujet",
+        "subject": "Matière",
         "questions": "Questions",
         "createdOn": "Créé le",
         "attempts": "Tentatives",
         "actions": "Actions"
-           }
+      }
     }
+  },
+  "clubs": {
+    "management": {
+      "title": "Gestion des clubs",
+      "createNew": "Créer un nouveau club",
+      "noClubs": "Aucun club disponible. Créez-en un pour commencer.",
+      "selectClubPrompt": "Sélectionnez un club pour voir les détails et gérer les membres",
+      "form": {
+        "name": "Nom du club",
+        "namePlaceholder": "Entrez le nom du club",
+        "description": "Description",
+        "descriptionPlaceholder": "Entrez une description du club",
+        "activities": "Activités",
+        "activitiesPlaceholder": "Entrez les activités du club",
+        "meetingSchedule": "Horaire des réunions",
+        "meetingSchedulePlaceholder": "Exemple : Tous les lundis à 16h"
+      },
+      "details": {
+        "title": "Détails du club",
+        "description": "Description",
+        "activities": "Activités",
+        "meetingSchedule": "Horaire des réunions",
+        "notSpecified": "Non spécifié"
+      },
+      "members": {
+        "title": "Membres",
+        "add": "Ajouter un membre",
+        "empty": "Aucun membre dans ce club.",
+        "name": "Nom",
+        "role": "Rôle",
+        "actions": "Actions",
+        "form": {
+          "user": "Utilisateur",
+          "searchPlaceholder": "Rechercher un utilisateur par nom ou ID",
+          "role": "Rôle",
+          "noUsersFound": "Aucun utilisateur trouvé"
+        },
+        "roles": {
+          "member": "Membre",
+          "leader": "Responsable",
+          "assistant": "Assistant"
+        }
+      },
+      "modal": {
+        "createTitle": "Créer un nouveau club",
+        "editTitle": "Modifier le club",
+        "deleteTitle": "Supprimer le club",
+        "memberTitle": "Ajouter un membre au club",
+        "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ? Cette action est irréversible."
+      },
+      "buttons": {
+        "create": "Créer le club",
+        "update": "Mettre à jour le club",
+        "addMember": "Ajouter un membre"
+      },
+      "errors": {
+        "createFailed": "Échec de la création du club. Veuillez réessayer.",
+        "updateFailed": "Échec de la mise à jour du club. Veuillez réessayer.",
+        "deleteFailed": "Échec de la suppression du club. Veuillez réessayer.",
+        "loadFailed": "Échec du chargement des clubs. Veuillez réessayer.",
+        "memberLoadFailed": "Échec du chargement des membres du club",
+        "memberAddFailed": "Échec de l'ajout du membre. Veuillez réessayer.",
+        "memberUpdateFailed": "Échec de la mise à jour du rôle du membre",
+        "memberRemoveFailed": "Échec de la suppression du membre",
+        "selectUser": "Veuillez sélectionner un utilisateur valide dans les suggestions"
+      }
+    }
+  },
+  "subjects": {
+    "mathematics": "Mathématiques",
+    "physicsChemistry": "Physique-Chimie",
+    "arabic": "Arabe",
+    "historyGeography": "Histoire-Géographie",
+    "french": "Français",
+    "english": "Anglais",
+    "islamicEducation": "Éducation islamique",
+    "philosophies": "Philosophie"
+  },
+  "resourceViewer": {
+    "title": "Parcourir les ressources éducatives",
+    "filterResources": "Filtrer les ressources",
+    "alloSchoolResources": "Ressources AlloSchool",
+    "alloSchoolResourcesFor": "Ressources AlloSchool pour {{subject}} - {{yearLevel}} - {{specialization}}",
+    "noAlloSchoolResources": "Aucune ressource AlloSchool trouvée pour cette combinaison.",
+    "selectToViewAlloSchool": "Veuillez sélectionner une matière, un niveau scolaire et une spécialisation.",
+    "fullScreen": "Plein écran",
+    "exitFullScreen": "Quitter le plein écran",
+    "noResourcesFound": "Aucune ressource trouvée correspondant aux filtres sélectionnés.",
+    "alloSchool": "AlloSchool",
+    "errors": {
+      "loadFailed": "Échec du chargement des ressources. Veuillez réessayer plus tard."
+    },
+    "filters": {
+      "subject": "Matière",
+      "yearLevel": "Niveau scolaire",
+      "specialization": "Spécialisation",
+      "allSubjects": "Toutes les matières",
+      "allYears": "Tous les niveaux",
+      "general": "Général (Tous les niveaux)",
+      "tc": "Tronc Commun",
+      "firstYear": "1ère Bac",
+      "secondYear": "2ème Bac"
+    },
+    "table": {
+      "title": "Titre",
+      "subject": "Matière",
+      "yearLevel": "Niveau scolaire",
+      "specialization": "Spécialisation",
+      "uploaded": "Téléchargé",
+      "actions": "Actions"
+    }
+  },
+  "locale": "fr-FR",
+  "userManagement": {
+    "title": "Gestion des utilisateurs",
+    "description": "Créer et gérer les utilisateurs du système",
+    "filter": {
+      "allUsers": "Tous les utilisateurs",
+      "students": "Étudiants",
+      "teachers": "Enseignants",
+      "administrators": "Administrateurs",
+      "librarians": "Bibliothécaires"
+    },
+    "buttons": {
+      "addUser": "Ajouter un utilisateur",
+      "cancel": "Annuler",
+      "createUser": "Créer un utilisateur",
+      "updateUser": "Mettre à jour l'utilisateur",
+      "edit": "Modifier",
+      "resetPassword": "Réinitialiser le mot de passe",
+      "delete": "Supprimer"
+    },
+    "table": {
+      "name": "Nom",
+      "email": "Email",
+      "role": "Rôle",
+      "details": "Détails",
+      "actions": "Actions",
+      "noUsers": "Aucun utilisateur trouvé",
+      "loading": "Chargement des utilisateurs..."
+    },
+    "form": {
+      "name": "Nom",
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "passwordEditNote": "(laisser vide pour conserver le mot de passe actuel)",
+      "role": "Rôle",
+      "studentFields": {
+        "grade": "Classe",
+        "recoveryEmail": "Email de récupération"
+      },
+      "teacherFields": {
+        "department": "Département",
+        "position": "Poste",
+        "specialization": "Spécialisation"
+      },
+      "adminFields": {
+        "adminLevel": "Niveau administrateur",
+        "department": "Département"
+      },
+      "roleOptions": {
+        "student": "Étudiant",
+        "teacher": "Enseignant",
+        "administrator": "Administrateur",
+        "librarian": "Bibliothécaire"
+      },
+      "adminLevelOptions": {
+        "basic": "Basique",
+        "intermediate": "Intermédiaire",
+        "super": "Super administrateur"
+      }
+    },
+    "messages": {
+      "userCreated": "Utilisateur {{name}} créé avec succès. Mot de passe : {{password}}",
+      "userUpdated": "Utilisateur {{name}} mis à jour avec succès{{#if password}}. Nouveau mot de passe : {{password}}{{/if}}",
+      "userDeleted": "Utilisateur supprimé avec succès",
+      "passwordReset": "Mot de passe réinitialisé avec succès. Nouveau mot de passe : {{password}}",
+      "errors": {
+        "fetchFailed": "Échec du chargement des utilisateurs : {{error}}",
+        "operationFailed": "Opération utilisateur échouée : {{error}}",
+        "deleteFailed": "Échec de la suppression de l'utilisateur : {{error}}",
+        "resetFailed": "Échec de la réinitialisation du mot de passe : {{error}}"
+      }
+    },
+    "confirmations": {
+      "deleteUser": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+      "resetPassword": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de cet utilisateur ?"
+    },
+    "details": {
+      "grade": "Classe :",
+      "id": "ID :",
+      "dept": "Département :",
+      "level": "Niveau :"
+    }
+  },
+  "academics": {
+    "hero": {
+      "title": "Excellence académique",
+      "description": "Au Collège Argane à Tiznit, nous offrons une éducation complète préparant les élèves à réussir au Baccalauréat national et au-delà."
+    },
+    "overview": {
+      "title": "Notre approche académique",
+      "paragraph1": "La Thalassothermique Argane suit le programme marocain national avec un accent sur l'excellence académique et l'engagement des élèves.",
+      "paragraph2": "Bien que relativement nouvelle, notre école a rapidement acquis une solide réputation grâce à ses résultats académiques et son influence éducative.",
+      "stat1": "Années du secondaire supérieur",
+      "stat2": "Filières spécialisées",
+      "imageAlt": "Environnement académique"
+    },
+    "programsSection": {
+      "title": "Programmes académiques"
+    },
+    "programs": {
+      "pc": {
+        "title": "Filière PC (Physique-Chimie)",
+        "description": "Notre filière PC se concentre sur les concepts avancés de physique et de chimie avec des applications mathématiques rigoureuses."
+      },
+      "svt": {
+        "title": "Filière SVT (Sciences de la Vie et de la Terre)",
+        "description": "La filière SVT met l'accent sur la biologie, la géologie et les sciences écologiques."
+      },
+      "math": {
+        "title": "Filière Mathématiques",
+        "description": "Notre filière mathématique met l'accent sur les concepts avancés avec des applications en physique et chimie."
+      },
+      "literary": {
+        "title": "Filière littéraire",
+        "description": "Notre programme littéraire se concentre sur la littérature arabe et française, la philosophie et les humanités."
+      },
+      "arts": {
+        "title": "Arts & Culture",
+        "description": "Nous encourageons l'expression artistique à travers diverses activités culturelles."
+      },
+      "environmental": {
+        "title": "Éducation environnementale",
+        "description": "Nous insistons sur la sensibilisation environnementale à travers des projets spéciaux."
+      }
+    },
+    "curriculum": {
+      "title": "Structure du programme",
+      "common": {
+        "title": "Tronc commun",
+        "description": "La première année suit un programme commun pour tous les élèves, fournissant des bases solides.",
+        "point1": "Matières fondamentales : arabe, langues étrangères, éducation islamique",
+        "point2": "Mathématiques et sciences de base",
+        "point3": "Examens régionaux standardisés à la fin de l'année"
+      },
+      "first": {
+        "title": "Première bac",
+        "description": "Les élèves choisissent leurs filières en fonction de leurs centres d'intérêt.",
+        "point1": "Filières spécialisées (PC, SVT, littéraire, mathématiques)",
+        "point2": "Étude approfondie des matières spécifiques",
+        "point3": "Préparation aux études de la dernière année"
+      },
+      "second": {
+        "title": "Terminale bac",
+        "description": "La dernière année culmine avec l'examen national du Baccalauréat.",
+        "point1": "Étude avancée dans les filières spécialisées",
+        "point2": "Examens nationaux complets du Baccalauréat",
+        "point3": "Préparation à l'université et orientation professionnelle"
+      }
+    },
+    "faculty": {
+      "title": "Notre corps enseignant",
+      "principal": {
+        "name": "Abdel Fattah Ait Baahmed",
+        "position": "Principal du lycée"
+      },
+      "supervisor": {
+        "name": "Mohamed Rhaidour",
+        "position": "Superviseur"
+      },
+      "guardian1": {
+        "name": "Mohamed Asoufi",
+        "position": "Gardien général"
+      },
+      "guardian2": {
+        "name": "Mohamed Amkhad",
+        "position": "Gardien général"
+      },
+      "economizer": {
+        "name": "Ali Sadik",
+        "position": "Économe"
+      }
+    },
+    "achievements": {
+      "title": "Réalisations académiques",
+      "description": "Nos élèves participent à divers concours et projets, démontrant leur engagement et excellence académique.",
+      "item1": "Participation au concours « Jeunes journalistes pour l'environnement » de la Fondation Mohammed VI (2023)",
+      "item2": "Prix de la photographie environnementale - « Où aller ? Qui arrête l'étalement ? » (2023)",
+      "item3": "Cérémonie d'excellence pour les meilleurs élèves (2017)",
+      "item4": "Soirée artistico-éducative « Réussite pour tous » (2015)",
+      "item5": "Résultats académiques distingués dans les classements provinciaux"
+    },
+    "stats": {
+      "established": "Créé en",
+      "program": "Programme annuel",
+      "rankings": "Classements provinciaux",
+      "region": "Région Souss-Massa"
+    },
+    "activities": {
+      "title": "Activités de l'école",
+      "cultural": {
+        "title": "Événements culturels",
+        "description": "Nous organisons régulièrement des événements artistiques et culturels célébrant notre héritage."
+      },
+      "environmental": {
+        "title": "Initiatives environnementales",
+        "description": "Nos élèves participent à des concours et projets sur la pollution plastique et la durabilité locale."
+      },
+      "recognition": {
+        "title": "Reconnaissance académique",
+        "description": "Nous célébrons les performances exceptionnelles à travers des cérémonies honorant les meilleurs élèves."
+      }
+    },
+    "cta": {
+      "title": "Prêt à rejoindre le Lycée Argane ?",
+      "description": "Commencez votre parcours vers le Baccalauréat dans l'une des écoles distinguées de Tiznit.",
+      "button": "Contactez-nous"
+    }
+  },
+  "about": {
+    "title": "À propos du Lycée Arkan",
+    "subtitle": "Un lycée qualifiant distingué à Tiznit engagé dans l'excellence académique et l'engagement communautaire.",
+    "tabs": {
+      "overview": "Vue d'ensemble",
+      "history": "Histoire",
+      "programs": "Programmes éducatifs",
+      "achievements": "Performances",
+      "facilities": "Installations"
+    },
+    "overview": {
+      "welcome": "Bienvenue au Lycée Arkan",
+      "description1": "Le Lycée Arkan est un lycée qualifiant situé à Tiznit dans la région de Souss-Massa au Maroc.",
+      "description2": "Notre école propose le parcours éducatif standard marocain avec des classes pour le tronc commun, la première bac et la terminale bac.",
+      "stats": {
+        "years": {
+          "value": "3",
+          "label": "Années académiques"
+        },
+        "tracks": {
+          "value": "Plusieurs",
+          "label": "Filières académiques"
+        },
+        "established": {
+          "value": "2014s",
+          "label": "Année de création"
+        },
+        "activities": {
+          "value": "Nombreuses",
+          "label": "Activités culturelles"
+        }
+      }
+    },
+    "images": {
+      "schoolLogo": "Logo de l'école"
+    },
+    "history": {
+      "title": "Notre histoire",
+      "events": {
+        "establishment": {
+          "title": "2014s : Création",
+          "description": "Le Lycée Arkan a été créé dans les années 2014 comme un nouveau lycée qualifiant à Tiznit."
+        },
+        "cultural": {
+          "title": "2015 : Développement culturel",
+          "description": "L'école a organisé sa « Soirée artistico-éducative » sous le slogan « Réussite pour tous »."
+        },
+        "excellence": {
+          "title": "2017 : Reconnaissance d'excellence",
+          "description": "L'école a organisé une « Célébration d'excellence » honorant les meilleurs élèves."
+        },
+        "environmental": {
+          "title": "2023 : Engagement environnemental",
+          "description": "Les élèves ont participé au concours « Jeunes journalistes pour l'environnement » de la Fondation Mohammed VI."
+        }
+      }
+    },
+    "programs": {
+      "title": "Programmes éducatifs",
+      "description": "Suivant le système éducatif marocain standard, notre lycée propose un programme triennal du secondaire supérieur :",
+      "commonCore": {
+        "title": "Tronc commun",
+        "description": "La première année offre un programme commun à tous les élèves. À la fin, ils passent des examens régionaux standardisés et sont orientés selon leurs choix."
+      },
+      "firstBac": {
+        "title": "Première bac",
+        "description": "La deuxième année marque le début de la spécialisation dans les filières choisies :",
+        "streams": {
+          "literary": "Études générales/littéraires",
+          "mathematical": "Études mathématiques/scientifiques",
+          "experimental": "Sciences expérimentales (SVT)"
+        }
+      },
+      "secondBac": {
+        "title": "Deuxième bac",
+        "description": "La troisième année poursuit la spécialisation. Les élèves passent l'examen national du Baccalauréat."
+      }
+    },
+    "achievements": {
+      "title": "Performances et implication communautaire",
+      "academic": {
+        "title": "Excellence académique",
+        "description": "En 2017, notre lycée s'est distingué parmi les écoles secondaires de la province."
+      },
+      "cultural": {
+        "title": "Événements culturels",
+        "description": "L'école organise régulièrement des événements artistiques et éducatifs.",
+        "events": {
+          "evening": {
+            "title": "Soirée artistico-éducative (2015) :",
+            "description": "Recitations, danses amazighes, chansons et pièces de théâtre"
+          },
+          "excellence": {
+            "title": "Célébration d'excellence (2017) :",
+            "description": "Hommage aux meilleurs élèves avec une pièce morale sur l'éthique des examens"
+          },
+          "unesco": {
+            "title": "Journée mondiale de l’arganier UNESCO :",
+            "description": "Semaine culturelle avec expositions, peintures murales et conférences scientifiques"
+          }
+        }
+      },
+      "environmental": {
+        "title": "Engagement environnemental",
+        "description": "Nos élèves participent activement à la sensibilisation et à la conservation de l'environnement.",
+        "projects": {
+          "video": "Reportage vidéo sur les déchets plastiques à Tiznit (2023)",
+          "photo": "Photographie environnementale primée (2023)"
+        }
+      },
+      "community": {
+        "title": "Soutien communautaire",
+        "description": "Notre école bénéficie d'un fort soutien de la communauté et des parents.",
+        "initiatives": {
+          "notebooks": "En 2016/2017, les parents ont offert 1000 cahiers à distribuer aux élèves",
+          "media": "Cette initiative a été couverte par les médias locaux"
+        }
+      }
+    },
+    "facilities": {
+      "title": "Installations",
+      "description": "Notre école dispose d'espaces éducatifs essentiels pour soutenir l'apprentissage et les activités des élèves.",
+      "list": {
+        "auditorium": {
+          "title": "Auditorium/Salle de l'école",
+          "description": "Espace dédié aux événements culturels, cérémonies et représentations."
+        },
+        "classrooms": {
+          "title": "Salles de classe",
+          "description": "Classes modernes adaptées à tous les niveaux et filières."
+        },
+        "campus": {
+          "title": "Cour de l'école",
+          "description": "Espaces extérieurs pour les expositions et rassemblements."
+        },
+        "resources": {
+          "title": "Ressources pédagogiques",
+          "description": "Matériels pour soutenir le programme national dans toutes les filières."
+        }
+      }
+    },
+    "cta": {
+      "title": "Rejoignez notre communauté académique",
+      "description": "Le Lycée Arkan propose un environnement propice à l'excellence académique et au développement personnel.",
+      "buttons": {
+        "apply": "Postulez maintenant",
+        "contact": "Contactez-nous"
+      }
+    }
+  },
+  "outstanding_students": {
+    "title": "Étudiants méritants",
+    "subtitle": "Reconnaissance des meilleurs élèves pour leurs performances académiques exceptionnelles, organisés par classe.",
+    "empty_message": "Aucun étudiant méritant à afficher pour le moment.",
+    "default_achievement": "Performance académique exceptionnelle"
+  },
+  "student_details": {
+    "student_id": "ID de l'étudiant",
+    "grade": "Classe",
+    "achievement": "Performance",
+    "recognition": "Reconnaissance",
+    "recognition_text": "Cet élève a démontré une performance académique exceptionnelle, obtenant la place #{{rank}} en {{grade}} avec une note remarquable de {{mark}}/20."
+  },
+  "grades": {
+    "tc_sciences": "TC - Sciences",
+    "tc_letters": "TC - Lettres et Sciences Humaines",
+    "first_bac_sciences": "1BAC - Sciences Expérimentales",
+    "first_bac_letters": "1BAC - Lettres et Sciences Humaines",
+    "second_bac_pc": "2BAC - PC (Physique-Chimie)",
+    "second_bac_svt": "2BAC - SVT (Sciences de la Vie et de la Terre)",
+    "second_bac_humanities": "2BAC - Sciences Humaines",
+    "second_bac_letters": "2BAC - Lettres"
+  },
+  "outstandingStudents": {
+    "title": "Gestion des étudiants méritants",
+    "subtitle": "Ajouter, modifier ou supprimer des étudiants de la vitrine des étudiants méritants.",
+    "addTitle": "Ajouter un nouvel étudiant méritant",
+    "editTitle": "Modifier l'étudiant : {{name}}",
+    "currentStudents": "Étudiants méritants actuels",
+    "noStudents": "Aucun étudiant méritant ajouté pour le moment."
+  },
+  "form": {
+    "studentId": "ID de l'étudiant",
+    "studentIdPlaceholder": "Entrez l'ID de l'étudiant",
+    "name": "Nom",
+    "namePlaceholder": "Entrez le nom de l'étudiant",
+    "grade": "Classe",
+    "gradePlaceholder": "Entrez la classe (exemple : 2BAC-PC1)",
+    "gradeExamples": "Exemples : TC-S1, 1BAC-SE2, 2BAC-PC1, etc.",
+    "mark": "Note (/20)",
+    "markPlaceholder": "Entrez la note (sur 20)",
+    "achievement": "Performance (Facultatif)",
+    "achievementPlaceholder": "Entrez une réalisation spécifique ou laissez vide",
+    "photo": "Photo de l'étudiant (Facultatif)",
+    "photoRequirements": "JPG, JPEG ou PNG. Max 2 Mo.",
+    "addStudent": "Ajouter l'étudiant",
+    "updateStudent": "Mettre à jour l'étudiant",
+    "adding": "Ajout en cours...",
+    "updating": "Mise à jour en cours...",
+    "cancel": "Annuler"
+  },
+  "table": {
+    "photo": "Photo",
+    "studentId": "ID de l'étudiant",
+    "name": "Nom",
+    "grade": "Classe",
+    "mark": "Note",
+    "achievement": "Performance",
+    "actions": "Actions",
+    "na": "N/A"
+  },
+  "actions": {
+    "edit": "Modifier",
+    "remove": "Supprimer"
+  },
+  "errors": {
+    "load_failed": "Échec du chargement des étudiants méritants",
+    "loadStudents": "Échec du chargement des étudiants méritants",
+    "deleteStudent": "Échec de la suppression de l'étudiant. Veuillez réessayer.",
+    "photoType": "Veuillez sélectionner un fichier image valide (JPG, JPEG ou PNG)",
+    "photoSize": "La taille du fichier image ne doit pas dépasser 2 Mo",
+    "markInvalid": "La note doit être un nombre valide",
+    "markRange": "La note doit être entre 0 et 20"
+  },
+  "success": {
+    "addStudent": "Étudiant ajouté avec succès !",
+    "updateStudent": "Étudiant mis à jour avec succès !",
+    "deleteStudent": "Étudiant supprimé avec succès"
+  },
+  "confirmations": {
+    "deleteStudent": "Êtes-vous sûr de vouloir supprimer {{name}} des étudiants méritants ?"
   }
 }
