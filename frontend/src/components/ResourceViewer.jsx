@@ -94,55 +94,55 @@ export default function ResourceViewer() {
     tc: {
       Mathematics: {
         science:
-          "https://www.alloschool.com/index.ph%70/course/mathematiques-tronc-commun-sciences-biof",
+          "https://www.alloschool.com/course/mathematiques-tronc-commun-sciences-biof",
         letter:
-          "https://www.alloschool.com/index.ph%70/course/alriadhiat-aljtha-almshtrk-aadab-oalom-insania",
+          "https://www.alloschool.com/course/alriadhiat-aljtha-almshtrk-aadab-oalom-insania",
       },
       "Physics & chemistry": {
         science:
-          "https://www.alloschool.com/index.ph%70/course/physique-et-chimie-tronc-commun-sciences-biof",
+          "https://www.alloschool.com/course/physique-et-chimie-tronc-commun-sciences-biof",
       },
       SVT: {
         science:
-          "https://www.alloschool.com/index.ph%70/course/sciences-de-la-vie-et-de-la-terre-svt-tronc-commun-sciences",
+          "https://www.alloschool.com/course/sciences-de-la-vie-et-de-la-terre-svt-tronc-commun-sciences",
         letter:
-          "https://www.alloschool.com/index.ph%70/course/alom-alhiaa-oalardh-aljtha-mshtrk-aadab-oalom-insania",
+          "https://www.alloschool.com/course/alom-alhiaa-oalardh-aljtha-mshtrk-aadab-oalom-insania",
       },
       Arabic: {
         science:
-          "https://www.alloschool.com/index.ph%70/course/allgha-alarbia-aljtha-almshtrk-alom",
+          "https://www.alloschool.com/course/allgha-alarbia-aljtha-almshtrk-alom",
         letter:
-          "https://www.alloschool.com/index.ph%70/course/allgha-alarbia-aljtha-almshtrk-aadab-oalom-insania",
+          "https://www.alloschool.com/course/allgha-alarbia-aljtha-almshtrk-aadab-oalom-insania",
       },
       "History and Geography": {
         science:
-          "https://www.alloschool.com/index.ph%70/course/alijtmaaiat-aljtha-almshtrk-alom",
+          "https://www.alloschool.com/course/alijtmaaiat-aljtha-almshtrk-alom",
         letter:
-          "https://www.alloschool.com/index.ph%70/course/alijtmaaiat-aljtha-mshtrk-aadab-oalom-insania",
+          "https://www.alloschool.com/course/alijtmaaiat-aljtha-mshtrk-aadab-oalom-insania",
       },
       French: {
         science:
-          "https://www.alloschool.com/index.ph%70/course/francais-tronc-commun-sciences",
+          "https://www.alloschool.com/course/francais-tronc-commun-sciences",
         letter:
-          "https://www.alloschool.com/index.ph%70/course/francais-tronc-commun-lettres-et-sciences-humaines",
+          "https://www.alloschool.com/course/francais-tronc-commun-lettres-et-sciences-humaines",
       },
       English: {
         science:
-          "https://www.alloschool.com/index.ph%70/course/anglais-tronc-commun-sciences",
+          "https://www.alloschool.com/course/anglais-tronc-commun-sciences",
         letter:
-          "https://www.alloschool.com/index.ph%70/course/anglais-tronc-commun-lettres-et-sciences-humaines",
+          "https://www.alloschool.com/course/anglais-tronc-commun-lettres-et-sciences-humaines",
       },
       "Islamic Education": {
         science:
-          "https://www.alloschool.com/index.ph%70/course/altrbia-alislamia-aljtha-almshtrk-alom",
+          "https://www.alloschool.com/course/altrbia-alislamia-aljtha-almshtrk-alom",
         letter:
-          "https://www.alloschool.com/index.ph%70/course/altrbia-alislamia-aljtha-mshtrk-aadab-oalom-insania",
+          "https://www.alloschool.com/course/altrbia-alislamia-aljtha-mshtrk-aadab-oalom-insania",
       },
       Philosophies: {
         science:
-          "https://www.alloschool.com/index.ph%70/course/alflsfa-aljtha-almshtrk-alom",
+          "https://www.alloschool.com/course/alflsfa-aljtha-almshtrk-alom",
         letter:
-          "https://www.alloschool.com/index.ph%70/course/alflsfa-aljtha-mshtrk-aadab-oalom-insania",
+          "https://www.alloschool.com/course/alflsfa-aljtha-mshtrk-aadab-oalom-insania",
       },
     },
 
@@ -175,8 +175,24 @@ export default function ResourceViewer() {
         sm: "https://www.alloschool.com/course/allgha-alfrnsia-alaola-bakaloria-alom-riadhia-biof",
         sh: "https://www.alloschool.com/course/allgha-alfrnsia-alaola-bakaloria-adab-alom-ansanit-biof",
       },
+      English: {
+        se: "https://www.alloschool.com/course/anglais-1er-bac-sciences-experimentales-biof",
+        sm: "https://www.alloschool.com/course/anglais-1er-bac-sciences-mathematiques-biof",
+        sh: "https://www.alloschool.com/course/anglais-1er-bac-sciences-humaines-biof",
+      },
+      "Islamic Education": {
+        se: "https://www.alloschool.com/course/altrbia-alislamia-alaola-bakaloria-alom-tjribia-biof",
+        sm: "https://www.alloschool.com/course/altrbia-alislamia-alaola-bakaloria-alom-riadhia-biof",
+        sh: "https://www.alloschool.com/course/altrbia-alislamia-alaola-bakaloria-adab-alom-ansanit-biof",
+      },
+      Philosophies: {
+        se: "https://www.alloschool.com/course/alflsfa-alaola-bakaloria-alom-tjribia-biof",
+        sm: "https://www.alloschool.com/course/alflsfa-alaola-bakaloria-alom-riadhia-biof",
+        sh: "https://www.alloschool.com/course/alflsfa-alaola-bakaloria-adab-alom-ansanit-biof",
+      },
     },
 
+    // 2BAC (Second Year)
     "2bac": {
       Mathematics: {
         smb1: "https://www.alloschool.com/course/alriadhiat-althania-bakaloria-alom-riadhia-a-biof",
@@ -217,6 +233,30 @@ export default function ResourceViewer() {
         smb2: "https://www.alloschool.com/course/allgha-alfrnsia-althania-bakaloria-alom-riadhia-b-biof",
         spc: "https://www.alloschool.com/course/allgha-alfrnsia-althania-bakaloria-alom-fiziai-biof",
         svt: "https://www.alloschool.com/course/allgha-alfrnsia-althania-bakaloria-alom-alhiat-walarth-biof",
+      },
+      English: {
+        al: "https://www.alloschool.com/course/anglais-2eme-annee-bac-lettres-biof",
+        sh: "https://www.alloschool.com/course/anglais-2eme-annee-bac-sciences-humaines-biof",
+        smb1: "https://www.alloschool.com/course/anglais-2eme-annee-bac-sciences-mathematiques-a-biof",
+        smb2: "https://www.alloschool.com/course/anglais-2eme-annee-bac-sciences-mathematiques-b-biof",
+        spc: "https://www.alloschool.com/course/anglais-2eme-annee-bac-sciences-physiques-biof",
+        svt: "https://www.alloschool.com/course/anglais-2eme-annee-bac-sciences-vie-et-terre-biof",
+      },
+      "Islamic Education": {
+        al: "https://www.alloschool.com/course/altrbia-alislamia-althania-bakaloria-aladab-biof",
+        sh: "https://www.alloschool.com/course/altrbia-alislamia-althania-bakaloria-alom-ansanit-biof",
+        smb1: "https://www.alloschool.com/course/altrbia-alislamia-althania-bakaloria-alom-riadhia-a-biof",
+        smb2: "https://www.alloschool.com/course/altrbia-alislamia-althania-bakaloria-alom-riadhia-b-biof",
+        spc: "https://www.alloschool.com/course/altrbia-alislamia-althania-bakaloria-alom-fiziai-biof",
+        svt: "https://www.alloschool.com/course/altrbia-alislamia-althania-bakaloria-alom-alhiat-walarth-biof",
+      },
+      Philosophies: {
+        al: "https://www.alloschool.com/course/alflsfa-althania-bakaloria-aladab-biof",
+        sh: "https://www.alloschool.com/course/alflsfa-althania-bakaloria-alom-ansanit-biof",
+        smb1: "https://www.alloschool.com/course/alflsfa-althania-bakaloria-alom-riadhia-a-biof",
+        smb2: "https://www.alloschool.com/course/alflsfa-althania-bakaloria-alom-riadhia-b-biof",
+        spc: "https://www.alloschool.com/course/alflsfa-althania-bakaloria-alom-fiziai-biof",
+        svt: "https://www.alloschool.com/course/alflsfa-althania-bakaloria-alom-alhiat-walarth-biof",
       },
     },
   };

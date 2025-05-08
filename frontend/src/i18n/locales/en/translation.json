@@ -1,0 +1,9 @@
+{
+   "common": {
+     "welcome": "Welcome to our website",
+     "language": "Language",
+     "english": "English",
+     "french": "French",
+     "arabic": "Arabic"
+   }
+ }
