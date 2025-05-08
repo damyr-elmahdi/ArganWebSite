@@ -19,7 +19,7 @@ class ExamController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        
+
         if ($user->role === 'administrator') {
             // Administrators can see all exams
             $exams = Exam::latest()->get();
@@ -29,7 +29,7 @@ class ExamController extends Controller
             if (!$student) {
                 return response()->json(['message' => 'Student profile not found'], 404);
             }
-            
+
             $exams = Exam::where('grade', $student->grade)
                 ->where('class_name', $student->class_code) // Changed from class_name to class_code to match the students table
                 ->latest()
@@ -37,7 +37,7 @@ class ExamController extends Controller
         } else {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-        
+
         return response()->json($exams);
     }
 
@@ -56,16 +56,16 @@ class ExamController extends Controller
             'subject' => 'required|string|max:50',
             'description' => 'nullable|string',
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        
+
         // Store the file
         $file = $request->file('file');
         $fileName = time() . '_' . $file->getClientOriginalName();
         $filePath = $file->storeAs('exams', $fileName, 'public');
-        
+
         // Create the exam
         $exam = Exam::create([
             'title' => $request->title,
@@ -76,7 +76,7 @@ class ExamController extends Controller
             'subject' => $request->subject,
             'description' => $request->description,
         ]);
-        
+
         return response()->json($exam, 201);
     }
 
@@ -86,9 +86,9 @@ class ExamController extends Controller
     public function show($id)
     {
         $exam = Exam::findOrFail($id);
-        
+
         $user = Auth::user();
-        
+
         // Check if user is authorized to view this exam
         if ($user->role === 'student') {
             $student = Student::where('user_id', $user->id)->first();
@@ -96,7 +96,7 @@ class ExamController extends Controller
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
         }
-        
+
         return response()->json($exam);
     }
 
@@ -106,7 +106,7 @@ class ExamController extends Controller
     public function update(Request $request, $id)
     {
         $exam = Exam::findOrFail($id);
-        
+
         // Validate the incoming request
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
@@ -117,24 +117,24 @@ class ExamController extends Controller
             'subject' => 'required|string|max:50',
             'description' => 'nullable|string',
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        
+
         // Update file if a new one is provided
         if ($request->hasFile('file')) {
             // Delete the old file
             Storage::disk('public')->delete($exam->file_path);
-            
+
             // Store the new file
             $file = $request->file('file');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $filePath = $file->storeAs('exams', $fileName, 'public');
-            
+
             $exam->file_path = $filePath;
         }
-        
+
         // Update exam details
         $exam->title = $request->title;
         $exam->grade = $request->grade;
@@ -143,7 +143,7 @@ class ExamController extends Controller
         $exam->subject = $request->subject;
         $exam->description = $request->description;
         $exam->save();
-        
+
         return response()->json($exam);
     }
 
@@ -153,16 +153,16 @@ class ExamController extends Controller
     public function destroy($id)
     {
         $exam = Exam::findOrFail($id);
-        
+
         // Delete the file
         Storage::disk('public')->delete($exam->file_path);
-        
+
         // Delete the exam record
         $exam->delete();
-        
+
         return response()->json(null, 204);
     }
-    
+
     /**
      * Download the exam file.
      */
@@ -170,7 +170,7 @@ class ExamController extends Controller
     {
         $exam = Exam::findOrFail($id);
         $user = Auth::user();
-        
+
         // Check if user is authorized to download this exam
         if ($user->role === 'student') {
             $student = Student::where('user_id', $user->id)->first();
@@ -178,11 +178,11 @@ class ExamController extends Controller
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
         }
-        
+
         if (!Storage::disk('public')->exists($exam->file_path)) {
             return response()->json(['message' => 'File not found'], 404);
         }
-        
+
         return response()->download(storage_path('app/public/' . $exam->file_path), $exam->title . '.pdf');
     }
 
@@ -193,7 +193,7 @@ class ExamController extends Controller
     {
         $exam = Exam::findOrFail($id);
         $user = Auth::user();
-        
+
         // Check if user is authorized to view this exam
         if ($user->role === 'student') {
             $student = Student::where('user_id', $user->id)->first();
@@ -201,23 +201,22 @@ class ExamController extends Controller
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
         }
-        
+
         if (!Storage::disk('public')->exists($exam->file_path)) {
             return response()->json(['message' => 'File not found'], 404);
         }
-        
-        // Use StreamedResponse for better handling of PDF files
-        $filePath = storage_path('app/public/' . $exam->file_path);
-        $headers = [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $exam->title . '.pdf"',
-            'Cache-Control' => 'public, max-age=60',
-        ];
-        
-        return new StreamedResponse(function() use ($filePath) {
-            $handle = fopen($filePath, 'rb');
-            fpassthru($handle);
-            fclose($handle);
-        }, 200, $headers);
+
+        // Use file response instead of StreamedResponse for better browser compatibility
+        return response()->file(
+            storage_path('app/public/' . $exam->file_path),
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $exam->title . '.pdf"',
+                'Cache-Control' => 'public, max-age=60',
+                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Methods' => 'GET',
+                'X-Frame-Options' => 'ALLOWALL',
+            ]
+        );
     }
 }

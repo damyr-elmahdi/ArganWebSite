@@ -24,7 +24,20 @@ class PdfAuthentication
                 return $next($request);
             }
             
-            // Otherwise check for token as query parameter
+            // Otherwise check for token in Authorization header (Bearer token)
+            $bearerToken = $request->bearerToken();
+            if ($bearerToken) {
+                $accessToken = PersonalAccessToken::findToken($bearerToken);
+                
+                if ($accessToken) {
+                    // Set the authenticated user
+                    $user = $accessToken->tokenable;
+                    Auth::login($user);
+                    return $next($request);
+                }
+            }
+            
+            // Fallback to query parameter token if no bearer token
             if ($request->filled('token')) {
                 $token = $request->query('token');
                 

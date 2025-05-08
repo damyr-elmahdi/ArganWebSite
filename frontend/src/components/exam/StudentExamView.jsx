@@ -11,6 +11,7 @@ const StudentExamView = () => {
   const [showPdfViewer, setShowPdfViewer] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
   const [subjects, setSubjects] = useState([]);
+  const [pdfBlob, setPdfBlob] = useState(null);
 
   useEffect(() => {
     fetchExams();
@@ -78,13 +79,34 @@ const StudentExamView = () => {
   };
 
   const openPdfViewer = async (exam) => {
-    setSelectedExam(exam);
-    setShowPdfViewer(true);
+    try {
+      // Fetch the PDF file directly using axios
+      const response = await axios.get(`/api/exams/${exam.id}/view`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        responseType: 'blob'
+      });
+      
+      // Create a blob URL for the PDF
+      const pdfBlobUrl = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      setPdfBlob(pdfBlobUrl);
+      setSelectedExam(exam);
+      setShowPdfViewer(true);
+    } catch (error) {
+      console.error('Error loading PDF:', error);
+      toast.error('Failed to load PDF viewer');
+    }
   };
 
   const closePdfViewer = () => {
     setShowPdfViewer(false);
     setSelectedExam(null);
+    // Clean up the blob URL
+    if (pdfBlob) {
+      window.URL.revokeObjectURL(pdfBlob);
+      setPdfBlob(null);
+    }
   };
 
   // Filter exams based on search term and selected subject
@@ -106,12 +128,6 @@ const StudentExamView = () => {
     acc[exam.subject].push(exam);
     return acc;
   }, {});
-
-  // Generate a secure PDF viewer URL with authorization token
-  const getPdfViewUrl = (examId) => {
-    const token = localStorage.getItem('token');
-    return `/api/exams/${examId}/view?token=${encodeURIComponent(token)}`;
-  };
 
   return (
     <div className="container mx-auto p-4">
@@ -229,7 +245,7 @@ const StudentExamView = () => {
       )}
 
       {/* PDF Viewer Modal */}
-      {showPdfViewer && selectedExam && (
+      {showPdfViewer && selectedExam && pdfBlob && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-5xl h-5/6 flex flex-col">
             <div className="flex items-center justify-between p-4 border-b">
@@ -251,12 +267,23 @@ const StudentExamView = () => {
               </div>
             </div>
             <div className="flex-1 overflow-hidden">
-              <iframe
-                src={getPdfViewUrl(selectedExam.id)}
-                className="w-full h-full border-none"
-                title={`PDF Viewer - ${selectedExam.title}`}
-                sandbox="allow-same-origin allow-scripts"
-              ></iframe>
+              {/* Use object tag for PDF instead of iframe */}
+              <object
+                data={pdfBlob}
+                type="application/pdf"
+                className="w-full h-full"
+              >
+                <div className="flex flex-col items-center justify-center h-full bg-gray-100">
+                  <p className="text-gray-700 mb-4">Unable to display PDF. Please download the file instead.</p>
+                  <button
+                    onClick={() => downloadExam(selectedExam.id)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
+                  >
+                    <Download size={18} className="mr-2" />
+                    Download PDF
+                  </button>
+                </div>
+              </object>
             </div>
           </div>
         </div>
