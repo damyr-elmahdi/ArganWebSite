@@ -330,6 +330,132 @@
         "level": "Level:"
       }
     },
+    
+    "academics": {
+    "hero": {
+      "title": "Academic Excellence",
+      "description": "At Argane Secondary School in Tiznit, we provide a comprehensive education that prepares students for success in the national Baccalauréat and beyond."
+    },
+    "overview": {
+      "title": "Our Academic Approach",
+      "paragraph1": "Argane Secondary School (الثانوية التأهيلية أركان) follows the Moroccan national curriculum with a focus on academic excellence and student engagement. Our lycée offers the standard three-year upper secondary program with specialty streams.",
+      "paragraph2": "Although relatively new, our school has quickly earned a distinguished reputation among the province's secondary schools for both academic results and educational influence. We emphasize community engagement and celebrate student achievement.",
+      "stat1": "Years of Upper Secondary",
+      "stat2": "Specialized Streams",
+      "imageAlt": "Academic Environment"
+    },
+    "programsSection": {
+      "title": "Academic Programs"
+    },
+    "programs": {
+      "pc": {
+        "title": "PC Stream (Physics-Chemistry)",
+        "description": "Our PC stream focuses on advanced physics and chemistry concepts with rigorous mathematical applications. Students develop strong analytical and experimental skills in our laboratories, preparing them for university studies in engineering and physical sciences."
+      },
+      "svt": {
+        "title": "SVT Stream (Life & Earth Sciences)",
+        "description": "The SVT stream emphasizes biology, geology, and ecological sciences. Students engage in laboratory work and field studies, preparing for university programs in medicine, biology, environmental science, and related fields."
+      },
+      "math": {
+        "title": "Mathematics Stream",
+        "description": "The mathematics stream at Argane Secondary School emphasizes advanced mathematical concepts with applications in physics and chemistry. This rigorous program prepares students for competitive university programs."
+      },
+      "literary": {
+        "title": "Literary Stream",
+        "description": "Our literary program focuses on Arabic and French literature, philosophy, and humanities. Students develop critical thinking and communication skills while exploring cultural and historical texts."
+      },
+      "arts": {
+        "title": "Arts & Culture",
+        "description": "Our school promotes artistic expression through various cultural activities including Amazigh dance, theater, music, and visual arts. Students showcase their talents in regular performances and exhibitions."
+      },
+      "environmental": {
+        "title": "Environmental Education",
+        "description": "We emphasize environmental awareness through special projects and activities. Our students participate in environmental journalism competitions and community initiatives related to sustainability."
+      }
+    },
+    "curriculum": {
+      "title": "Curriculum Structure",
+      "common": {
+        "title": "Common Core (Tronc Commun)",
+        "description": "The first year of upper secondary follows a common curriculum for all students, providing foundational knowledge across core subjects.",
+        "point1": "Core subjects including Arabic, foreign languages, and Islamic education",
+        "point2": "Foundation mathematics and sciences",
+        "point3": "Standardized regional exams at year's end"
+      },
+      "first": {
+        "title": "First Baccalaureate (Première)",
+        "description": "Students select specialized streams based on interests and aptitudes, beginning focused study in their chosen field.",
+        "point1": "Specialized tracks (PC, SVT, literary, mathematics)",
+        "point2": "In-depth study of stream-specific subjects",
+        "point3": "Preparation for final year studies"
+      },
+      "second": {
+        "title": "Second Baccalaureate (Terminale)",
+        "description": "The final year of lycée culminates in the national Baccalauréat examination, which determines university eligibility.",
+        "point1": "Advanced study in specialized streams",
+        "point2": "Comprehensive national Baccalauréat exams",
+        "point3": "University preparation and career guidance"
+      }
+    },
+    "faculty": {
+      "title": "Our Faculty",
+      "principal": {
+        "name": "Abdel Fattah Ait Baahmed",
+        "position": "High School Principal"
+      },
+      "supervisor": {
+        "name": "Mohamed Rhaidour",
+        "position": "Supervisor"
+      },
+      "guardian1": {
+        "name": "Mohamed Asoufi",
+        "position": "General Guardian"
+      },
+      "guardian2": {
+        "name": "Mohamed Amkhad",
+        "position": "General Guardian"
+      },
+      "economizer": {
+        "name": "Ali Sadik",
+        "position": "Economizer"
+      }
+    },
+    "achievements": {
+      "title": "Academic Achievements",
+      "description": "Our students have participated in various competitions and projects, demonstrating their academic abilities and commitment to excellence. We regularly celebrate student achievements through special ceremonies and events.",
+      "item1": "Mohammed VI Foundation's 'Young Journalists for the Environment' Competition Entry (2023)",
+      "item2": "Environmental Photography Prize - 'Where to? Who Stops the Sprawl?' (2023)",
+      "item3": "Celebration of Excellence Ceremony for Top Academic Achievers (2017)",
+      "item4": "Artistic-Educational Evening 'Success for All' Performance (2015)",
+      "item5": "Distinguished Academic Results in Provincial Rankings"
+    },
+    "stats": {
+      "established": "Established In",
+      "program": "Year Program",
+      "rankings": "Provincial Rankings",
+      "region": "Souss-Massa Region"
+    },
+    "activities": {
+      "title": "School Activities",
+      "cultural": {
+        "title": "Cultural Events",
+        "description": "We regularly host artistic and cultural events featuring Amazigh (Ahwash) dances, songs, plays in both Amazigh and French, and other performances to celebrate our heritage."
+      },
+      "environmental": {
+        "title": "Environmental Initiatives",
+        "description": "Our students participate in environmental journalism competitions and projects, including work on plastic pollution and sustainability in our local community."
+      },
+      "recognition": {
+        "title": "Academic Recognition",
+        "description": "We celebrate student achievement through special ceremonies that honor top performers from all grade levels and recognize excellence in academics and extracurricular activities."
+      }
+    },
+    "cta": {
+      "title": "Ready to Join Arganee Secondary School?",
+      "description": "Begin your journey toward the Baccalauréat at one of Tiznit's distinguished secondary schools.",
+      "button": "Contact Us"
+    }
+  },
 "about": {
         "title": "About Arkan Secondary School",
         "subtitle": "A distinguished lycée qualifiant in Tiznit committed to academic excellence and community engagement.",

@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import argan from "../assets/argan.png";
 import Ministry from "../assets/Ministry.png";
+
 export default function About() {
   const [activeTab, setActiveTab] = useState('overview');
+  const { t } = useTranslation();
 
   return (
     <main className="flex-grow bg-gray-50">
       {/* Hero Banner */}
       <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">About Arkan Secondary School</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('about.title')}</h1>
           <p className="text-lg max-w-2xl">
-            A distinguished lycée qualifiant in Tiznit committed to academic excellence and community engagement.
+            {t('about.subtitle')}
           </p>
         </div>
       </section>
@@ -27,7 +30,7 @@ export default function About() {
                 activeTab === 'overview' ? 'bg-teal-100 text-[#18bebc]' : 'text-gray-600 hover:text-[#18bebc]'
               }`}
             >
-              Overview
+              {t('about.tabs.overview')}
             </button>
             <button 
               onClick={() => setActiveTab('history')}
@@ -35,7 +38,7 @@ export default function About() {
                 activeTab === 'history' ? 'bg-teal-100 text-[#18bebc]' : 'text-gray-600 hover:text-[#18bebc]'
               }`}
             >
-              History
+              {t('about.tabs.history')}
             </button>
             <button 
               onClick={() => setActiveTab('programs')}
@@ -43,7 +46,7 @@ export default function About() {
                 activeTab === 'programs' ? 'bg-teal-100 text-[#18bebc]' : 'text-gray-600 hover:text-[#18bebc]'
               }`}
             >
-              Educational Programs
+              {t('about.tabs.programs')}
             </button>
             <button 
               onClick={() => setActiveTab('achievements')}
@@ -51,7 +54,7 @@ export default function About() {
                 activeTab === 'achievements' ? 'bg-teal-100 text-[#18bebc]' : 'text-gray-600 hover:text-[#18bebc]'
               }`}
             >
-              Achievements
+              {t('about.tabs.achievements')}
             </button>
             <button 
               onClick={() => setActiveTab('facilities')}
@@ -59,7 +62,7 @@ export default function About() {
                 activeTab === 'facilities' ? 'bg-teal-100 text-[#18bebc]' : 'text-gray-600 hover:text-[#18bebc]'
               }`}
             >
-              Facilities
+              {t('about.tabs.facilities')}
             </button>
           </div>
         </div>
@@ -70,40 +73,35 @@ export default function About() {
         {activeTab === 'overview' && (
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Welcome to Arkan Secondary School</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('about.overview.welcome')}</h2>
               <p className="text-gray-600 mb-4">
-                Arkan Secondary School (الثانوية التأهيلية أركان) is an upper-secondary lycée qualifiant 
-                located in the city of Tiznit in the Souss-Massa region of Morocco. Established in the 2014s, 
-                our school has quickly earned a distinguished place among the province's secondary schools 
-                in terms of academic results and educational influence.
+                {t('about.overview.description1')}
               </p>
               <p className="text-gray-600 mb-4">
-                Our school offers the standard Moroccan educational pathway with classes for the common core 
-                (جذوع مشتركة), Premier Baccalauréat (1ère bac), and Terminal Baccalauréat (2ème bac). We are 
-                committed to academic excellence, cultural engagement, and community development.
+                {t('about.overview.description2')}
               </p>
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div className="bg-gray-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-[#18bebc]">3</div>
-                  <div className="text-sm text-gray-600">Academic Years</div>
+                  <div className="text-2xl font-bold text-[#18bebc]">{t('about.overview.stats.years.value')}</div>
+                  <div className="text-sm text-gray-600">{t('about.overview.stats.years.label')}</div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-[#18bebc]">Multiple</div>
-                  <div className="text-sm text-gray-600">Academic Tracks</div>
+                  <div className="text-2xl font-bold text-[#18bebc]">{t('about.overview.stats.tracks.value')}</div>
+                  <div className="text-sm text-gray-600">{t('about.overview.stats.tracks.label')}</div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-[#18bebc]">2014s</div>
-                  <div className="text-sm text-gray-600">Year Established</div>
+                  <div className="text-2xl font-bold text-[#18bebc]">{t('about.overview.stats.established.value')}</div>
+                  <div className="text-sm text-gray-600">{t('about.overview.stats.established.label')}</div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-[#18bebc]">Numerous</div>
-                  <div className="text-sm text-gray-600">Cultural Activities</div>
+                  <div className="text-2xl font-bold text-[#18bebc]">{t('about.overview.stats.activities.value')}</div>
+                  <div className="text-sm text-gray-600">{t('about.overview.stats.activities.label')}</div>
                 </div>
               </div>
             </div>
             <div className="flex flex-col space-y-4">
               <div className="bg-gradient-to-r from-teal-400 to-teal-500 h-64 rounded-lg shadow-md flex items-center justify-center">
-                <img src={argan} alt="School Logo" className="w-48 h-48 object-contain bg-white p-3 rounded-full" />
+                <img src={argan} alt={t('about.images.schoolLogo')} className="w-48 h-48 object-contain bg-white p-3 rounded-full" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-blue-100 h-40 rounded-lg shadow-md flex items-center justify-center">
@@ -119,7 +117,7 @@ export default function About() {
         
         {activeTab === 'history' && (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Our History</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('about.history.title')}</h2>
             <div className="relative">
               {/* Timeline */}
               <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-teal-200"></div>
@@ -129,10 +127,9 @@ export default function About() {
                 <div className="relative">
                   <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-teal-500"></div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-800">2014s: Establishment</h3>
+                    <h3 className="text-xl font-bold text-gray-800">{t('about.history.events.establishment.title')}</h3>
                     <p className="text-gray-600 mt-2">
-                      Arkan Secondary School was established in the 2014s as a new lycée qualifiant in the city of Tiznit,
-                      with a mission to provide quality upper-secondary education to the local community.
+                      {t('about.history.events.establishment.description')}
                     </p>
                   </div>
                 </div>
@@ -140,10 +137,9 @@ export default function About() {
                 <div className="relative">
                   <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-teal-500"></div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-800">2015: Cultural Development</h3>
+                    <h3 className="text-xl font-bold text-gray-800">{t('about.history.events.cultural.title')}</h3>
                     <p className="text-gray-600 mt-2">
-                      The school organized its "Artistic-Educational Evening" under the motto "Success for All", 
-                      featuring recitations, Amazigh (Ahwash) dances, songs, and plays in both Amazigh and French.
+                      {t('about.history.events.cultural.description')}
                     </p>
                   </div>
                 </div>
@@ -151,10 +147,9 @@ export default function About() {
                 <div className="relative">
                   <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-teal-500"></div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-800">2017: Recognition of Excellence</h3>
+                    <h3 className="text-xl font-bold text-gray-800">{t('about.history.events.excellence.title')}</h3>
                     <p className="text-gray-600 mt-2">
-                      Arkan Secondary School hosted a "Celebration of Excellence" ceremony to honor top-achieving students
-                      from all academic levels, and earned distinction among the province's secondary schools for academic results.
+                      {t('about.history.events.excellence.description')}
                     </p>
                   </div>
                 </div>
@@ -162,10 +157,9 @@ export default function About() {
                 <div className="relative">
                   <div className="absolute -left-12 mt-1.5 w-4 h-4 rounded-full bg-teal-500"></div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-800">2023: Environmental Engagement</h3>
+                    <h3 className="text-xl font-bold text-gray-800">{t('about.history.events.environmental.title')}</h3>
                     <p className="text-gray-600 mt-2">
-                      Students participated in the Mohammed VI Foundation's "Young Journalists for the Environment" competition,
-                      submitting a video report about plastic waste in Tiznit and winning a prize for an environmental photograph.
+                      {t('about.history.events.environmental.description')}
                     </p>
                   </div>
                 </div>
@@ -176,40 +170,35 @@ export default function About() {
         
         {activeTab === 'programs' && (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Educational Programs</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('about.programs.title')}</h2>
             <p className="text-gray-600 mb-6">
-              Following the standard Moroccan educational system, our lycée offers a three-year upper secondary program:
+              {t('about.programs.description')}
             </p>
             
             <div className="space-y-6">
               <div className="border-l-4 border-teal-500 pl-4">
-                <h3 className="text-xl font-bold text-gray-800">Tronc Commun (Common Core)</h3>
+                <h3 className="text-xl font-bold text-gray-800">{t('about.programs.commonCore.title')}</h3>
                 <p className="text-gray-600 mt-2">
-                  The first year provides a common curriculum for all students. At the end of this year,
-                  students take standardized regional exams and are then tracked into specific streams
-                  based on their choices and results.
+                  {t('about.programs.commonCore.description')}
                 </p>
               </div>
               
               <div className="border-l-4 border-teal-500 pl-4">
-                <h3 className="text-xl font-bold text-gray-800">First Baccalaureate Year (1ère Bac)</h3>
+                <h3 className="text-xl font-bold text-gray-800">{t('about.programs.firstBac.title')}</h3>
                 <p className="text-gray-600 mt-2">
-                  In this second year, students begin specializing in their chosen streams, which may include:
+                  {t('about.programs.firstBac.description')}
                 </p>
                 <ul className="list-disc list-inside mt-2 text-gray-600 space-y-1">
-                  <li>General/Literary Studies</li>
-                  <li>Mathematical/Scientific Studies</li>
-                  <li>Sciences Expérimentales (Life and Earth Sciences)</li>
-                  
+                  <li>{t('about.programs.firstBac.streams.literary')}</li>
+                  <li>{t('about.programs.firstBac.streams.mathematical')}</li>
+                  <li>{t('about.programs.firstBac.streams.experimental')}</li>
                 </ul>
               </div>
               
               <div className="border-l-4 border-teal-500 pl-4">
-                <h3 className="text-xl font-bold text-gray-800">Second Baccalaureate Year (2ème Bac)</h3>
+                <h3 className="text-xl font-bold text-gray-800">{t('about.programs.secondBac.title')}</h3>
                 <p className="text-gray-600 mt-2">
-                  The final year continues students' specialization in their chosen streams. All students
-                  take the national Baccalauréat exam at the end of this year, which is required for 
-                  university admission.
+                  {t('about.programs.secondBac.description')}
                 </p>
               </div>
             </div>
@@ -218,68 +207,60 @@ export default function About() {
         
         {activeTab === 'achievements' && (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Achievements and Community Engagement</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('about.achievements.title')}</h2>
             
             <div className="space-y-6">
               <div>
-                <h3 className="text-xl font-bold text-gray-800">Academic Excellence</h3>
+                <h3 className="text-xl font-bold text-gray-800">{t('about.achievements.academic.title')}</h3>
                 <p className="text-gray-600 mt-2">
-                  As reported in 2017, our lycée has quickly "earned a distinguished place among the province's 
-                  secondary schools in terms of academic results and educational influence."
+                  {t('about.achievements.academic.description')}
                 </p>
               </div>
               
               <div>
-                <h3 className="text-xl font-bold text-gray-800">Cultural Events</h3>
+                <h3 className="text-xl font-bold text-gray-800">{t('about.achievements.cultural.title')}</h3>
                 <p className="text-gray-600 mt-2">
-                  Our school regularly hosts cultural and educational events that showcase student talents and recognize achievements:
+                  {t('about.achievements.cultural.description')}
                 </p>
                 <ul className="list-disc list-inside mt-2 text-gray-600 space-y-1">
                   <li>
-                    <span className="font-semibold">Artistic-Educational Evening (2015):</span> Featured recitations, 
-                    Amazigh dances, songs, and theatrical performances
+                    <span className="font-semibold">{t('about.achievements.cultural.events.evening.title')}</span> {t('about.achievements.cultural.events.evening.description')}
                   </li>
                   <li>
-                    <span className="font-semibold">Celebration of Excellence (2017):</span> Recognized top students 
-                    and included a moral theater performance about exam ethics
+                    <span className="font-semibold">{t('about.achievements.cultural.events.excellence.title')}</span> {t('about.achievements.cultural.events.excellence.description')}
                   </li>
                   <li>
-                    <span className="font-semibold">UNESCO's World Argane Tree Day:</span> Organized a cultural week 
-                    with exhibitions, mural painting, and scientific talks
+                    <span className="font-semibold">{t('about.achievements.cultural.events.unesco.title')}</span> {t('about.achievements.cultural.events.unesco.description')}
                   </li>
                 </ul>
               </div>
               
               <div>
-                <h3 className="text-xl font-bold text-gray-800">Environmental Engagement</h3>
+                <h3 className="text-xl font-bold text-gray-800">{t('about.achievements.environmental.title')}</h3>
                 <p className="text-gray-600 mt-2">
-                  Our students actively participate in environmental awareness and conservation efforts:
+                  {t('about.achievements.environmental.description')}
                 </p>
                 <ul className="list-disc list-inside mt-2 text-gray-600 space-y-1">
                   <li>
-                    Video report on plastic waste in Tiznit submitted to the Mohammed VI Foundation's 
-                    "Young Journalists for the Environment" competition (2023)
+                    {t('about.achievements.environmental.projects.video')}
                   </li>
                   <li>
-                    Award-winning environmental photograph titled "Where to? Who Stops the Sprawl?" 
-                    highlighting pollution threatening local date-palm groves (2023)
+                    {t('about.achievements.environmental.projects.photo')}
                   </li>
                 </ul>
               </div>
               
               <div>
-                <h3 className="text-xl font-bold text-gray-800">Community Support</h3>
+                <h3 className="text-xl font-bold text-gray-800">{t('about.achievements.community.title')}</h3>
                 <p className="text-gray-600 mt-2">
-                  Our school benefits from strong community and parent involvement:
+                  {t('about.achievements.community.description')}
                 </p>
                 <ul className="list-disc list-inside mt-2 text-gray-600 space-y-1">
                   <li>
-                    In the 2016/2017 school year, parents through the parent-teacher association donated 
-                    1,000 large notebooks to distribute to all Arkan students
+                    {t('about.achievements.community.initiatives.notebooks')}
                   </li>
                   <li>
-                    This initiative was covered by local media as an example of community mobilization 
-                    for quality education
+                    {t('about.achievements.community.initiatives.media')}
                   </li>
                 </ul>
               </div>
@@ -289,40 +270,37 @@ export default function About() {
         
         {activeTab === 'facilities' && (
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Facilities</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('about.facilities.title')}</h2>
             <p className="text-gray-600 mb-6">
-              While detailed information on Arkan's facilities is not extensively documented, 
-              our school is equipped with essential educational spaces to support student learning and activities:
+              {t('about.facilities.description')}
             </p>
             
             <div className="grid md:grid-cols-2 gap-6">
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-bold text-[#18bebc] text-lg">Auditorium/School Hall</h3>
+                <h3 className="font-bold text-[#18bebc] text-lg">{t('about.facilities.list.auditorium.title')}</h3>
                 <p className="text-gray-600 mt-2">
-                  Our school has a dedicated space (قاعة أو فضاء المؤسسة) for hosting cultural events,
-                  ceremonies, and student performances.
+                  {t('about.facilities.list.auditorium.description')}
                 </p>
               </div>
               
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-bold text-[#18bebc] text-lg">Classrooms</h3>
+                <h3 className="font-bold text-[#18bebc] text-lg">{t('about.facilities.list.classrooms.title')}</h3>
                 <p className="text-gray-600 mt-2">
-                  Modern classrooms equipped for the different educational levels and streams: common core,
-                  first baccalaureate, and second baccalaureate.
+                  {t('about.facilities.list.classrooms.description')}
                 </p>
               </div>
               
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-bold text-[#18bebc] text-lg">Campus Grounds</h3>
+                <h3 className="font-bold text-[#18bebc] text-lg">{t('about.facilities.list.campus.title')}</h3>
                 <p className="text-gray-600 mt-2">
-                  Outdoor areas that accommodate exhibitions, cultural activities, and student gatherings.
+                  {t('about.facilities.list.campus.description')}
                 </p>
               </div>
               
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-bold text-[#18bebc] text-lg">Educational Resources</h3>
+                <h3 className="font-bold text-[#18bebc] text-lg">{t('about.facilities.list.resources.title')}</h3>
                 <p className="text-gray-600 mt-2">
-                  Learning materials and resources to support the national curriculum across all streams and specializations.
+                  {t('about.facilities.list.resources.description')}
                 </p>
               </div>
             </div>
@@ -333,17 +311,16 @@ export default function About() {
       {/* CTA Section */}
       <section className="bg-blue-50 py-12">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Join Our Academic Community</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('about.cta.title')}</h2>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-            Arkan Secondary School offers a supportive environment where students can excel academically
-            and develop personally through diverse educational and cultural experiences.
+            {t('about.cta.description')}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/register" className="bg-[#18bebc] text-white px-6 py-3 rounded-md font-medium hover:bg-teal-700 transition">
-              Apply Now
+              {t('about.cta.buttons.apply')}
             </Link>
             <Link to="/contact" className="bg-white text-[#18bebc] border border-[#18bebc] px-6 py-3 rounded-md font-medium hover:bg-teal-50 transition">
-              Contact Us
+              {t('about.cta.buttons.contact')}
             </Link>
           </div>
         </div>
