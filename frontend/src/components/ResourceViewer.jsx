@@ -1,7 +1,10 @@
+// Import the useTranslation hook at the top of the file
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next"; // Add this import
 
 export default function ResourceViewer() {
+  const { t } = useTranslation(); // Add this line to use translations
   const [resources, setResources] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -15,27 +18,26 @@ export default function ResourceViewer() {
 
   // Subject options
   const subjects = [
-    { value: "", label: "All Subjects" },
+    { value: "", label: t("resourceViewer.filters.allSubjects") },
     { value: "SVT", label: "SVT" },
-    { value: "Mathematics", label: "Mathematics" },
-    { value: "Physics & chemistry", label: "Physics & chemistry" },
-    { value: "Arabic", label: "Arabic" },
-    { value: "History and Geography", label: "History and Geography" },
-    { value: "French", label: "French" },
-    { value: "English", label: "English" },
-    { value: "Islamic Education", label: "Islamic Education" },
-    { value: "Philosophies", label: "Philosophies" },
+    { value: "Mathematics", label: t("subjects.mathematics") },
+    { value: "Physics & chemistry", label: t("subjects.physicsChemistry") },
+    { value: "Arabic", label: t("subjects.arabic") },
+    { value: "History and Geography", label: t("subjects.historyGeography") },
+    { value: "French", label: t("subjects.french") },
+    { value: "English", label: t("subjects.english") },
+    { value: "Islamic Education", label: t("subjects.islamicEducation") },
+    { value: "Philosophies", label: t("subjects.philosophies") },
   ];
 
   // Year level options
   const yearLevels = [
-    { value: "", label: "All Years" },
-    { value: "all", label: "General (All Years)" },
-    { value: "tc", label: "TC (Tronc Commun)" },
-    { value: "1bac", label: "1BAC (First Year)" },
-    { value: "2bac", label: "2BAC (Second Year)" },
+    { value: "", label: t("resourceViewer.filters.allYears") },
+    { value: "all", label: t("resourceViewer.filters.general") },
+    { value: "tc", label: t("resourceViewer.filters.tc") },
+    { value: "1bac", label: t("resourceViewer.filters.firstYear") },
+    { value: "2bac", label: t("resourceViewer.filters.secondYear") },
   ];
-
   // Base specialization options
   const allSpecializations = [
     {
@@ -308,7 +310,7 @@ export default function ResourceViewer() {
       setError("");
     } catch (err) {
       console.error("Error fetching resources:", err);
-      setError("Failed to load resources. Please try again later.");
+      setError(t("resourceViewer.errors.loadFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -338,12 +340,14 @@ export default function ResourceViewer() {
 
   // Format date for display
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat(t("locale"), {
       year: "numeric",
       month: "short",
       day: "numeric",
-    });
+    }).format(date);
   };
+
 
   // Get label for year level based on value
   const getYearLevelLabel = (value) => {
@@ -402,7 +406,7 @@ export default function ResourceViewer() {
                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                 />
               </svg>
-              Download
+              {t("common.download")}
             </a>
             <button
               onClick={toggleFullScreen}
@@ -422,7 +426,7 @@ export default function ResourceViewer() {
                   d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5"
                 />
               </svg>
-              Exit Full Screen
+              {t("resourceViewer.exitFullScreen")}
             </button>
             <button
               onClick={closeViewer}
@@ -442,7 +446,7 @@ export default function ResourceViewer() {
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
-              Close
+              {t("common.close")}
             </button>
           </div>
         </div>
@@ -460,14 +464,13 @@ export default function ResourceViewer() {
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <h2 className="text-xl font-bold text-gray-800 mb-6">
-        Browse Educational Resources
+        {t("resourceViewer.title")}
       </h2>
 
       {/* Filters */}
-
       <div className="mb-6 bg-gray-50 p-4 rounded-md">
         <h3 className="text-lg font-medium text-gray-700 mb-3">
-          Filter Resources
+          {t("resourceViewer.filterResources")}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -475,7 +478,7 @@ export default function ResourceViewer() {
               htmlFor="subject"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Subject
+              {t("resourceViewer.filters.subject")}
             </label>
             <select
               id="subject"
@@ -497,7 +500,7 @@ export default function ResourceViewer() {
               htmlFor="yearLevel"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Year Level
+              {t("resourceViewer.filters.yearLevel")}
             </label>
             <select
               id="yearLevel"
@@ -519,7 +522,7 @@ export default function ResourceViewer() {
               htmlFor="specialization"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Specialization
+              {t("resourceViewer.filters.specialization")}
             </label>
             <select
               id="specialization"
@@ -538,10 +541,10 @@ export default function ResourceViewer() {
         </div>
       </div>
 
-      {/* AlloSchool Links Section - Separated from the filters */}
+      {/* AlloSchool Links Section */}
       <div className="mb-6 bg-blue-50 p-4 rounded-md">
         <h3 className="text-lg font-medium text-blue-800 mb-3">
-          AlloSchool Resources
+          {t("resourceViewer.alloSchoolResources")}
         </h3>
 
         {filters.yearLevel &&
@@ -569,19 +572,20 @@ export default function ResourceViewer() {
               rel="noopener noreferrer"
               className="text-blue-600 hover:text-blue-800 font-medium"
             >
-              AlloSchool Resources for {filters.subject} -{" "}
-              {getYearLevelLabel(filters.yearLevel)} -{" "}
-              {getSpecializationLabel(filters.specialization)}
+              {t("resourceViewer.alloSchoolResourcesFor", {
+                subject: filters.subject,
+                yearLevel: getYearLevelLabel(filters.yearLevel),
+                specialization: getSpecializationLabel(filters.specialization),
+              })}
             </a>
           </div>
         ) : filters.yearLevel && filters.subject && filters.specialization ? (
           <p className="text-gray-600">
-            No AlloSchool resources found for the selected combination.
+            {t("resourceViewer.noAlloSchoolResources")}
           </p>
         ) : (
           <p className="text-gray-600">
-            Please select a subject, year level, and specialization to view
-            available AlloSchool resources.
+            {t("resourceViewer.selectToViewAlloSchool")}
           </p>
         )}
       </div>
@@ -620,7 +624,7 @@ export default function ResourceViewer() {
                       d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                     />
                   </svg>
-                  Download
+                  {t("common.download")}
                 </a>
                 <button
                   onClick={toggleFullScreen}
@@ -640,7 +644,7 @@ export default function ResourceViewer() {
                       d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5"
                     />
                   </svg>
-                  Full Screen
+                  {t("resourceViewer.fullScreen")}
                 </button>
                 <button
                   onClick={closeViewer}
@@ -660,7 +664,7 @@ export default function ResourceViewer() {
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                  Close
+                  {t("common.close")}
                 </button>
               </div>
             </div>
@@ -689,37 +693,37 @@ export default function ResourceViewer() {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Title
+                  {t("resourceViewer.table.title")}
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Subject
+                  {t("resourceViewer.table.subject")}
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Year Level
+                  {t("resourceViewer.table.yearLevel")}
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Specialization
+                  {t("resourceViewer.table.specialization")}
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Uploaded
+                  {t("resourceViewer.table.uploaded")}
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Actions
+                  {t("resourceViewer.table.actions")}
                 </th>
               </tr>
             </thead>
@@ -766,7 +770,7 @@ export default function ResourceViewer() {
                         onClick={() => viewResource(resource)}
                         className="text-green-600 hover:text-green-900 mr-3"
                       >
-                        View
+                        {t("common.view")}
                       </button>
                       <a
                         href={`/api/resources/${resource.id}/download`}
@@ -774,7 +778,7 @@ export default function ResourceViewer() {
                         rel="noopener noreferrer"
                         className="text-[#18bebc] hover:text-teal-900 mr-3"
                       >
-                        Download
+                        {t("common.download")}
                       </a>
                       {alloSchoolLink && (
                         <a
@@ -783,7 +787,7 @@ export default function ResourceViewer() {
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:text-blue-900"
                         >
-                          AlloSchool
+                          {t("resourceViewer.alloSchool")}
                         </a>
                       )}
                     </td>
@@ -796,7 +800,7 @@ export default function ResourceViewer() {
       ) : (
         <div className="py-8 text-center">
           <p className="text-gray-500">
-            No resources found matching the selected filters.
+            {t("resourceViewer.noResourcesFound")}
           </p>
         </div>
       )}

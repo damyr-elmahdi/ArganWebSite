@@ -8,10 +8,12 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "view": "View",
+    "download": "Download",
     "edit": "Edit",
     "update": "Update",
     "remove": "Remove",
     "loading": "Loading...",
+    "close": "Close",
     "errors": {
       "generic": "Something went wrong. Please try again."
     }
@@ -200,5 +202,50 @@
         "selectUser": "Please select a valid user from the suggestions"
       }
     }
-  }
+  },
+  "subjects": {
+    "mathematics": "Mathematics",
+    "physicsChemistry": "Physics & Chemistry",
+    "arabic": "Arabic",
+    "historyGeography": "History and Geography",
+    "french": "French",
+    "english": "English",
+    "islamicEducation": "Islamic Education",
+    "philosophies": "Philosophies"
+  },
+  "resourceViewer": {
+    "title": "Browse Educational Resources",
+    "filterResources": "Filter Resources",
+    "alloSchoolResources": "AlloSchool Resources",
+    "alloSchoolResourcesFor": "AlloSchool Resources for {{subject}} - {{yearLevel}} - {{specialization}}",
+    "noAlloSchoolResources": "No AlloSchool resources found for the selected combination.",
+    "selectToViewAlloSchool": "Please select a subject, year level, and specialization to view available AlloSchool resources.",
+    "fullScreen": "Full Screen",
+    "exitFullScreen": "Exit Full Screen",
+    "noResourcesFound": "No resources found matching the selected filters.",
+    "alloSchool": "AlloSchool",
+    "errors": {
+      "loadFailed": "Failed to load resources. Please try again later."
+    },
+    "filters": {
+      "subject": "Subject",
+      "yearLevel": "Year Level",
+      "specialization": "Specialization",
+      "allSubjects": "All Subjects",
+      "allYears": "All Years",
+      "general": "General (All Years)",
+      "tc": "TC (Tronc Commun)",
+      "firstYear": "1BAC (First Year)",
+      "secondYear": "2BAC (Second Year)"
+    },
+    "table": {
+      "title": "Title",
+      "subject": "Subject",
+      "yearLevel": "Year Level",
+      "specialization": "Specialization",
+      "uploaded": "Uploaded",
+      "actions": "Actions"
+    }
+  },
+  "locale": "en-US"
 }
