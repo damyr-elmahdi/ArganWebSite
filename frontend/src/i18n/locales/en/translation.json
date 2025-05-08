@@ -247,5 +247,87 @@
       "actions": "Actions"
     }
   },
-  "locale": "en-US"
-}
+  "locale": "en-US",
+    "userManagement": {
+      "title": "User Management",
+      "description": "Create and manage users in the system",
+      "filter": {
+        "allUsers": "All Users",
+        "students": "Students",
+        "teachers": "Teachers",
+        "administrators": "Administrators",
+        "librarians": "Librarians"
+      },
+      "buttons": {
+        "addUser": "Add New User",
+        "cancel": "Cancel",
+        "createUser": "Create User",
+        "updateUser": "Update User",
+        "edit": "Edit",
+        "resetPassword": "Reset Password",
+        "delete": "Delete"
+      },
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "details": "Details",
+        "actions": "Actions",
+        "noUsers": "No users found",
+        "loading": "Loading users..."
+      },
+      "form": {
+        "name": "Name",
+        "email": "Email address",
+        "password": "Password",
+        "passwordEditNote": "(leave blank to keep current)",
+        "role": "Role",
+        "studentFields": {
+          "grade": "Grade",
+          "recoveryEmail": "Recovery Email"
+        },
+        "teacherFields": {
+          "department": "Department",
+          "position": "Position",
+          "specialization": "Specialization"
+        },
+        "adminFields": {
+          "adminLevel": "Admin Level",
+          "department": "Department"
+        },
+        "roleOptions": {
+          "student": "Student",
+          "teacher": "Teacher",
+          "administrator": "Administrator",
+          "librarian": "Librarian"
+        },
+        "adminLevelOptions": {
+          "basic": "Basic",
+          "intermediate": "Intermediate",
+          "super": "Super Admin"
+        }
+      },
+      "messages": {
+        "userCreated": "User {{name}} created successfully. Password: {{password}}",
+        "userUpdated": "User {{name}} updated successfully{{#if password}}. New password: {{password}}{{/if}}",
+        "userDeleted": "User deleted successfully",
+        "passwordReset": "Password reset successfully. New password: {{password}}",
+        "errors": {
+          "fetchFailed": "Failed to fetch users: {{error}}",
+          "operationFailed": "User operation failed: {{error}}",
+          "deleteFailed": "Failed to delete user: {{error}}",
+          "resetFailed": "Failed to reset password: {{error}}"
+        }
+      },
+      "confirmations": {
+        "deleteUser": "Are you sure you want to delete this user?",
+        "resetPassword": "Are you sure you want to reset this user's password?"
+      },
+      "details": {
+        "grade": "Grade:",
+        "id": "ID:",
+        "dept": "Dept:",
+        "level": "Level:"
+      }
+    }
+  }

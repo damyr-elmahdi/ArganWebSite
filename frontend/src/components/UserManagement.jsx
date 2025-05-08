@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 export default function UserManagement() {
+  const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -36,7 +38,9 @@ export default function UserManagement() {
       setUsers(response.data.data || response.data);
       setError('');
     } catch (err) {
-      setError('Failed to fetch users. ' + (err.response?.data?.message || err.message));
+      setError(t('userManagement.messages.errors.fetchFailed', {
+        error: err.response?.data?.message || err.message
+      }));
     } finally {
       setLoading(false);
     }
@@ -59,24 +63,27 @@ export default function UserManagement() {
       if (formMode === 'create') {
         const response = await axios.post('/api/users', formData);
         setUsers([response.data.user, ...users]);
-        setSuccessMessage(`User ${response.data.user.name} created successfully. Password: ${response.data.user.plaintext_password}`);
+        setSuccessMessage(t('userManagement.messages.userCreated', {
+          name: response.data.user.name,
+          password: response.data.user.plaintext_password
+        }));
         resetForm();
       } else if (formMode === 'edit') {
         const response = await axios.put(`/api/users/${selectedUser.id}`, formData);
         const updatedUser = response.data.user;
         setUsers(users.map(user => user.id === updatedUser.id ? updatedUser : user));
-        setSuccessMessage('User updated successfully');
         
-        if (response.data.user.plaintext_password) {
-          setSuccessMessage(`User ${response.data.user.name} updated successfully. New password: ${response.data.user.plaintext_password}`);
-        } else {
-          setSuccessMessage(`User ${response.data.user.name} updated successfully.`);
-        }
+        setSuccessMessage(t('userManagement.messages.userUpdated', {
+          name: updatedUser.name,
+          password: response.data.user.plaintext_password || ''
+        }));
         
         resetForm();
       }
     } catch (err) {
-      setError('User operation failed: ' + (err.response?.data?.message || err.message));
+      setError(t('userManagement.messages.errors.operationFailed', {
+        error: err.response?.data?.message || err.message
+      }));
     } finally {
       setLoading(false);
     }
@@ -86,13 +93,11 @@ export default function UserManagement() {
     setFormMode('edit');
     setSelectedUser(user);
     
-    // Populate form with user data
     const userData = {
       name: user.name,
       email: user.email,
-      password: '', // Leave password blank for editing
+      password: '',
       role: user.role,
-      // Initialize with empty values
       grade: '',
       recovery_email: '',
       department: '',
@@ -101,7 +106,6 @@ export default function UserManagement() {
       admin_level: 'basic'
     };
     
-    // Add role-specific data
     if (user.role === 'student' && user.student) {
       userData.grade = user.student.grade || '';
       userData.recovery_email = user.student.recovery_email || '';
@@ -119,7 +123,7 @@ export default function UserManagement() {
   };
 
   const handleDeleteUser = async (userId) => {
-    if (!window.confirm('Are you sure you want to delete this user?')) {
+    if (!window.confirm(t('userManagement.confirmations.deleteUser'))) {
       return;
     }
     
@@ -127,25 +131,31 @@ export default function UserManagement() {
       setLoading(true);
       await axios.delete(`/api/users/${userId}`);
       setUsers(users.filter(user => user.id !== userId));
-      setSuccessMessage('User deleted successfully');
+      setSuccessMessage(t('userManagement.messages.userDeleted'));
     } catch (err) {
-      setError('Failed to delete user: ' + (err.response?.data?.message || err.message));
+      setError(t('userManagement.messages.errors.deleteFailed', {
+        error: err.response?.data?.message || err.message
+      }));
     } finally {
       setLoading(false);
     }
   };
 
   const handleResetPassword = async (userId) => {
-    if (!window.confirm('Are you sure you want to reset this user\'s password?')) {
+    if (!window.confirm(t('userManagement.confirmations.resetPassword'))) {
       return;
     }
     
     try {
       setLoading(true);
       const response = await axios.post(`/api/users/${userId}/reset-password`);
-      setSuccessMessage(`Password reset successfully. New password: ${response.data.new_password}`);
+      setSuccessMessage(t('userManagement.messages.passwordReset', {
+        password: response.data.new_password
+      }));
     } catch (err) {
-      setError('Failed to reset password: ' + (err.response?.data?.message || err.message));
+      setError(t('userManagement.messages.errors.resetFailed', {
+        error: err.response?.data?.message || err.message
+      }));
     } finally {
       setLoading(false);
     }
@@ -185,9 +195,11 @@ export default function UserManagement() {
     <div className="bg-white shadow-sm rounded-lg">
       <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
         <div>
-          <h3 className="text-lg leading-6 font-medium text-gray-900">User Management</h3>
+          <h3 className="text-lg leading-6 font-medium text-gray-900">
+            {t('userManagement.title')}
+          </h3>
           <p className="mt-1 max-w-2xl text-sm text-gray-500">
-            Create and manage users in the system
+            {t('userManagement.description')}
           </p>
         </div>
         <div className="flex space-x-4">
@@ -196,11 +208,11 @@ export default function UserManagement() {
             value={filter}
             onChange={handleFilterChange}
           >
-            <option value="">All Users</option>
-            <option value="student">Students</option>
-            <option value="teacher">Teachers</option>
-            <option value="administrator">Administrators</option>
-            <option value="librarian">Librarians</option>
+            <option value="">{t('userManagement.filter.allUsers')}</option>
+            <option value="student">{t('userManagement.filter.students')}</option>
+            <option value="teacher">{t('userManagement.filter.teachers')}</option>
+            <option value="administrator">{t('userManagement.filter.administrators')}</option>
+            <option value="librarian">{t('userManagement.filter.librarians')}</option>
           </select>
           <button
             onClick={() => {
@@ -209,7 +221,7 @@ export default function UserManagement() {
             }}
             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
           >
-            {showForm ? 'Cancel' : 'Add New User'}
+            {showForm ? t('userManagement.buttons.cancel') : t('userManagement.buttons.addUser')}
           </button>
         </div>
       </div>
@@ -256,7 +268,7 @@ export default function UserManagement() {
             <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
               <div className="sm:col-span-3">
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Name
+                  {t('userManagement.form.name')}
                 </label>
                 <div className="mt-1">
                   <input
@@ -273,7 +285,7 @@ export default function UserManagement() {
 
               <div className="sm:col-span-3">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email address
+                  {t('userManagement.form.email')}
                 </label>
                 <div className="mt-1">
                   <input
@@ -290,7 +302,7 @@ export default function UserManagement() {
 
               <div className="sm:col-span-3">
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password {formMode === 'edit' && '(leave blank to keep current)'}
+                  {t('userManagement.form.password')} {formMode === 'edit' && t('userManagement.form.passwordEditNote')}
                 </label>
                 <div className="mt-1">
                   <input
@@ -307,7 +319,7 @@ export default function UserManagement() {
 
               <div className="sm:col-span-3">
                 <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                  Role
+                  {t('userManagement.form.role')}
                 </label>
                 <div className="mt-1">
                   <select
@@ -316,13 +328,13 @@ export default function UserManagement() {
                     required
                     value={formData.role}
                     onChange={handleInputChange}
-                    disabled={formMode === 'edit'} // Can't change role when editing
+                    disabled={formMode === 'edit'}
                     className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                   >
-                    <option value="student">Student</option>
-                    <option value="teacher">Teacher</option>
-                    <option value="administrator">Administrator</option>
-                    <option value="librarian">Librarian</option>
+                    <option value="student">{t('userManagement.form.roleOptions.student')}</option>
+                    <option value="teacher">{t('userManagement.form.roleOptions.teacher')}</option>
+                    <option value="administrator">{t('userManagement.form.roleOptions.administrator')}</option>
+                    <option value="librarian">{t('userManagement.form.roleOptions.librarian')}</option>
                   </select>
                 </div>
               </div>
@@ -332,7 +344,7 @@ export default function UserManagement() {
                 <>
                   <div className="sm:col-span-3">
                     <label htmlFor="grade" className="block text-sm font-medium text-gray-700">
-                      Grade
+                      {t('userManagement.form.studentFields.grade')}
                     </label>
                     <div className="mt-1">
                       <input
@@ -348,7 +360,7 @@ export default function UserManagement() {
 
                   <div className="sm:col-span-3">
                     <label htmlFor="recovery_email" className="block text-sm font-medium text-gray-700">
-                      Recovery Email
+                      {t('userManagement.form.studentFields.recoveryEmail')}
                     </label>
                     <div className="mt-1">
                       <input
@@ -369,7 +381,7 @@ export default function UserManagement() {
                 <>
                   <div className="sm:col-span-2">
                     <label htmlFor="department" className="block text-sm font-medium text-gray-700">
-                      Department
+                      {t('userManagement.form.teacherFields.department')}
                     </label>
                     <div className="mt-1">
                       <input
@@ -385,7 +397,7 @@ export default function UserManagement() {
 
                   <div className="sm:col-span-2">
                     <label htmlFor="position" className="block text-sm font-medium text-gray-700">
-                      Position
+                      {t('userManagement.form.teacherFields.position')}
                     </label>
                     <div className="mt-1">
                       <input
@@ -401,7 +413,7 @@ export default function UserManagement() {
 
                   <div className="sm:col-span-2">
                     <label htmlFor="specialization" className="block text-sm font-medium text-gray-700">
-                      Specialization
+                      {t('userManagement.form.teacherFields.specialization')}
                     </label>
                     <div className="mt-1">
                       <input
@@ -422,7 +434,7 @@ export default function UserManagement() {
                 <>
                   <div className="sm:col-span-3">
                     <label htmlFor="admin_level" className="block text-sm font-medium text-gray-700">
-                      Admin Level
+                      {t('userManagement.form.adminFields.adminLevel')}
                     </label>
                     <div className="mt-1">
                       <select
@@ -432,16 +444,16 @@ export default function UserManagement() {
                         onChange={handleInputChange}
                         className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                       >
-                        <option value="basic">Basic</option>
-                        <option value="intermediate">Intermediate</option>
-                        <option value="super">Super Admin</option>
+                        <option value="basic">{t('userManagement.form.adminLevelOptions.basic')}</option>
+                        <option value="intermediate">{t('userManagement.form.adminLevelOptions.intermediate')}</option>
+                        <option value="super">{t('userManagement.form.adminLevelOptions.super')}</option>
                       </select>
                     </div>
                   </div>
 
                   <div className="sm:col-span-3">
                     <label htmlFor="department" className="block text-sm font-medium text-gray-700">
-                      Department
+                      {t('userManagement.form.adminFields.department')}
                     </label>
                     <div className="mt-1">
                       <input
@@ -464,13 +476,13 @@ export default function UserManagement() {
                   onClick={resetForm}
                   className="py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 mr-3"
                 >
-                  Cancel
+                  {t('userManagement.buttons.cancel')}
                 </button>
                 <button
                   type="submit"
                   className="py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
                 >
-                  {formMode === 'create' ? 'Create User' : 'Update User'}
+                  {formMode === 'create' ? t('userManagement.buttons.createUser') : t('userManagement.buttons.updateUser')}
                 </button>
               </div>
             </div>
@@ -483,6 +495,7 @@ export default function UserManagement() {
         {loading && !showForm ? (
           <div className="flex justify-center items-center h-32">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#18bebc]"></div>
+            <span className="ml-2 text-sm text-gray-500">{t('userManagement.table.loading')}</span>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -490,19 +503,19 @@ export default function UserManagement() {
               <thead className="bg-gray-50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
+                    {t('userManagement.table.name')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
+                    {t('userManagement.table.email')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
+                    {t('userManagement.table.role')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Details
+                    {t('userManagement.table.details')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
+                    {t('userManagement.table.actions')}
                   </th>
                 </tr>
               </thead>
@@ -510,7 +523,7 @@ export default function UserManagement() {
                 {users.length === 0 ? (
                   <tr>
                     <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">
-                      No users found
+                      {t('userManagement.table.noUsers')}
                     </td>
                   </tr>
                 ) : (
@@ -528,31 +541,31 @@ export default function UserManagement() {
                           user.role === 'teacher' ? 'bg-blue-100 text-blue-800' : 
                           user.role === 'student' ? 'bg-green-100 text-green-800' : 
                           'bg-teal-100 text-teal-800'}`}>
-                          {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                          {t(`userManagement.form.roleOptions.${user.role}`)}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500">
                         {user.role === 'student' && user.student && (
                           <div>
-                            <p><span className="font-medium">Grade:</span> {user.student.grade || 'N/A'}</p>
-                            <p><span className="font-medium">ID:</span> {user.student.student_id || 'N/A'}</p>
+                            <p><span className="font-medium">{t('userManagement.details.grade')}</span> {user.student.grade || 'N/A'}</p>
+                            <p><span className="font-medium">{t('userManagement.details.id')}</span> {user.student.student_id || 'N/A'}</p>
                           </div>
                         )}
                         {user.role === 'teacher' && user.teacher && (
                           <div>
-                            <p><span className="font-medium">Dept:</span> {user.teacher.department || 'N/A'}</p>
-                            <p><span className="font-medium">ID:</span> {user.teacher.employee_id || 'N/A'}</p>
+                            <p><span className="font-medium">{t('userManagement.details.dept')}</span> {user.teacher.department || 'N/A'}</p>
+                            <p><span className="font-medium">{t('userManagement.details.id')}</span> {user.teacher.employee_id || 'N/A'}</p>
                           </div>
                         )}
                         {user.role === 'administrator' && user.administrator && (
                           <div>
-                            <p><span className="font-medium">Level:</span> {user.administrator.admin_level || 'Basic'}</p>
-                            <p><span className="font-medium">Dept:</span> {user.administrator.department || 'N/A'}</p>
+                            <p><span className="font-medium">{t('userManagement.details.level')}</span> {user.administrator.admin_level || 'Basic'}</p>
+                            <p><span className="font-medium">{t('userManagement.details.dept')}</span> {user.administrator.department || 'N/A'}</p>
                           </div>
                         )}
                         {user.role === 'librarian' && user.librarian && (
                           <div>
-                            <p><span className="font-medium">ID:</span> {user.librarian.staff_id || 'N/A'}</p>
+                            <p><span className="font-medium">{t('userManagement.details.id')}</span> {user.librarian.staff_id || 'N/A'}</p>
                           </div>
                         )}
                       </td>
@@ -562,19 +575,19 @@ export default function UserManagement() {
                             onClick={() => handleEditUser(user)}
                             className="text-indigo-600 hover:text-indigo-900"
                           >
-                            Edit
+                            {t('userManagement.buttons.edit')}
                           </button>
                           <button
                             onClick={() => handleResetPassword(user.id)}
                             className="text-yellow-600 hover:text-yellow-900"
                           >
-                            Reset Password
+                            {t('userManagement.buttons.resetPassword')}
                           </button>
                           <button
                             onClick={() => handleDeleteUser(user.id)}
                             className="text-red-600 hover:text-red-900"
                           >
-                            Delete
+                            {t('userManagement.buttons.delete')}
                           </button>
                         </div>
                       </td>
