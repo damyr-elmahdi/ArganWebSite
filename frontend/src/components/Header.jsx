@@ -32,7 +32,7 @@ export default function Header({ schoolName, ministry, tagline }) {
         <div className="flex items-center space-x-4">
           {/* School Logo - Made clickable with Link */}
           <Link to="/" className="flex items-center justify-center w-20 h-20">
-            <img src={argan} alt={t('school.name')} className="w-full h-full object-contain" />
+            <img src={argan} alt={t('school.name', { schoolName })} className="w-full h-full object-contain" />
           </Link>
           <div>
             <h1 className="text-xl font-bold text-gray-800">{t('school.name', { schoolName })}</h1>

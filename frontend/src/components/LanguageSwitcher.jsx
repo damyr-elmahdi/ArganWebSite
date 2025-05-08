@@ -12,11 +12,26 @@ const LanguageSwitcher = () => {
   };
 
   return (
-    <div className="language-switcher">
-      <span>{t('common.language')}: </span>
-      <button onClick={() => changeLanguage('en')}>{t('common.english')}</button>
-      <button onClick={() => changeLanguage('fr')}>{t('common.french')}</button>
-      <button onClick={() => changeLanguage('ar')}>{t('common.arabic')}</button>
+    <div className="language-switcher fixed top-4 right-4 bg-white p-2 rounded shadow-md z-50">
+      <span className="mr-2">{t('common.language')}: </span>
+      <button 
+        onClick={() => changeLanguage('en')}
+        className={`px-2 py-1 rounded mx-1 ${i18n.language === 'en' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+      >
+        {t('common.english')}
+      </button>
+      <button 
+        onClick={() => changeLanguage('fr')} 
+        className={`px-2 py-1 rounded mx-1 ${i18n.language === 'fr' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+      >
+        {t('common.french')}
+      </button>
+      <button 
+        onClick={() => changeLanguage('ar')}
+        className={`px-2 py-1 rounded mx-1 ${i18n.language === 'ar' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+      >
+        {t('common.arabic')}
+      </button>
     </div>
   );
 };

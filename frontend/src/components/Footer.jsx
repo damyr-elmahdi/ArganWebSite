@@ -14,7 +14,7 @@ export default function Footer({ schoolInfo }) {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Link to="/" className="w-20 h-20">
-                <img src={argan} alt={t('school.name')} className="w-full h-full object-contain" />
+                <img src={argan} alt={t('school.name', { name })} className="w-full h-full object-contain" />
               </Link>
               <h3 className="font-bold">{t('school.name', { name })}</h3>
             </div>

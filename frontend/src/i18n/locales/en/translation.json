@@ -1,9 +1,69 @@
 {
-   "common": {
-     "welcome": "Welcome to our website",
-     "language": "Language",
-     "english": "English",
-     "french": "French",
-     "arabic": "Arabic"
-   }
- }
+  "common": {
+    "welcome": "Welcome to our website",
+    "language": "Language",
+    "english": "English",
+    "french": "French",
+    "arabic": "Arabic"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "academics": "Academics",
+    "news": "News",
+    "events": "Events",
+    "library": "Library",
+    "resources": "Resources",
+    "contact": "Contact",
+    "newsEvents": "News & Events",
+    "admissions": "Admissions",
+    "toggleMenu": "Toggle menu"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "welcome": "Welcome, {{name}}"
+  },
+  "school": {
+    "name": "{{name}}",
+    "tagline": "{{tagline}}",
+    "ministry": "{{ministry}}",
+    "ministryLogoAlt": "Ministry of Education Logo",
+    "address": "{{address}}"
+  },
+  "hero": {
+    "welcome": "Welcome to {{schoolName}}",
+    "tagline": "Excellence in Education Since {{foundedYear}}",
+    "applyNow": "Apply Now",
+    "learnMore": "Learn More",
+    "quickLinks": "Quick Links",
+    "registrationInfo": "Registration Information",
+    "academicResources": "Academic Resources",
+    "latestNews": "Latest News",
+    "contactAdmin": "Contact Administration"
+  },
+  "footer": {
+    "quickLinks": "Quick Links",
+    "resources": "Resources",
+    "accreditedBy": "Accredited by {{ministry}}",
+    "copyright": "© {{year}} {{name}}. All rights reserved."
+  },
+  "contact": {
+    "phone": "Phone",
+    "fax": "Fax",
+    "email": "Email"
+  },
+  "social": {
+    "facebook": "Facebook",
+    "twitter": "Twitter",
+    "instagram": "Instagram"
+  },
+  "resources": {
+    "curriculum": "Curriculum",
+    "schedule": "Schedule",
+    "bookCatalog": "Book Catalog",
+    "upcomingEvents": "Upcoming Events",
+    "supportServices": "Support Services"
+  }
+}
