@@ -4,17 +4,7 @@
     "language": "Langue",
     "english": "Anglais",
     "french": "Français",
-    "arabic": "Arabe",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "view": "View",
-    "edit": "Edit",
-    "update": "Update",
-    "remove": "Remove",
-    "loading": "Loading...",
-    "errors": {
-      "generic": "Something went wrong. Please try again."
-    }
+    "arabic": "Arabe"
   },
   "nav": {
     "home": "Accueil",
@@ -131,74 +121,7 @@
         "createdOn": "Créé le",
         "attempts": "Tentatives",
         "actions": "Actions"
-      }
-    }
-  },
-  "clubs": {
-    "management": {
-      "title": "Club Management",
-      "createNew": "Create New Club",
-      "noClubs": "No clubs available. Create a new club to get started.",
-      "selectClubPrompt": "Select a club to view details and manage members",
-      "form": {
-        "name": "Club Name",
-        "namePlaceholder": "Enter club name",
-        "description": "Description",
-        "descriptionPlaceholder": "Enter club description",
-        "activities": "Activities",
-        "activitiesPlaceholder": "Enter club activities",
-        "meetingSchedule": "Meeting Schedule",
-        "meetingSchedulePlaceholder": "E.g., Every Monday at 4:00 PM"
-      },
-      "details": {
-        "title": "Club Details",
-        "description": "Description",
-        "activities": "Activities",
-        "meetingSchedule": "Meeting Schedule",
-        "notSpecified": "Not specified"
-      },
-      "members": {
-        "title": "Members",
-        "add": "Add Member",
-        "empty": "No members in this club yet.",
-        "name": "Name",
-        "role": "Role",
-        "actions": "Actions",
-        "form": {
-          "user": "User",
-          "searchPlaceholder": "Search for user by name or ID",
-          "role": "Role",
-          "noUsersFound": "No users found"
-        },
-        "roles": {
-          "member": "Member",
-          "leader": "Leader",
-          "assistant": "Assistant"
-        }
-      },
-      "modal": {
-        "createTitle": "Create New Club",
-        "editTitle": "Edit Club",
-        "deleteTitle": "Delete Club",
-        "memberTitle": "Add Club Member",
-        "deleteConfirmation": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
-      },
-      "buttons": {
-        "create": "Create Club",
-        "update": "Update Club",
-        "addMember": "Add Member"
-      },
-      "errors": {
-        "createFailed": "Failed to create club. Please try again.",
-        "updateFailed": "Failed to update club. Please try again.",
-        "deleteFailed": "Failed to delete club. Please try again.",
-        "loadFailed": "Failed to load clubs. Please try again.",
-        "memberLoadFailed": "Failed to load club members",
-        "memberAddFailed": "Failed to add member. Please try again.",
-        "memberUpdateFailed": "Failed to update member role",
-        "memberRemoveFailed": "Failed to remove member",
-        "selectUser": "Please select a valid user from the suggestions"
-      }
+           }
     }
   }
 }
