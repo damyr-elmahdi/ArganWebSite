@@ -52,7 +52,29 @@
   "contact": {
     "phone": "Phone",
     "fax": "Fax",
-    "email": "Email"
+    "email": "Email",
+    "form": {
+      "name": "Your Name",
+      "email": "Email Address",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send Message",
+      "sending": "Sending..."
+    },
+    "success": {
+      "title": "Message Sent!",
+      "message": "Thank you for contacting us. We'll get back to you soon.",
+      "sendAnother": "Send Another Message"
+    },
+    "errors": {
+      "nameRequired": "Name is required",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email address",
+      "subjectRequired": "Subject is required",
+      "messageRequired": "Message is required",
+      "messageLength": "Message must be at least 10 characters",
+      "sendFailed": "Failed to send your message. Please try again later."
+    }
   },
   "social": {
     "facebook": "Facebook",
@@ -60,10 +82,46 @@
     "instagram": "Instagram"
   },
   "resources": {
+    "title": "Educational Resources",
+    "upload": "Upload Resources",
+    "view": "View Resources",
     "curriculum": "Curriculum",
     "schedule": "Schedule",
     "bookCatalog": "Book Catalog",
     "upcomingEvents": "Upcoming Events",
     "supportServices": "Support Services"
+  },
+  "quiz": {
+    "student": {
+      "history": "Quiz History",
+      "loading": "Loading your quiz history...",
+      "noAttempts": "You haven't taken any quizzes yet."
+    },
+    "table": {
+      "quiz": "Quiz",
+      "date": "Date",
+      "score": "Score",
+      "result": "Result",
+      "viewResults": "View Results"
+    },
+    "errors": {
+      "loadFailed": "Failed to load quiz history."
+    },
+    "teacher": {
+      "yourQuizzes": "Your Quizzes",
+      "loading": "Loading quizzes...",
+      "loadError": "Failed to load quizzes. Please try again.",
+      "noQuizzes": "You haven't created any quizzes yet.",
+      "viewResults": "View Results",
+      "edit": "Edit",
+      "table": {
+        "title": "Title",
+        "subject": "Subject",
+        "questions": "Questions",
+        "createdOn": "Created On",
+        "attempts": "Attempts",
+        "actions": "Actions"
+      }
+    }
   }
 }

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 export default function ContactForm({ schoolEmail }) {
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(null);
@@ -17,23 +19,23 @@ export default function ContactForm({ schoolEmail }) {
     const errors = {};
     
     if (!formData.name.trim()) {
-      errors.name = 'Name is required';
+      errors.name = t('contact.errors.nameRequired');
     }
     
     if (!formData.email.trim()) {
-      errors.email = 'Email is required';
+      errors.email = t('contact.errors.emailRequired');
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)) {
-      errors.email = 'Invalid email address';
+      errors.email = t('contact.errors.emailInvalid');
     }
     
     if (!formData.subject.trim()) {
-      errors.subject = 'Subject is required';
+      errors.subject = t('contact.errors.subjectRequired');
     }
     
     if (!formData.message.trim()) {
-      errors.message = 'Message is required';
+      errors.message = t('contact.errors.messageRequired');
     } else if (formData.message.length < 10) {
-      errors.message = 'Message must be at least 10 characters';
+      errors.message = t('contact.errors.messageLength');
     }
     
     setFormErrors(errors);
@@ -78,7 +80,7 @@ export default function ContactForm({ schoolEmail }) {
           message: ''
         });
       } else {
-        setSubmitError(response.data.message || 'Failed to send your message. Please try again later.');
+        setSubmitError(response.data.message || t('contact.errors.sendFailed'));
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -91,7 +93,7 @@ export default function ContactForm({ schoolEmail }) {
         });
         setFormErrors(serverErrors);
       } else {
-        setSubmitError('Failed to send your message. Please try again later.');
+        setSubmitError(t('contact.errors.sendFailed'));
       }
     } finally {
       setIsSubmitting(false);
@@ -114,19 +116,19 @@ export default function ContactForm({ schoolEmail }) {
       {submitSuccess ? (
         <div className="text-center py-8">
           <div className="text-green-500 text-5xl mb-4">✓</div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">Message Sent!</h3>
-          <p className="text-gray-600 mb-6">Thank you for contacting us. We'll get back to you soon.</p>
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">{t('contact.success.title')}</h3>
+          <p className="text-gray-600 mb-6">{t('contact.success.message')}</p>
           <button 
             onClick={resetForm}
             className="bg-[#18bebc] text-white px-6 py-2 rounded-md hover:bg-teal-700 transition"
           >
-            Send Another Message
+            {t('contact.success.sendAnother')}
           </button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-gray-700 font-medium mb-1">Your Name</label>
+            <label htmlFor="name" className="block text-gray-700 font-medium mb-1">{t('contact.form.name')}</label>
             <input
               type="text"
               id="name"
@@ -141,7 +143,7 @@ export default function ContactForm({ schoolEmail }) {
           </div>
           
           <div>
-            <label htmlFor="email" className="block text-gray-700 font-medium mb-1">Email Address</label>
+            <label htmlFor="email" className="block text-gray-700 font-medium mb-1">{t('contact.form.email')}</label>
             <input
               type="email"
               id="email"
@@ -156,7 +158,7 @@ export default function ContactForm({ schoolEmail }) {
           </div>
           
           <div>
-            <label htmlFor="subject" className="block text-gray-700 font-medium mb-1">Subject</label>
+            <label htmlFor="subject" className="block text-gray-700 font-medium mb-1">{t('contact.form.subject')}</label>
             <input
               type="text"
               id="subject"
@@ -171,7 +173,7 @@ export default function ContactForm({ schoolEmail }) {
           </div>
           
           <div>
-            <label htmlFor="message" className="block text-gray-700 font-medium mb-1">Message</label>
+            <label htmlFor="message" className="block text-gray-700 font-medium mb-1">{t('contact.form.message')}</label>
             <textarea
               id="message"
               name="message"
@@ -196,7 +198,7 @@ export default function ContactForm({ schoolEmail }) {
             disabled={isSubmitting}
             className="w-full bg-[#18bebc] text-white py-3 rounded-md font-medium hover:bg-teal-700 transition disabled:bg-teal-300"
           >
-            {isSubmitting ? 'Sending...' : 'Send Message'}
+            {isSubmitting ? t('contact.form.sending') : t('contact.form.send')}
           </button>
         </form>
       )}

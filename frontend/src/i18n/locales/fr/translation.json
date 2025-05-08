@@ -1,9 +1,127 @@
 {
-   "common": {
-     "welcome": "Bienvenue sur notre site",
-     "language": "Langue",
-     "english": "Anglais",
-     "french": "Français",
-     "arabic": "Arabe"
-   }
- }
+  "common": {
+    "welcome": "Bienvenue sur notre site",
+    "language": "Langue",
+    "english": "Anglais",
+    "french": "Français",
+    "arabic": "Arabe"
+  },
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "academics": "Académique",
+    "news": "Actualités",
+    "events": "Événements",
+    "library": "Bibliothèque",
+    "resources": "Ressources",
+    "contact": "Contact",
+    "newsEvents": "Actualités & Événements",
+    "admissions": "Admissions",
+    "toggleMenu": "Basculer le menu"
+  },
+  "auth": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "dashboard": "Tableau de bord",
+    "welcome": "Bienvenue, {{name}}"
+  },
+  "school": {
+    "name": "{{name}}",
+    "tagline": "{{tagline}}",
+    "ministry": "{{ministry}}",
+    "ministryLogoAlt": "Logo du Ministère de l'Éducation",
+    "address": "{{address}}"
+  },
+  "hero": {
+    "welcome": "Bienvenue à {{schoolName}}",
+    "tagline": "Excellence en Éducation Depuis {{foundedYear}}",
+    "applyNow": "Postulez Maintenant",
+    "learnMore": "En Savoir Plus",
+    "quickLinks": "Liens Rapides",
+    "registrationInfo": "Informations d'Inscription",
+    "academicResources": "Ressources Académiques",
+    "latestNews": "Dernières Actualités",
+    "contactAdmin": "Contacter l'Administration"
+  },
+  "footer": {
+    "quickLinks": "Liens Rapides",
+    "resources": "Ressources",
+    "accreditedBy": "Accrédité par {{ministry}}",
+    "copyright": "© {{year}} {{name}}. Tous droits réservés."
+  },
+  "contact": {
+    "phone": "Téléphone",
+    "fax": "Fax",
+    "email": "Email",
+    "form": {
+      "name": "Votre Nom",
+      "email": "Adresse Email",
+      "subject": "Sujet",
+      "message": "Message",
+      "send": "Envoyer le Message",
+      "sending": "Envoi en cours..."
+    },
+    "success": {
+      "title": "Message Envoyé!",
+      "message": "Merci de nous avoir contactés. Nous vous répondrons bientôt.",
+      "sendAnother": "Envoyer un Autre Message"
+    },
+    "errors": {
+      "nameRequired": "Le nom est requis",
+      "emailRequired": "L'email est requis",
+      "emailInvalid": "Adresse email invalide",
+      "subjectRequired": "Le sujet est requis",
+      "messageRequired": "Le message est requis",
+      "messageLength": "Le message doit contenir au moins 10 caractères",
+      "sendFailed": "Échec de l'envoi du message. Veuillez réessayer plus tard."
+    }
+  },
+  "social": {
+    "facebook": "Facebook",
+    "twitter": "Twitter",
+    "instagram": "Instagram"
+  },
+  "resources": {
+    "title": "Ressources Éducatives",
+    "upload": "Télécharger des Ressources",
+    "view": "Voir les Ressources",
+    "curriculum": "Programme",
+    "schedule": "Horaire",
+    "bookCatalog": "Catalogue de Livres",
+    "upcomingEvents": "Événements à Venir",
+    "supportServices": "Services de Soutien"
+  },
+  "quiz": {
+    "student": {
+      "history": "Historique des Quiz",
+      "loading": "Chargement de votre historique de quiz...",
+      "noAttempts": "Vous n'avez pas encore fait de quiz."
+    },
+    "table": {
+      "quiz": "Quiz",
+      "date": "Date",
+      "score": "Score",
+      "result": "Résultat",
+      "viewResults": "Voir les Résultats"
+    },
+    "errors": {
+      "loadFailed": "Échec du chargement de l'historique des quiz."
+    },
+    "teacher": {
+      "yourQuizzes": "Vos Quiz",
+      "loading": "Chargement des quiz...",
+      "loadError": "Échec du chargement des quiz. Veuillez réessayer.",
+      "noQuizzes": "Vous n'avez pas encore créé de quiz.",
+      "viewResults": "Voir les Résultats",
+      "edit": "Modifier",
+      "table": {
+        "title": "Titre",
+        "subject": "Sujet",
+        "questions": "Questions",
+        "createdOn": "Créé le",
+        "attempts": "Tentatives",
+        "actions": "Actions"
+      }
+    }
+  }
+}

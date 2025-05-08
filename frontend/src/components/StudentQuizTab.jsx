@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import QuizList from './QuizList';
 
 export default function StudentQuizTab() {
+  const { t } = useTranslation();
   const [quizAttempts, setQuizAttempts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -15,13 +17,13 @@ export default function StudentQuizTab() {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching quiz attempts:', err);
-        setError('Failed to load quiz history.');
+        setError(t('quiz.errors.loadFailed'));
         setLoading(false);
       }
     };
     
     fetchAttempts();
-  }, []);
+  }, [t]);
   
   return (
     <div className="space-y-6">
@@ -29,11 +31,11 @@ export default function StudentQuizTab() {
       
       {/* Quiz History Section */}
       <div className="bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">Quiz History</h2>
+        <h2 className="text-xl font-semibold mb-4">{t('quiz.student.history')}</h2>
         
         {loading ? (
           <div className="text-center py-4">
-            <p>Loading your quiz history...</p>
+            <p>{t('quiz.student.loading')}</p>
           </div>
         ) : error ? (
           <div className="text-center py-4">
@@ -41,7 +43,7 @@ export default function StudentQuizTab() {
           </div>
         ) : quizAttempts.length === 0 ? (
           <div className="text-center py-4">
-            <p className="text-gray-500">You haven't taken any quizzes yet.</p>
+            <p className="text-gray-500">{t('quiz.student.noAttempts')}</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -49,16 +51,16 @@ export default function StudentQuizTab() {
               <thead>
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Quiz
+                    {t('quiz.table.quiz')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
+                    {t('quiz.table.date')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Score
+                    {t('quiz.table.score')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Result
+                    {t('quiz.table.result')}
                   </th>
                 </tr>
               </thead>
@@ -79,7 +81,7 @@ export default function StudentQuizTab() {
                         href={`/student/quiz-results/${attempt.id}`} 
                         className="text-[#18bebc] hover:text-teal-800"
                       >
-                        View Results
+                        {t('quiz.table.viewResults')}
                       </a>
                     </td>
                   </tr>
