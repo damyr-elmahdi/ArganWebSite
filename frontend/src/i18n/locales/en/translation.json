@@ -329,5 +329,156 @@
         "dept": "Dept:",
         "level": "Level:"
       }
+    },
+"about": {
+        "title": "About Arkan Secondary School",
+        "subtitle": "A distinguished lycée qualifiant in Tiznit committed to academic excellence and community engagement.",
+        "tabs": {
+          "overview": "Overview",
+          "history": "History",
+          "programs": "Educational Programs",
+          "achievements": "Achievements",
+          "facilities": "Facilities"
+        },
+        "overview": {
+          "welcome": "Welcome to Arkan Secondary School",
+          "description1": "Arkan Secondary School (الثانوية التأهيلية أركان) is an upper-secondary lycée qualifiant located in the city of Tiznit in the Souss-Massa region of Morocco. Established in the 2014s, our school has quickly earned a distinguished place among the province's secondary schools in terms of academic results and educational influence.",
+          "description2": "Our school offers the standard Moroccan educational pathway with classes for the common core (جذوع مشتركة), Premier Baccalauréat (1ère bac), and Terminal Baccalauréat (2ème bac). We are committed to academic excellence, cultural engagement, and community development.",
+          "stats": {
+            "years": {
+              "value": "3",
+              "label": "Academic Years"
+            },
+            "tracks": {
+              "value": "Multiple",
+              "label": "Academic Tracks"
+            },
+            "established": {
+              "value": "2014s",
+              "label": "Year Established"
+            },
+            "activities": {
+              "value": "Numerous",
+              "label": "Cultural Activities"
+            }
+          }
+        },
+        "images": {
+          "schoolLogo": "School Logo"
+        },
+        "history": {
+          "title": "Our History",
+          "events": {
+            "establishment": {
+              "title": "2014s: Establishment",
+              "description": "Arkan Secondary School was established in the 2014s as a new lycée qualifiant in the city of Tiznit, with a mission to provide quality upper-secondary education to the local community."
+            },
+            "cultural": {
+              "title": "2015: Cultural Development",
+              "description": "The school organized its \"Artistic-Educational Evening\" under the motto \"Success for All\", featuring recitations, Amazigh (Ahwash) dances, songs, and plays in both Amazigh and French."
+            },
+            "excellence": {
+              "title": "2017: Recognition of Excellence",
+              "description": "Arkan Secondary School hosted a \"Celebration of Excellence\" ceremony to honor top-achieving students from all academic levels, and earned distinction among the province's secondary schools for academic results."
+            },
+            "environmental": {
+              "title": "2023: Environmental Engagement",
+              "description": "Students participated in the Mohammed VI Foundation's \"Young Journalists for the Environment\" competition, submitting a video report about plastic waste in Tiznit and winning a prize for an environmental photograph."
+            }
+          }
+        },
+        "programs": {
+          "title": "Educational Programs",
+          "description": "Following the standard Moroccan educational system, our lycée offers a three-year upper secondary program:",
+          "commonCore": {
+            "title": "Tronc Commun (Common Core)",
+            "description": "The first year provides a common curriculum for all students. At the end of this year, students take standardized regional exams and are then tracked into specific streams based on their choices and results."
+          },
+          "firstBac": {
+            "title": "First Baccalaureate Year (1ère Bac)",
+            "description": "In this second year, students begin specializing in their chosen streams, which may include:",
+            "streams": {
+              "literary": "General/Literary Studies",
+              "mathematical": "Mathematical/Scientific Studies",
+              "experimental": "Sciences Expérimentales (Life and Earth Sciences)"
+            }
+          },
+          "secondBac": {
+            "title": "Second Baccalaureate Year (2ème Bac)",
+            "description": "The final year continues students' specialization in their chosen streams. All students take the national Baccalauréat exam at the end of this year, which is required for university admission."
+          }
+        },
+        "achievements": {
+          "title": "Achievements and Community Engagement",
+          "academic": {
+            "title": "Academic Excellence",
+            "description": "As reported in 2017, our lycée has quickly \"earned a distinguished place among the province's secondary schools in terms of academic results and educational influence.\""
+          },
+          "cultural": {
+            "title": "Cultural Events",
+            "description": "Our school regularly hosts cultural and educational events that showcase student talents and recognize achievements:",
+            "events": {
+              "evening": {
+                "title": "Artistic-Educational Evening (2015):",
+                "description": "Featured recitations, Amazigh dances, songs, and theatrical performances"
+              },
+              "excellence": {
+                "title": "Celebration of Excellence (2017):",
+                "description": "Recognized top students and included a moral theater performance about exam ethics"
+              },
+              "unesco": {
+                "title": "UNESCO's World Argane Tree Day:",
+                "description": "Organized a cultural week with exhibitions, mural painting, and scientific talks"
+              }
+            }
+          },
+          "environmental": {
+            "title": "Environmental Engagement",
+            "description": "Our students actively participate in environmental awareness and conservation efforts:",
+            "projects": {
+              "video": "Video report on plastic waste in Tiznit submitted to the Mohammed VI Foundation's \"Young Journalists for the Environment\" competition (2023)",
+              "photo": "Award-winning environmental photograph titled \"Where to? Who Stops the Sprawl?\" highlighting pollution threatening local date-palm groves (2023)"
+            }
+          },
+          "community": {
+            "title": "Community Support",
+            "description": "Our school benefits from strong community and parent involvement:",
+            "initiatives": {
+              "notebooks": "In the 2016/2017 school year, parents through the parent-teacher association donated 1,000 large notebooks to distribute to all Arkan students",
+              "media": "This initiative was covered by local media as an example of community mobilization for quality education"
+            }
+          }
+        },
+        "facilities": {
+          "title": "Facilities",
+          "description": "While detailed information on Arkan's facilities is not extensively documented, our school is equipped with essential educational spaces to support student learning and activities:",
+          "list": {
+            "auditorium": {
+              "title": "Auditorium/School Hall",
+              "description": "Our school has a dedicated space (قاعة أو فضاء المؤسسة) for hosting cultural events, ceremonies, and student performances."
+            },
+            "classrooms": {
+              "title": "Classrooms",
+              "description": "Modern classrooms equipped for the different educational levels and streams: common core, first baccalaureate, and second baccalaureate."
+            },
+            "campus": {
+              "title": "Campus Grounds",
+              "description": "Outdoor areas that accommodate exhibitions, cultural activities, and student gatherings."
+            },
+            "resources": {
+              "title": "Educational Resources",
+              "description": "Learning materials and resources to support the national curriculum across all streams and specializations."
+            }
+          }
+        },
+        "cta": {
+          "title": "Join Our Academic Community",
+          "description": "Arkan Secondary School offers a supportive environment where students can excel academically and develop personally through diverse educational and cultural experiences.",
+          "buttons": {
+            "apply": "Apply Now",
+            "contact": "Contact Us"
+          }
+        }
+      }
     }
-  }
+
