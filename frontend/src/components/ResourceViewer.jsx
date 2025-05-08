@@ -22,6 +22,9 @@ export default function ResourceViewer() {
     { value: "Arabic", label: "Arabic" },
     { value: "History and Geography", label: "History and Geography" },
     { value: "French", label: "French" },
+    { value: "English", label: "English" },
+    { value: "Islamic Education", label: "Islamic Education" },
+    { value: "Philosophies", label: "Philosophies" },
   ];
 
   // Year level options
@@ -91,34 +94,55 @@ export default function ResourceViewer() {
     tc: {
       Mathematics: {
         science:
-          "https://www.alloschool.com/course/mathematiques-tronc-commun-sciences-biof",
+          "https://www.alloschool.com/index.ph%70/course/mathematiques-tronc-commun-sciences-biof",
         letter:
-          "https://www.alloschool.com/course/alriadhiat-tjdh-mshrk-aladab-walalom-alansanit",
+          "https://www.alloschool.com/index.ph%70/course/alriadhiat-aljtha-almshtrk-aadab-oalom-insania",
       },
       "Physics & chemistry": {
         science:
-          "https://www.alloschool.com/course/alfizia-walkimia-tjdh-mshrk-alom-riadhia",
+          "https://www.alloschool.com/index.ph%70/course/physique-et-chimie-tronc-commun-sciences-biof",
       },
       SVT: {
         science:
-          "https://www.alloschool.com/course/alom-alhiat-walarth-tjdh-mshrk-alom-riadhia",
+          "https://www.alloschool.com/index.ph%70/course/sciences-de-la-vie-et-de-la-terre-svt-tronc-commun-sciences",
+        letter:
+          "https://www.alloschool.com/index.ph%70/course/alom-alhiaa-oalardh-aljtha-mshtrk-aadab-oalom-insania",
       },
       Arabic: {
         science:
-          "https://www.alloschool.com/course/allgha-alrbia-tjdh-mshrk-alom",
+          "https://www.alloschool.com/index.ph%70/course/allgha-alarbia-aljtha-almshtrk-alom",
         letter:
-          "https://www.alloschool.com/course/allgha-alrbia-tjdh-mshrk-aladab-walalom-alansanit",
+          "https://www.alloschool.com/index.ph%70/course/allgha-alarbia-aljtha-almshtrk-aadab-oalom-insania",
       },
       "History and Geography": {
-        science: "https://www.alloschool.com/course/alijtmaiat-tjdh-mshrk-alom",
+        science:
+          "https://www.alloschool.com/index.ph%70/course/alijtmaaiat-aljtha-almshtrk-alom",
         letter:
-          "https://www.alloschool.com/course/alijtmaiat-tjdh-mshrk-aladab-walalom-alansanit",
+          "https://www.alloschool.com/index.ph%70/course/alijtmaaiat-aljtha-mshtrk-aadab-oalom-insania",
       },
       French: {
         science:
-          "https://www.alloschool.com/course/allgha-alfrnsia-tjdh-mshrk-alom",
+          "https://www.alloschool.com/index.ph%70/course/francais-tronc-commun-sciences",
         letter:
-          "https://www.alloschool.com/course/allgha-alfrnsia-tjdh-mshrk-aladab-walalom-alansanit",
+          "https://www.alloschool.com/index.ph%70/course/francais-tronc-commun-lettres-et-sciences-humaines",
+      },
+      English: {
+        science:
+          "https://www.alloschool.com/index.ph%70/course/anglais-tronc-commun-sciences",
+        letter:
+          "https://www.alloschool.com/index.ph%70/course/anglais-tronc-commun-lettres-et-sciences-humaines",
+      },
+      "Islamic Education": {
+        science:
+          "https://www.alloschool.com/index.ph%70/course/altrbia-alislamia-aljtha-almshtrk-alom",
+        letter:
+          "https://www.alloschool.com/index.ph%70/course/altrbia-alislamia-aljtha-mshtrk-aadab-oalom-insania",
+      },
+      Philosophies: {
+        science:
+          "https://www.alloschool.com/index.ph%70/course/alflsfa-aljtha-almshtrk-alom",
+        letter:
+          "https://www.alloschool.com/index.ph%70/course/alflsfa-aljtha-mshtrk-aadab-oalom-insania",
       },
     },
 
@@ -153,7 +177,6 @@ export default function ResourceViewer() {
       },
     },
 
-    // 2BAC (Second Year)
     "2bac": {
       Mathematics: {
         smb1: "https://www.alloschool.com/course/alriadhiat-althania-bakaloria-alom-riadhia-a-biof",
@@ -401,7 +424,7 @@ export default function ResourceViewer() {
       </h2>
 
       {/* Filters */}
-     
+
       <div className="mb-6 bg-gray-50 p-4 rounded-md">
         <h3 className="text-lg font-medium text-gray-700 mb-3">
           Filter Resources
