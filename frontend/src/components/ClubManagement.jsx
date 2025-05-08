@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function ClubManagement() {
+  const { t } = useTranslation();
   const [clubs, setClubs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -27,19 +29,16 @@ export default function ClubManagement() {
   
   const navigate = useNavigate();
 
-  // Fetch clubs on component mount
   useEffect(() => {
     fetchClubs();
   }, []);
 
-  // Fetch members when a club is selected
   useEffect(() => {
     if (selectedClub) {
       fetchClubMembers(selectedClub.id);
     }
   }, [selectedClub]);
 
-  // Fetch all clubs
   const fetchClubs = async () => {
     try {
       setLoading(true);
@@ -48,48 +47,42 @@ export default function ClubManagement() {
       setError(null);
     } catch (err) {
       console.error('Error fetching clubs:', err);
-      setError('Failed to load clubs. Please try again.');
+      setError(t('clubs.management.errors.loadFailed'));
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch members for a specific club
   const fetchClubMembers = async (clubId) => {
     try {
       const response = await axios.get(`/api/clubs/${clubId}/members`);
       setClubMembers(response.data);
     } catch (err) {
       console.error('Error fetching club members:', err);
-      setError('Failed to load club members');
+      setError(t('clubs.management.errors.memberLoadFailed'));
     }
   };
 
-  // Fetch all users for member assignment
   const fetchUsers = async () => {
     try {
       const response = await axios.get('/api/users');
       
-      // Check if response is paginated
       if (response.data && response.data.data && Array.isArray(response.data.data)) {
-        // Extract users from paginated response
         setAvailableUsers(response.data.data);
       } else if (Array.isArray(response.data)) {
-        // Handle case where API might return a direct array
         setAvailableUsers(response.data);
       } else {
         console.error('Expected paginated users or array but got:', response.data);
         setAvailableUsers([]);
-        setError('Received invalid user data format');
+        setError(t('common.errors.generic'));
       }
     } catch (err) {
       console.error('Error fetching users:', err);
-      setError('Failed to load users');
+      setError(t('common.errors.generic'));
       setAvailableUsers([]);
     }
   };
 
-  // Handle user search and filtering
   const handleUserSearch = (e) => {
     const searchTerm = e.target.value;
     setUserSearchInput(searchTerm);
@@ -109,7 +102,6 @@ export default function ClubManagement() {
     setShowUserSuggestions(true);
   };
 
-  // Select a user from the suggestions
   const selectUser = (user) => {
     setMemberFormData({
       ...memberFormData,
@@ -119,13 +111,11 @@ export default function ClubManagement() {
     setShowUserSuggestions(false);
   };
 
-  // Handle club selection
   const handleSelectClub = (club) => {
     setSelectedClub(club);
     setError(null);
   };
 
-  // Open modal based on action type
   const openModal = (type, club = null) => {
     setModalType(type);
     setModalVisible(true);
@@ -157,14 +147,12 @@ export default function ClubManagement() {
     }
   };
 
-  // Close modal and reset form data
   const closeModal = () => {
     setModalVisible(false);
     setModalType('');
     setError(null);
   };
 
-  // Handle form input changes for club data
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -173,7 +161,6 @@ export default function ClubManagement() {
     }));
   };
 
-  // Handle form input changes for member data
   const handleMemberInputChange = (e) => {
     const { name, value } = e.target;
     setMemberFormData(prev => ({
@@ -182,7 +169,6 @@ export default function ClubManagement() {
     }));
   };
 
-  // Create a new club
   const handleCreateClub = async (e) => {
     e.preventDefault();
     try {
@@ -195,12 +181,11 @@ export default function ClubManagement() {
       if (err.response && err.response.data && err.response.data.errors) {
         setError(Object.values(err.response.data.errors).flat().join(', '));
       } else {
-        setError('Failed to create club. Please try again.');
+        setError(t('clubs.management.errors.createFailed'));
       }
     }
   };
 
-  // Update an existing club
   const handleUpdateClub = async (e) => {
     e.preventDefault();
     try {
@@ -214,12 +199,11 @@ export default function ClubManagement() {
       if (err.response && err.response.data && err.response.data.errors) {
         setError(Object.values(err.response.data.errors).flat().join(', '));
       } else {
-        setError('Failed to update club. Please try again.');
+        setError(t('clubs.management.errors.updateFailed'));
       }
     }
   };
 
-  // Delete a club
   const handleDeleteClub = async () => {
     try {
       await axios.delete(`/api/clubs/${selectedClub.id}`);
@@ -229,17 +213,15 @@ export default function ClubManagement() {
       setError(null);
     } catch (err) {
       console.error('Error deleting club:', err);
-      setError('Failed to delete club. Please try again.');
+      setError(t('clubs.management.errors.deleteFailed'));
     }
   };
 
-  // Add a member to the selected club
   const handleAddMember = async (e) => {
     e.preventDefault();
     
-    // Validate that a valid user was selected
     if (!memberFormData.user_id) {
-      setError('Please select a valid user from the suggestions');
+      setError(t('clubs.management.errors.selectUser'));
       return;
     }
     
@@ -255,12 +237,11 @@ export default function ClubManagement() {
       } else if (err.response && err.response.data && err.response.data.errors) {
         setError(Object.values(err.response.data.errors).flat().join(', '));
       } else {
-        setError('Failed to add member. Please try again.');
+        setError(t('clubs.management.errors.memberAddFailed'));
       }
     }
   };
 
-  // Update a member's role
   const handleUpdateMember = async (memberId, newRole) => {
     try {
       const memberToUpdate = clubMembers.find(member => member.id === memberId);
@@ -275,11 +256,10 @@ export default function ClubManagement() {
       setError(null);
     } catch (err) {
       console.error('Error updating member:', err);
-      setError('Failed to update member role');
+      setError(t('clubs.management.errors.memberUpdateFailed'));
     }
   };
 
-  // Remove a member from the club
   const handleRemoveMember = async (memberId) => {
     try {
       await axios.delete(`/api/clubs/${selectedClub.id}/members/${memberId}`);
@@ -287,11 +267,10 @@ export default function ClubManagement() {
       setError(null);
     } catch (err) {
       console.error('Error removing member:', err);
-      setError('Failed to remove member');
+      setError(t('clubs.management.errors.memberRemoveFailed'));
     }
   };
 
-  // View club details
   const viewClubDetails = (clubId) => {
     navigate(`/clubs/${clubId}`);
   };
@@ -300,7 +279,7 @@ export default function ClubManagement() {
     <div className="bg-gray-50 min-h-screen p-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Club Management</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{t('clubs.management.title')}</h1>
           <button
             onClick={() => openModal('create')}
             className="bg-[#18bebc] hover:bg-teal-600 text-white px-4 py-2 rounded-md flex items-center"
@@ -308,7 +287,7 @@ export default function ClubManagement() {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
             </svg>
-            Create New Club
+            {t('clubs.management.createNew')}
           </button>
         </div>
 
@@ -322,7 +301,7 @@ export default function ClubManagement() {
           {/* Club List */}
           <div className="bg-white rounded-lg shadow-md overflow-hidden lg:col-span-1">
             <div className="bg-gray-50 px-4 py-3 border-b">
-              <h2 className="text-lg font-medium text-gray-800">Clubs</h2>
+              <h2 className="text-lg font-medium text-gray-800">{t('clubs.management.table.title')}</h2>
             </div>
             
             <div className="overflow-y-auto" style={{ maxHeight: '600px' }}>
@@ -332,7 +311,7 @@ export default function ClubManagement() {
                 </div>
               ) : clubs.length === 0 ? (
                 <div className="p-4 text-center text-gray-500">
-                  No clubs available. Create a new club to get started.
+                  {t('clubs.management.noClubs')}
                 </div>
               ) : (
                 <ul className="divide-y divide-gray-200">
@@ -367,7 +346,7 @@ export default function ClubManagement() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
-                      View
+                      {t('common.view')}
                     </button>
                     <button
                       onClick={() => openModal('edit', selectedClub)}
@@ -376,7 +355,7 @@ export default function ClubManagement() {
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                       </svg>
-                      Edit
+                      {t('common.edit')}
                     </button>
                     <button
                       onClick={() => openModal('delete')}
@@ -385,33 +364,33 @@ export default function ClubManagement() {
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
-                      Delete
+                      {t('common.delete')}
                     </button>
                   </div>
                 </div>
                 
                 <div className="p-6">
                   <div className="mb-6">
-                    <h3 className="text-lg font-medium text-gray-800 mb-2">Club Details</h3>
+                    <h3 className="text-lg font-medium text-gray-800">{t('clubs.management.details.title')}</h3>
                     <div className="bg-gray-50 p-4 rounded-md">
                       <div className="mb-4">
-                        <h4 className="text-sm font-semibold text-gray-500">Description</h4>
+                        <h4 className="text-sm font-semibold text-gray-500">{t('clubs.management.details.description')}</h4>
                         <p className="text-gray-700">{selectedClub.description}</p>
                       </div>
                       <div className="mb-4">
-                        <h4 className="text-sm font-semibold text-gray-500">Activities</h4>
+                        <h4 className="text-sm font-semibold text-gray-500">{t('clubs.management.details.activities')}</h4>
                         <p className="text-gray-700">{selectedClub.activities}</p>
                       </div>
                       <div>
-                        <h4 className="text-sm font-semibold text-gray-500">Meeting Schedule</h4>
-                        <p className="text-gray-700">{selectedClub.meeting_schedule || 'Not specified'}</p>
+                        <h4 className="text-sm font-semibold text-gray-500">{t('clubs.management.details.meetingSchedule')}</h4>
+                        <p className="text-gray-700">{selectedClub.meeting_schedule || t('clubs.management.details.notSpecified')}</p>
                       </div>
                     </div>
                   </div>
                   
                   <div>
                     <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-medium text-gray-800">Members</h3>
+                      <h3 className="text-lg font-medium text-gray-800">{t('clubs.management.members.title')}</h3>
                       <button
                         onClick={() => openModal('member')}
                         className="bg-[#18bebc] hover:bg-teal-600 text-white px-3 py-1 text-sm rounded-md flex items-center"
@@ -419,7 +398,7 @@ export default function ClubManagement() {
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                           <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
                         </svg>
-                        Add Member
+                        {t('clubs.management.members.add')}
                       </button>
                     </div>
                     
@@ -428,9 +407,9 @@ export default function ClubManagement() {
                         <table className="min-w-full divide-y divide-gray-200">
                           <thead className="bg-gray-50">
                             <tr>
-                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                              <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('clubs.management.members.name')}</th>
+                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('clubs.management.members.role')}</th>
+                              <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{t('clubs.management.members.actions')}</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-200">
@@ -446,9 +425,9 @@ export default function ClubManagement() {
                                       onChange={(e) => handleUpdateMember(member.id, e.target.value)}
                                       className="form-select rounded-md border-gray-300 focus:ring-[#18bebc] focus:border-[#18bebc] text-sm"
                                     >
-                                      <option value="member">Member</option>
-                                      <option value="leader">Leader</option>
-                                      <option value="assistant">Assistant</option>
+                                      <option value="member">{t('clubs.management.members.roles.member')}</option>
+                                      <option value="leader">{t('clubs.management.members.roles.leader')}</option>
+                                      <option value="assistant">{t('clubs.management.members.roles.assistant')}</option>
                                     </select>
                                   </div>
                                 </td>
@@ -457,7 +436,7 @@ export default function ClubManagement() {
                                     onClick={() => handleRemoveMember(member.id)}
                                     className="text-red-600 hover:text-red-800"
                                   >
-                                    Remove
+                                    {t('common.remove')}
                                   </button>
                                 </td>
                               </tr>
@@ -467,7 +446,7 @@ export default function ClubManagement() {
                       </div>
                     ) : (
                       <div className="text-center py-4 text-gray-500 bg-gray-50 rounded-md">
-                        No members in this club yet.
+                        {t('clubs.management.members.empty')}
                       </div>
                     )}
                   </div>
@@ -478,7 +457,7 @@ export default function ClubManagement() {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2a3 3 0 00-3-3H7m0 0a3 3 0 00-3 3v2m12-3a3 3 0 00-3-3m0 0a3 3 0 00-3 3m3-3a3 3 0 00-3-3m0 0H7" />
                 </svg>
-                <p className="mt-4">Select a club to view details and manage members</p>
+                <p className="mt-4">{t('clubs.management.selectClubPrompt')}</p>
               </div>
             )}
           </div>
@@ -492,10 +471,10 @@ export default function ClubManagement() {
             {/* Modal Header */}
             <div className="bg-gray-50 px-6 py-4 border-b rounded-t-lg">
               <h3 className="text-lg font-medium text-gray-900">
-                {modalType === 'create' && 'Create New Club'}
-                {modalType === 'edit' && 'Edit Club'}
-                {modalType === 'delete' && 'Delete Club'}
-                {modalType === 'member' && 'Add Club Member'}
+                {modalType === 'create' && t('clubs.management.modal.createTitle')}
+                {modalType === 'edit' && t('clubs.management.modal.editTitle')}
+                {modalType === 'delete' && t('clubs.management.modal.deleteTitle')}
+                {modalType === 'member' && t('clubs.management.modal.memberTitle')}
               </h3>
             </div>
 
@@ -509,19 +488,21 @@ export default function ClubManagement() {
 
               {modalType === 'delete' ? (
                 <div>
-                  <p className="text-red-600 mb-4">Are you sure you want to delete "{selectedClub?.name}"? This action cannot be undone.</p>
+                  <p className="text-red-600 mb-4">
+                    {t('clubs.management.modal.deleteConfirmation', { name: selectedClub?.name })}
+                  </p>
                   <div className="flex justify-end space-x-3">
                     <button
                       onClick={closeModal}
                       className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
                     >
-                      Cancel
+                      {t('common.cancel')}
                     </button>
                     <button
                       onClick={handleDeleteClub}
                       className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md"
                     >
-                      Delete
+                      {t('common.delete')}
                     </button>
                   </div>
                 </div>
@@ -529,7 +510,7 @@ export default function ClubManagement() {
                 <form onSubmit={handleAddMember}>
                   <div className="mb-4 relative">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="user_search">
-                      User
+                      {t('clubs.management.members.form.user')}
                     </label>
                     <input
                       type="text"
@@ -539,7 +520,7 @@ export default function ClubManagement() {
                       onChange={handleUserSearch}
                       onFocus={() => userSearchInput.trim() !== '' && setShowUserSuggestions(true)}
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      placeholder="Search for user by name or ID"
+                      placeholder={t('clubs.management.members.form.searchPlaceholder')}
                       required
                     />
                     {showUserSuggestions && filteredUsers.length > 0 && (
@@ -557,13 +538,13 @@ export default function ClubManagement() {
                     )}
                     {showUserSuggestions && filteredUsers.length === 0 && (
                       <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-300">
-                        <div className="px-4 py-2 text-gray-500">No users found</div>
+                        <div className="px-4 py-2 text-gray-500">{t('clubs.management.members.form.noUsersFound')}</div>
                       </div>
                     )}
                   </div>
                   <div className="mb-6">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
-                      Role
+                      {t('clubs.management.members.form.role')}
                     </label>
                     <select
                       id="role"
@@ -572,9 +553,9 @@ export default function ClubManagement() {
                       onChange={handleMemberInputChange}
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     >
-                      <option value="member">Member</option>
-                      <option value="leader">Leader</option>
-                      <option value="assistant">Assistant</option>
+                      <option value="member">{t('clubs.management.members.roles.member')}</option>
+                      <option value="leader">{t('clubs.management.members.roles.leader')}</option>
+                      <option value="assistant">{t('clubs.management.members.roles.assistant')}</option>
                     </select>
                   </div>
                   <div className="flex justify-end space-x-3">
@@ -583,13 +564,13 @@ export default function ClubManagement() {
                       onClick={closeModal}
                       className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
                     >
-                      Cancel
+                      {t('common.cancel')}
                     </button>
                     <button
                       type="submit"
                       className="bg-[#18bebc] hover:bg-teal-600 text-white px-4 py-2 rounded-md"
                     >
-                      Add Member
+                      {t('clubs.management.buttons.addMember')}
                     </button>
                   </div>
                 </form>
@@ -597,7 +578,7 @@ export default function ClubManagement() {
                 <form onSubmit={modalType === 'create' ? handleCreateClub : handleUpdateClub}>
                   <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-                      Club Name
+                      {t('clubs.management.form.name')}
                     </label>
                     <input
                       type="text"
@@ -606,13 +587,13 @@ export default function ClubManagement() {
                       value={formData.name}
                       onChange={handleInputChange}
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      placeholder="Enter club name"
+                      placeholder={t('clubs.management.form.namePlaceholder')}
                       required
                     />
                   </div>
                   <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-                      Description
+                      {t('clubs.management.form.description')}
                     </label>
                     <textarea
                       id="description"
@@ -620,14 +601,14 @@ export default function ClubManagement() {
                       value={formData.description}
                       onChange={handleInputChange}
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      placeholder="Enter club description"
+                      placeholder={t('clubs.management.form.descriptionPlaceholder')}
                       rows="3"
                       required
                     ></textarea>
                   </div>
                   <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="activities">
-                      Activities
+                      {t('clubs.management.form.activities')}
                     </label>
                     <textarea
                       id="activities"
@@ -635,14 +616,14 @@ export default function ClubManagement() {
                       value={formData.activities}
                       onChange={handleInputChange}
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      placeholder="Enter club activities"
+                      placeholder={t('clubs.management.form.activitiesPlaceholder')}
                       rows="3"
                       required
                     ></textarea>
                   </div>
                   <div className="mb-6">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="meeting_schedule">
-                      Meeting Schedule
+                      {t('clubs.management.form.meetingSchedule')}
                     </label>
                     <input
                       type="text"
@@ -651,7 +632,7 @@ export default function ClubManagement() {
                       value={formData.meeting_schedule}
                       onChange={handleInputChange}
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      placeholder="E.g., Every Monday at 4:00 PM"
+                      placeholder={t('clubs.management.form.meetingSchedulePlaceholder')}
                     />
                   </div>
                   <div className="flex justify-end space-x-3">
@@ -660,13 +641,13 @@ export default function ClubManagement() {
                       onClick={closeModal}
                       className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
                     >
-                      Cancel
+                      {t('common.cancel')}
                     </button>
                     <button
                       type="submit"
                       className="bg-[#18bebc] hover:bg-teal-600 text-white px-4 py-2 rounded-md"
                     >
-                      {modalType === 'create' ? 'Create Club' : 'Update Club'}
+                      {modalType === 'create' ? t('clubs.management.buttons.create') : t('clubs.management.buttons.update')}
                     </button>
                   </div>
                 </form>
