@@ -29,7 +29,7 @@ export default function QuizResultsViewer() {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching quiz data:', err);
-        setError(t('quiz_results_viewer.error_loading_quiz'));
+        setError(t('quiz.results_viewer.error_loading_quiz'));
         setLoading(false);
       }
     };
@@ -47,7 +47,7 @@ export default function QuizResultsViewer() {
       setDetailsLoading(false);
     } catch (err) {
       console.error('Error fetching attempt details:', err);
-      setError(t('quiz_results_viewer.error_loading_attempt'));
+      setError(t('quiz.results_viewer.error_loading_attempt'));
       setDetailsLoading(false);
     }
   };
@@ -61,7 +61,7 @@ export default function QuizResultsViewer() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <h2 className="text-xl font-semibold">{t('quiz_results_viewer.loading_results')}</h2>
+          <h2 className="text-xl font-semibold">{t('quiz.results_viewer.loading_results')}</h2>
         </div>
       </div>
     );
@@ -73,10 +73,10 @@ export default function QuizResultsViewer() {
         <div className="text-center">
           <h2 className="text-xl font-semibold text-red-600">{error}</h2>
           <button 
-            onClick={() => navigate('/teacher/quizzes')}
+            onClick={() => navigate('/teacher-dashboard')}
             className="mt-4 px-4 py-2 bg-[#18bebc] text-white rounded hover:bg-teal-700"
           >
-            {t('quiz_results_viewer.back_to_quizzes')}
+            {t('quiz.results_viewer.back_to_quizzes')}
           </button>
         </div>
       </div>
@@ -89,20 +89,20 @@ export default function QuizResultsViewer() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">{quiz.title} - {t('quiz_results_viewer.results')}</h2>
-          <p className="text-gray-500">{t('quiz_results_viewer.view_all_attempts')}</p>
+          <h2 className="text-2xl font-bold">{quiz.title} - {t('quiz.results_viewer.results')}</h2>
+          <p className="text-gray-500">{t('quiz.results_viewer.view_all_attempts')}</p>
         </div>
         <button
-          onClick={() => navigate('/teacher/quizzes')}
+          onClick={() => navigate('/teacher-dashboard')}
           className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
         >
-          {t('quiz_results_viewer.back_to_quizzes')}
+          {t('quiz.results_viewer.back_to_quizzes')}
         </button>
       </div>
       
       {attempts.length === 0 ? (
         <div className="bg-white shadow-md rounded-lg p-6 text-center">
-          <p className="text-gray-500">{t('quiz_results_viewer.no_attempts')}</p>
+          <p className="text-gray-500">{t('quiz.results_viewer.no_attempts')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -111,7 +111,7 @@ export default function QuizResultsViewer() {
             <div className="bg-white shadow-md rounded-lg overflow-hidden">
               <div className="px-4 py-5 border-b border-gray-200 sm:px-6">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  {t('quiz_results_viewer.student_attempts')}
+                  {t('quiz.results_viewer.student_attempts')}
                 </h3>
               </div>
               <ul className="divide-y divide-gray-200 max-h-96 overflow-y-auto">
@@ -155,7 +155,7 @@ export default function QuizResultsViewer() {
             {selectedAttempt ? (
               detailsLoading ? (
                 <div className="bg-white shadow-md rounded-lg p-6 flex justify-center">
-                  <p>{t('quiz_results_viewer.loading_attempt_details')}</p>
+                  <p>{t('quiz.results_viewer.loading_attempt_details')}</p>
                 </div>
               ) : attemptDetails ? (
                 <div className="bg-white shadow-md rounded-lg overflow-hidden">
@@ -163,10 +163,10 @@ export default function QuizResultsViewer() {
                     <div className="flex justify-between items-center">
                       <div>
                         <h3 className="text-lg leading-6 font-medium text-gray-900">
-                          {t('quiz_results_viewer.student_answers', { name: attemptDetails.user.name })}
+                          {t('quiz.results_viewer.student_answers', { name: attemptDetails.user.name })}
                         </h3>
                         <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                          {t('quiz_results_viewer.completed_on', { date: new Date(attemptDetails.completed_at).toLocaleString() })}
+                          {t('quiz.results.completed_on', { date: new Date(attemptDetails.completed_at).toLocaleString() })}
                         </p>
                       </div>
                       <div>
@@ -182,19 +182,19 @@ export default function QuizResultsViewer() {
 
                   {/* Legend for answer status */}
                   <div className="p-4 bg-gray-50 border-b border-gray-200">
-                    <p className="text-sm font-medium mb-2">{t('quiz_results_viewer.answer_legend')}:</p>
+                    <p className="text-sm font-medium mb-2">{t('quiz.results_viewer.answer_legend')}:</p>
                     <div className="flex flex-wrap gap-4">
                       <div className="flex items-center">
                         <span className="inline-block w-4 h-4 bg-green-100 border border-green-300 rounded mr-2"></span>
-                        <span className="text-sm">{t('quiz_results_viewer.correct_answer')}</span>
+                        <span className="text-sm">{t('quiz.results_viewer.correct_answer')}</span>
                       </div>
                       <div className="flex items-center">
                         <span className="inline-block w-4 h-4 bg-red-100 border border-red-300 rounded mr-2"></span>
-                        <span className="text-sm">{t('quiz_results_viewer.incorrect_answer')}</span>
+                        <span className="text-sm">{t('quiz.results_viewer.incorrect_answer')}</span>
                       </div>
                       <div className="flex items-center">
                         <span className="inline-block w-4 h-4 bg-blue-100 border border-blue-300 rounded mr-2"></span>
-                        <span className="text-sm">{t('quiz_results_viewer.time_expired_missed')}</span>
+                        <span className="text-sm">{t('quiz.results_viewer.time_expired_missed')}</span>
                       </div>
                     </div>
                   </div>
@@ -203,13 +203,13 @@ export default function QuizResultsViewer() {
                     {attemptDetails.answers.map((answer, index) => (
                       <li key={answer.id} className="p-4">
                         <div className="mb-2">
-                          <span className="font-medium">{t('quiz_results_viewer.question_number', { number: index + 1 })}: </span>
+                          <span className="font-medium">{t('quiz.results.question_number', { number: index + 1 })}: </span>
                           <span>{answer.question.question_text}</span>
                           
                           {/* Time expired indicator */}
                           {isTimeExpired(answer) && (
                             <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                              {t('quiz_results_viewer.time_expired')}
+                              {t('quiz.results_viewer.time_expired')}
                             </span>
                           )}
                         </div>
@@ -239,7 +239,7 @@ export default function QuizResultsViewer() {
                                   {!option.is_correct && answer.selected_option_id === option.id && (
                                     <span className="text-red-500 mr-2">✗</span>
                                   )}
-                                  <span>{option.option_text || t('quiz_results_viewer.no_text_available')}</span>
+                                  <span>{option.option_text || t('quiz.results_viewer.no_text_available')}</span>
                                 </div>
                               </div>
                             );
@@ -252,7 +252,7 @@ export default function QuizResultsViewer() {
               ) : null
             ) : (
               <div className="bg-white shadow-md rounded-lg p-6 text-center">
-                <p className="text-gray-500">{t('quiz_results_viewer.select_attempt')}</p>
+                <p className="text-gray-500">{t('quiz.results_viewer.select_attempt')}</p>
               </div>
             )}
           </div>

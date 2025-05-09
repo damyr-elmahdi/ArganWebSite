@@ -150,7 +150,7 @@ export default function News() {
   const renderNewsList = () => {
     return (
       <>
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">{t('news.title')}</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">{t('news.schooltitle')}</h1>
 
         {newsItems.length === 0 ? (
           <div className="bg-gray-100 p-8 rounded-lg text-center">

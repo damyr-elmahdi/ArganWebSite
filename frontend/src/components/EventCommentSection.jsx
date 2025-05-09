@@ -177,9 +177,9 @@ export default function EventCommentSection({ eventId }) {
       ) : (
         <div className="bg-gray-50 p-4 rounded-md mb-6">
           <p className="text-gray-700">
-            {t("comments.pleaseLogin")}{" "}
+            {t("comments.pleaseLogin.before")}{" "}
             <a href="/login" className="text-[#18bebc] hover:underline">
-              {t("comments.loginLink")}
+              {t("comments.pleaseLogin.loginLink")}
             </a>
           </p>
         </div>

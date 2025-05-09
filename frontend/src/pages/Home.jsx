@@ -84,12 +84,16 @@ export default function Home({ schoolInfo }) {
       
       {/* News section */}
       <NewsSection />
+
+
+
+            {/* Events section */}
+      <EventsSection />
       
       {/* Outstanding Students section */}
       <OutstandingStudentsSection />
       
-      {/* Events section */}
-      <EventsSection />
+
       
       {/* Clubs section */}
       <ClubsSection />

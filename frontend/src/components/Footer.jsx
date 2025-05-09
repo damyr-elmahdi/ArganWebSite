@@ -5,6 +5,7 @@ import Ministry from "../assets/Ministry.png";
 
 export default function Footer({ schoolInfo }) {
   const { name, ministry, address, phone, fax, email, currentYear } = schoolInfo;
+  const schoolName = name || "Argane High School";
   const { t } = useTranslation();
   //
   return (
@@ -14,9 +15,9 @@ export default function Footer({ schoolInfo }) {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Link to="/" className="w-20 h-20">
-                <img src={argan} alt={t('school.name', { name })} className="w-full h-full object-contain" />
+                <img src={argan} alt={t('school.name', { schoolName })} className="w-full h-full object-contain" />
               </Link>
-              <h3 className="font-bold">{t('school.name', { name })}</h3>
+              <h3 className="font-bold">{t('school.name', { schoolName })}</h3>
             </div>
             <p className="text-black-600 text-sm mb-4">
               {t('school.address', { address })}<br />

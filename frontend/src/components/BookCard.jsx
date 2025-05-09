@@ -46,7 +46,7 @@ export default function BookCard({
       }
     } catch (error) {
       console.error('Error deleting book:', error);
-      setError(error.response?.data?.message || t('bookCard.errors.deleteFailure'));
+      setError(error.response?.data?.message || t('library.bookCard.errors.deleteFailure'));
     } finally {
       setDeleteLoading(false);
       setShowDeleteConfirm(false);
@@ -115,7 +115,7 @@ export default function BookCard({
         },
       });
 
-      setSuccess(t('bookCard.messages.updateSuccess'));
+      setSuccess(t('library.bookCard.messages.updateSuccess'));
       
       // Update local state after successful update
       setTimeout(() => {
@@ -130,7 +130,7 @@ export default function BookCard({
       }, 2000);
     } catch (error) {
       console.error("Error updating book:", error);
-      setError(error.response?.data?.message || t('bookCard.errors.updateFailure'));
+      setError(error.response?.data?.message || t('library.bookCard.errors.updateFailure'));
     } finally {
       setLoading(false);
     }
@@ -161,7 +161,7 @@ export default function BookCard({
         </div>
       ) : (
         <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
-          <span className="text-gray-500">{t('bookCard.noImage')}</span>
+          <span className="text-gray-500">{t('library.bookCard.noImage')}</span>
         </div>
       )}
 
@@ -177,7 +177,7 @@ export default function BookCard({
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                {t('bookCard.form.changeImage')}
+                {t('library.bookCard.form.changeImage')}
               </label>
               <input
                 type="file"
@@ -189,10 +189,10 @@ export default function BookCard({
 
               {imagePreview && (
                 <div className="mt-2">
-                  <p className="text-xs text-gray-500">{t('bookCard.form.newImagePreview')}</p>
+                  <p className="text-xs text-gray-500">{t('library.bookCard.form.newImagePreview')}</p>
                   <img
                     src={imagePreview}
-                    alt={t('bookCard.form.preview')}
+                    alt={t('library.bookCard.form.preview')}
                     className="h-32 object-contain mt-1"
                   />
                 </div>
@@ -200,7 +200,7 @@ export default function BookCard({
 
               {!imagePreview && book.image_path && (
                 <div className="mt-2">
-                  <p className="text-xs text-gray-500">{t('bookCard.form.currentImage')}</p>
+                  <p className="text-xs text-gray-500">{t('library.bookCard.form.currentImage')}</p>
                   <img
                     src={bookImageUrl}
                     alt={book.title}
@@ -215,7 +215,7 @@ export default function BookCard({
             </div>
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                {t('bookCard.form.title')}
+                {t('library.bookCard.form.title')}
               </label>
               <input
                 type="text"
@@ -229,7 +229,7 @@ export default function BookCard({
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                {t('bookCard.form.author')}
+                {t('library.bookCard.form.author')}
               </label>
               <input
                 type="text"
@@ -243,7 +243,7 @@ export default function BookCard({
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                {t('bookCard.form.category')}
+                {t('library.bookCard.form.category')}
               </label>
               <input
                 type="text"
@@ -257,7 +257,7 @@ export default function BookCard({
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                {t('bookCard.form.quantity')}
+                {t('library.bookCard.form.quantity')}
               </label>
               <input
                 type="number"
@@ -272,7 +272,7 @@ export default function BookCard({
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                {t('bookCard.form.inventoryNumber')}
+                {t('library.bookCard.form.inventoryNumber')}
               </label>
               <input
                 type="text"
@@ -286,7 +286,7 @@ export default function BookCard({
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                {t('bookCard.form.description')}
+                {t('library.bookCard.form.description')}
               </label>
               <textarea
                 name="description"
@@ -335,7 +335,7 @@ export default function BookCard({
         ) : (
           <>
             <h3 className="text-lg font-semibold text-gray-800 mb-1 line-clamp-2">{book.title}</h3>
-            <p className="text-sm text-gray-600 mb-2">{t('bookCard.byAuthor', { author: book.author })}</p>
+            <p className="text-sm text-gray-600 mb-2">{t('library.bookCard.byAuthor', { author: book.author })}</p>
             
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-gray-500">#{book.inventory_number}</span>
@@ -343,13 +343,13 @@ export default function BookCard({
                 book.quantity > 0 ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'
               }`}>
                 {book.quantity > 0 
-                  ? t('bookCard.inventory', { count: book.quantity }) 
-                  : t('bookCard.outOfStock')}
+                  ? t('library.bookCard.inventory', { count: book.quantity }) 
+                  : t('library.bookCard.outOfStock')}
               </span>
             </div>
 
             <p className="text-sm text-gray-700 mb-4 line-clamp-3">
-              {book.description || t('bookCard.noDescription')}
+              {book.description || t('library.bookCard.noDescription')}
             </p>
 
             {showDetails && book.description && (
@@ -363,7 +363,7 @@ export default function BookCard({
                 className="text-sm text-blue-600 hover:underline"
                 onClick={() => setShowDetails(!showDetails)}
               >
-                {showDetails ? t('bookCard.hideDetails') : t('bookCard.showDetails')}
+                {showDetails ? t('library.bookCard.hideDetails') : t('library.bookCard.showDetails')}
               </button>
 
               {isLibrarian && (
@@ -371,7 +371,7 @@ export default function BookCard({
                   <button 
                     onClick={() => setIsEditing(true)}
                     className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
-                    title={t('bookCard.actions.edit')}
+                    title={t('library.bookCard.actions.edit')}
                   >
                     <Pencil className="w-4 h-4" />
                   </button>
@@ -379,7 +379,7 @@ export default function BookCard({
                   <button 
                     onClick={() => setShowDeleteConfirm(true)}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-full"
-                    title={t('bookCard.actions.delete')}
+                    title={t('library.bookCard.actions.delete')}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -409,11 +409,11 @@ export default function BookCard({
           <div className="bg-white p-6 rounded-lg max-w-md w-full">
             <div className="flex items-center text-red-600 mb-4">
               <AlertCircle className="w-6 h-6 mr-2" />
-              <h3 className="text-lg font-semibold">{t('bookCard.deleteModal.title')}</h3>
+              <h3 className="text-lg font-semibold">{t('library.bookCard.deleteModal.title')}</h3>
             </div>
             
             <p className="mb-4 text-gray-700">
-              {t('bookCard.deleteModal.confirmMessage', { title: book.title })}
+              {t('library.bookCard.deleteModal.confirmMessage', { title: book.title })}
             </p>
             
             {error && (

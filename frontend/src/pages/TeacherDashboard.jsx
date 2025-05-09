@@ -119,7 +119,7 @@ export default function TeacherDashboard() {
                   user.teacher?.is_active ? "text-green-600" : "text-red-600"
                 }`}
               >
-                {user.teacher?.is_active ? t("status.active") : t("status.inactive")}
+                {user.teacher?.is_active ? t("absenceManagement.status.active") : t("status.inactive")}
               </span>
             </span>
             <button
@@ -143,7 +143,7 @@ export default function TeacherDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("profile")}
             >
-              {t("tabs.profile")}
+              {t("dashboard.tabs.profile")}
             </button>
             <button
               className={`${
@@ -153,7 +153,7 @@ export default function TeacherDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("classes")}
             >
-              {t("tabs.classes")}
+              {t("dashboard.tabs.classes")}
             </button>
             <button
               className={`${
@@ -166,7 +166,7 @@ export default function TeacherDashboard() {
                 setShowQuizCreator(false); // Reset to quiz list view when switching to quizzes tab
               }}
             >
-              {t("tabs.quizzes")}
+              {t("dashboard.tabs.quizzes")}
             </button>
             <button
               className={`${
@@ -176,7 +176,7 @@ export default function TeacherDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("resources")}
             >
-              {t("tabs.resources")}
+              {t("dashboard.tabs.resources")}
             </button>
             <button
               className={`${
@@ -186,7 +186,7 @@ export default function TeacherDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("news")}
             >
-              {t("tabs.news")}
+              {t("dashboard.tabs.news")}
             </button>
             <button
               className={`${
@@ -196,7 +196,7 @@ export default function TeacherDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("events")}
             >
-              {t("tabs.events")}
+              {t("dashboard.tabs.events")}
             </button>
           </nav>
         </div>
@@ -290,7 +290,7 @@ export default function TeacherDashboard() {
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {user.teacher?.is_active ? t("status.active") : t("status.inactive")}
+                        {user.teacher?.is_active ? t("absenceManagement.status.active") : t("absenceManagement.status.inactive")}
                       </span>
                     </dd>
                   </div>
@@ -329,7 +329,7 @@ export default function TeacherDashboard() {
                   onClick={() => navigate("/teacher/quizzes/create")}
                   className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
                 >
-                  {t("teacher.quizzes.createNew")}
+                  {t("quiz.teacher.createNew")}
                 </button>
               </div>
 

@@ -301,7 +301,7 @@ export default function OutstandingStudentsManagement() {
                 id="student_id"
                 value={formData.student_id}
                 onChange={handleInputChange}
-                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md ${
                   errors.student_id ? 'border-red-500' : ''
                 }`}
                 placeholder={t('form.studentIdPlaceholder')}
@@ -322,7 +322,7 @@ export default function OutstandingStudentsManagement() {
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md ${
                   errors.name ? 'border-red-500' : ''
                 }`}
                 placeholder={t('form.namePlaceholder')}
@@ -345,7 +345,7 @@ export default function OutstandingStudentsManagement() {
                   onChange={handleInputChange}
                   required
                   list="grade-suggestions"
-                  className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+                  className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md ${
                     errors.grade ? 'border-red-500' : ''
                   }`}
                   placeholder={t('form.gradePlaceholder')}
@@ -378,7 +378,7 @@ export default function OutstandingStudentsManagement() {
                 value={formData.mark}
                 onChange={handleInputChange}
                 required
-                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md ${
                   errors.mark ? 'border-red-500' : ''
                 }`}
                 placeholder={t('form.markPlaceholder')}
@@ -398,7 +398,7 @@ export default function OutstandingStudentsManagement() {
                 id="achievement"
                 value={formData.achievement}
                 onChange={handleInputChange}
-                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md ${
+                className={`mt-1 focus:ring-[#18bebc] focus:border-[#18bebc] block w-full h-8 shadow-sm sm:text-sm border-gray-300 rounded-md ${
                   errors.achievement ? 'border-red-500' : ''
                 }`}
                 placeholder={t('form.achievementPlaceholder')}

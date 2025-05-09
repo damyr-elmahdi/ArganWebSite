@@ -6,6 +6,7 @@
     "french": "French",
     "arabic": "Arabic",
     "cancel": "Cancel",
+    
     "delete": "Delete",
     "view": "View",
     "download": "Download",
@@ -13,6 +14,7 @@
     "update": "Update",
     "remove": "Remove",
     "loading": "Loading...",
+    
     "close": "Close",
     "students": "Students",
     "view_details": "View Details",
@@ -26,6 +28,7 @@
     "notSpecified": "Not specified",
     "notAssigned": "Not assigned",
     "accessDenied": "Access Denied",
+    "return_to_dashboard": "Return to Dashboard",
     "refreshData": "Refresh Data",
     "na": "N/A",
     "save": "Save",
@@ -42,7 +45,9 @@
     "unknown": "Unknown",
     "success": "Success",
     "error": "Error"
+    
   },
+
   "nav": {
     "home": "Home",
     "about": "About",
@@ -63,11 +68,17 @@
     "welcome": "Welcome, {{name}}"
   },
   "school": {
-    "name": "{{schoolName}}",
-    "tagline": "{{tagline}}",
-    "ministry": "{{ministry}}",
+   "name": "Argane High School",
+    "tagline": "Excellence in Education",
+    "ministry": "Ministry of Education and Early Childhood Education",
     "ministryLogoAlt": "Ministry of Education Logo",
-    "address": "{{address}}"
+   "address": "Aska District, Tafraout Road, Tiznit, Morocco",
+    "phone": "(+212) 528-860-942",
+    "fax": "(+212) 528-867-972",
+    "email": "lyceeargane@gmail.com",
+    "foundedYear": "2014",
+    "operatingHours": "8:30 - 18:30",
+    "foundingDate": "09/01/2014"
   },
   "hero": {
     "welcome": "Welcome to {{schoolName}}",
@@ -79,6 +90,63 @@
     "academicResources": "Academic Resources",
     "latestNews": "Latest News",
     "contactAdmin": "Contact Administration"
+  },"bookFilter": {
+    "search": "Search",
+    "searchPlaceholder": "Search by title, author or inventory #",
+    "category": "Category",
+    "allCategories": "All Categories",
+    "sortBy": "Sort By",
+    "sortOptions": {
+      "inventoryNumber": "Inventory Number",
+      "title": "Title",
+      "author": "Author",
+      "category": "Category",
+      "dateAdded": "Date Added"
+    },
+    "sortDirection": "Sort Direction",
+    "sortDirectionOptions": {
+      "ascending": "Ascending",
+      "descending": "Descending"
+    },
+    "clearFilters": "Clear Filters"
+  },
+  "borrowBook": {
+    "loginRequired": "Please log in to borrow books",
+    "successMessage": "Book borrowed successfully!",
+    "serverError": "Server error: {{status}}",
+    "noResponseError": "No response received from server. Please try again later.",
+    "requestError": "Request setup error: {{message}}",
+    "requesting": "Requesting...",
+    "buttonText": "Borrow this Book"
+  },
+  "quizCreator": {
+    "title": "Create New Quiz",
+    "quizTitle": "Quiz Title",
+    "titlePlaceholder": "Enter quiz title",
+    "subject": "Subject",
+    "selectSubject": "Select a subject",
+    "questionsSection": "Questions",
+    "addQuestion": "Add Question",
+    "questionNumber": "Question {{number}}",
+    "remove": "Remove",
+    "questionText": "Question Text",
+    "questionPlaceholder": "Enter question",
+    "options": "Options",
+    "addOption": "Add Option",
+    "optionPlaceholder": "Option {{number}}",
+    "creating": "Creating...",
+    "createQuiz": "Create Quiz",
+    "errors": {
+      "minOneQuestion": "You need at least one question in the quiz.",
+      "maxOptions": "Maximum 4 options allowed per question.",
+      "minOptions": "Minimum 3 options required per question.",
+      "titleRequired": "Quiz title is required.",
+      "subjectRequired": "Please select a subject.",
+      "questionTextRequired": "Question {{number}} text is required.",
+      "optionRequired": "Option {{optionNumber}} for Question {{questionNumber}} is required.",
+      "correctOptionRequired": "Please select a correct option for Question {{number}}.",
+      "createFailed": "Failed to create quiz. Please try again."
+    }
   },
   "footer": {
     "quickLinks": "Quick Links",
@@ -314,7 +382,7 @@
         "meetingSchedule": "Meeting Schedule",
         "meetingSchedulePlaceholder": "E.g., Every Monday at 4:00 PM"
       },
-      "details": {
+      "table": {
         "title": "Club Details",
         "description": "Description",
         "activities": "Activities",
@@ -401,6 +469,7 @@
     }
   },
   "subjects": {
+    
     "mathematics": "Mathematics",
     "physicsChemistry": "Physics & Chemistry",
     "arabic": "Arabic",
@@ -1088,6 +1157,9 @@
     "scheduledDate": "Scheduled: {{date}}",
     "byAuthor": "By {{author}}",
     "backToAllNews": "← Back to all news",
+     "schooltitle": "School News",
+    "noArticlesFound": "No news articles found",
+    "checkBackLater": "Check back later for updates.",
     "paginationLabel": "Pagination",
     "pagination": {
       "previous": "Previous",
@@ -1132,6 +1204,7 @@
       "updateFailed": "Failed to update news item",
       "deleteFailed": "Failed to delete news item",
       "publishFailed": "Failed to publish news item",
+      "failedToLoad": "Failed to load news. Please try again later.",
       "failedToLoadArticle": "Failed to load the news article. Please try again later."
     }
   },
@@ -1157,7 +1230,7 @@
     "confirmDelete": "Are you sure you want to delete this event?",
     "noEvents": "No events created yet.",
     "form": {
-      "title2": "Title",
+      "title": "Title",
       "description": "Description",
       "startTime": "Start Time",
       "endTime": "End Time",
@@ -1318,7 +1391,8 @@
       "generic": "An error occurred during login. Please try again."
     }
   },
-  "dashboard": {
+"dashboard": {
+    "title": "Student Dashboard",
     "loading": "Loading your dashboard...",
     "redirecting": "Redirecting to login page...",
     "errors": {
@@ -1326,11 +1400,52 @@
     },
     "tabs": {
       "profile": "Profile",
-      "classes": "Classes",
+      "notifications": "Notifications",
       "quizzes": "Quizzes",
+      "exams": "Exams",
+      "classes": "Classes",
       "resources": "Resources",
       "news": "News",
       "events": "Events"
+    },
+    "profile": {
+      "title": "Student Information",
+      "subtitle": "Personal details and academic information.",
+      "fullName": "Full name",
+      "email": "Email address",
+      "studentId": "Student ID",
+      "grade": "Grade",
+      "class": "Class"
+    },
+    "notifications": {
+      "title": "Teacher Absence Notifications",
+      "subtitle": "Recent teacher absence announcements.",
+      "allAnnouncements": "All teacher absence announcements.",
+      "teacherAbsent": "Teacher {{teacherName}} will be absent",
+      "dateRange": "From {{startDate}} to {{endDate}}",
+      "reason": "Reason: {{reason}}",
+      "announced": "Announced: {{date}}",
+      "viewAll": "View all",
+      "markAsRead": "Mark as read",
+      "loading": "Loading notifications...",
+      "noNotifications": "No absence notifications at this time."
+    },
+    "courses": {
+      "title": "Your Courses",
+      "subtitle": "Current courses and progress.",
+      "notEnrolled": "You are not enrolled in any courses yet."
+    },
+    "quizzes": {
+      "title": "Available Quizzes",
+      "subtitle": "Quizzes ready for you to take.",
+      "viewAll": "View all quizzes",
+      "goToTab": "Go to the Quizzes tab to view and take available quizzes."
+    },
+    "exams": {
+      "title": "Available Exams",
+      "subtitle": "Exam papers and materials.",
+      "viewAll": "View all exams",
+      "goToTab": "Go to the Exams tab to view and download available exam materials."
     }
   },
   "teacher": {
@@ -1401,6 +1516,58 @@
       "failedToLoad": "Failed to load book requests. {{message}}",
       "returnFailed": "Failed to mark book as returned",
       "noPermission": "You do not have permission to access the Librarian Dashboard."
+    }
+  },
+  "adminD": {
+    "loading": "Loading admin dashboard...",
+    "redirecting": "Redirecting to login page...",
+    "error": {
+      "failedToLoad": "Failed to load dashboard. Please try logging in again.",
+      "failedToUpdateRegistration": "Failed to update registration status"
+    },
+    "dashboard": {
+      "title": "Administrator Dashboard"
+    },
+    "tabs": {
+      "profile": "Profile",
+      "userManagement": "Users",
+      "registrations": "Registrations",
+      "newsManagement": "News",
+      "eventsManagement": "Events",
+      "examManagement": "Exams",
+      "teacherAbsences": "Absences",
+      "clubs": "Clubs",
+      "outstandingStudents": "Outstanding Students"
+    },
+    "profile": {
+      "title": "Administrator Information",
+      "subtitle": "Personal details and access information.",
+      "fullName": "Full name",
+      "emailAddress": "Email address",
+      "adminLevel": "Administrator level",
+      "department": "Department",
+      "basic": "Basic",
+      "general": "General"
+    },
+    "registrations": {
+      "title": "Student Registrations",
+      "subtitle": "Pending and processed student registration requests.",
+      "noRegistrations": "No registration requests at this time.",
+      "table": {
+        "name": "Name",
+        "studentPhone": "Phone",
+        "registrationDate": "Registration Date",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "processed": "Processed",
+        "pending": "Pending"
+      },
+      "actions": {
+        "downloadPacket": "Download Packet",
+        "markProcessed": "Mark as Processed"
+      }
     }
   },
   "home": {

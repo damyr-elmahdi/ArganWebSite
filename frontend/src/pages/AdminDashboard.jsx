@@ -112,7 +112,7 @@ export default function AdminDashboard() {
     return (
       <div className="flex-grow flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold">{t("admin.loading")}</h2>
+          <h2 className="text-xl font-semibold">{t("adminD.loading")}</h2>
         </div>
       </div>
     );

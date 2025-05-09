@@ -203,7 +203,7 @@ export default function QuizEditor() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <h2 className="text-xl font-semibold">{t("quizEditor.loading")}</h2>
+          <h2 className="text-xl font-semibold">{t("quiz.editor.loading")}</h2>
         </div>
       </div>
     );
@@ -211,7 +211,7 @@ export default function QuizEditor() {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-6">{t("quizEditor.title")}</h2>
+      <h2 className="text-2xl font-bold mb-6">{t("quiz.editor.title")}</h2>
 
       {error && (
         <div
@@ -230,7 +230,7 @@ export default function QuizEditor() {
               htmlFor="title"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              {t("quizEditor.quizTitle")}
+              {t("quiz.editor.quizTitle")}
             </label>
             <input
               type="text"
@@ -238,7 +238,7 @@ export default function QuizEditor() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
-              placeholder={t("quizEditor.enterQuizTitle")}
+              placeholder={t("quiz.editor.enterQuizTitle")}
               required
             />
           </div>
@@ -248,7 +248,7 @@ export default function QuizEditor() {
               htmlFor="subject"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              {t("quizEditor.subject")}
+              {t("quiz.editor.subject")}
             </label>
             <select
               id="subject"
@@ -257,7 +257,7 @@ export default function QuizEditor() {
               className="w-full border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
               required
             >
-              <option value="">{t("quizEditor.selectSubject")}</option>
+              <option value="">{t("quiz.editor.selectSubject")}</option>
               {subjects.map((subj) => (
                 <option key={subj.id} value={subj.id}>
                   {subj.name}
@@ -270,13 +270,13 @@ export default function QuizEditor() {
         {/* Questions */}
         <div className="space-y-6 mb-8">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">{t("quizEditor.questions")}</h3>
+            <h3 className="text-lg font-medium">{t("quiz.editor.questions")}</h3>
             <button
               type="button"
               onClick={addQuestion}
               className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-teal-600 hover:bg-teal-700"
             >
-              {t("quizEditor.addQuestion")}
+              {t("quiz.editor.addQuestion")}
             </button>
           </div>
 
@@ -284,27 +284,27 @@ export default function QuizEditor() {
             <div key={qIndex} className="border border-gray-300 rounded-lg p-4">
               <div className="flex justify-between items-center mb-4">
                 <h4 className="font-medium">
-                  {t("quizEditor.questionNumber", { number: qIndex + 1 })}
+                  {t("quiz.editor.questionNumber", { number: qIndex + 1 })}
                 </h4>
                 <button
                   type="button"
                   onClick={() => removeQuestion(qIndex)}
                   className="text-red-600 hover:text-red-800 text-sm"
                 >
-                  {t("quizEditor.remove")}
+                  {t("quiz.editor.remove")}
                 </button>
               </div>
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("quizEditor.questionText")}
+                  {t("quiz.editor.questionText")}
                 </label>
                 <input
                   type="text"
                   value={question.question_text}
                   onChange={(e) => updateQuestionText(qIndex, e.target.value)}
                   className="w-full border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
-                  placeholder={t("quizEditor.enterQuestion")}
+                  placeholder={t("quiz.editor.enterQuestion")}
                   required
                 />
               </div>
@@ -312,7 +312,7 @@ export default function QuizEditor() {
               <div className="mb-2">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-gray-700">
-                    {t("quizEditor.options")}
+                    {t("quiz.editor.options")}
                   </span>
                   {question.options.length < 4 && (
                     <button
@@ -320,7 +320,7 @@ export default function QuizEditor() {
                       onClick={() => addOption(qIndex)}
                       className="text-xs text-teal-600 hover:text-teal-800"
                     >
-                      {t("quizEditor.addOption")}
+                      {t("quiz.editor.addOption")}
                     </button>
                   )}
                 </div>
@@ -343,7 +343,7 @@ export default function QuizEditor() {
                           updateOptionText(qIndex, oIndex, e.target.value)
                         }
                         className="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
-                        placeholder={t("quizEditor.optionPlaceholder", { number: oIndex + 1 })}
+                        placeholder={t("quiz.editor.optionPlaceholder", { number: oIndex + 1 })}
                         required
                       />
                       {question.options.length > 3 && (

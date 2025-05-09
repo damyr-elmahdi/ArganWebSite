@@ -169,7 +169,7 @@ export default function QuizCreator() {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
+    <div className=" bg-white shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-bold mb-6">{t('quizCreator.title')}</h2>
       
       {error && (

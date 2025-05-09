@@ -20,7 +20,7 @@ export default function QuizResults() {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching results:', err);
-        setError(t('quiz_results.error_loading'));
+        setError(t('quiz.results.error_loading'));
         setLoading(false);
       }
     };
@@ -36,10 +36,10 @@ export default function QuizResults() {
   
   const getScoreMessage = () => {
     const percentage = calculatePercentage();
-    if (percentage >= 90) return t('quiz_results.score_excellent');
-    if (percentage >= 70) return t('quiz_results.score_good');
-    if (percentage >= 50) return t('quiz_results.score_not_bad');
-    return t('quiz_results.score_keep_practicing');
+    if (percentage >= 90) return t('quiz.results.score_excellent');
+    if (percentage >= 70) return t('quiz.results.score_good');
+    if (percentage >= 50) return t('quiz.results.score_not_bad');
+    return t('quiz.results.score_keep_practicing');
   };
   
   // Function to determine if an answer was a time expired one
@@ -51,7 +51,7 @@ export default function QuizResults() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <h2 className="text-xl font-semibold">{t('quiz_results.loading')}</h2>
+          <h2 className="text-xl font-semibold">{t('quiz.results.loading')}</h2>
           <div className="mt-4 w-12 h-12 border-4 border-[#18bebc] border-t-transparent rounded-full animate-spin mx-auto"></div>
         </div>
       </div>
@@ -79,7 +79,7 @@ export default function QuizResults() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-red-600">{t('quiz_results.no_data')}</h2>
+          <h2 className="text-xl font-semibold text-red-600">{t('quiz.results.no_data')}</h2>
           <button 
             onClick={() => navigate('/student-dashboard')}
             className="mt-4 px-4 py-2 bg-[#18bebc] text-white rounded hover:bg-teal-700"
@@ -95,8 +95,8 @@ export default function QuizResults() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-red-600">{t('quiz_results.quiz_not_available')}</h2>
-          <p className="mt-2 text-gray-600">{t('quiz_results.quiz_not_loaded')}</p>
+          <h2 className="text-xl font-semibold text-red-600">{t('quiz.results.quiz_not_available')}</h2>
+          <p className="mt-2 text-gray-600">{t('quiz.results.quiz_not_loaded')}</p>
           <button 
             onClick={() => navigate('/student-dashboard')}
             className="mt-4 px-4 py-2 bg-[#18bebc] text-white rounded hover:bg-teal-700"
@@ -112,8 +112,8 @@ export default function QuizResults() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-yellow-600">{t('quiz_results.no_answers')}</h2>
-          <p className="mt-2 text-gray-600">{t('quiz_results.no_answers_completed')}</p>
+          <h2 className="text-xl font-semibold text-yellow-600">{t('quiz.results.no_answers')}</h2>
+          <p className="mt-2 text-gray-600">{t('quiz.results.no_answers_completed')}</p>
           <button 
             onClick={() => navigate('/student-dashboard')}
             className="mt-4 px-4 py-2 bg-[#18bebc] text-white rounded hover:bg-teal-700"
@@ -134,16 +134,16 @@ export default function QuizResults() {
             <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <h3 className="text-lg font-semibold">{t('quiz_results.anticheat_detected')}</h3>
+            <h3 className="text-lg font-semibold">{t('quiz.results.anticheat_detected')}</h3>
           </div>
           <p className="mt-2">
-            {t('quiz_results.anticheat_message')}
+            {t('quiz.results.anticheat_message')}
           </p>
         </div>
       )}
       
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold">{results.quiz.title} - {t('quiz_results.title')}</h1>
+        <h1 className="text-2xl font-bold">{results.quiz.title} - {t('quiz.results.title')}</h1>
         <div className="mt-4">
           <div className="text-4xl font-bold">
             {results.score} / {results.answers.length}
@@ -152,35 +152,35 @@ export default function QuizResults() {
             {calculatePercentage()}% - {getScoreMessage()}
           </div>
           <div className="mt-2 text-gray-600">
-            {t('quiz_results.completed_on', { date: new Date(results.completed_at).toLocaleString() })}
+            {t('quiz.results.completed_on', { date: new Date(results.completed_at).toLocaleString() })}
           </div>
         </div>
       </div>
       
       <div className="border-t border-gray-200 pt-6">
-        <h2 className="text-xl font-semibold mb-4">{t('quiz_results.question_review')}</h2>
+        <h2 className="text-xl font-semibold mb-4">{t('quiz.results.question_review')}</h2>
         
         <div className="space-y-8">
           {results.answers.map((answer, index) => (
             <div key={answer.id} className="border border-gray-200 rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-medium">{t('quiz_results.question_number', { number: index + 1 })}</h3>
+                <h3 className="text-lg font-medium">{t('quiz.results.question_number', { number: index + 1 })}</h3>
                 <div className="flex items-center">
                   {/* Time expired badge */}
                   {isTimeExpiredAnswer(answer) && (
                     <span className="px-2 py-1 rounded text-sm font-medium bg-yellow-100 text-yellow-800 mr-2">
-                      {t('quiz_results.time_expired')}
+                      {t('quiz.results.time_expired')}
                     </span>
                   )}
                   <span className={`px-2 py-1 rounded text-sm font-medium ${
                     answer.is_correct ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                   }`}>
-                    {answer.is_correct ? t('quiz_results.correct') : t('quiz_results.incorrect')}
+                    {answer.is_correct ? t('quiz.results.correct') : t('quiz.results.incorrect')}
                   </span>
                 </div>
               </div>
               
-              <p className="text-gray-800 mb-4">{answer.question?.question_text || t('quiz_results.question_not_available')}</p>
+              <p className="text-gray-800 mb-4">{answer.question?.question_text || t('quiz.results.question_not_available')}</p>
               
               <div className="space-y-2">
                 {answer.question?.options?.map((option) => (
@@ -217,13 +217,13 @@ export default function QuizResults() {
                       <span>{option.option_text}</span>
                     </div>
                   </div>
-                )) || <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">{t('quiz_results.options_not_available')}</div>}
+                )) || <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">{t('quiz.results.options_not_available')}</div>}
               </div>
               
               {/* Message for time expired questions */}
               {isTimeExpiredAnswer(answer) && (
                 <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
-                  {t('quiz_results.time_expired_message')}
+                  {t('quiz.results.time_expired_message')}
                 </div>
               )}
             </div>
@@ -242,7 +242,7 @@ export default function QuizResults() {
           onClick={() => window.print()}
           className="ml-4 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium"
         >
-          {t('quiz_results.print_results')}
+          {t('quiz.results.print_results')}
         </button>
       </div>
       

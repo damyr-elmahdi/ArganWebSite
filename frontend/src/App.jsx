@@ -34,6 +34,8 @@ import StudentRegistrationForm from "./pages/StudentRegistrationForm";
 import ClubDetails from "./components/ClubDetails";
 import ExamRoutes from "./routes/ExamRoutes";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
+import "./i18n"; // Import i18n configuration
 
 
 axios.interceptors.request.use(
@@ -64,6 +66,7 @@ axios.interceptors.response.use(
 );
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
+  const { t } = useTranslation();
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -107,19 +110,20 @@ function DashboardRedirect() {
 }
 
 export default function App() {
+  const { t } = useTranslation();
+  
   // School information as a central source of truth
-
   const schoolInfo = {
-    name: "Argane High School",
-    ministry: "Ministry of Education and Early Childhood Education",
-    address: "Aska District, Tafraout Road, Tiznit, Morocco",
-    phone: "(+212) 528-860-942",
-    fax: "(+212) 528-867-972",
-    email: "info@arganhighschool.edu",
+    name: t('school.name'),
+    ministry: t('school.ministry'),
+    address: t('school.address'),
+    phone: t('school.phone'),
+    fax: t('school.fax'),
+    email: t('school.email'),
     currentYear: new Date().getFullYear(),
-    foundedYear: "2014",
-    operatingHours: "8:30 - 18:30",
-    foundingDate: "09/01/2014",
+    foundedYear: t('school.foundedYear'),
+    operatingHours: t('school.operatingHours'),
+    foundingDate: t('school.foundingDate'),
   };
 
   return (
@@ -129,7 +133,7 @@ export default function App() {
           <Header
             schoolName={schoolInfo.name}
             ministry={schoolInfo.ministry}
-            tagline={schoolInfo.tagline}
+            tagline={t('school.tagline')}
           />
           <Routes>
             {/* Public routes */}
@@ -162,9 +166,7 @@ export default function App() {
               path="/exams/*"
               element={
                 <ProtectedRoute>
-        
-                    <ExamRoutes />
-               
+                  <ExamRoutes />
                 </ProtectedRoute>
               }
             />
