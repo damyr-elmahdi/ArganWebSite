@@ -26,6 +26,7 @@
     "notSpecified": "غير محدد",
     "notAssigned": "غير معين",
     "accessDenied": "تم رفض الوصول",
+    "return_to_dashboard": "العودة إلى اللوحة",
     "refreshData": "تحديث البيانات",
     "na": "غير متاح",
     "save": "حفظ",
@@ -64,10 +65,16 @@
   },
   "school": {
     "name": "الثانوية التأهيلية أركان",
-    "tagline": "{{tagline}}",
-    "ministry": "{{ministry}}",
+    "tagline": "التميز في التعليم",
+    "ministry": "وزارة التربية الوطنية والتكوين الأولي",
     "ministryLogoAlt": "شعار وزارة التربية الوطنية",
-    "address": "{{address}}"
+    "address": "مقاطعة أسكا، طريق تافراوت، تيزنيت، المغرب",
+    "phone": "(+212) 528-860-942",
+    "fax": "(+212) 528-867-972",
+    "email": "lyceeargane@gmail.com",
+    "foundedYear": "2014",
+    "operatingHours": "8:30 - 18:30",
+    "foundingDate": "01/09/2014"
   },
   "hero": {
     "welcome": " مرحبًا بكم في الثانوية التأهيلية أركان",
@@ -80,6 +87,64 @@
     "latestNews": "آخر الأخبار",
     "contactAdmin": "اتصل بالإدارة"
   },
+  "bookFilter": {
+  "search": "بحث",
+  "searchPlaceholder": "ابحث حسب العنوان أو المؤلف أو رقم الجرد",
+  "category": "الفئة",
+  "allCategories": "جميع الفئات",
+  "sortBy": "فرز حسب",
+  "sortOptions": {
+    "inventoryNumber": "رقم الجرد",
+    "title": "العنوان",
+    "author": "المؤلف",
+    "category": "الفئة",
+    "dateAdded": "تاريخ الإضافة"
+  },
+  "sortDirection": "اتجاه الفرز",
+  "sortDirectionOptions": {
+    "ascending": "تصاعدي",
+    "descending": "تنازلي"
+  },
+  "clearFilters": "مسح الفلاتر"
+},
+"borrowBook": {
+  "loginRequired": "يرجى تسجيل الدخول لاستعارة الكتب",
+  "successMessage": "تم استعارة الكتاب بنجاح!",
+  "serverError": "خطأ في الخادم: {{status}}",
+  "noResponseError": "لم يتم استلام رد من الخادم. يرجى المحاولة لاحقاً.",
+  "requestError": "خطأ في إعداد الطلب: {{message}}",
+  "requesting": "جارٍ الطلب...",
+  "buttonText": "استعارة هذا الكتاب"
+},
+"quizCreator": {
+  "title": "إنشاء اختبار جديد",
+  "quizTitle": "عنوان الاختبار",
+  "titlePlaceholder": "أدخل عنوان الاختبار",
+  "subject": "المادة",
+  "selectSubject": "اختر مادة",
+  "questionsSection": "الأسئلة",
+  "addQuestion": "إضافة سؤال",
+  "questionNumber": "السؤال {{number}}",
+  "remove": "إزالة",
+  "questionText": "نص السؤال",
+  "questionPlaceholder": "أدخل السؤال",
+  "options": "الخيارات",
+  "addOption": "إضافة خيار",
+  "optionPlaceholder": "الخيار {{number}}",
+  "creating": "جارٍ الإنشاء...",
+  "createQuiz": "إنشاء الاختبار",
+  "errors": {
+    "minOneQuestion": "يجب أن يحتوي الاختبار على سؤال واحد على الأقل.",
+    "maxOptions": "الحد الأقصى للخيارات لكل سؤال هو 4.",
+    "minOptions": "الحد الأدنى للخيارات لكل سؤال هو 3.",
+    "titleRequired": "عنوان الاختبار مطلوب.",
+    "subjectRequired": "يرجى اختيار مادة.",
+    "questionTextRequired": "نص السؤال {{number}} مطلوب.",
+    "optionRequired": "الخيار {{optionNumber}} للسؤال {{questionNumber}} مطلوب.",
+    "correctOptionRequired": "يرجى تحديد الخيار الصحيح للسؤال {{number}}.",
+    "createFailed": "فشل في إنشاء الاختبار. يرجى المحاولة مرة أخرى."
+  }
+},
   "footer": {
     "quickLinks": "روابط سريعة",
     "resources": "الموارد",
@@ -1088,6 +1153,9 @@
     "scheduledDate": "مجدول: {{date}}",
     "byAuthor": "بواسطة {{author}}",
     "backToAllNews": "← العودة إلى جميع الأخبار",
+    "schooltitle": "أخبار المدرسة",
+    "noArticlesFound": "لم يتم العثور على أي مقالات إخبارية",
+    "checkBackLater": "يرجى العودة لاحقاً للحصول على التحديثات.",
     "paginationLabel": "ترقيم الصفحات",
     "pagination": {
       "previous": "السابق",
@@ -1132,6 +1200,7 @@
       "updateFailed": "فشل تحديث الخبر",
       "deleteFailed": "فشل حذف الخبر",
       "publishFailed": "فشل نشر الخبر",
+      "failedToLoad": "فشل في تحميل الأخبار. يرجى المحاولة مرة أخرى لاحقاً.",
       "failedToLoadArticle": "فشل تحميل المقال. يرجى المحاولة مرة أخرى لاحقًا."
     }
   },
@@ -1151,7 +1220,7 @@
     "noEventsFrom": "لا توجد فعاليات من {{startDate}} فصاعدًا",
     "noEventsUntil": "لا توجد فعاليات حتى {{endDate}}",
     "checkBackLater": "تحقق لاحقًا لمعرفة الفعاليات القادمة.",
-    "title": "إدارة الفعاليات",
+    "title1": "إدارة الفعاليات",
     "subtitle": "إنشاء وإدارة فعاليات المدرسة.",
     "createButton": "إنشاء فعالية",
     "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الفعالية؟",
@@ -1318,21 +1387,63 @@
       "generic": "حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى."
     }
   },
-  "dashboard": {
-    "loading": "جاري تحميل لوحة التحكم...",
-    "redirecting": "جاري التوجيه إلى صفحة تسجيل الدخول...",
-    "errors": {
-      "failedToLoad": "فشل تحميل لوحة التحكم. يرجى محاولة تسجيل الدخول مرة أخرى."
-    },
-    "tabs": {
-      "profile": "الملف الشخصي",
-      "classes": "الفصول",
-      "quizzes": "الاختبارات",
-      "resources": "الموارد",
-      "news": "الأخبار",
-      "events": "الفعاليات"
-    }
+"dashboard": {
+  "title": "لوحة طالب",
+  "loading": "جارٍ تحميل لوحتك...",
+  "redirecting": "جارٍ إعادة التوجيه إلى صفحة تسجيل الدخول...",
+  "errors": {
+    "failedToLoad": "فشل في تحميل اللوحة. يرجى المحاولة مرة أخرى للدخول."
   },
+  "tabs": {
+    "profile": "الملف الشخصي",
+    "notifications": "الإشعارات",
+    "quizzes": "الاختبارات",
+    "exams": "الامتحانات",
+    "classes": "الصفوف الدراسية",
+    "resources": "المصادر التعليمية",
+    "news": "الأخبار",
+    "events": "الأحداث"
+  },
+  "profile": {
+    "title": "معلومات الطالب",
+    "subtitle": "التفاصيل الشخصية والمعلومات الأكاديمية.",
+    "fullName": "الاسم الكامل",
+    "email": "عنوان البريد الإلكتروني",
+    "studentId": "رقم الطالب",
+    "grade": "الصف الدراسي",
+    "class": "الفصل"
+  },
+  "notifications": {
+    "title": "إشعارات غياب المعلمين",
+    "subtitle": "إعلانات حديثة عن غياب المعلمين.",
+    "allAnnouncements": "جميع إعلانات الغياب للمعلمين.",
+    "teacherAbsent": "سيغيب المعلم {{teacherName}}",
+    "dateRange": "من {{startDate}} إلى {{endDate}}",
+    "reason": "السبب: {{reason}}",
+    "announced": "تم الإعلان بتاريخ: {{date}}",
+    "viewAll": "عرض الكل",
+    "markAsRead": "وضع علامة كمقروء",
+    "loading": "جارٍ تحميل الإشعارات...",
+    "noNotifications": "لا توجد إشعارات غياب في الوقت الحالي."
+  },
+  "courses": {
+    "title": "دوراتك",
+    "subtitle": "الدورات الحالية والتقدم فيها.",
+    "notEnrolled": "أنت لم تسجل بعد في أي دورة."
+  },
+  "quizzes": {
+    "title": "الاختبارات المتاحة",
+    "subtitle": "الاختبارات الجاهزة لحلها.",
+    "viewAll": "عرض جميع الاختبارات",
+    "goToTab": "انتقل إلى علامة التبويب 'الاختبارات' لعرض وحل الاختبارات المتاحة."
+  },
+  "exams": {
+    "title": "الامتحانات المتاحة",
+    "subtitle": "أوراق الامتحانات والمواد التعليمية.",
+    "viewAll": "عرض جميع الامتحانات",
+    "goToTab": "انتقل إلى علامة التبويب 'الامتحانات' لعرض وتنزيل المواد المتاحة."
+  }
+},
   "teacher": {
     "dashboard": {
       "title": "لوحة تحكم المعلم"
@@ -1403,6 +1514,58 @@
       "noPermission": "ليس لديك إذن للوصول إلى لوحة تحكم أمين المكتبة."
     }
   },
+  "adminD": {
+  "loading": "جارٍ تحميل لوحة الإدارة...",
+  "redirecting": "جارٍ إعادة التوجيه إلى صفحة تسجيل الدخول...",
+  "error": {
+    "failedToLoad": "فشل في تحميل اللوحة. يرجى المحاولة مرة أخرى للدخول.",
+    "failedToUpdateRegistration": "فشل تحديث حالة التسجيل"
+  },
+  "dashboard": {
+    "title": "لوحة إدارة المشرف"
+  },
+  "tabs": {
+    "profile": "الملف الشخصي",
+    "userManagement": "المستخدمون",
+    "registrations": "التسجيلات",
+    "newsManagement": "الأخبار",
+    "eventsManagement": "الأحداث",
+    "examManagement": "الامتحانات",
+    "teacherAbsences": "الغيابات",
+    "clubs": "الأندية",
+    "outstandingStudents": "الطلاب المتميزون"
+  },
+  "profile": {
+    "title": "معلومات المشرف",
+    "subtitle": "التفاصيل الشخصية ومعلومات الوصول.",
+    "fullName": "الاسم الكامل",
+    "emailAddress": "عنوان البريد الإلكتروني",
+    "adminLevel": "مستوى المشرف",
+    "department": "القسم",
+    "basic": "أساسي",
+    "general": "عام"
+  },
+  "registrations": {
+    "title": "تسجيلات الطلاب",
+    "subtitle": "طلبات التسجيل قيد الانتظار أو التي تم معالجتها.",
+    "noRegistrations": "لا توجد طلبات تسجيل في الوقت الحالي.",
+    "table": {
+      "name": "الاسم",
+      "studentPhone": "رقم الهاتف",
+      "registrationDate": "تاريخ التسجيل",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "processed": "تمت المعالجة",
+      "pending": "قيد الانتظار"
+    },
+    "actions": {
+      "downloadPacket": "تنزيل الحزمة",
+      "markProcessed": "وضع علامة كمعالجة"
+    }
+  }
+},
   "home": {
     "banner": {
       "welcome": "مرحبًا بكم في ثانوية أركان في تيزنيت — حيث تلتقي المعرفة والقيم والطموح لصنع مستقبل أكثر إشراقًا."

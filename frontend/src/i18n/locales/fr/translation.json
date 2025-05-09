@@ -17,7 +17,7 @@
     "students": "Élèves",
     "view_details": "Voir les détails",
     "try_again": "Réessayer",
-    "schoolName": "Lycée Argan",
+    "schoolName": "Lycée Argane",
     "returnHome": "Retour à l'accueil",
     "backToHome": "Retour à l'accueil",
     "status": "Statut",
@@ -26,6 +26,7 @@
     "notSpecified": "Non spécifié",
     "notAssigned": "Non attribué",
     "accessDenied": "Accès refusé",
+"return_to_dashboard": "Retour au tableau de bord",
     "refreshData": "Actualiser les données",
     "na": "N/A",
     "save": "Enregistrer",
@@ -63,11 +64,17 @@
     "welcome": "Bienvenue, {{name}}"
   },
   "school": {
-    "name": "{{schoolName}}",
-    "tagline": "{{tagline}}",
-    "ministry": "{{ministry}}",
+    "name": "Lycée Argane",
+    "tagline": "Excellence en Éducation",
+    "ministry": "Ministère de l'Éducation nationale et de l'Enseignement préscolaire",
     "ministryLogoAlt": "Logo du Ministère de l'Éducation",
-    "address": "{{address}}"
+    "address": "District d'Aska, Route de Tafraout, Tiznit, Maroc",
+    "phone": "(+212) 528-860-942",
+    "fax": "(+212) 528-867-972",
+    "email": "lyceeargane@gmail.com",
+    "foundedYear": "2014",
+    "operatingHours": "8:30 - 18:30",
+    "foundingDate": "01/09/2014"
   },
   "hero": {
     "welcome": "Bienvenue au {{schoolName}}",
@@ -80,6 +87,64 @@
     "latestNews": "Dernières actualités",
     "contactAdmin": "Contacter l'administration"
   },
+  "bookFilter": {
+  "search": "Rechercher",
+  "searchPlaceholder": "Rechercher par titre, auteur ou numéro d'inventaire",
+  "category": "Catégorie",
+  "allCategories": "Toutes les catégories",
+  "sortBy": "Trier par",
+  "sortOptions": {
+    "inventoryNumber": "Numéro d'inventaire",
+    "title": "Titre",
+    "author": "Auteur",
+    "category": "Catégorie",
+    "dateAdded": "Date d'ajout"
+  },
+  "sortDirection": "Ordre de tri",
+  "sortDirectionOptions": {
+    "ascending": "Croissant",
+    "descending": "Décroissant"
+  },
+  "clearFilters": "Effacer les filtres"
+},
+"borrowBook": {
+  "loginRequired": "Veuillez vous connecter pour emprunter des livres",
+  "successMessage": "Livre emprunté avec succès !",
+  "serverError": "Erreur serveur : {{status}}",
+  "noResponseError": "Aucune réponse du serveur. Veuillez réessayer plus tard.",
+  "requestError": "Erreur dans la configuration de la demande : {{message}}",
+  "requesting": "Demande en cours...",
+  "buttonText": "Emprunter ce livre"
+},
+"quizCreator": {
+  "title": "Créer un nouveau quiz",
+  "quizTitle": "Titre du quiz",
+  "titlePlaceholder": "Saisir le titre du quiz",
+  "subject": "Matière",
+  "selectSubject": "Sélectionner une matière",
+  "questionsSection": "Questions",
+  "addQuestion": "Ajouter une question",
+  "questionNumber": "Question {{number}}",
+  "remove": "Supprimer",
+  "questionText": "Texte de la question",
+  "questionPlaceholder": "Saisir la question",
+  "options": "Options",
+  "addOption": "Ajouter une option",
+  "optionPlaceholder": "Option {{number}}",
+  "creating": "Création en cours...",
+  "createQuiz": "Créer le quiz",
+  "errors": {
+    "minOneQuestion": "Le quiz doit contenir au moins une question.",
+    "maxOptions": "Maximum 4 options autorisées par question.",
+    "minOptions": "Minimum 3 options requises par question.",
+    "titleRequired": "Le titre du quiz est requis.",
+    "subjectRequired": "Veuillez sélectionner une matière.",
+    "questionTextRequired": "Le texte de la question {{number}} est requis.",
+    "optionRequired": "L'option {{optionNumber}} de la question {{questionNumber}} est requise.",
+    "correctOptionRequired": "Veuillez sélectionner l'option correcte pour la question {{number}}.",
+    "createFailed": "Échec de la création du quiz. Veuillez réessayer."
+  }
+},
   "footer": {
     "quickLinks": "Liens rapides",
     "resources": "Ressources",
@@ -1088,6 +1153,9 @@
     "scheduledDate": "Planifié : {{date}}",
     "byAuthor": "Par {{author}}",
     "backToAllNews": "← Retour à toutes les actualités",
+    "schooltitle": "Actualités de l'école",
+    "noArticlesFound": "Aucun article d'actualité trouvé",
+    "checkBackLater": "Revenez plus tard pour des mises à jour.",
     "paginationLabel": "Pagination",
     "pagination": {
       "previous": "Précédent",
@@ -1132,6 +1200,7 @@
       "updateFailed": "Échec de la mise à jour de l'actualité",
       "deleteFailed": "Échec de la suppression de l'actualité",
       "publishFailed": "Échec de la publication de l'actualité",
+      "failedToLoad": "Échec du chargement des actualités. Veuillez réessayer plus tard.",
       "failedToLoadArticle": "Échec du chargement de l'article. Veuillez réessayer plus tard."
     }
   },
@@ -1151,7 +1220,7 @@
     "noEventsFrom": "Aucun événement à partir de {{startDate}}",
     "noEventsUntil": "Aucun événement jusqu'à {{endDate}}",
     "checkBackLater": "Revenez plus tard pour les prochains événements.",
-    "title": "Gestion des événements",
+    "title1": "Gestion des événements",
     "subtitle": "Créez et gérez les événements scolaires.",
     "createButton": "Créer un événement",
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet événement ?",
@@ -1318,21 +1387,63 @@
       "generic": "Une erreur est survenue lors de la connexion. Veuillez réessayer."
     }
   },
-  "dashboard": {
-    "loading": "Chargement de votre tableau de bord...",
-    "redirecting": "Redirection vers la page de connexion...",
-    "errors": {
-      "failedToLoad": "Échec du chargement du tableau de bord. Veuillez vous reconnecter."
-    },
-    "tabs": {
-      "profile": "Profil",
-      "classes": "Classes",
-      "quizzes": "Quiz",
-      "resources": "Ressources",
-      "news": "Actualités",
-      "events": "Événements"
-    }
+"dashboard": {
+  "title": "Tableau de bord de l'élève",
+  "loading": "Chargement de votre tableau de bord...",
+  "redirecting": "Redirection vers la page de connexion...",
+  "errors": {
+    "failedToLoad": "Échec du chargement du tableau de bord. Veuillez réessayer de vous connecter."
   },
+  "tabs": {
+    "profile": "Profil",
+    "notifications": "Notifications",
+    "quizzes": "Quiz",
+    "exams": "Examens",
+    "classes": "Cours",
+    "resources": "Ressources",
+    "news": "Actualités",
+    "events": "Événements"
+  },
+  "profile": {
+    "title": "Informations de l'élève",
+    "subtitle": "Détails personnels et informations académiques.",
+    "fullName": "Nom complet",
+    "email": "Adresse e-mail",
+    "studentId": "Identifiant de l'élève",
+    "grade": "Niveau scolaire",
+    "class": "Classe"
+  },
+  "notifications": {
+    "title": "Notifications d'absence des enseignants",
+    "subtitle": "Annonces récentes concernant les absences des enseignants.",
+    "allAnnouncements": "Toutes les annonces d'absences des enseignants.",
+    "teacherAbsent": "L'enseignant {{teacherName}} sera absent",
+    "dateRange": "Du {{startDate}} au {{endDate}}",
+    "reason": "Raison : {{reason}}",
+    "announced": "Annoncé le : {{date}}",
+    "viewAll": "Voir tout",
+    "markAsRead": "Marquer comme lu",
+    "loading": "Chargement des notifications...",
+    "noNotifications": "Aucune notification d'absence pour le moment."
+  },
+  "courses": {
+    "title": "Vos cours",
+    "subtitle": "Cours actuels et progression.",
+    "notEnrolled": "Vous n'êtes inscrit à aucun cours pour l'instant."
+  },
+  "quizzes": {
+    "title": "Quiz disponibles",
+    "subtitle": "Quiz prêts à être passés.",
+    "viewAll": "Voir tous les quiz",
+    "goToTab": "Accédez à l'onglet Quiz pour consulter et passer les quiz disponibles."
+  },
+  "exams": {
+    "title": "Examens disponibles",
+    "subtitle": "Papiers d'examen et supports pédagogiques.",
+    "viewAll": "Voir tous les examens",
+    "goToTab": "Accédez à l'onglet Examens pour consulter et télécharger les supports disponibles."
+  }
+},
   "teacher": {
     "dashboard": {
       "title": "Tableau de bord enseignant"
@@ -1403,6 +1514,58 @@
       "noPermission": "Vous n'avez pas la permission d'accéder au tableau de bord du bibliothécaire."
     }
   },
+  "adminD": {
+  "loading": "Chargement du tableau de bord administrateur...",
+  "redirecting": "Redirection vers la page de connexion...",
+  "error": {
+    "failedToLoad": "Échec du chargement du tableau de bord. Veuillez réessayer de vous connecter.",
+    "failedToUpdateRegistration": "Échec de la mise à jour du statut d'inscription"
+  },
+  "dashboard": {
+    "title": "Tableau de Bord Administrateur"
+  },
+  "tabs": {
+    "profile": "Profil",
+    "userManagement": "Utilisateurs",
+    "registrations": "Inscriptions",
+    "newsManagement": "Actualités",
+    "eventsManagement": "Événements",
+    "examManagement": "Examens",
+    "teacherAbsences": "Absences",
+    "clubs": "Clubs",
+    "outstandingStudents": "Étudiants Exceptionnels"
+  },
+  "profile": {
+    "title": "Informations de l'administrateur",
+    "subtitle": "Détails personnels et informations d'accès.",
+    "fullName": "Nom complet",
+    "emailAddress": "Adresse e-mail",
+    "adminLevel": "Niveau d'administrateur",
+    "department": "Département",
+    "basic": "Basique",
+    "general": "Général"
+  },
+  "registrations": {
+    "title": "Inscriptions des élèves",
+    "subtitle": "Demandes d'inscription en attente ou traitées.",
+    "noRegistrations": "Aucune demande d'inscription pour le moment.",
+    "table": {
+      "name": "Nom",
+      "studentPhone": "Téléphone",
+      "registrationDate": "Date d'inscription",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "status": {
+      "processed": "Traitée",
+      "pending": "En attente"
+    },
+    "actions": {
+      "downloadPacket": "Télécharger le dossier",
+      "markProcessed": "Marquer comme traitée"
+    }
+  }
+},
   "home": {
     "banner": {
       "welcome": "Bienvenue au Lycée Argane à Tiznit — où le savoir, les valeurs et l'ambition se réunissent pour façonner un avenir meilleur."

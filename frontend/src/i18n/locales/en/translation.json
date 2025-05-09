@@ -6,7 +6,6 @@
     "french": "French",
     "arabic": "Arabic",
     "cancel": "Cancel",
-    
     "delete": "Delete",
     "view": "View",
     "download": "Download",
@@ -14,12 +13,11 @@
     "update": "Update",
     "remove": "Remove",
     "loading": "Loading...",
-    
     "close": "Close",
     "students": "Students",
     "view_details": "View Details",
     "try_again": "Try Again",
-    "schoolName": "Argan High School",
+    "schoolName": "Argane High School",
     "returnHome": "Return to Home",
     "backToHome": "Back to Home",
     "status": "Status",
@@ -45,9 +43,7 @@
     "unknown": "Unknown",
     "success": "Success",
     "error": "Error"
-    
   },
-
   "nav": {
     "home": "Home",
     "about": "About",
@@ -90,7 +86,8 @@
     "academicResources": "Academic Resources",
     "latestNews": "Latest News",
     "contactAdmin": "Contact Administration"
-  },"bookFilter": {
+  },
+  "bookFilter": {
     "search": "Search",
     "searchPlaceholder": "Search by title, author or inventory #",
     "category": "Category",
@@ -469,7 +466,6 @@
     }
   },
   "subjects": {
-    
     "mathematics": "Mathematics",
     "physicsChemistry": "Physics & Chemistry",
     "arabic": "Arabic",
@@ -1157,7 +1153,7 @@
     "scheduledDate": "Scheduled: {{date}}",
     "byAuthor": "By {{author}}",
     "backToAllNews": "← Back to all news",
-     "schooltitle": "School News",
+    "schooltitle": "School News",
     "noArticlesFound": "No news articles found",
     "checkBackLater": "Check back later for updates.",
     "paginationLabel": "Pagination",
