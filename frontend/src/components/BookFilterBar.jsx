@@ -1,6 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function BookFilterBar({ categories, filters, onFilterChange }) {
+  const { t } = useTranslation();
+
   const handleSearchChange = (e) => {
     onFilterChange({ search: e.target.value });
   };
@@ -31,12 +34,12 @@ export default function BookFilterBar({ categories, filters, onFilterChange }) {
       <div className="flex flex-col md:flex-row gap-4 mb-4">
         <div className="flex-grow">
           <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">
-            Search
+            {t('bookFilter.search')}
           </label>
           <input
             type="text"
             id="search"
-            placeholder="Search by title, author or inventory #"
+            placeholder={t('bookFilter.searchPlaceholder')}
             value={filters.search}
             onChange={handleSearchChange}
             className="w-full p-2 border rounded"
@@ -45,7 +48,7 @@ export default function BookFilterBar({ categories, filters, onFilterChange }) {
         
         <div className="md:w-1/4">
           <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-            Category
+            {t('bookFilter.category')}
           </label>
           <select
             id="category"
@@ -53,7 +56,7 @@ export default function BookFilterBar({ categories, filters, onFilterChange }) {
             onChange={handleCategoryChange}
             className="w-full p-2 border rounded"
           >
-            <option value="">All Categories</option>
+            <option value="">{t('bookFilter.allCategories')}</option>
             {categories.map(category => (
               <option key={category} value={category}>
                 {category}
@@ -66,7 +69,7 @@ export default function BookFilterBar({ categories, filters, onFilterChange }) {
       <div className="flex flex-col md:flex-row gap-4">
         <div className="md:w-1/4">
           <label htmlFor="sort_by" className="block text-sm font-medium text-gray-700 mb-1">
-            Sort By
+            {t('bookFilter.sortBy')}
           </label>
           <select
             id="sort_by"
@@ -74,17 +77,17 @@ export default function BookFilterBar({ categories, filters, onFilterChange }) {
             onChange={handleSortByChange}
             className="w-full p-2 border rounded"
           >
-            <option value="inventory_number">Inventory Number</option>
-            <option value="title">Title</option>
-            <option value="author">Author</option>
-            <option value="category">Category</option>
-            <option value="created_at">Date Added</option>
+            <option value="inventory_number">{t('bookFilter.sortOptions.inventoryNumber')}</option>
+            <option value="title">{t('bookFilter.sortOptions.title')}</option>
+            <option value="author">{t('bookFilter.sortOptions.author')}</option>
+            <option value="category">{t('bookFilter.sortOptions.category')}</option>
+            <option value="created_at">{t('bookFilter.sortOptions.dateAdded')}</option>
           </select>
         </div>
 
         <div className="md:w-1/4">
           <label htmlFor="sort_dir" className="block text-sm font-medium text-gray-700 mb-1">
-            Sort Direction
+            {t('bookFilter.sortDirection')}
           </label>
           <select
             id="sort_dir"
@@ -92,8 +95,8 @@ export default function BookFilterBar({ categories, filters, onFilterChange }) {
             onChange={handleSortDirChange}
             className="w-full p-2 border rounded"
           >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
+            <option value="asc">{t('bookFilter.sortDirectionOptions.ascending')}</option>
+            <option value="desc">{t('bookFilter.sortDirectionOptions.descending')}</option>
           </select>
         </div>
         
@@ -102,7 +105,7 @@ export default function BookFilterBar({ categories, filters, onFilterChange }) {
             onClick={handleClearFilters}
             className="p-2 bg-gray-300 hover:bg-gray-400 rounded"
           >
-            Clear Filters
+            {t('bookFilter.clearFilters')}
           </button>
         </div>
       </div>

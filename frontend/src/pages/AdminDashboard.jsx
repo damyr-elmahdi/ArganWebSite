@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next"; // Import useTranslation hook
 import NewsManagement from "../components/NewsManagement";
 import EventsManagement from "../components/EventsManagement";
 import AbsenceManagement from "../components/AbsenceManagement";
 import UserManagement from "../components/UserManagement";
 import ClubManagement from "../components/ClubManagement";
 import OutstandingStudentsManagement from "../components/OutstandingStudentsManagement";
-import ExamManagement from "../components/exam/ExamManagement"; // Import ExamManagement component
+import ExamManagement from "../components/exam/ExamManagement";
 
 export default function AdminDashboard() {
+  const { t } = useTranslation(); // Initialize the translation hook
   const [user, setUser] = useState(null);
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +61,7 @@ export default function AdminDashboard() {
         }
       } catch (err) {
         console.error("Error fetching user data:", err);
-        setError("Failed to load dashboard. Please try logging in again.");
+        setError(t("admin.error.failedToLoad"));
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         setTimeout(() => navigate("/login"), 3000);
@@ -69,7 +71,7 @@ export default function AdminDashboard() {
     };
 
     fetchData();
-  }, [navigate]);
+  }, [navigate, t]);
 
   const handleLogout = async () => {
     try {
@@ -97,12 +99,12 @@ export default function AdminDashboard() {
       );
     } catch (err) {
       console.error("Error marking registration as processed:", err);
-      alert("Failed to update registration status.");
+      alert(t("admin.error.failedToUpdateRegistration"));
     }
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
+    if (!dateString) return t("common.na");
     return new Date(dateString).toLocaleDateString();
   };
 
@@ -110,7 +112,7 @@ export default function AdminDashboard() {
     return (
       <div className="flex-grow flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold">Loading your dashboard...</h2>
+          <h2 className="text-xl font-semibold">{t("admin.loading")}</h2>
         </div>
       </div>
     );
@@ -121,7 +123,7 @@ export default function AdminDashboard() {
       <div className="flex-grow flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-red-600">{error}</h2>
-          <p>Redirecting to login page...</p>
+          <p>{t("admin.redirecting")}</p>
         </div>
       </div>
     );
@@ -134,13 +136,13 @@ export default function AdminDashboard() {
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-900">
-            Administrator Dashboard
+            {t("admin.dashboard.title")}
           </h1>
           <button
             onClick={handleLogout}
             className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
           >
-            Logout
+            {t("common.logout")}
           </button>
         </div>
       </header>
@@ -156,7 +158,7 @@ export default function AdminDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("profile")}
             >
-              Profile
+              {t("admin.tabs.profile")}
             </button>
             <button
               className={`${
@@ -166,7 +168,7 @@ export default function AdminDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("users")}
             >
-              User Management
+              {t("admin.tabs.userManagement")}
             </button>
             <button
               className={`${
@@ -176,7 +178,7 @@ export default function AdminDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("registrations")}
             >
-              Registrations
+              {t("admin.tabs.registrations")}
             </button>
             <button
               className={`${
@@ -186,7 +188,7 @@ export default function AdminDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("news")}
             >
-              News Management
+              {t("admin.tabs.newsManagement")}
             </button>
             <button
               className={`${
@@ -196,7 +198,7 @@ export default function AdminDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("events")}
             >
-              Events Management
+              {t("admin.tabs.eventsManagement")}
             </button>
             <button
               className={`${
@@ -206,7 +208,7 @@ export default function AdminDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("exams")}
             >
-              Exam Management
+              {t("admin.tabs.examManagement")}
             </button>
             <button
               className={`${
@@ -216,7 +218,7 @@ export default function AdminDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("absences")}
             >
-              Teacher Absences
+              {t("admin.tabs.teacherAbsences")}
             </button>
             <button
               className={`${
@@ -226,7 +228,7 @@ export default function AdminDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("clubs")}
             >
-              Clubs
+              {t("admin.tabs.clubs")}
             </button>
             <button
               className={`${
@@ -236,7 +238,7 @@ export default function AdminDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("outstanding")}
             >
-              Outstanding Students
+              {t("admin.tabs.outstandingStudents")}
             </button>
           </nav>
         </div>
@@ -247,17 +249,17 @@ export default function AdminDashboard() {
             <div className="bg-white shadow overflow-hidden sm:rounded-lg">
               <div className="px-4 py-5 sm:px-6">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  Administrator Information
+                  {t("admin.profile.title")}
                 </h3>
                 <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                  Personal details and role information.
+                  {t("admin.profile.subtitle")}
                 </p>
               </div>
               <div className="border-t border-gray-200">
                 <dl>
                   <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-500">
-                      Full name
+                      {t("admin.profile.fullName")}
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                       {user.name}
@@ -265,7 +267,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-500">
-                      Email address
+                      {t("admin.profile.emailAddress")}
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                       {user.email}
@@ -273,18 +275,18 @@ export default function AdminDashboard() {
                   </div>
                   <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-500">
-                      Admin Level
+                      {t("admin.profile.adminLevel")}
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {user.administrator?.admin_level || "Basic"}
+                      {user.administrator?.admin_level || t("admin.profile.basic")}
                     </dd>
                   </div>
                   <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt className="text-sm font-medium text-gray-500">
-                      Department
+                      {t("admin.profile.department")}
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                      {user.administrator?.department || "General"}
+                      {user.administrator?.department || t("admin.profile.general")}
                     </dd>
                   </div>
                 </dl>
@@ -300,10 +302,10 @@ export default function AdminDashboard() {
             <div className="bg-white shadow overflow-hidden sm:rounded-lg">
               <div className="px-4 py-5 sm:px-6">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  Recent Registrations
+                  {t("admin.registrations.title")}
                 </h3>
                 <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                  Pending student registration requests.
+                  {t("admin.registrations.subtitle")}
                 </p>
               </div>
               <div className="border-t border-gray-200">
@@ -316,31 +318,31 @@ export default function AdminDashboard() {
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Name
+                            {t("admin.registrations.table.name")}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Student Phone
+                            {t("admin.registrations.table.studentPhone")}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Registration Date
+                            {t("admin.registrations.table.registrationDate")}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Status
+                            {t("admin.registrations.table.status")}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Actions
+                            {t("admin.registrations.table.actions")}
                           </th>
                         </tr>
                       </thead>
@@ -351,7 +353,7 @@ export default function AdminDashboard() {
                               {registration.full_name}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {registration.student_phone || "N/A"}
+                              {registration.student_phone || t("common.na")}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {formatDate(registration.created_at)}
@@ -359,11 +361,11 @@ export default function AdminDashboard() {
                             <td className="px-6 py-4 whitespace-nowrap">
                               {registration.processed ? (
                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                  Processed
+                                  {t("admin.registrations.status.processed")}
                                 </span>
                               ) : (
                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                  Pending
+                                  {t("admin.registrations.status.pending")}
                                 </span>
                               )}
                             </td>
@@ -373,7 +375,7 @@ export default function AdminDashboard() {
                                   href={`/api/registrations/${registration.id}/download-packet`}
                                   className="text-[#18bebc] hover:text-teal-900 mr-4"
                                 >
-                                  Download Packet
+                                  {t("admin.registrations.actions.downloadPacket")}
                                 </a>
                               )}
                               {!registration.processed && (
@@ -383,7 +385,7 @@ export default function AdminDashboard() {
                                   }
                                   className="text-[#18bebc] hover:text-teal-900"
                                 >
-                                  Mark Processed
+                                  {t("admin.registrations.actions.markProcessed")}
                                 </button>
                               )}
                             </td>
@@ -395,7 +397,7 @@ export default function AdminDashboard() {
                 ) : (
                   <div className="px-4 py-5">
                     <p className="text-sm text-gray-500">
-                      No pending registrations.
+                      {t("admin.registrations.noRegistrations")}
                     </p>
                   </div>
                 )}

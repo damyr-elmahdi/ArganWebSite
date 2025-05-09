@@ -4,7 +4,8 @@ import { Pencil, Trash2, AlertCircle } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { getImageUrl } from "../utils/imageUtils";
 import ImageModal from "./ImageModal";
-import BorrowBookButton from "./BorrowBookButton"; // Import the new component
+import BorrowBookButton from "./BorrowBookButton";
+import { useTranslation } from "react-i18next"; // Import useTranslation hook
 
 export default function BookCard({
   book,
@@ -13,6 +14,7 @@ export default function BookCard({
   onBookUpdated,
   onBookBorrowed,
 }) {
+  const { t } = useTranslation(); // Initialize the translation function
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -44,7 +46,7 @@ export default function BookCard({
       }
     } catch (error) {
       console.error('Error deleting book:', error);
-      setError(error.response?.data?.message || 'Failed to delete book');
+      setError(error.response?.data?.message || t('bookCard.errors.deleteFailure'));
     } finally {
       setDeleteLoading(false);
       setShowDeleteConfirm(false);
@@ -113,7 +115,7 @@ export default function BookCard({
         },
       });
 
-      setSuccess("Book updated successfully!");
+      setSuccess(t('bookCard.messages.updateSuccess'));
       
       // Update local state after successful update
       setTimeout(() => {
@@ -128,7 +130,7 @@ export default function BookCard({
       }, 2000);
     } catch (error) {
       console.error("Error updating book:", error);
-      setError(error.response?.data?.message || "Error updating book");
+      setError(error.response?.data?.message || t('bookCard.errors.updateFailure'));
     } finally {
       setLoading(false);
     }
@@ -159,7 +161,7 @@ export default function BookCard({
         </div>
       ) : (
         <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
-          <span className="text-gray-500">No image available</span>
+          <span className="text-gray-500">{t('bookCard.noImage')}</span>
         </div>
       )}
 
@@ -173,10 +175,9 @@ export default function BookCard({
       <div className="p-4">
         {isEditing ? (
           <form onSubmit={handleSubmit} encType="multipart/form-data">
-            {/* ... existing form fields ... */}
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                Change Image
+                {t('bookCard.form.changeImage')}
               </label>
               <input
                 type="file"
@@ -188,10 +189,10 @@ export default function BookCard({
 
               {imagePreview && (
                 <div className="mt-2">
-                  <p className="text-xs text-gray-500">New image preview:</p>
+                  <p className="text-xs text-gray-500">{t('bookCard.form.newImagePreview')}</p>
                   <img
                     src={imagePreview}
-                    alt="Preview"
+                    alt={t('bookCard.form.preview')}
                     className="h-32 object-contain mt-1"
                   />
                 </div>
@@ -199,7 +200,7 @@ export default function BookCard({
 
               {!imagePreview && book.image_path && (
                 <div className="mt-2">
-                  <p className="text-xs text-gray-500">Current image:</p>
+                  <p className="text-xs text-gray-500">{t('bookCard.form.currentImage')}</p>
                   <img
                     src={bookImageUrl}
                     alt={book.title}
@@ -214,7 +215,7 @@ export default function BookCard({
             </div>
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                Title
+                {t('bookCard.form.title')}
               </label>
               <input
                 type="text"
@@ -228,7 +229,7 @@ export default function BookCard({
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                Author
+                {t('bookCard.form.author')}
               </label>
               <input
                 type="text"
@@ -242,7 +243,7 @@ export default function BookCard({
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                Category
+                {t('bookCard.form.category')}
               </label>
               <input
                 type="text"
@@ -256,7 +257,7 @@ export default function BookCard({
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                Quantity
+                {t('bookCard.form.quantity')}
               </label>
               <input
                 type="number"
@@ -271,7 +272,7 @@ export default function BookCard({
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                Inventory Number
+                {t('bookCard.form.inventoryNumber')}
               </label>
               <input
                 type="text"
@@ -285,7 +286,7 @@ export default function BookCard({
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700">
-                Description
+                {t('bookCard.form.description')}
               </label>
               <textarea
                 name="description"
@@ -320,33 +321,35 @@ export default function BookCard({
                 className="px-3 py-1 bg-gray-300 rounded"
                 disabled={loading}
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 type="submit"
                 className="px-3 py-1 bg-blue-600 text-white rounded"
                 disabled={loading}
               >
-                {loading ? "Saving..." : "Save Changes"}
+                {loading ? t('common.saving') : t('common.saveChanges')}
               </button>
             </div>
           </form>
         ) : (
           <>
             <h3 className="text-lg font-semibold text-gray-800 mb-1 line-clamp-2">{book.title}</h3>
-            <p className="text-sm text-gray-600 mb-2">by {book.author}</p>
+            <p className="text-sm text-gray-600 mb-2">{t('bookCard.byAuthor', { author: book.author })}</p>
             
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-gray-500">#{book.inventory_number}</span>
               <span className={`text-xs px-2 py-1 rounded-full ${
                 book.quantity > 0 ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'
               }`}>
-                {book.quantity > 0 ? `${book.quantity} in inventory` : 'Out of stock'}
+                {book.quantity > 0 
+                  ? t('bookCard.inventory', { count: book.quantity }) 
+                  : t('bookCard.outOfStock')}
               </span>
             </div>
 
             <p className="text-sm text-gray-700 mb-4 line-clamp-3">
-              {book.description || "No description available."}
+              {book.description || t('bookCard.noDescription')}
             </p>
 
             {showDetails && book.description && (
@@ -360,7 +363,7 @@ export default function BookCard({
                 className="text-sm text-blue-600 hover:underline"
                 onClick={() => setShowDetails(!showDetails)}
               >
-                {showDetails ? "Hide Details" : "Show Details"}
+                {showDetails ? t('bookCard.hideDetails') : t('bookCard.showDetails')}
               </button>
 
               {isLibrarian && (
@@ -368,6 +371,7 @@ export default function BookCard({
                   <button 
                     onClick={() => setIsEditing(true)}
                     className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
+                    title={t('bookCard.actions.edit')}
                   >
                     <Pencil className="w-4 h-4" />
                   </button>
@@ -375,6 +379,7 @@ export default function BookCard({
                   <button 
                     onClick={() => setShowDeleteConfirm(true)}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-full"
+                    title={t('bookCard.actions.delete')}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -404,11 +409,11 @@ export default function BookCard({
           <div className="bg-white p-6 rounded-lg max-w-md w-full">
             <div className="flex items-center text-red-600 mb-4">
               <AlertCircle className="w-6 h-6 mr-2" />
-              <h3 className="text-lg font-semibold">Confirm Deletion</h3>
+              <h3 className="text-lg font-semibold">{t('bookCard.deleteModal.title')}</h3>
             </div>
             
             <p className="mb-4 text-gray-700">
-              Are you sure you want to delete "{book.title}"? This action cannot be undone.
+              {t('bookCard.deleteModal.confirmMessage', { title: book.title })}
             </p>
             
             {error && (
@@ -423,7 +428,7 @@ export default function BookCard({
                 className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
                 disabled={deleteLoading}
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               
               <button 
@@ -434,10 +439,10 @@ export default function BookCard({
                 {deleteLoading ? (
                   <>
                     <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-                    Deleting...
+                    {t('common.deleting')}
                   </>
                 ) : (
-                  'Delete'
+                  t('common.delete')
                 )}
               </button>
             </div>

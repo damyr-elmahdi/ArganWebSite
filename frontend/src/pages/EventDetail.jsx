@@ -5,9 +5,11 @@ import { format } from "date-fns";
 import { CalendarIcon, MapPinIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { getImageUrl } from "../utils/imageUtils";
 import EventCommentSection from "../components/EventCommentSection";
-import ImageModal from "../components/ImageModal"; // Import the new component
+import ImageModal from "../components/ImageModal";
+import { useTranslation } from 'react-i18next';
 
 export default function EventDetail() {
+  const { t } = useTranslation();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,7 +30,7 @@ export default function EventDetail() {
       setEvent(data);
       setLoading(false);
     } catch (err) {
-      setError("Failed to load event details. Please try again later.");
+      setError(t('eventDetail.errorLoading'));
       setLoading(false);
     }
   };
@@ -78,7 +80,7 @@ export default function EventDetail() {
     return (
       <div className="flex-grow container mx-auto px-4 py-12">
         <div className="bg-yellow-100 text-yellow-700 p-4 rounded-md">
-          Event not found.
+          {t('eventDetail.notFound')}
         </div>
       </div>
     );
@@ -134,7 +136,7 @@ export default function EventDetail() {
 
           <div className="mt-8 pt-4 border-t border-gray-200">
             <Link to="/events" className="text-[#18bebc] hover:underline">
-              ← Back to all events
+              {t('eventDetail.backToEvents')}
             </Link>
           </div>
         </div>

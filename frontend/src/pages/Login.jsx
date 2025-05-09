@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next'; // Import useTranslation hook
 
 export default function Login() {
+  const { t } = useTranslation(); // Initialize the translation function
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -52,7 +54,7 @@ export default function Login() {
         const firstError = Object.values(err.response.data.errors)[0][0];
         setError(firstError);
       } else {
-        setError('An error occurred during login. Please try again.');
+        setError(t('login.errors.generic'));
       }
     }
   };
@@ -61,8 +63,8 @@ export default function Login() {
     <main className="flex-grow flex items-center justify-center py-12 px-4 bg-gray-50">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-800">Login</h2>
-          <p className="mt-2 text-gray-600">Access your Argan High School account</p>
+          <h2 className="text-3xl font-bold text-gray-800">{t('login.title')}</h2>
+          <p className="mt-2 text-gray-600">{t('login.subtitle')}</p>
         </div>
         
         {error && (
@@ -74,14 +76,14 @@ export default function Login() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">{t('login.form.emailLabel')}</label>
               <input
                 id="email"
                 name="email"
                 type="email"
                 required
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-teal-400 focus:border-teal-400"
-                placeholder="email@example.com"
+                placeholder={t('login.form.emailPlaceholder')}
                 value={formData.email}
                 onChange={handleChange}
                 disabled={loading}
@@ -89,7 +91,7 @@ export default function Login() {
             </div>
             
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">{t('login.form.passwordLabel')}</label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <input
                   id="password"
@@ -106,6 +108,7 @@ export default function Login() {
                   type="button"
                   className="absolute inset-y-0 right-0 px-3 flex items-center"
                   onClick={togglePasswordVisibility}
+                  aria-label={showPassword ? t('login.form.hidePassword') : t('login.form.showPassword')}
                 >
                   {showPassword ? (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -128,16 +131,16 @@ export default function Login() {
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#18bebc] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
               disabled={loading}
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? t('login.form.signingIn') : t('login.form.signIn')}
             </button>
           </div>
         </form>
         
         {/* <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
+            {t('login.noAccount')}{' '}
             <Link to="/register" className="font-medium text-[#18bebc] hover:text-teal-400">
-              Register here
+              {t('login.registerHere')}
             </Link>
           </p>
         </div> */}

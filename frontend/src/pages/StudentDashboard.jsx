@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import StudentQuizTab from '../components/StudentQuizTab';
 import StudentExamView from '../components/exam/StudentExamView';
 
 export default function StudentDashboard() {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -33,7 +35,7 @@ export default function StudentDashboard() {
         setUser(response.data);
       } catch (err) {
         console.error('Error fetching user data:', err);
-        setError('Failed to load dashboard. Please try logging in again.');
+        setError(t('dashboard.errors.failedToLoad'));
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setTimeout(() => navigate('/login'), 3000);
@@ -43,7 +45,7 @@ export default function StudentDashboard() {
     };
     
     fetchUserData();
-  }, [navigate]);
+  }, [navigate, t]);
   
   // Fetch absence notifications when dashboard loads
   useEffect(() => {
@@ -103,7 +105,7 @@ export default function StudentDashboard() {
     return (
       <div className="flex-grow flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold">Loading your dashboard...</h2>
+          <h2 className="text-xl font-semibold">{t('dashboard.loading')}</h2>
         </div>
       </div>
     );
@@ -114,7 +116,7 @@ export default function StudentDashboard() {
       <div className="flex-grow flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-red-600">{error}</h2>
-          <p>Redirecting to login page...</p>
+          <p>{t('dashboard.redirecting')}</p>
         </div>
       </div>
     );
@@ -126,12 +128,12 @@ export default function StudentDashboard() {
     <div className="flex-grow bg-gray-50">
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">Student Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('dashboard.title')}</h1>
           <button 
             onClick={handleLogout}
             className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
           >
-            Logout
+            {t('common.logout')}
           </button>
         </div>
       </header>
@@ -147,7 +149,7 @@ export default function StudentDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("profile")}
             >
-              Profile
+              {t('dashboard.tabs.profile')}
             </button>
             <button
               className={`${
@@ -157,7 +159,7 @@ export default function StudentDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
               onClick={() => setActiveTab("notifications")}
             >
-              Notifications
+              {t('dashboard.tabs.notifications')}
               {getUnreadNotificationsCount() > 0 && (
                 <span className="ml-2 bg-[#18bebc] text-white text-xs rounded-full px-2 py-1">
                   {getUnreadNotificationsCount()}
@@ -172,7 +174,7 @@ export default function StudentDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("quizzes")}
             >
-              Quizzes
+              {t('dashboard.tabs.quizzes')}
             </button>
             <button
               className={`${
@@ -182,7 +184,7 @@ export default function StudentDashboard() {
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               onClick={() => setActiveTab("exams")}
             >
-              Exams
+              {t('dashboard.tabs.exams')}
             </button>
           </nav>
         </div>
@@ -193,29 +195,29 @@ export default function StudentDashboard() {
             <>
               <div className="bg-white shadow overflow-hidden sm:rounded-lg">
                 <div className="px-4 py-5 sm:px-6">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Student Information</h3>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and academic information.</p>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">{t('dashboard.profile.title')}</h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-500">{t('dashboard.profile.subtitle')}</p>
                 </div>
                 <div className="border-t border-gray-200">
                   <dl>
                     <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Full name</dt>
+                      <dt className="text-sm font-medium text-gray-500">{t('dashboard.profile.fullName')}</dt>
                       <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.name}</dd>
                     </div>
                     <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Email address</dt>
+                      <dt className="text-sm font-medium text-gray-500">{t('dashboard.profile.email')}</dt>
                       <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.email}</dd>
                     </div>
                     <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Student ID</dt>
+                      <dt className="text-sm font-medium text-gray-500">{t('dashboard.profile.studentId')}</dt>
                       <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.student?.student_id}</dd>
                     </div>
                     <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Grade</dt>
+                      <dt className="text-sm font-medium text-gray-500">{t('dashboard.profile.grade')}</dt>
                       <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.student?.grade}</dd>
                     </div>
                     <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-500">Class</dt>
+                      <dt className="text-sm font-medium text-gray-500">{t('dashboard.profile.class')}</dt>
                       <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user.student?.class_code}</dd>
                     </div>
                   </dl>
@@ -228,17 +230,17 @@ export default function StudentDashboard() {
                   <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
                     <div>
                       <h3 className="text-lg leading-6 font-medium text-gray-900">
-                        Teacher Absence Notifications
+                        {t('dashboard.notifications.title')}
                       </h3>
                       <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                        Recent teacher absence announcements.
+                        {t('dashboard.notifications.subtitle')}
                       </p>
                     </div>
                     <button
                       onClick={() => setActiveTab('notifications')}
                       className="text-sm text-[#18bebc] hover:text-teal-400"
                     >
-                      View all
+                      {t('dashboard.notifications.viewAll')}
                     </button>
                   </div>
                   <div className="border-t border-gray-200">
@@ -251,14 +253,17 @@ export default function StudentDashboard() {
                             <div className="flex justify-between">
                               <div>
                                 <p className="text-sm font-medium text-gray-900">
-                                  Teacher {notification.teacher_name} will be absent
+                                  {t('dashboard.notifications.teacherAbsent', { teacherName: notification.teacher_name })}
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                  From {new Date(notification.start_date).toLocaleDateString()} to {new Date(notification.end_date).toLocaleDateString()}
+                                  {t('dashboard.notifications.dateRange', {
+                                    startDate: new Date(notification.start_date).toLocaleDateString(),
+                                    endDate: new Date(notification.end_date).toLocaleDateString()
+                                  })}
                                 </p>
                                 {notification.reason && (
                                   <p className="mt-1 text-sm text-gray-500">
-                                    Reason: {notification.reason}
+                                    {t('dashboard.notifications.reason', { reason: notification.reason })}
                                   </p>
                                 )}
                               </div>
@@ -266,7 +271,7 @@ export default function StudentDashboard() {
                                 onClick={() => handleMarkAsRead(notification.id)}
                                 className="text-xs text-[#18bebc] hover:text-teal-400"
                               >
-                                Mark as read
+                                {t('dashboard.notifications.markAsRead')}
                               </button>
                             </div>
                           </li>
@@ -279,12 +284,12 @@ export default function StudentDashboard() {
               {/* Placeholder for courses section */}
               <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
                 <div className="px-4 py-5 sm:px-6">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Your Courses</h3>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">Current courses and progress.</p>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">{t('dashboard.courses.title')}</h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-500">{t('dashboard.courses.subtitle')}</p>
                 </div>
                 <div className="border-t border-gray-200">
                   <div className="px-4 py-5">
-                    <p className="text-sm text-gray-500">You are not enrolled in any courses yet.</p>
+                    <p className="text-sm text-gray-500">{t('dashboard.courses.notEnrolled')}</p>
                   </div>
                 </div>
               </div>
@@ -293,19 +298,19 @@ export default function StudentDashboard() {
               <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
                 <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
                   <div>
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Available Quizzes</h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">Quizzes ready for you to take.</p>
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">{t('dashboard.quizzes.title')}</h3>
+                    <p className="mt-1 max-w-2xl text-sm text-gray-500">{t('dashboard.quizzes.subtitle')}</p>
                   </div>
                   <button
                     onClick={() => setActiveTab('quizzes')}
                     className="text-sm text-[#18bebc] hover:text-teal-400"
                   >
-                    View all quizzes
+                    {t('dashboard.quizzes.viewAll')}
                   </button>
                 </div>
                 <div className="border-t border-gray-200">
                   <div className="px-4 py-5">
-                    <p className="text-sm text-gray-500">Go to the Quizzes tab to view and take available quizzes.</p>
+                    <p className="text-sm text-gray-500">{t('dashboard.quizzes.goToTab')}</p>
                   </div>
                 </div>
               </div>
@@ -314,19 +319,19 @@ export default function StudentDashboard() {
               <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
                 <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
                   <div>
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Available Exams</h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">Exam papers and materials.</p>
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">{t('dashboard.exams.title')}</h3>
+                    <p className="mt-1 max-w-2xl text-sm text-gray-500">{t('dashboard.exams.subtitle')}</p>
                   </div>
                   <button
                     onClick={() => setActiveTab('exams')}
                     className="text-sm text-[#18bebc] hover:text-teal-400"
                   >
-                    View all exams
+                    {t('dashboard.exams.viewAll')}
                   </button>
                 </div>
                 <div className="border-t border-gray-200">
                   <div className="px-4 py-5">
-                    <p className="text-sm text-gray-500">Go to the Exams tab to view and download available exam materials.</p>
+                    <p className="text-sm text-gray-500">{t('dashboard.exams.goToTab')}</p>
                   </div>
                 </div>
               </div>
@@ -338,16 +343,16 @@ export default function StudentDashboard() {
             <div className="bg-white shadow overflow-hidden sm:rounded-lg">
               <div className="px-4 py-5 sm:px-6">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  Teacher Absence Notifications
+                  {t('dashboard.notifications.title')}
                 </h3>
                 <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                  All teacher absence announcements.
+                  {t('dashboard.notifications.allAnnouncements')}
                 </p>
               </div>
               <div className="border-t border-gray-200">
                 {notificationsLoading ? (
                   <div className="px-4 py-5 text-center">
-                    <p className="text-sm text-gray-500">Loading notifications...</p>
+                    <p className="text-sm text-gray-500">{t('dashboard.notifications.loading')}</p>
                   </div>
                 ) : absenceNotifications.length > 0 ? (
                   <ul className="divide-y divide-gray-200">
@@ -356,18 +361,23 @@ export default function StudentDashboard() {
                         <div className="flex justify-between">
                           <div>
                             <p className="text-sm font-medium text-gray-900">
-                              Teacher {notification.teacher_name} will be absent
+                              {t('dashboard.notifications.teacherAbsent', { teacherName: notification.teacher_name })}
                             </p>
                             <p className="text-sm text-gray-500">
-                              From {new Date(notification.start_date).toLocaleDateString()} to {new Date(notification.end_date).toLocaleDateString()}
+                              {t('dashboard.notifications.dateRange', {
+                                startDate: new Date(notification.start_date).toLocaleDateString(),
+                                endDate: new Date(notification.end_date).toLocaleDateString()
+                              })}
                             </p>
                             {notification.reason && (
                               <p className="mt-1 text-sm text-gray-500">
-                                Reason: {notification.reason}
+                                {t('dashboard.notifications.reason', { reason: notification.reason })}
                               </p>
                             )}
                             <p className="mt-1 text-xs text-gray-400">
-                              Announced: {new Date(notification.created_at).toLocaleString()}
+                              {t('dashboard.notifications.announced', {
+                                date: new Date(notification.created_at).toLocaleString()
+                              })}
                             </p>
                           </div>
                           {!notification.is_read && (
@@ -375,7 +385,7 @@ export default function StudentDashboard() {
                               onClick={() => handleMarkAsRead(notification.id)}
                               className="text-xs text-[#18bebc] hover:text-teal-400"
                             >
-                              Mark as read
+                              {t('dashboard.notifications.markAsRead')}
                             </button>
                           )}
                         </div>
@@ -384,7 +394,7 @@ export default function StudentDashboard() {
                   </ul>
                 ) : (
                   <div className="px-4 py-5 text-center">
-                    <p className="text-sm text-gray-500">No absence notifications at this time.</p>
+                    <p className="text-sm text-gray-500">{t('dashboard.notifications.noNotifications')}</p>
                   </div>
                 )}
               </div>

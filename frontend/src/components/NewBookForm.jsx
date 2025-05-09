@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 export default function NewBookForm({ onBookCreated }) {
+  const { t } = useTranslation();
+
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -77,7 +80,7 @@ export default function NewBookForm({ onBookCreated }) {
       onBookCreated();
       
     } catch (error) {
-      setError(error.response?.data?.message || 'Failed to add new book');
+      setError(error.response?.data?.message || t('library.errors.addBookFailed'));
     } finally {
       setLoading(false);
     }
@@ -85,13 +88,13 @@ export default function NewBookForm({ onBookCreated }) {
   
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Add New Book</h2>
+      <h2 className="text-xl font-semibold mb-4">{t('library.newBook.title')}</h2>
       
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Title *
+              {t('library.newBook.fields.title')} *
             </label>
             <input
               type="text"
@@ -105,7 +108,7 @@ export default function NewBookForm({ onBookCreated }) {
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Author *
+              {t('library.newBook.fields.author')} *
             </label>
             <input
               type="text"
@@ -119,7 +122,7 @@ export default function NewBookForm({ onBookCreated }) {
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Category *
+              {t('library.newBook.fields.category')} *
             </label>
             <input
               type="text"
@@ -133,7 +136,7 @@ export default function NewBookForm({ onBookCreated }) {
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Quantity *
+              {t('library.newBook.fields.quantity')} *
             </label>
             <input
               type="number"
@@ -148,7 +151,7 @@ export default function NewBookForm({ onBookCreated }) {
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Inventory Number *
+              {t('library.newBook.fields.inventoryNumber')} *
             </label>
             <input
               type="text"
@@ -162,7 +165,7 @@ export default function NewBookForm({ onBookCreated }) {
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Book Image
+              {t('library.newBook.fields.image')}
             </label>
             <input
               type="file"
@@ -175,7 +178,7 @@ export default function NewBookForm({ onBookCreated }) {
           
           <div className="col-span-full">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description
+              {t('library.newBook.fields.description')}
             </label>
             <textarea
               name="description"
@@ -189,11 +192,11 @@ export default function NewBookForm({ onBookCreated }) {
           {preview && (
             <div className="col-span-full">
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Image Preview
+                {t('library.newBook.imagePreview')}
               </label>
               <img 
                 src={preview} 
-                alt="Preview" 
+                alt={t('library.newBook.imagePreviewAlt')} 
                 className="h-48 object-contain border rounded"
               />
             </div>
@@ -210,7 +213,7 @@ export default function NewBookForm({ onBookCreated }) {
             className="bg-blue-600 text-white px-4 py-2 rounded"
             disabled={loading}
           >
-            {loading ? 'Adding Book...' : 'Add Book'}
+            {loading ? t('library.newBook.addingBook') : t('library.newBook.addBook')}
           </button>
         </div>
       </form>

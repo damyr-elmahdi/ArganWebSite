@@ -88,7 +88,7 @@ export default function Header({ schoolName, ministry, tagline }) {
           )}
         </button>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation . */}
         <nav className="hidden md:flex space-x-6 items-center">
           <Link to="/" className="text-gray-800 hover:text-[#18bebc] font-medium">{t('nav.home')}</Link>
           <Link to="/about" className="text-gray-800 hover:text-[#18bebc] font-medium">{t('nav.about')}</Link>

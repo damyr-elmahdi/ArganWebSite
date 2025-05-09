@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { getNews } from "../services/newsService";
 import { format } from "date-fns";
 import { getImageUrl } from "../utils/imageUtils";
-
+import { useTranslation } from "react-i18next";
 
 export default function NewsSection() {
+  const { t } = useTranslation();
   const [newsItems, setNewsItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,19 +23,16 @@ export default function NewsSection() {
         setLoading(false);
       } catch (err) {
         console.error("Error fetching latest news:", err);
-        setError("Failed to load news");
+        setError(t('news.errors.loadFailed'));
         setLoading(false);
       }
     };
 
     fetchLatestNews();
-  }, []);
-
-  // Fallback data if API call fails or returns no news
+  }, [t]);
 
   // Use fallback data if needed
-  const newsToDisplay =
-    newsItems.length > 0 ? newsItems : error ? fallbackNews : [];
+  const newsToDisplay = newsItems.length > 0 ? newsItems : [];
 
   const getExcerpt = (content, maxLength = 150) => {
     if (!content) return "";
@@ -46,9 +44,9 @@ export default function NewsSection() {
     <section className="py-12 bg-white">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-800">Latest News</h2>
+          <h2 className="text-2xl font-bold text-gray-800">{t('news.latestNews')}</h2>
           <Link to="/news" className="text-[#18bebc] hover:underline">
-            View All News
+            {t('news.viewAllNews')}
           </Link>
         </div>
 
@@ -74,13 +72,13 @@ export default function NewsSection() {
                 ) : (
                   <div className="bg-gradient-to-r from-teal-100 to-teal-200 h-48 rounded-t-lg flex items-center justify-center">
                     <span className="text-teal-400 text-lg font-semibold">
-                      No Image Available
+                      {t('news.noImageAvailable')}
                     </span>
                   </div>
                 )}
                 <div className="p-4 flex-grow flex flex-col">
                   <span className="text-sm text-gray-500">
-                    {format(new Date(news.published_at), "MMMM d, yyyy")}
+                    {format(new Date(news.published_at), t('dateFormat.long'))}
                   </span>
                   <h3 className="text-xl font-bold text-gray-800 mt-1 mb-2">
                     {news.title}
@@ -92,7 +90,7 @@ export default function NewsSection() {
                     to={`/news/${news.id}`}
                     className="text-[#18bebc] hover:underline mt-auto"
                   >
-                    Read more
+                    {t('news.readMore')}
                   </Link>
                 </div>
               </div>

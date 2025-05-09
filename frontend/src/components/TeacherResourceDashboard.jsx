@@ -5,7 +5,7 @@ import ResourceViewer from '../components/ResourceViewer';
 
 export default function TeacherResourceDashboard() {
   const { t } = useTranslation();
-  const [activeView, setActiveView] = useState('upload'); // 'upload' or 'view'
+  const [activeView, setActiveView] = useState('upload'); //  'upload' or 'view'
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">

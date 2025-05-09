@@ -39,7 +39,7 @@ export default function TeacherQuizzes() {
       </div>
     );
   }
-  
+  // Check if the error message 
   if (error) {
     return (
       <div className="flex items-center justify-center h-64">

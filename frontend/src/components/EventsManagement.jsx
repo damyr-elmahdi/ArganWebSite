@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getEvents, createEvent, updateEvent, deleteEvent } from '../services/eventService';
 
 export default function EventsManagement() {
+  const { t } = useTranslation();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -27,7 +29,7 @@ export default function EventsManagement() {
       setEvents(data.data || []);
       setError('');
     } catch (err) {
-      setError('Failed to load events');
+      setError(t('events.errors.loadFailed'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -89,18 +91,18 @@ export default function EventsManagement() {
       resetForm();
       fetchEvents();
     } catch (err) {
-      setError('Failed to create event');
+      setError(t('events.errors.createFailed'));
       console.error(err);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this event?')) {
+    if (window.confirm(t('events.confirmDelete'))) {
       try {
         await deleteEvent(id);
         fetchEvents();
       } catch (err) {
-        setError('Failed to delete event');
+        setError(t('events.errors.deleteFailed'));
         console.error(err);
       }
     }
@@ -117,21 +119,21 @@ export default function EventsManagement() {
   };
 
   if (loading) {
-    return <div className="text-center py-4">Loading events...</div>;
+    return <div className="text-center py-4">{t('common.loading')}</div>;
   }
 
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
       <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
         <div>
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Events Management</h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">Create and manage school events.</p>
+          <h3 className="text-lg leading-6 font-medium text-gray-900">{t('events.title2')}</h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500">{t('events.subtitle')}</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
           className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
         >
-          {showForm ? 'Cancel' : 'Create Event'}
+          {showForm ? t('common.cancel') : t('events.createButton')}
         </button>
       </div>
 
@@ -146,7 +148,7 @@ export default function EventsManagement() {
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="mb-4">
               <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                Title
+                {t('events.form.title')}
               </label>
               <input
                 type="text"
@@ -160,7 +162,7 @@ export default function EventsManagement() {
             </div>
             <div className="mb-4">
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                Description
+                {t('events.form.description')}
               </label>
               <textarea
                 id="description"
@@ -174,7 +176,7 @@ export default function EventsManagement() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label htmlFor="start_time" className="block text-sm font-medium text-gray-700 mb-1">
-                  Start Time
+                  {t('events.form.startTime')}
                 </label>
                 <input
                   type="datetime-local"
@@ -188,7 +190,7 @@ export default function EventsManagement() {
               </div>
               <div>
                 <label htmlFor="end_time" className="block text-sm font-medium text-gray-700 mb-1">
-                  End Time
+                  {t('events.form.endTime')}
                 </label>
                 <input
                   type="datetime-local"
@@ -203,7 +205,7 @@ export default function EventsManagement() {
             </div>
             <div className="mb-4">
               <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-                Location
+                {t('events.form.location')}
               </label>
               <input
                 type="text"
@@ -216,7 +218,7 @@ export default function EventsManagement() {
             </div>
             <div className="mb-4">
               <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
-                Event Image
+                {t('events.form.eventImage')}
               </label>
               <input
                 type="file"
@@ -235,7 +237,7 @@ export default function EventsManagement() {
                 <div className="mt-2">
                   <img 
                     src={imagePreview} 
-                    alt="Preview" 
+                    alt={t('events.form.imagePreview')} 
                     className="h-32 w-auto object-cover rounded-md" 
                   />
                 </div>
@@ -245,7 +247,7 @@ export default function EventsManagement() {
               type="submit"
               className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
             >
-              Save Event
+              {t('events.form.saveButton')}
             </button>
           </form>
         </div>
@@ -258,22 +260,22 @@ export default function EventsManagement() {
               <thead className="bg-gray-50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Image
+                    {t('events.table.image')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Title
+                    {t('events.table.title')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Start Time
+                    {t('events.table.startTime')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    End Time
+                    {t('events.table.endTime')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Location
+                    {t('events.table.location')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
+                    {t('events.table.actions')}
                   </th>
                 </tr>
               </thead>
@@ -289,7 +291,7 @@ export default function EventsManagement() {
                         />
                       ) : (
                         <div className="h-12 w-12 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
-                          No img
+                          {t('events.noImage')}
                         </div>
                       )}
                     </td>
@@ -303,14 +305,14 @@ export default function EventsManagement() {
                       {formatDateTime(event.end_time)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {event.location || 'N/A'}
+                      {event.location || t('common.notAvailable')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
                         onClick={() => handleDelete(event.id)}
                         className="text-red-600 hover:text-red-900"
                       >
-                        Delete
+                        {t('common.delete')}
                       </button>
                     </td>
                   </tr>
@@ -320,7 +322,7 @@ export default function EventsManagement() {
           </div>
         ) : (
           <div className="px-4 py-5">
-            <p className="text-sm text-gray-500">No events created yet.</p>
+            <p className="text-sm text-gray-500">{t('events.noEvents')}</p>
           </div>
         )}
       </div>

@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import argan from "../assets/argan.png";
+import { useTranslation } from 'react-i18next';
 
 export default function ClubDetails() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const [club, setClub] = useState(null);
   const [members, setMembers] = useState([]);
@@ -25,17 +27,17 @@ export default function ClubDetails() {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching club details:', err);
-        setError('Failed to load club details. Please try again later.');
+        setError(t('clubDetails.fetchError'));
         setLoading(false);
         
         // Fallback data for development or when API fails
         if (process.env.NODE_ENV === 'development') {
           setClub({
             id: parseInt(id),
-            name: 'Science Club',
-            description: 'Explore the wonders of science through experiments, discussions, and field trips.',
-            activities: 'Our activities include weekly lab experiments where members get hands-on experience with scientific concepts. We participate in local and regional science fairs to showcase our projects. We also invite guest lecturers to share their expertise and inspire our members.',
-            meeting_schedule: 'Every Tuesday and Thursday, 3:30 PM - 5:00 PM'
+            name: t('clubs.scienceClub.name'),
+            description: t('clubs.scienceClub.description'),
+            activities: t('clubDetails.fallbackActivities'),
+            meeting_schedule: t('clubDetails.fallbackSchedule')
           });
           
           setMembers([
@@ -48,16 +50,16 @@ export default function ClubDetails() {
     };
 
     fetchClubDetails();
-  }, [id]);
+  }, [id, t]);
 
   if (loading) {
     return (
       <div className="flex-grow flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4">
-            <img src={argan} alt="Argan High School" className="w-full h-full object-contain animate-pulse" />
+            <img src={argan} alt={t('common.schoolName')} className="w-full h-full object-contain animate-pulse" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-700">Loading club details...</h2>
+          <h2 className="text-xl font-semibold text-gray-700">{t('clubDetails.loading')}</h2>
         </div>
       </div>
     );
@@ -69,7 +71,7 @@ export default function ClubDetails() {
         <div className="text-center">
           <h2 className="text-xl font-semibold text-red-600">{error}</h2>
           <Link to="/" className="mt-4 inline-block text-[#18bebc] hover:underline">
-            Return to Home
+            {t('common.returnHome')}
           </Link>
         </div>
       </div>
@@ -78,6 +80,14 @@ export default function ClubDetails() {
 
   if (!club) return null;
 
+  const getRoleTranslation = (role) => {
+    // Capitalize first letter of the role
+    const normalizedRole = role.charAt(0).toUpperCase() + role.slice(1);
+    
+    // Map the role to a translation key and translate it
+    return t(`clubDetails.roles.${role}`, normalizedRole);
+  };
+
   return (
     <div className="flex-grow bg-gray-50 py-12">
       <div className="container mx-auto px-4">
@@ -85,7 +95,7 @@ export default function ClubDetails() {
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Back to Home
+          {t('common.backToHome')}
         </Link>
         
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -98,19 +108,19 @@ export default function ClubDetails() {
             <p className="text-lg text-gray-600 mb-6">{club.description}</p>
             
             <div className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Activities</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">{t('clubDetails.activitiesHeading')}</h2>
               <p className="text-gray-600">{club.activities}</p>
             </div>
             
             {club.meeting_schedule && (
               <div className="mb-8 p-4 bg-teal-50 rounded-lg border border-teal-100">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Meeting Schedule</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">{t('clubDetails.scheduleHeading')}</h3>
                 <p className="text-gray-600">{club.meeting_schedule}</p>
               </div>
             )}
             
             <div>
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Club Members</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">{t('clubDetails.membersHeading')}</h2>
               
               {members.length > 0 ? (
                 <div className="overflow-x-auto">
@@ -118,10 +128,10 @@ export default function ClubDetails() {
                     <thead className="bg-gray-50">
                       <tr>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Name
+                          {t('clubDetails.nameColumn')}
                         </th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Role
+                          {t('clubDetails.roleColumn')}
                         </th>
                       </tr>
                     </thead>
@@ -139,7 +149,7 @@ export default function ClubDetails() {
                                   ? 'bg-blue-100 text-blue-800'
                                   : 'bg-gray-100 text-gray-800'
                             }`}>
-                              {member.role.charAt(0).toUpperCase() + member.role.slice(1)}
+                              {getRoleTranslation(member.role)}
                             </span>
                           </td>
                         </tr>
@@ -148,7 +158,7 @@ export default function ClubDetails() {
                   </table>
                 </div>
               ) : (
-                <p className="text-gray-500 italic">No members in this club yet.</p>
+                <p className="text-gray-500 italic">{t('clubDetails.noMembers')}</p>
               )}
             </div>
           </div>

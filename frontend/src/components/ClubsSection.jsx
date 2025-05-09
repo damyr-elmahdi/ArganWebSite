@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 export default function ClubsSection() {
+  const { t } = useTranslation();
   const [clubs, setClubs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,34 +27,34 @@ export default function ClubsSection() {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching clubs:', err);
-        setError('Failed to load clubs. Using sample data.');
+        setError(t('clubs.fetchError'));
         setClubs([]); // Ensure clubs is an array even on error
         setLoading(false);
       }
     };
 
     fetchClubs();
-  }, []);
+  }, [t]);
 
   // Fallback data for initial development or when API fails
   const fallbackClubs = [
     {
       id: 1,
-      name: 'Science Club',
-      description: 'Explore the wonders of science through experiments, discussions, and field trips.',
-      activities: 'Lab experiments, Science fairs, Guest lectures'
+      name: t('clubs.scienceClub.name'),
+      description: t('clubs.scienceClub.description'),
+      activities: t('clubs.scienceClub.activities')
     },
     {
       id: 2,
-      name: 'Debate Club',
-      description: 'Develop critical thinking and public speaking skills through structured debates.',
-      activities: 'Weekly debates, Regional competitions, Public speaking workshops'
+      name: t('clubs.debateClub.name'),
+      description: t('clubs.debateClub.description'),
+      activities: t('clubs.debateClub.activities')
     },
     {
       id: 3,
-      name: 'Art Club',
-      description: 'Express creativity through various art forms and techniques.',
-      activities: 'Art exhibitions, Creative workshops, Museum visits'
+      name: t('clubs.artClub.name'),
+      description: t('clubs.artClub.description'),
+      activities: t('clubs.artClub.activities')
     }
   ];
 
@@ -62,7 +64,7 @@ export default function ClubsSection() {
   return (
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">Student Clubs</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">{t('clubs.heading')}</h2>
         
         {loading ? (
           <div className="flex justify-center items-center h-40">
@@ -86,7 +88,7 @@ export default function ClubsSection() {
                       to={`/clubs/${club.id}`} 
                       className="text-[#18bebc] hover:underline inline-flex items-center"
                     >
-                      See More
+                      {t('clubs.seeMore')}
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
@@ -113,7 +115,7 @@ export default function ClubsSection() {
                     to={`/clubs/${club.id}`} 
                     className="text-[#18bebc] hover:underline inline-flex items-center"
                   >
-                    See More
+                    {t('clubs.seeMore')}
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>

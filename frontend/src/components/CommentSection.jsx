@@ -8,8 +8,10 @@ import { format } from "date-fns";
 import CommentForm from "./CommentForm";
 import ReplyForm from "./ReplyForm";
 import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 export default function CommentSection({ newsId }) {
+  const { t } = useTranslation();
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -27,7 +29,7 @@ export default function CommentSection({ newsId }) {
       setComments(data);
       setError(null);
     } catch (err) {
-      setError("Failed to load comments");
+      setError(t('comments.errors.loadFailed'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -39,18 +41,18 @@ export default function CommentSection({ newsId }) {
       const newComment = await createComment(newsId, commentData);
       setComments([newComment, ...comments]);
     } catch (err) {
-      setError("Failed to add comment");
+      setError(t('comments.errors.addFailed'));
       console.error(err);
     }
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (window.confirm("Are you sure you want to delete this comment?")) {
+    if (window.confirm(t('comments.confirmDelete'))) {
       try {
         await deleteComment(newsId, commentId);
         setComments(comments.filter((comment) => comment.id !== commentId));
       } catch (err) {
-        setError("Failed to delete comment");
+        setError(t('comments.errors.deleteFailed'));
         console.error(err);
       }
     }
@@ -62,6 +64,7 @@ export default function CommentSection({ newsId }) {
       user && (comment.user_id === user.id || user.role === "administrator")
     );
   };
+  
   const handleAddReply = async (commentId, replyData) => {
     try {
       const newReply = await createComment(newsId, {
@@ -82,7 +85,7 @@ export default function CommentSection({ newsId }) {
         })
       );
     } catch (err) {
-      setError("Failed to add reply");
+      setError(t('comments.errors.replyFailed'));
       console.error(err);
     }
   };
@@ -93,10 +96,10 @@ export default function CommentSection({ newsId }) {
       <div className="flex justify-between items-start">
         <div>
           <p className="font-medium text-gray-800">
-            {comment.user?.name || "Anonymous"}
+            {comment.user?.name || t('comments.anonymous')}
           </p>
           <p className="text-sm text-gray-500">
-            {format(new Date(comment.created_at), "MMMM d, yyyy • h:mm a")}
+            {format(new Date(comment.created_at), t('dateFormat.longWithTime'))}
           </p>
         </div>
         <div className="flex space-x-3">
@@ -107,7 +110,7 @@ export default function CommentSection({ newsId }) {
               }
               className="text-[#18bebc] hover:text-[#267d7c] text-sm"
             >
-              {replyingTo === comment.id ? "Cancel" : "Reply"}
+              {replyingTo === comment.id ? t('common.cancel') : t('comments.reply')}
             </button>
           )}
           {canDeleteComment(comment) && (
@@ -115,7 +118,7 @@ export default function CommentSection({ newsId }) {
               onClick={() => handleDeleteComment(comment.id)}
               className="text-red-600 hover:text-red-800 text-sm"
             >
-              Delete
+              {t('common.delete')}
             </button>
           )}
         </div>
@@ -138,12 +141,12 @@ export default function CommentSection({ newsId }) {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="font-medium text-gray-800">
-                    {reply.user?.name || "Anonymous"}
+                    {reply.user?.name || t('comments.anonymous')}
                   </p>
                   <p className="text-xs text-gray-500">
                     {format(
                       new Date(reply.created_at),
-                      "MMMM d, yyyy • h:mm a"
+                      t('dateFormat.longWithTime')
                     )}
                   </p>
                 </div>
@@ -152,7 +155,7 @@ export default function CommentSection({ newsId }) {
                     onClick={() => handleDeleteComment(reply.id)}
                     className="text-red-600 hover:text-red-800 text-xs"
                   >
-                    Delete
+                    {t('common.delete')}
                   </button>
                 )}
               </div>
@@ -163,20 +166,21 @@ export default function CommentSection({ newsId }) {
       )}
     </div>
   );
+  
   return (
     <div className="mt-8 pt-8 border-t border-gray-200">
-      <h3 className="text-xl font-bold text-gray-800 mb-6">Comments</h3>
+      <h3 className="text-xl font-bold text-gray-800 mb-6">{t('comments.title')}</h3>
 
       {isAuthenticated ? (
         <CommentForm onAddComment={handleAddComment} />
       ) : (
         <div className="bg-gray-50 p-4 rounded-md mb-6">
           <p className="text-gray-700">
-            Please{" "}
+            {t('comments.pleaseLogin.before')}{" "}
             <a href="/login" className="text-[#18bebc] hover:underline">
-              log in
+              {t('comments.pleaseLogin.loginLink')}
             </a>{" "}
-            to leave a comment.
+            {t('comments.pleaseLogin.after')}
           </p>
         </div>
       )}
@@ -193,7 +197,7 @@ export default function CommentSection({ newsId }) {
         </div>
       ) : comments.length === 0 ? (
         <div className="text-center py-6 text-gray-500">
-          No comments yet. Be the first to share your thoughts!
+          {t('comments.noComments')}
         </div>
       ) : (
         <div className="space-y-6">

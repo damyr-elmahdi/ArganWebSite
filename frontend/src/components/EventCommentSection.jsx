@@ -9,8 +9,10 @@ import { format } from "date-fns";
 import CommentForm from "./CommentForm";
 import ReplyForm from "./ReplyForm";
 import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 export default function EventCommentSection({ eventId }) {
+  const { t } = useTranslation();
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,7 +30,7 @@ export default function EventCommentSection({ eventId }) {
       setComments(data);
       setError(null);
     } catch (err) {
-      setError("Failed to load comments");
+      setError(t("comments.errors.loadFailed"));
       console.error(err);
     } finally {
       setLoading(false);
@@ -40,18 +42,18 @@ export default function EventCommentSection({ eventId }) {
       const newComment = await createEventComment(eventId, commentData);
       setComments([newComment, ...comments]);
     } catch (err) {
-      setError("Failed to add comment");
+      setError(t("comments.errors.addFailed"));
       console.error(err);
     }
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (window.confirm("Are you sure you want to delete this comment?")) {
+    if (window.confirm(t("comments.confirmDelete"))) {
       try {
         await deleteEventComment(eventId, commentId);
         setComments(comments.filter((comment) => comment.id !== commentId));
       } catch (err) {
-        setError("Failed to delete comment");
+        setError(t("comments.errors.deleteFailed"));
         console.error(err);
       }
     }
@@ -84,7 +86,7 @@ export default function EventCommentSection({ eventId }) {
         })
       );
     } catch (err) {
-      setError("Failed to add reply");
+      setError(t("comments.errors.replyFailed"));
       console.error(err);
     }
   };
@@ -95,7 +97,7 @@ export default function EventCommentSection({ eventId }) {
       <div className="flex justify-between items-start">
         <div>
           <p className="font-medium text-gray-800">
-            {comment.user?.name || "Anonymous"}
+            {comment.user?.name || t("comments.anonymous")}
           </p>
           <p className="text-sm text-gray-500">
             {format(new Date(comment.created_at), "MMMM d, yyyy • h:mm a")}
@@ -109,7 +111,7 @@ export default function EventCommentSection({ eventId }) {
               }
               className="text-[#18bebc] hover:text-teal-800 text-sm"
             >
-              {replyingTo === comment.id ? "Cancel" : "Reply"}
+              {replyingTo === comment.id ? t("comments.buttons.cancel") : t("comments.buttons.reply")}
             </button>
           )}
           {canDeleteComment(comment) && (
@@ -117,7 +119,7 @@ export default function EventCommentSection({ eventId }) {
               onClick={() => handleDeleteComment(comment.id)}
               className="text-red-600 hover:text-red-800 text-sm"
             >
-              Delete
+              {t("comments.buttons.delete")}
             </button>
           )}
         </div>
@@ -140,7 +142,7 @@ export default function EventCommentSection({ eventId }) {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="font-medium text-gray-800">
-                    {reply.user?.name || "Anonymous"}
+                    {reply.user?.name || t("comments.anonymous")}
                   </p>
                   <p className="text-xs text-gray-500">
                     {format(
@@ -154,7 +156,7 @@ export default function EventCommentSection({ eventId }) {
                     onClick={() => handleDeleteComment(reply.id)}
                     className="text-red-600 hover:text-red-800 text-xs"
                   >
-                    Delete
+                    {t("comments.buttons.delete")}
                   </button>
                 )}
               </div>
@@ -168,18 +170,17 @@ export default function EventCommentSection({ eventId }) {
   
   return (
     <div className="mt-8 pt-8 border-t border-gray-200">
-      <h3 className="text-xl font-bold text-gray-800 mb-6">Comments</h3>
+      <h3 className="text-xl font-bold text-gray-800 mb-6">{t("comments.title")}</h3>
 
       {isAuthenticated ? (
         <CommentForm onAddComment={handleAddComment} />
       ) : (
         <div className="bg-gray-50 p-4 rounded-md mb-6">
           <p className="text-gray-700">
-            Please{" "}
+            {t("comments.pleaseLogin")}{" "}
             <a href="/login" className="text-[#18bebc] hover:underline">
-              log in
-            </a>{" "}
-            to leave a comment.
+              {t("comments.loginLink")}
+            </a>
           </p>
         </div>
       )}
@@ -196,7 +197,7 @@ export default function EventCommentSection({ eventId }) {
         </div>
       ) : comments.length === 0 ? (
         <div className="text-center py-6 text-gray-500">
-          No comments yet. Be the first to share your thoughts!
+          {t("comments.noComments")}
         </div>
       ) : (
         <div className="space-y-6">

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   getNews,
   createNews,
@@ -10,6 +11,7 @@ import {
 } from "../services/newsService";
 
 export default function NewsManagement() {
+  const { t } = useTranslation();
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -38,7 +40,7 @@ export default function NewsManagement() {
       setNews(data.data || []);
       setError("");
     } catch (err) {
-      setError("Failed to load news items");
+      setError(t("news.errors.loadFailed"));
       console.error(err);
     } finally {
       setLoading(false);
@@ -80,7 +82,7 @@ export default function NewsManagement() {
       fetchNews();
     } catch (err) {
       const action = isEditing ? "update" : "create";
-      setError(`Failed to ${action} news item`);
+      setError(t(`news.errors.${action}Failed`));
       console.error("Submission error:", err);
       if (err.response && err.response.data) {
         console.error("Server error details:", err.response.data);
@@ -163,12 +165,12 @@ export default function NewsManagement() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this news item?")) {
+    if (window.confirm(t("news.confirmDelete"))) {
       try {
         await deleteNews(id);
         fetchNews();
       } catch (err) {
-        setError("Failed to delete news item");
+        setError(t("news.errors.deleteFailed"));
         console.error(err);
       }
     }
@@ -179,7 +181,7 @@ export default function NewsManagement() {
       await publishNews(id);
       fetchNews();
     } catch (err) {
-      setError("Failed to publish news item");
+      setError(t("news.errors.publishFailed"));
       console.error(err);
     }
   };
@@ -204,7 +206,7 @@ export default function NewsManagement() {
   };
 
   if (loading) {
-    return <div className="text-center py-4">Loading news items...</div>;
+    return <div className="text-center py-4">{t("news.loading")}</div>;
   }
 
   return (
@@ -212,10 +214,10 @@ export default function NewsManagement() {
       <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
         <div>
           <h3 className="text-lg leading-6 font-medium text-gray-900">
-            News Management
+            {t("news.title")}
           </h3>
           <p className="mt-1 max-w-2xl text-sm text-gray-500">
-            Create and manage school news.
+            {t("news.subtitle")}
           </p>
         </div>
         <button
@@ -231,7 +233,9 @@ export default function NewsManagement() {
           }}
           className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
         >
-          {showForm ? (isEditing ? "Cancel Edit" : "Cancel") : "Create News"}
+          {showForm 
+            ? (isEditing ? t("news.buttons.cancelEdit") : t("news.buttons.cancel")) 
+            : t("news.buttons.create")}
         </button>
       </div>
 
@@ -249,7 +253,7 @@ export default function NewsManagement() {
                 htmlFor="title"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Title
+                {t("news.form.title")}
               </label>
               <input
                 type="text"
@@ -266,7 +270,7 @@ export default function NewsManagement() {
                 htmlFor="content"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Content
+                {t("news.form.content")}
               </label>
               <textarea
                 id="content"
@@ -283,7 +287,9 @@ export default function NewsManagement() {
                 htmlFor="image"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                News Image {isEditing && "- Leave empty to keep current image"}
+                {isEditing 
+                  ? t("news.form.imageWithNote") 
+                  : t("news.form.image")}
               </label>
               <input
                 type="file"
@@ -302,12 +308,12 @@ export default function NewsManagement() {
                 <div className="mt-2">
                   <img
                     src={imagePreview}
-                    alt="Preview"
+                    alt={t("news.form.preview")}
                     className="h-32 w-auto object-cover rounded-md"
                   />
                   {isEditing && !formData.image && (
                     <p className="text-xs text-gray-500 mt-1">
-                      Current image will be kept
+                      {t("news.form.imageKeepNotice")}
                     </p>
                   )}
                 </div>
@@ -329,7 +335,7 @@ export default function NewsManagement() {
                   htmlFor="is_published"
                   className="ml-2 block text-sm text-gray-700"
                 >
-                  Publish immediately
+                  {t("news.form.publishImmediately")}
                 </label>
               </div>
             )}
@@ -341,7 +347,7 @@ export default function NewsManagement() {
                   htmlFor="scheduled_for"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Schedule Publication Time (if not publishing now)
+                  {t("news.form.scheduleTime")}
                 </label>
                 <input
                   type="datetime-local"
@@ -353,7 +359,7 @@ export default function NewsManagement() {
                   className="shadow-sm focus:ring-teal-400 focus:border-teal-400 block w-full sm:text-sm border-gray-300 rounded-md"
                 />
                 <p className="mt-1 text-xs text-gray-500">
-                  Leave empty to save as draft without scheduling
+                  {t("news.form.scheduleHint")}
                 </p>
               </div>
             )}
@@ -362,7 +368,9 @@ export default function NewsManagement() {
               type="submit"
               className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
             >
-              {isEditing ? "Update News Item" : "Save News Item"}
+              {isEditing 
+                ? t("news.buttons.update") 
+                : t("news.buttons.save")}
             </button>
           </form>
         </div>
@@ -378,31 +386,31 @@ export default function NewsManagement() {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Image
+                    {t("news.table.image")}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Title
+                    {t("news.table.title")}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Date
+                    {t("news.table.date")}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Status
+                    {t("news.table.status")}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Actions
+                    {t("news.table.actions")}
                   </th>
                 </tr>
               </thead>
@@ -418,7 +426,7 @@ export default function NewsManagement() {
                         />
                       ) : (
                         <div className="h-12 w-12 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
-                          No img
+                          {t("news.noImage")}
                         </div>
                       )}
                     </td>
@@ -429,23 +437,23 @@ export default function NewsManagement() {
                       {item.published_at
                         ? new Date(item.published_at).toLocaleDateString()
                         : item.scheduled_publication
-                        ? `Scheduled: ${new Date(
-                            item.scheduled_publication
-                          ).toLocaleString()}`
-                        : "Draft"}
+                        ? t("news.scheduledDate", {
+                            date: new Date(item.scheduled_publication).toLocaleString()
+                          })
+                        : t("news.status.draft")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {item.is_published ? (
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          Published
+                          {t("news.status.published")}
                         </span>
                       ) : item.scheduled_publication ? (
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                          Scheduled
+                          {t("news.status.scheduled")}
                         </span>
                       ) : (
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                          Draft
+                          {t("news.status.draft")}
                         </span>
                       )}
                     </td>
@@ -454,14 +462,14 @@ export default function NewsManagement() {
                         onClick={() => handleEdit(item)}
                         className="text-blue-600 hover:text-blue-900 mr-3"
                       >
-                        Edit
+                        {t("news.buttons.edit")}
                       </button>
                       {!item.is_published ? (
                         <button
                           onClick={() => handlePublish(item.id)}
                           className="text-green-600 hover:text-green-900 mr-3"
                         >
-                          Publish Now
+                          {t("news.buttons.publishNow")}
                         </button>
                       ) : (
                         // Removed Archive button
@@ -471,7 +479,7 @@ export default function NewsManagement() {
                         onClick={() => handleDelete(item.id)}
                         className="text-red-600 hover:text-red-900"
                       >
-                        Delete
+                        {t("news.buttons.delete")}
                       </button>
                     </td>
                   </tr>
@@ -481,7 +489,7 @@ export default function NewsManagement() {
           </div>
         ) : (
           <div className="px-4 py-5">
-            <p className="text-sm text-gray-500">No news items created yet.</p>
+            <p className="text-sm text-gray-500">{t("news.noItems")}</p>
           </div>
         )}
       </div>

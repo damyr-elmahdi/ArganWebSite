@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function Hero({ schoolName, foundedYear }) {
   const { t } = useTranslation();
-  
+  // 
   return (
     <section className="bg-gradient-to-r from-[#1975be] to-[#165b9f] text-white">
       <div className="container mx-auto px-4 py-16 md:py-24">

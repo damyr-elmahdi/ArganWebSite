@@ -6,7 +6,7 @@ import Ministry from "../assets/Ministry.png";
 export default function Footer({ schoolInfo }) {
   const { name, ministry, address, phone, fax, email, currentYear } = schoolInfo;
   const { t } = useTranslation();
-  
+  //
   return (
     <footer className="bg-[#72b8ff] text-black">
       <div className="container mx-auto px-4 py-12">

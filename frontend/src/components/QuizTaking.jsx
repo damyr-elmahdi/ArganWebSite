@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-
+import { useTranslation } from "react-i18next"; // Import useTranslation hook
 
 export default function QuizTaking() {
+  // Initialize translation hook
+  const { t } = useTranslation();
+  
   // Get quizId from URL parameters
   const { quizId } = useParams();
   const [quiz, setQuiz] = useState(null);
@@ -45,7 +48,7 @@ export default function QuizTaking() {
         setLoading(false);
       } catch (err) {
         console.error("Error starting quiz:", err);
-        setError("Failed to load quiz. Please try again.");
+        setError(t("quiz.errors.failedToLoad"));
         setLoading(false);
       }
     };
@@ -59,7 +62,7 @@ export default function QuizTaking() {
     return () => {
       removeAntiCheatListeners();
     };
-  }, [quizId]);
+  }, [quizId, t]);
 
   // Anti-cheat listeners setup
   const setupAntiCheatListeners = () => {
@@ -87,14 +90,14 @@ export default function QuizTaking() {
   // Handle tab visibility change
   const handleVisibilityChange = () => {
     if (document.hidden && !quizCompleted && attemptId) {
-      recordViolation("Tab switched");
+      recordViolation(t("quiz.violations.tabSwitched"));
     }
   };
   
   // Handle window blur
   const handleWindowBlur = () => {
     if (!quizCompleted && attemptId) {
-      recordViolation("Window unfocused");
+      recordViolation(t("quiz.violations.windowUnfocused"));
     }
   };
   
@@ -114,7 +117,7 @@ export default function QuizTaking() {
       (e.ctrlKey && e.shiftKey && e.key === "I") // Developer tools
     ) {
       e.preventDefault();
-      recordViolation("Keyboard shortcut attempt");
+      recordViolation(t("quiz.violations.keyboardShortcut"));
       return false;
     }
   };
@@ -125,7 +128,7 @@ export default function QuizTaking() {
     
     const newViolations = violations + 1;
     setViolations(newViolations);
-    console.warn(`Quiz violation detected: ${type}. Violation ${newViolations}/${MAX_VIOLATIONS}`);
+    console.warn(`Quiz violation detected: ${type}. ${t("quiz.violations.count", { current: newViolations, max: MAX_VIOLATIONS })}`);
     
     // Show warning
     setShowWarning(true);
@@ -134,7 +137,7 @@ export default function QuizTaking() {
     // Auto-submit if too many violations
     if (newViolations >= MAX_VIOLATIONS) {
       setAutoSubmitting(true);
-      alert("Multiple attempts to leave the quiz detected. Your quiz will be submitted automatically.");
+      alert(t("quiz.violations.autoSubmitAlert"));
       completeQuiz(true); // Force complete with cheating flag
     }
   };
@@ -203,7 +206,7 @@ export default function QuizTaking() {
       }, 3000); // Give slightly longer delay so user can see the correct answer
     } catch (err) {
       console.error("Error submitting time-up answer:", err);
-      setError("Failed to submit answer. Please try again.");
+      setError(t("quiz.errors.failedToSubmitAnswer"));
       setAnswerSubmitted(false);
       processingTimeUp.current = false;
     }
@@ -252,7 +255,7 @@ export default function QuizTaking() {
 
       // Just verify our client-side assessment was correct (for data integrity)
       if (response.data.is_correct !== isCorrect) {
-        console.warn("Client/server mismatch in answer correctness");
+        console.warn(t("quiz.warnings.answerMismatch"));
         setAnswerResult({
           is_correct: response.data.is_correct,
           correct_option_id: response.data.correct_option_id,
@@ -272,7 +275,7 @@ export default function QuizTaking() {
       }, 2000);
     } catch (err) {
       console.error("Error submitting answer:", err);
-      setError("Failed to submit answer. Please try again.");
+      setError(t("quiz.errors.failedToSubmitAnswer"));
       setAnswerSubmitted(false);
     }
   };
@@ -311,7 +314,7 @@ export default function QuizTaking() {
       navigate(`/student/quiz-results/${attemptId}`);
     } catch (err) {
       console.error("Error completing quiz:", err);
-      setError("Failed to complete quiz. Please try again.");
+      setError(t("quiz.errors.failedToComplete"));
     }
   };
 
@@ -322,7 +325,7 @@ export default function QuizTaking() {
         // Cancel the event as stated by the standard
         e.preventDefault();
         // Chrome requires returnValue to be set
-        e.returnValue = 'Are you sure you want to leave? Your quiz will be submitted automatically.';
+        e.returnValue = t("quiz.warnings.leavingPage");
         
         // Try to submit the quiz
         completeQuiz(true);
@@ -342,7 +345,7 @@ export default function QuizTaking() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [quizCompleted, attemptId]);
+  }, [quizCompleted, attemptId, t]);
 
   // Calculate timer circle progress
   const calculateTimerProgress = () => {
@@ -374,7 +377,7 @@ export default function QuizTaking() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <h2 className="text-xl font-semibold">Loading quiz...</h2>
+          <h2 className="text-xl font-semibold">{t("quiz.loading")}</h2>
           <div className="mt-4 w-12 h-12 border-4 border-[#18bebc] border-t-transparent rounded-full animate-spin mx-auto"></div>
         </div>
       </div>
@@ -390,7 +393,7 @@ export default function QuizTaking() {
             onClick={() => navigate("/student-dashboard")}
             className="mt-4 px-4 py-2 bg-[#18bebc] text-white rounded hover:bg-teal-700"
           >
-            Return to Dashboard
+            {t("common.returnToDashboard")}
           </button>
         </div>
       </div>
@@ -402,13 +405,13 @@ export default function QuizTaking() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <h2 className="text-xl font-semibold">
-            Quiz not found or has no questions.
+            {t("quiz.errors.noQuestions")}
           </h2>
           <button
             onClick={() => navigate("/student-dashboard")}
             className="mt-4 px-4 py-2 bg-[#18bebc] text-white rounded hover:bg-teal-700"
           >
-            Return to Dashboard
+            {t("common.returnToDashboard")}
           </button>
         </div>
       </div>
@@ -426,13 +429,13 @@ export default function QuizTaking() {
             <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <span className="font-bold">Warning: Attempting to leave the quiz is not allowed.</span>
+            <span className="font-bold">{t("quiz.violations.warning")}</span>
             <span className="ml-2">
-              Violation {violations}/{MAX_VIOLATIONS}
+              {t("quiz.violations.status", { current: violations, max: MAX_VIOLATIONS })}
             </span>
           </div>
           <div className="text-sm mt-1">
-            Your quiz will be automatically submitted after {MAX_VIOLATIONS} violations.
+            {t("quiz.violations.autoSubmitWarning", { max: MAX_VIOLATIONS })}
           </div>
         </div>
       )}
@@ -441,7 +444,7 @@ export default function QuizTaking() {
         <h1 className="text-2xl font-bold">{quiz.title}</h1>
         <div className="flex items-center">
           <span className="mr-4 font-medium">
-            Question {currentQuestionIndex + 1}/{quiz.questions.length}
+            {t("quiz.questionProgress", { current: currentQuestionIndex + 1, total: quiz.questions.length })}
           </span>
 
           {/* Clock Timer */}
@@ -505,7 +508,7 @@ export default function QuizTaking() {
                   : "text-gray-800"
               }`}
             >
-              {secondsLeft}s
+              {t("quiz.timeRemaining", { seconds: secondsLeft })}
             </div>
           </div>
         </div>
@@ -565,10 +568,10 @@ export default function QuizTaking() {
           >
             <p className="font-medium">
               {answerResult?.is_correct
-                ? "Correct! Well done."
+                ? t("quiz.feedback.correct")
                 : isTimeUp
-                ? "Time's up! The correct answer is highlighted."
-                : "Incorrect. The correct answer is highlighted."}
+                ? t("quiz.feedback.timeUp")
+                : t("quiz.feedback.incorrect")}
             </p>
           </div>
         )}
@@ -576,7 +579,7 @@ export default function QuizTaking() {
         <div className="flex justify-between items-center">
           <div className="bg-gray-100 px-4 py-2 rounded-full">
             <span className="font-medium">
-              Score: {score}/{currentQuestionIndex + 1}
+              {t("quiz.score", { current: score, total: currentQuestionIndex + 1 })}
             </span>
           </div>
           
@@ -584,7 +587,7 @@ export default function QuizTaking() {
           {violations > 0 && (
             <div className="bg-red-100 px-4 py-2 rounded-full">
               <span className="font-medium text-red-700">
-                Violations: {violations}/{MAX_VIOLATIONS}
+                {t("quiz.violations.status", { current: violations, max: MAX_VIOLATIONS })}
               </span>
             </div>
           )}

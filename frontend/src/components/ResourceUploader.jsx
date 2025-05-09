@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 export default function ResourceUploader() {
+  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [subject, setSubject] = useState('');
   const [yearLevel, setYearLevel] = useState('all');
@@ -18,35 +20,35 @@ export default function ResourceUploader() {
 
   // Subject options
   const subjects = [
-    { value: 'SVT', label: 'SVT' },
-    { value: 'Mathematics', label: 'Mathematics' },
-    { value: 'Physics & chemistry', label: 'Physics & chemistry' },
-    { value: 'Arabic', label: 'Arabic' },
-    { value: 'History and Geography', label: 'History and Geography' },
-    { value: 'French', label: 'French' }
+    { value: 'SVT', label: t('subjects.svt') },
+    { value: 'Mathematics', label: t('subjects.mathematics') },
+    { value: 'Physics & chemistry', label: t('subjects.physics_chemistry') },
+    { value: 'Arabic', label: t('subjects.arabic') },
+    { value: 'History and Geography', label: t('subjects.history_geography') },
+    { value: 'French', label: t('subjects.french') }
   ];
 
   // Year level options
   const yearLevels = [
-    { value: 'all', label: 'All Years' },
-    { value: 'tc', label: 'TC (Tronc Commun)' },
-    { value: '1bac', label: '1BAC (First Year)' },
-    { value: '2bac', label: '2BAC (Second Year)' }
+    { value: 'all', label: t('yearLevels.all') },
+    { value: 'tc', label: t('yearLevels.tc') },
+    { value: '1bac', label: t('yearLevels.1bac') },
+    { value: '2bac', label: t('yearLevels.2bac') }
   ];
 
   // Base specialization options
   const allSpecializations = [
-    { value: 'all', label: 'General (All Specializations)', yearLevels: ['all', 'tc', '1bac', '2bac'] },
-    { value: 'science', label: 'Science', yearLevels: ['tc'] },
-    { value: 'letter', label: 'Letter', yearLevels: ['tc', '1bac', '2bac'] },
-    { value: 'se', label: 'SE (Sciences Expérimentales)', yearLevels: ['1bac'] },
-    { value: 'sm', label: 'SM (Sciences Mathématiques)', yearLevels: ['1bac'] },
-    { value: 'sh', label: 'SH (Sciences Humaines)', yearLevels: ['1bac', '2bac'] },
-    { value: 'spc', label: 'SPC (Sciences Physiques et Chimiques)', yearLevels: ['2bac'] },
-    { value: 'svt', label: 'SVT (Sciences de la Vie et de la Terre)', yearLevels: ['1bac', '2bac'] },
-    { value: 'smb1', label: 'SMB1 (Sciences Mathématiques B1)', yearLevels: ['2bac'] },
-    { value: 'smb2', label: 'SMB2 (Sciences Mathématiques B2)', yearLevels: ['2bac'] },
-    { value: 'al', label: 'AL (Arabic et Lettres)', yearLevels: ['1bac', '2bac'] }
+    { value: 'all', label: t('specializations.all'), yearLevels: ['all', 'tc', '1bac', '2bac'] },
+    { value: 'science', label: t('specializations.science'), yearLevels: ['tc'] },
+    { value: 'letter', label: t('specializations.letter'), yearLevels: ['tc', '1bac', '2bac'] },
+    { value: 'se', label: t('specializations.se'), yearLevels: ['1bac'] },
+    { value: 'sm', label: t('specializations.sm'), yearLevels: ['1bac'] },
+    { value: 'sh', label: t('specializations.sh'), yearLevels: ['1bac', '2bac'] },
+    { value: 'spc', label: t('specializations.spc'), yearLevels: ['2bac'] },
+    { value: 'svt', label: t('specializations.svt'), yearLevels: ['1bac', '2bac'] },
+    { value: 'smb1', label: t('specializations.smb1'), yearLevels: ['2bac'] },
+    { value: 'smb2', label: t('specializations.smb2'), yearLevels: ['2bac'] },
+    { value: 'al', label: t('specializations.al'), yearLevels: ['1bac', '2bac'] }
   ];
 
   // Filtered specialization options based on selected year level
@@ -87,7 +89,7 @@ export default function ResourceUploader() {
       console.error('Error fetching resources:', error);
       setMessage({
         type: 'error',
-        content: 'Failed to load resources. Please try again later.'
+        content: t('resourceUploader.errors.fetchFailed')
       });
     } finally {
       setIsLoading(false);
@@ -106,7 +108,7 @@ export default function ResourceUploader() {
     } else {
       setFile(null);
       setPdfPreview(null);
-      setMessage({ type: 'error', content: 'Please select a valid PDF file.' });
+      setMessage({ type: 'error', content: t('resourceUploader.errors.invalidPdf') });
     }
   };
 
@@ -128,7 +130,7 @@ export default function ResourceUploader() {
     e.preventDefault();
     
     if (!title || !subject || !file) {
-      setMessage({ type: 'error', content: 'Please fill all required fields and select a PDF file.' });
+      setMessage({ type: 'error', content: t('resourceUploader.errors.missingFields') });
       return;
     }
 
@@ -157,14 +159,14 @@ export default function ResourceUploader() {
 
       // Reset form after successful upload
       clearForm();
-      setMessage({ type: 'success', content: 'Resource uploaded successfully!' });
+      setMessage({ type: 'success', content: t('resourceUploader.success.uploadComplete') });
       
       // Refresh resources list
       fetchResources();
     } catch (error) {
       console.error('Error uploading resource:', error);
       
-      let errorMessage = 'Failed to upload resource. Please try again.';
+      let errorMessage = t('resourceUploader.errors.uploadFailed');
       
       // Extract detailed error message if available
       if (error.response) {
@@ -172,9 +174,9 @@ export default function ResourceUploader() {
         
         // If there's a specific error message from the backend
         if (error.response.data && error.response.data.error) {
-          errorMessage = `Error: ${error.response.data.error}`;
+          errorMessage = `${t('resourceUploader.errors.errorPrefix')}: ${error.response.data.error}`;
         } else if (error.response.data && error.response.data.message) {
-          errorMessage = `Error: ${error.response.data.message}`;
+          errorMessage = `${t('resourceUploader.errors.errorPrefix')}: ${error.response.data.message}`;
         }
       }
       
@@ -187,14 +189,14 @@ export default function ResourceUploader() {
 
   // Handle resource deletion
   const handleDeleteResource = async (resourceId) => {
-    if (window.confirm('Are you sure you want to delete this resource?')) {
+    if (window.confirm(t('resourceUploader.confirmations.deleteResource'))) {
       try {
         await axios.delete(`/api/resources/${resourceId}`);
-        setMessage({ type: 'success', content: 'Resource deleted successfully!' });
+        setMessage({ type: 'success', content: t('resourceUploader.success.deleteComplete') });
         fetchResources();
       } catch (error) {
         console.error('Error deleting resource:', error);
-        setMessage({ type: 'error', content: 'Failed to delete resource. Please try again.' });
+        setMessage({ type: 'error', content: t('resourceUploader.errors.deleteFailed') });
       }
     }
   };
@@ -223,7 +225,7 @@ export default function ResourceUploader() {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-xl font-bold text-gray-800 mb-6">Manage Educational Resources</h2>
+      <h2 className="text-xl font-bold text-gray-800 mb-6">{t('resourceUploader.title')}</h2>
       
       {/* Message display */}
       {message.content && (
@@ -237,7 +239,7 @@ export default function ResourceUploader() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-              Resource Title *
+              {t('resourceUploader.form.title')} *
             </label>
             <input
               type="text"
@@ -251,7 +253,7 @@ export default function ResourceUploader() {
           
           <div>
             <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
-              Subject *
+              {t('resourceUploader.form.subject')} *
             </label>
             <select
               id="subject"
@@ -260,7 +262,7 @@ export default function ResourceUploader() {
               className="w-full border border-gray-300 rounded-md p-2"
               required
             >
-              <option value="">Select a subject</option>
+              <option value="">{t('resourceUploader.form.selectSubject')}</option>
               {subjects.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -273,7 +275,7 @@ export default function ResourceUploader() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label htmlFor="yearLevel" className="block text-sm font-medium text-gray-700 mb-1">
-              Year Level
+              {t('resourceUploader.form.yearLevel')}
             </label>
             <select
               id="yearLevel"
@@ -291,7 +293,7 @@ export default function ResourceUploader() {
           
           <div>
             <label htmlFor="specialization" className="block text-sm font-medium text-gray-700 mb-1">
-              Specialization
+              {t('resourceUploader.form.specialization')}
             </label>
             <select
               id="specialization"
@@ -310,7 +312,7 @@ export default function ResourceUploader() {
         
         <div className="mb-4">
           <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-1">
-            PDF File *
+            {t('resourceUploader.form.pdfFile')} *
           </label>
           <input
             ref={fileInputRef}
@@ -321,18 +323,18 @@ export default function ResourceUploader() {
             className="w-full border border-gray-300 rounded-md p-2"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">Only PDF files are accepted</p>
+          <p className="text-xs text-gray-500 mt-1">{t('resourceUploader.form.pdfOnly')}</p>
         </div>
         
         {/* PDF Preview */}
         {pdfPreview && (
           <div className="mb-4">
-            <h4 className="text-sm font-medium text-gray-700 mb-2">PDF Preview</h4>
+            <h4 className="text-sm font-medium text-gray-700 mb-2">{t('resourceUploader.preview.title')}</h4>
             <div className="border border-gray-300 rounded-md overflow-hidden" style={{ height: '400px' }}>
               <iframe 
                 src={pdfPreview} 
                 className="w-full h-full" 
-                title="PDF Preview" 
+                title={t('resourceUploader.preview.iframeTitle')} 
               />
             </div>
           </div>
@@ -346,7 +348,7 @@ export default function ResourceUploader() {
                 style={{ width: `${uploadProgress}%` }}
               ></div>
             </div>
-            <p className="text-xs text-gray-500 mt-1">Uploading: {uploadProgress}%</p>
+            <p className="text-xs text-gray-500 mt-1">{t('resourceUploader.uploading')}: {uploadProgress}%</p>
           </div>
         )}
         
@@ -358,7 +360,7 @@ export default function ResourceUploader() {
               isUploading ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'
             }`}
           >
-            {isUploading ? 'Uploading...' : 'Upload Resource'}
+            {isUploading ? t('resourceUploader.buttons.uploading') : t('resourceUploader.buttons.upload')}
           </button>
           
           <button
@@ -366,27 +368,27 @@ export default function ResourceUploader() {
             onClick={clearForm}
             className="w-1/4 p-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md"
           >
-            Clear
+            {t('resourceUploader.buttons.clear')}
           </button>
         </div>
       </form>
       
       {/* Resources list */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Uploaded Resources</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('resourceUploader.resourcesList.title')}</h3>
         
         {isLoading ? (
-          <p className="text-gray-500">Loading resources...</p>
+          <p className="text-gray-500">{t('resourceUploader.resourcesList.loading')}</p>
         ) : resources.length > 0 ? (
           <div className="border rounded-md overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year Level</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Specialization</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('resourceUploader.resourcesList.columns.title')}</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('resourceUploader.resourcesList.columns.subject')}</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('resourceUploader.resourcesList.columns.yearLevel')}</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('resourceUploader.resourcesList.columns.specialization')}</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('resourceUploader.resourcesList.columns.actions')}</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -405,13 +407,13 @@ export default function ResourceUploader() {
                         onClick={() => openPdfPreview(resource)}
                         className="text-green-600 hover:text-green-900 mr-3"
                       >
-                        View
+                        {t('resourceUploader.buttons.view')}
                       </button>
                       <button
                         onClick={() => handleDeleteResource(resource.id)}
                         className="text-red-600 hover:text-red-900"
                       >
-                        Delete
+                        {t('resourceUploader.buttons.delete')}
                       </button>
                     </td>
                   </tr>
@@ -420,7 +422,7 @@ export default function ResourceUploader() {
             </table>
           </div>
         ) : (
-          <p className="text-gray-500">No resources uploaded yet.</p>
+          <p className="text-gray-500">{t('resourceUploader.resourcesList.empty')}</p>
         )}
       </div>
       
@@ -433,6 +435,7 @@ export default function ResourceUploader() {
               <button 
                 onClick={closePdfPreview}
                 className="text-gray-500 hover:text-gray-700"
+                aria-label={t('resourceUploader.preview.close')}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -446,16 +449,6 @@ export default function ResourceUploader() {
                 title={previewResource.title}
               ></iframe>
             </div>
-            {/* <div className="p-4 border-t flex justify-end">
-              <a 
-                href={previewResource.fileUrl}
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-teal-600 hover:bg-teal-700 text-white py-2 px-4 rounded"
-              >
-                Download
-              </a>
-            </div> */}
           </div>
         </div>
       )}

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 export default function AbsenceManagement() {
+  const { t } = useTranslation();
   const [teachers, setTeachers] = useState([]);
   const [absences, setAbsences] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,14 +35,14 @@ export default function AbsenceManagement() {
         setError("");
       } catch (err) {
         console.error("Error fetching absence data:", err);
-        setError("Failed to load absence data. Please try again.");
+        setError(t("absenceManagement.errors.loadFailed"));
       } finally {
         setLoading(false);
       }
     };
     
     fetchData();
-  }, []);
+  }, [t]);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,7 +61,7 @@ export default function AbsenceManagement() {
       
       // Find teacher name for the new absence
       const teacher = teachers.find(t => t.id === parseInt(formData.teacher_id));
-      const teacherName = teacher ? teacher.name : 'Unknown';
+      const teacherName = teacher ? teacher.name : t("common.unknown");
       
       // Add the new absence to the list
       const newAbsence = {
@@ -69,7 +71,7 @@ export default function AbsenceManagement() {
         start_date: formData.start_date,
         end_date: formData.end_date,
         reason: formData.reason,
-        announced_by: response.data.absence.announcer?.name || 'Unknown',
+        announced_by: response.data.absence.announcer?.name || t("common.unknown"),
         is_active: true,
         created_at: new Date().toISOString(),
       };
@@ -88,14 +90,14 @@ export default function AbsenceManagement() {
       setError("");
     } catch (err) {
       console.error("Error creating absence:", err);
-      setError(err.response?.data?.message || "Failed to announce absence. Please try again.");
+      setError(err.response?.data?.message || t("absenceManagement.errors.createFailed"));
     } finally {
       setLoading(false);
     }
   };
   
   const handleDelete = async (absenceId) => {
-    if (!window.confirm("Are you sure you want to delete this absence announcement?")) {
+    if (!window.confirm(t("absenceManagement.confirmDelete"))) {
       return;
     }
     
@@ -105,7 +107,7 @@ export default function AbsenceManagement() {
       setAbsences(absences.filter(absence => absence.id !== absenceId));
     } catch (err) {
       console.error("Error deleting absence:", err);
-      setError(err.response?.data?.message || "Failed to delete absence. Please try again.");
+      setError(err.response?.data?.message || t("absenceManagement.errors.deleteFailed"));
     }
   };
 
@@ -114,17 +116,17 @@ export default function AbsenceManagement() {
       <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
         <div>
           <h3 className="text-lg leading-6 font-medium text-gray-900">
-            Teacher Absence Management
+            {t("absenceManagement.title")}
           </h3>
           <p className="mt-1 max-w-2xl text-sm text-gray-500">
-            Announce and manage teacher absences
+            {t("absenceManagement.subtitle")}
           </p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
           className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700"
         >
-          {showForm ? "Cancel" : "Announce New Absence"}
+          {showForm ? t("common.cancel") : t("absenceManagement.announceNew")}
         </button>
       </div>
       
@@ -151,7 +153,7 @@ export default function AbsenceManagement() {
               {/* Teacher Selection */}
               <div className="col-span-6 sm:col-span-3">
                 <label htmlFor="teacher_id" className="block text-sm font-medium text-gray-700">
-                  Teacher
+                  {t("absenceManagement.form.teacher")}
                 </label>
                 <select
                   id="teacher_id"
@@ -161,7 +163,7 @@ export default function AbsenceManagement() {
                   required
                   className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-teal-400 focus:border-teal-400 sm:text-sm"
                 >
-                  <option value="">Select a teacher</option>
+                  <option value="">{t("absenceManagement.form.selectTeacher")}</option>
                   {teachers.map((teacher) => (
                     <option key={teacher.id} value={teacher.id}>
                       {teacher.name} ({teacher.employee_id})
@@ -173,7 +175,7 @@ export default function AbsenceManagement() {
               {/* Start Date */}
               <div className="col-span-6 sm:col-span-3">
                 <label htmlFor="start_date" className="block text-sm font-medium text-gray-700">
-                  Start Date
+                  {t("absenceManagement.form.startDate")}
                 </label>
                 <input
                   type="date"
@@ -189,7 +191,7 @@ export default function AbsenceManagement() {
               {/* End Date */}
               <div className="col-span-6 sm:col-span-3">
                 <label htmlFor="end_date" className="block text-sm font-medium text-gray-700">
-                  End Date
+                  {t("absenceManagement.form.endDate")}
                 </label>
                 <input
                   type="date"
@@ -205,7 +207,7 @@ export default function AbsenceManagement() {
               {/* Reason */}
               <div className="col-span-6">
                 <label htmlFor="reason" className="block text-sm font-medium text-gray-700">
-                  Reason (Optional)
+                  {t("absenceManagement.form.reason")}
                 </label>
                 <textarea
                   name="reason"
@@ -214,7 +216,7 @@ export default function AbsenceManagement() {
                   onChange={handleChange}
                   rows={3}
                   className="mt-1 focus:ring-teal-400 focus:border-teal-400 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  placeholder="Enter reason for absence"
+                  placeholder={t("absenceManagement.form.reasonPlaceholder")}
                 />
               </div>
             </div>
@@ -225,14 +227,14 @@ export default function AbsenceManagement() {
                 onClick={() => setShowForm(false)}
                 className="mr-3 bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
               >
-                Cancel
+                {t("common.cancel")}
               </button>
               <button
                 type="submit"
                 disabled={loading}
                 className="bg-[#18bebc] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
               >
-                {loading ? "Submitting..." : "Announce Absence"}
+                {loading ? t("common.submitting") : t("absenceManagement.announceButton")}
               </button>
             </div>
           </form>
@@ -243,7 +245,7 @@ export default function AbsenceManagement() {
       <div className="border-t border-gray-200">
         {loading && !showForm ? (
           <div className="px-4 py-5 text-center">
-            <p className="text-sm text-gray-500">Loading absence data...</p>
+            <p className="text-sm text-gray-500">{t("absenceManagement.loadingData")}</p>
           </div>
         ) : absences.length > 0 ? (
           <div className="overflow-x-auto">
@@ -251,19 +253,19 @@ export default function AbsenceManagement() {
               <thead className="bg-gray-50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Teacher
+                    {t("absenceManagement.table.teacher")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Duration
+                    {t("absenceManagement.table.duration")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Reason
+                    {t("absenceManagement.table.reason")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
+                    {t("absenceManagement.table.status")}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
+                    {t("absenceManagement.table.actions")}
                   </th>
                 </tr>
               </thead>
@@ -277,16 +279,16 @@ export default function AbsenceManagement() {
                       {new Date(absence.start_date).toLocaleDateString()} - {new Date(absence.end_date).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
-                      {absence.reason || "Not specified"}
+                      {absence.reason || t("absenceManagement.notSpecified")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {absence.is_active ? (
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          Active
+                          {t("absenceManagement.status.active")}
                         </span>
                       ) : (
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                          Inactive
+                          {t("absenceManagement.status.inactive")}
                         </span>
                       )}
                     </td>
@@ -295,7 +297,7 @@ export default function AbsenceManagement() {
                         onClick={() => handleDelete(absence.id)}
                         className="text-red-600 hover:text-red-900"
                       >
-                        Delete
+                        {t("common.delete")}
                       </button>
                     </td>
                   </tr>
@@ -305,7 +307,7 @@ export default function AbsenceManagement() {
           </div>
         ) : (
           <div className="px-4 py-5 text-center">
-            <p className="text-sm text-gray-500">No absence announcements found.</p>
+            <p className="text-sm text-gray-500">{t("absenceManagement.noAbsences")}</p>
           </div>
         )}
       </div>

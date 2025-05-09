@@ -4,8 +4,10 @@ import { getEvents } from "../services/eventService";
 import { format } from "date-fns";
 import { CalendarIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import { getImageUrl } from "../utils/imageUtils";
+import { useTranslation } from "react-i18next";
 
 export default function EventsSection() {
+  const { t } = useTranslation();
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,38 +28,38 @@ export default function EventsSection() {
         setLoading(false);
       } catch (err) {
         console.error("Error fetching upcoming events:", err);
-        setError("Failed to load events");
+        setError(t("events.errors.loadFailed"));
         setLoading(false);
       }
     };
 
     fetchUpcomingEvents();
-  }, []);
+  }, [t]);
 
   // Fallback data if API call fails or returns no events
   const fallbackEvents = [
     {
       id: 1,
-      title: "Parent-Teacher Conferences",
+      title: t("events.fallback.parentTeacher.title"),
       start_time: "2025-04-20T15:00:00",
       end_time: "2025-04-20T19:00:00",
-      location: "Main Hall",
+      location: t("events.fallback.parentTeacher.location"),
       image_path: null,
     },
     {
       id: 2,
-      title: "Science Fair",
+      title: t("events.fallback.scienceFair.title"),
       start_time: "2025-04-25T10:00:00",
       end_time: "2025-04-25T14:00:00",
-      location: "Gymnasium",
+      location: t("events.fallback.scienceFair.location"),
       image_path: null,
     },
     {
       id: 3,
-      title: "Higher Education Workshop",
+      title: t("events.fallback.workshop.title"),
       start_time: "2025-05-10T13:00:00",
       end_time: "2025-05-10T16:00:00",
-      location: "Auditorium",
+      location: t("events.fallback.workshop.location"),
       image_path: null,
     },
   ];
@@ -70,9 +72,9 @@ export default function EventsSection() {
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-800">Upcoming Events</h2>
+          <h2 className="text-2xl font-bold text-gray-800">{t("events.upcomingEvents")}</h2>
           <Link to="/events" className="text-[#18bebc] hover:underline">
-            View All Events
+            {t("events.viewAllEvents")}
           </Link>
         </div>
 
@@ -134,7 +136,7 @@ export default function EventsSection() {
                     to={`/events/${event.id}`}
                     className="text-[#18bebc] hover:underline text-sm"
                   >
-                    View details
+                    {t("events.viewDetails")}
                   </Link>
                 </div>
               );

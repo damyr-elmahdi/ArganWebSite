@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 export default function BorrowBookButton({ bookId, onBorrowed }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -10,7 +12,7 @@ export default function BorrowBookButton({ bookId, onBorrowed }) {
 
   const handleBorrowBook = async () => {
     if (!user) {
-      alert('Please log in to borrow books');
+      alert(t('borrowBook.loginRequired'));
       return;
     }
 
@@ -25,7 +27,7 @@ export default function BorrowBookButton({ bookId, onBorrowed }) {
       });
       
       console.log('Borrow response:', response.data);
-      setSuccess('Book borrowed successfully!');
+      setSuccess(t('borrowBook.successMessage'));
       
       if (typeof onBorrowed === 'function') {
         onBorrowed(response.data);
@@ -41,14 +43,14 @@ export default function BorrowBookButton({ bookId, onBorrowed }) {
       if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
-        setError(error.response.data?.message || `Server error: ${error.response.status}`);
+        setError(error.response.data?.message || t('borrowBook.serverError', { status: error.response.status }));
         console.error('Server response:', error.response.data);
       } else if (error.request) {
         // The request was made but no response was received
-        setError('No response received from server. Please try again later.');
+        setError(t('borrowBook.noResponseError'));
       } else {
         // Something happened in setting up the request that triggered an Error
-        setError('Request setup error: ' + error.message);
+        setError(t('borrowBook.requestError', { message: error.message }));
       }
       
       setTimeout(() => {
@@ -77,10 +79,10 @@ export default function BorrowBookButton({ bookId, onBorrowed }) {
         {loading ? (
           <>
             <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-            Requesting...
+            {t('borrowBook.requesting')}
           </>
         ) : (
-          'Borrow this Book'
+          t('borrowBook.buttonText')
         )}
       </button>
     </div>

@@ -73,24 +73,187 @@ export default function OutstandingStudentsManagement() {
     }
   };
 
-  // ... (keep all other existing functions the same, just replace text with t() calls)
-
-  const handleDelete = async (id, name) => {
-    if (!window.confirm(t('confirmations.deleteStudent', { name }))) {
-      return;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    
+    if (name === 'mark') {
+      const floatValue = value === '' ? '' : parseFloat(value);
+      setFormData(prev => ({
+        ...prev,
+        [name]: floatValue
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
     }
+    
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: null
+      }));
+    }
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      const maxSize = 2 * 1024 * 1024;
+      
+      if (!validTypes.includes(file.type)) {
+        setErrors(prev => ({
+          ...prev,
+          photo: t('errors.photoType')
+        }));
+        return;
+      }
+      
+      if (file.size > maxSize) {
+        setErrors(prev => ({
+          ...prev,
+          photo: t('errors.photoSize')
+        }));
+        return;
+      }
+      
+      setPhoto(file);
+      setErrors(prev => ({
+        ...prev,
+        photo: null
+      }));
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      student_id: '',
+      name: '',
+      grade: '',
+      mark: 0,
+      achievement: ''
+    });
+    setPhoto(null);
+    setPhotoPreview(null);
+    setErrors({});
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    
+    setFormMode('add');
+    setSelectedStudent(null);
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.name.trim()) newErrors.name = t('errors.nameRequired');
+    if (!formData.grade.trim()) newErrors.grade = t('errors.gradeRequired');
+    
+    const mark = parseFloat(formData.mark);
+    if (isNaN(mark)) {
+      newErrors.mark = t('errors.markInvalid');
+    } else if (mark < 0 || mark > 20) {
+      newErrors.mark = t('errors.markRange');
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
     
     try {
       setSubmitting(true);
-      await axios.delete(`/api/outstanding-students/${id}`);
-      toast.success(t('success.deleteStudent'));
+      
+      const submitData = new FormData();
+      const formDataToSubmit = {
+        ...formData,
+        mark: parseFloat(formData.mark)
+      };
+      
+      Object.keys(formDataToSubmit).forEach(key => {
+        submitData.append(key, formDataToSubmit[key]);
+      });
+      
+      if (photo) {
+        submitData.append('photo', photo);
+      }
+      
+      let response;
+      
+      if (formMode === 'add') {
+        response = await axios.post('/api/outstanding-students', submitData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        toast.success(t('success.addStudent'));
+      } else {
+        response = await axios.post(`/api/outstanding-students/${selectedStudent.id}?_method=PUT`, submitData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        toast.success(t('success.updateStudent'));
+      }
+      
       await fetchOutstandingStudents();
+      resetForm();
+      
     } catch (err) {
-      console.error('Error deleting outstanding student:', err);
-      toast.error(t('errors.deleteStudent'));
+      console.error('Error saving outstanding student:', err);
+      
+      if (err.response?.data?.errors) {
+        setErrors(err.response.data.errors);
+      } else {
+        toast.error(t('errors.generic'));
+      }
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleEdit = (student) => {
+    setFormMode('edit');
+    setSelectedStudent(student);
+    setFormData({
+      student_id: student.student_id || '',
+      name: student.name,
+      grade: student.grade,
+      mark: parseFloat(student.mark),
+      achievement: student.achievement || ''
+    });
+    
+    if (student.photo_path) {
+      setPhotoPreview(student.photo_path);
+    } else {
+      setPhotoPreview(null);
+    }
+    
+    setPhoto(null);
+    setErrors({});
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const getBaseGrade = (gradeWithClass) => {
+    const match = gradeWithClass.match(/^(\d*[A-Z]+-[A-Z]+)/);
+    return match ? match[1] : gradeWithClass;
   };
 
   const getGradeLabel = (gradeCode) => {
@@ -98,14 +261,14 @@ export default function OutstandingStudentsManagement() {
     const classSuffix = gradeCode.replace(baseGrade, "");
     
     const gradeMappings = {
-      "TC-S": t('grades.tcScience'),
-      "TC-LSH": t('grades.tcLsh'),
-      "1BAC-SE": t('grades.firstBacScience'),
-      "1BAC-LSH": t('grades.firstBacLsh'),
-      "2BAC-PC": t('grades.secondBacPc'),
-      "2BAC-SVT": t('grades.secondBacSvt'),
-      "2BAC-SH": t('grades.secondBacSh'),
-      "2BAC-L": t('grades.secondBacLetters')
+      "TC-S": t('grades.tc_sciences'),
+      "TC-LSH": t('grades.tc_letters'),
+      "1BAC-SE": t('grades.first_bac_sciences'),
+      "1BAC-LSH": t('grades.first_bac_letters'),
+      "2BAC-PC": t('grades.second_bac_pc'),
+      "2BAC-SVT": t('grades.second_bac_svt'),
+      "2BAC-SH": t('grades.second_bac_humanities'),
+      "2BAC-L": t('grades.second_bac_letters')
     };
     
     return (gradeMappings[baseGrade] || baseGrade) + classSuffix;

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { BookOpen, CheckCircle, RefreshCw, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function LibrarianDashboard() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('requested');
   const [books, setBooks] = useState([]);
@@ -51,7 +53,7 @@ export default function LibrarianDashboard() {
     } catch (error) {
       console.error('Failed to load book requests:', error);
       console.log('Error response:', error.response);
-      setError('Failed to load book requests. ' + (error.response?.data?.message || error.message));
+      setError(t('librarian.errors.failedToLoad', { message: error.response?.data?.message || error.message }));
     } finally {
       setLoading(false);
     }
@@ -64,20 +66,19 @@ export default function LibrarianDashboard() {
       console.log('Return response:', response.data);
       
       // Show success message
-      alert('Book marked as returned successfully. Inventory updated.');
+      alert(t('librarian.alerts.bookReturned'));
       
       // Refresh data
       fetchBooks();
       fetchStats();
     } catch (error) {
       console.error('Failed to mark book as returned:', error);
-      alert(error.response?.data?.message || 'Failed to mark book as returned');
+      alert(error.response?.data?.message || t('librarian.errors.returnFailed'));
     }
   };
   
-
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return t('common.na');
     return new Date(dateString).toLocaleDateString();
   };
 
@@ -86,8 +87,8 @@ export default function LibrarianDashboard() {
       <div className="flex items-center justify-center h-96">
         <div className="text-center p-8 bg-red-50 rounded-lg border border-red-200">
           <AlertCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
-          <h2 className="text-xl font-semibold text-red-700 mb-2">Access Denied</h2>
-          <p className="text-gray-600">You do not have permission to access the Librarian Dashboard.</p>
+          <h2 className="text-xl font-semibold text-red-700 mb-2">{t('common.accessDenied')}</h2>
+          <p className="text-gray-600">{t('librarian.errors.noPermission')}</p>
         </div>
       </div>
     );
@@ -96,12 +97,12 @@ export default function LibrarianDashboard() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">Book Management Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-800">{t('librarian.dashboard.title')}</h1>
         <button 
           onClick={() => {fetchBooks(); fetchStats();}}
           className="flex items-center px-3 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200"
         >
-          <RefreshCw className="w-4 h-4 mr-2" /> Refresh Data
+          <RefreshCw className="w-4 h-4 mr-2" /> {t('common.refreshData')}
         </button>
       </div>
 
@@ -113,7 +114,7 @@ export default function LibrarianDashboard() {
               <BookOpen className="h-6 w-6 text-blue-700" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-blue-700">Books Requested</p>
+              <p className="text-sm font-medium text-blue-700">{t('librarian.stats.booksRequested')}</p>
               <p className="text-xl font-semibold">{stats.requested}</p>
             </div>
           </div>
@@ -125,7 +126,7 @@ export default function LibrarianDashboard() {
               <CheckCircle className="h-6 w-6 text-green-700" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-green-700">Books Returned</p>
+              <p className="text-sm font-medium text-green-700">{t('librarian.stats.booksReturned')}</p>
               <p className="text-xl font-semibold">{stats.returned}</p>
             </div>
           </div>
@@ -143,7 +144,7 @@ export default function LibrarianDashboard() {
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            Requested Books
+            {t('librarian.tabs.requestedBooks')}
             {stats.requested > 0 && (
               <span className="ml-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
                 {stats.requested}
@@ -159,7 +160,7 @@ export default function LibrarianDashboard() {
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            Return History
+            {t('librarian.tabs.returnHistory')}
           </button>
         </nav>
       </div>
@@ -178,10 +179,12 @@ export default function LibrarianDashboard() {
               {activeTab === 'requested' && <BookOpen className="h-8 w-8 text-gray-400" />}
               {activeTab === 'returned' && <CheckCircle className="h-8 w-8 text-gray-400" />}
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">No {activeTab} books</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-1">
+              {activeTab === 'requested' ? t('librarian.empty.noRequestedBooks.title') : t('librarian.empty.noReturnedBooks.title')}
+            </h3>
             <p className="text-gray-500">
-              {activeTab === 'requested' && "There are no books requested by students."}
-              {activeTab === 'returned' && "No return history to display."}
+              {activeTab === 'requested' && t('librarian.empty.noRequestedBooks.message')}
+              {activeTab === 'returned' && t('librarian.empty.noReturnedBooks.message')}
             </p>
           </div>
         ) : (
@@ -190,27 +193,27 @@ export default function LibrarianDashboard() {
               <thead className="bg-gray-50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Student
+                    {t('librarian.table.headers.student')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Book
+                    {t('librarian.table.headers.book')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Request Date
+                    {t('librarian.table.headers.requestDate')}
                   </th>
                   {activeTab === 'requested' && (
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
+                      {t('librarian.table.headers.status')}
                     </th>
                   )}
                   {activeTab === 'returned' && (
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Return Date
+                      {t('librarian.table.headers.returnDate')}
                     </th>
                   )}
                   {activeTab === 'requested' && (
                     <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
+                      {t('librarian.table.headers.actions')}
                     </th>
                   )}
                 </tr>
@@ -228,8 +231,8 @@ export default function LibrarianDashboard() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm font-medium text-gray-900">{book.title}</div>
-                      <div className="text-sm text-gray-500">by {book.author}</div>
-                      <div className="text-xs text-gray-400 mt-1">Inventory #: {book.inventory_number}</div>
+                      <div className="text-sm text-gray-500">{t('librarian.table.bookBy', { author: book.author })}</div>
+                      <div className="text-xs text-gray-400 mt-1">{t('librarian.table.inventoryNumber', { number: book.inventory_number })}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {formatDate(book.request_date)}
@@ -238,7 +241,7 @@ export default function LibrarianDashboard() {
                     {activeTab === 'requested' && (
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                          Waiting for Return
+                          {t('librarian.status.waitingForReturn')}
                         </span>
                       </td>
                     )}
@@ -255,7 +258,7 @@ export default function LibrarianDashboard() {
                           onClick={() => handleMarkReturned(book.id, book.student.id)}
                           className="bg-green-100 hover:bg-green-200 text-green-800 py-1 px-3 rounded-md transition-colors"
                         >
-                          Mark as Returned
+                          {t('librarian.actions.markReturned')}
                         </button>
                       </td>
                     )}

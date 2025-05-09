@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 export default function QuizCreator() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [subject, setSubject] = useState('');
@@ -19,11 +21,11 @@ export default function QuizCreator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [subjects, setSubjects] = useState([
-    { id: 1, name: 'Mathematics' },
-    { id: 2, name: 'Science' },
-    { id: 3, name: 'History' },
-    { id: 4, name: 'English' },
-    { id: 5, name: 'Computer Science' },
+    { id: 1, name: t('subjects.mathematics') },
+    { id: 2, name: t('subjects.science') },
+    { id: 3, name: t('subjects.history') },
+    { id: 4, name: t('subjects.english') },
+    { id: 5, name: t('subjects.computerScience') },
   ]);
 
   // Add a new question
@@ -44,7 +46,7 @@ export default function QuizCreator() {
   // Remove a question
   const removeQuestion = (index) => {
     if (questions.length === 1) {
-      setError("You need at least one question in the quiz.");
+      setError(t('quizCreator.errors.minOneQuestion'));
       return;
     }
     
@@ -63,7 +65,7 @@ export default function QuizCreator() {
   // Add an option to a question
   const addOption = (questionIndex) => {
     if (questions[questionIndex].options.length >= 4) {
-      setError("Maximum 4 options allowed per question.");
+      setError(t('quizCreator.errors.maxOptions'));
       return;
     }
     
@@ -78,7 +80,7 @@ export default function QuizCreator() {
   // Remove an option from a question
   const removeOption = (questionIndex, optionIndex) => {
     if (questions[questionIndex].options.length <= 3) {
-      setError("Minimum 3 options required per question.");
+      setError(t('quizCreator.errors.minOptions'));
       return;
     }
     
@@ -106,24 +108,24 @@ export default function QuizCreator() {
   // Form validation
   const validateForm = () => {
     if (!title.trim()) {
-      setError("Quiz title is required.");
+      setError(t('quizCreator.errors.titleRequired'));
       return false;
     }
     
     if (!subject) {
-      setError("Please select a subject.");
+      setError(t('quizCreator.errors.subjectRequired'));
       return false;
     }
     
     for (let i = 0; i < questions.length; i++) {
       if (!questions[i].question_text.trim()) {
-        setError(`Question ${i + 1} text is required.`);
+        setError(t('quizCreator.errors.questionTextRequired', { number: i + 1 }));
         return false;
       }
       
       for (let j = 0; j < questions[i].options.length; j++) {
         if (!questions[i].options[j].option_text.trim()) {
-          setError(`Option ${j + 1} for Question ${i + 1} is required.`);
+          setError(t('quizCreator.errors.optionRequired', { optionNumber: j + 1, questionNumber: i + 1 }));
           return false;
         }
       }
@@ -131,7 +133,7 @@ export default function QuizCreator() {
       // Check if there's a correct option set
       const hasCorrectOption = questions[i].options.some(option => option.is_correct);
       if (!hasCorrectOption) {
-        setError(`Please select a correct option for Question ${i + 1}.`);
+        setError(t('quizCreator.errors.correctOptionRequired', { number: i + 1 }));
         return false;
       }
     }
@@ -161,14 +163,14 @@ export default function QuizCreator() {
       navigate('/teacher-dashboard');
     } catch (err) {
       console.error('Error creating quiz:', err);
-      setError('Failed to create quiz. Please try again.');
+      setError(t('quizCreator.errors.createFailed'));
       setLoading(false);
     }
   };
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-6">Create New Quiz</h2>
+      <h2 className="text-2xl font-bold mb-6">{t('quizCreator.title')}</h2>
       
       {error && (
         <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
@@ -181,7 +183,7 @@ export default function QuizCreator() {
         <div className="mb-8">
           <div className="mb-4">
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-              Quiz Title
+              {t('quizCreator.quizTitle')}
             </label>
             <input
               type="text"
@@ -189,14 +191,14 @@ export default function QuizCreator() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
-              placeholder="Enter quiz title"
+              placeholder={t('quizCreator.titlePlaceholder')}
               required
             />
           </div>
           
           <div className="mb-4">
             <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
-              Subject
+              {t('quizCreator.subject')}
             </label>
             <select
               id="subject"
@@ -205,7 +207,7 @@ export default function QuizCreator() {
               className="w-full border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
               required
             >
-              <option value="">Select a subject</option>
+              <option value="">{t('quizCreator.selectSubject')}</option>
               {subjects.map((subj) => (
                 <option key={subj.id} value={subj.id}>
                   {subj.name}
@@ -218,53 +220,53 @@ export default function QuizCreator() {
         {/* Questions */}
         <div className="space-y-6 mb-8">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Questions</h3>
+            <h3 className="text-lg font-medium">{t('quizCreator.questionsSection')}</h3>
             <button
               type="button"
               onClick={addQuestion}
               className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-[#18bebc] hover:bg-teal-700"
             >
-              Add Question
+              {t('quizCreator.addQuestion')}
             </button>
           </div>
           
           {questions.map((question, qIndex) => (
             <div key={qIndex} className="border border-gray-300 rounded-lg p-4">
               <div className="flex justify-between items-center mb-4">
-                <h4 className="font-medium">Question {qIndex + 1}</h4>
+                <h4 className="font-medium">{t('quizCreator.questionNumber', { number: qIndex + 1 })}</h4>
                 <button
                   type="button"
                   onClick={() => removeQuestion(qIndex)}
                   className="text-red-600 hover:text-red-800 text-sm"
                 >
-                  Remove
+                  {t('quizCreator.remove')}
                 </button>
               </div>
               
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Question Text
+                  {t('quizCreator.questionText')}
                 </label>
                 <input
                   type="text"
                   value={question.question_text}
                   onChange={(e) => updateQuestionText(qIndex, e.target.value)}
                   className="w-full border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
-                  placeholder="Enter question"
+                  placeholder={t('quizCreator.questionPlaceholder')}
                   required
                 />
               </div>
               
               <div className="mb-2">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-700">Options</span>
+                  <span className="text-sm font-medium text-gray-700">{t('quizCreator.options')}</span>
                   {question.options.length < 4 && (
                     <button
                       type="button"
                       onClick={() => addOption(qIndex)}
                       className="text-xs text-[#18bebc] hover:text-teal-800"
                     >
-                      Add Option
+                      {t('quizCreator.addOption')}
                     </button>
                   )}
                 </div>
@@ -285,7 +287,7 @@ export default function QuizCreator() {
                         value={option.option_text}
                         onChange={(e) => updateOptionText(qIndex, oIndex, e.target.value)}
                         className="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
-                        placeholder={`Option ${oIndex + 1}`}
+                        placeholder={t('quizCreator.optionPlaceholder', { number: oIndex + 1 })}
                         required
                       />
                       {question.options.length > 3 && (
@@ -313,14 +315,14 @@ export default function QuizCreator() {
             onClick={() => navigate('/teacher-dashboard')}
             className="mr-3 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             type="submit"
             disabled={loading}
             className="px-4 py-2 text-sm font-medium text-white bg-[#18bebc] border border-transparent rounded-md shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400 disabled:opacity-50"
           >
-            {loading ? 'Creating...' : 'Create Quiz'}
+            {loading ? t('quizCreator.creating') : t('quizCreator.createQuiz')}
           </button>
         </div>
       </form>

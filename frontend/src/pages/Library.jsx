@@ -5,8 +5,10 @@ import BookCard from "../components/BookCard";
 import BookFilterBar from "../components/BookFilterBar";
 import NewBookForm from "../components/NewBookForm";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next"; // Import useTranslation hook
 
 export default function Library() {
+  const { t } = useTranslation(); // Initialize the translation function
   const { user } = useAuth();
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -180,6 +182,7 @@ export default function Library() {
               ? 'text-gray-400 cursor-not-allowed' 
               : 'text-blue-600 hover:bg-blue-50'
           }`}
+          aria-label={t('library.pagination.previous')}
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -210,6 +213,7 @@ export default function Library() {
               ? 'text-gray-400 cursor-not-allowed' 
               : 'text-blue-600 hover:bg-blue-50'
           }`}
+          aria-label={t('library.pagination.next')}
         >
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -217,12 +221,11 @@ export default function Library() {
     );
   };
 
-  const isLibrarian =
-    user && (user.role === "librarian" || user.role === "administrator");
+  const isLibrarian = user && (user.role === "librarian" || user.role === "administrator");
 
   return (
     <main className="flex-grow container mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Library</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">{t('library.title')}</h1>
 
       <div className="mb-6">
         <div className="flex flex-wrap gap-2 mb-4">
@@ -235,7 +238,7 @@ export default function Library() {
               activeTab === "catalog" ? "bg-blue-600 text-white" : "bg-gray-200"
             }`}
           >
-            Book Catalog
+            {t('library.tabs.catalog')}
           </button>
 
           {isLibrarian && (
@@ -245,8 +248,8 @@ export default function Library() {
                 activeTab === "add" ? "bg-blue-600 text-white" : "bg-gray-200"
               }`}
             >
-              Add New Book
-          </button>
+              {t('library.tabs.addBook')}
+            </button>
           )}
         </div>
       </div>
@@ -270,7 +273,7 @@ export default function Library() {
           ) : (
             <>
               <div className="text-sm text-gray-600 mb-4">
-                Showing {books.length} of {totalBooks} books
+                {t('library.showing', { count: books.length, total: totalBooks })}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -293,7 +296,7 @@ export default function Library() {
                   ))
                 ) : (
                   <div className="col-span-full text-center py-12 text-gray-500">
-                    No books found matching your search criteria.
+                    {t('library.noBooks')}
                   </div>
                 )}
               </div>

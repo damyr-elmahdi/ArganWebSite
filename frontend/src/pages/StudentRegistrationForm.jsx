@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import schoolLogo from '../assets/argan.png';
 
 const StudentRegistrationForm = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     studentName: '',
@@ -28,14 +30,14 @@ const StudentRegistrationForm = () => {
   const [pdfOption, setPdfOption] = useState('standard'); // 'standard' or 'mpdf'
 
   const gradeOptions = [
-    { value: "TC-S", label: "TC - Sciences" },
-    { value: "TC-LSH", label: "TC - Lettres et Sciences Humaines" },
-    { value: "1BAC-SE", label: "1BAC - Sciences Expérimentales" },
-    { value: "1BAC-LSH", label: "1BAC - Lettres et Sciences Humaines" },
-    { value: "2BAC-PC", label: "2BAC - PC (Physique-Chimie)" },
-    { value: "2BAC-SVT", label: "2BAC - SVT (Sciences de la Vie et de la Terre)" },
-    { value: "2BAC-SH", label: "2BAC - Sciences Humaines" },
-    { value: "2BAC-L", label: "2BAC - Lettres" },
+    { value: "TC-S", label: t('academicLevels.tcSciences') },
+    { value: "TC-LSH", label: t('academicLevels.tcHumanities') },
+    { value: "1BAC-SE", label: t('academicLevels.1bacSciExp') },
+    { value: "1BAC-LSH", label: t('academicLevels.1bacHumanities') },
+    { value: "2BAC-PC", label: t('academicLevels.2bacPhysicsChem') },
+    { value: "2BAC-SVT", label: t('academicLevels.2bacLifeSciences') },
+    { value: "2BAC-SH", label: t('academicLevels.2bacHumanities') },
+    { value: "2BAC-L", label: t('academicLevels.2bacLiterature') },
   ];
 
   const handleChange = (e) => {
@@ -58,43 +60,43 @@ const StudentRegistrationForm = () => {
     const errors = {};
     
     if (!formData.studentName.trim()) {
-      errors.studentName = "Le nom de l'étudiant est requis";
+      errors.studentName = t('validation.studentNameRequired');
     }
     
     if (!formData.academicLevel) {
-      errors.academicLevel = "Le niveau académique est requis";
+      errors.academicLevel = t('validation.academicLevelRequired');
     }
     
     if (!formData.parentName.trim()) {
-      errors.parentName = "Le nom du parent est requis";
+      errors.parentName = t('validation.parentNameRequired');
     }
     
     if (!formData.parentProfession.trim()) {
-      errors.parentProfession = "La profession du parent est requise";
+      errors.parentProfession = t('validation.parentProfessionRequired');
     }
     
     if (!formData.fatherPhone.trim()) {
-      errors.fatherPhone = "Le téléphone du père est requis";
+      errors.fatherPhone = t('validation.fatherPhoneRequired');
     } else if (!/^\d{8,15}$/.test(formData.fatherPhone.replace(/\D/g, ''))) {
-      errors.fatherPhone = "Numéro de téléphone invalide";
+      errors.fatherPhone = t('validation.invalidPhone');
     }
     
     if (!formData.motherPhone.trim()) {
-      errors.motherPhone = "Le téléphone de la mère est requis";
+      errors.motherPhone = t('validation.motherPhoneRequired');
     } else if (!/^\d{8,15}$/.test(formData.motherPhone.replace(/\D/g, ''))) {
-      errors.motherPhone = "Numéro de téléphone invalide";
+      errors.motherPhone = t('validation.invalidPhone');
     }
     
     if (formData.studentPhone && !/^\d{8,15}$/.test(formData.studentPhone.replace(/\D/g, ''))) {
-      errors.studentPhone = "Numéro de téléphone invalide";
+      errors.studentPhone = t('validation.invalidPhone');
     }
     
     if (!formData.address.trim()) {
-      errors.address = "L'adresse est requise";
+      errors.address = t('validation.addressRequired');
     }
     
     if (formData.civilStatus === 'orphan' && !formData.deathDate) {
-      errors.deathDate = "La date de décès est requise pour les orphelins";
+      errors.deathDate = t('validation.deathDateRequired');
     }
     
     setValidationErrors(errors);
@@ -135,7 +137,7 @@ const StudentRegistrationForm = () => {
       console.error('Submission error:', err);
       setError(
         err.response?.data?.message || 
-        'Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer.'
+        t('errors.submissionError')
       );
     } finally {
       setIsLoading(false);
@@ -172,7 +174,7 @@ const StudentRegistrationForm = () => {
       document.body.removeChild(link);
     } catch (err) {
       console.error('PDF download error:', err);
-      setError('Erreur lors du téléchargement du PDF. Veuillez réessayer.');
+      setError(t('errors.pdfDownloadError'));
     } finally {
       setIsLoading(false);
     }
@@ -182,18 +184,18 @@ const StudentRegistrationForm = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
         <div className="text-center mb-6">
-          <img src={schoolLogo} alt="Logo de l'école" className="h-20 mx-auto mb-2" />
-          <h1 className="text-2xl font-bold text-gray-800">Formulaire d'Inscription</h1>
-          <p className="text-gray-600">Date: {new Date().toLocaleDateString('fr-FR')}</p>
+          <img src={schoolLogo} alt={t('common.schoolLogo')} className="h-20 mx-auto mb-2" />
+          <h1 className="text-2xl font-bold text-gray-800">{t('registration.title')}</h1>
+          <p className="text-gray-600">{t('common.date')}: {new Date().toLocaleDateString(t('common.locale'))}</p>
         </div>
 
         {!isSubmitted ? (
           <form onSubmit={handleSubmit} className="space-y-6">
-            <h2 className="text-lg font-semibold text-gray-700 border-b pb-2">Informations de l'étudiant</h2>
+            <h2 className="text-lg font-semibold text-gray-700 border-b pb-2">{t('registration.studentInfo')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nom complet de l'étudiant: <span className="text-red-500">*</span>
+                  {t('registration.studentName')}: <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -209,7 +211,7 @@ const StudentRegistrationForm = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Niveau académique: <span className="text-red-500">*</span>
+                  {t('registration.academicLevel')}: <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="academicLevel"
@@ -217,7 +219,7 @@ const StudentRegistrationForm = () => {
                   onChange={handleChange}
                   className={`w-full p-2 border ${validationErrors.academicLevel ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
                 >
-                  <option value="">Sélectionnez un niveau</option>
+                  <option value="">{t('common.selectLevel')}</option>
                   {gradeOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
@@ -231,7 +233,7 @@ const StudentRegistrationForm = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  École précédente:
+                  {t('registration.previousSchool')}:
                 </label>
                 <input
                   type="text"
@@ -244,7 +246,7 @@ const StudentRegistrationForm = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Numéro de téléphone de l'étudiant:
+                  {t('registration.studentPhone')}:
                 </label>
                 <input
                   type="tel"
@@ -252,7 +254,7 @@ const StudentRegistrationForm = () => {
                   value={formData.studentPhone}
                   onChange={handleChange}
                   className={`w-full p-2 border ${validationErrors.studentPhone ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
-                  placeholder="Ex: 06XXXXXXXX"
+                  placeholder={t('placeholders.phoneExample')}
                 />
                 {validationErrors.studentPhone && (
                   <p className="text-red-500 text-xs mt-1">{validationErrors.studentPhone}</p>
@@ -260,11 +262,11 @@ const StudentRegistrationForm = () => {
               </div>
             </div>
 
-            <h2 className="text-lg font-semibold text-gray-700 border-b pb-2 mt-8">Informations du parent/tuteur</h2>
+            <h2 className="text-lg font-semibold text-gray-700 border-b pb-2 mt-8">{t('registration.parentInfo')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nom complet du père ou du tuteur: <span className="text-red-500">*</span>
+                  {t('registration.parentName')}: <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -280,7 +282,7 @@ const StudentRegistrationForm = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Profession du père ou du tuteur: <span className="text-red-500">*</span>
+                  {t('registration.parentProfession')}: <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -296,7 +298,7 @@ const StudentRegistrationForm = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Numéro de téléphone du père: <span className="text-red-500">*</span>
+                  {t('registration.fatherPhone')}: <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="tel"
@@ -304,7 +306,7 @@ const StudentRegistrationForm = () => {
                   value={formData.fatherPhone}
                   onChange={handleChange}
                   className={`w-full p-2 border ${validationErrors.fatherPhone ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
-                  placeholder="Ex: 06XXXXXXXX"
+                  placeholder={t('placeholders.phoneExample')}
                 />
                 {validationErrors.fatherPhone && (
                   <p className="text-red-500 text-xs mt-1">{validationErrors.fatherPhone}</p>
@@ -313,7 +315,7 @@ const StudentRegistrationForm = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Numéro de téléphone de la mère: <span className="text-red-500">*</span>
+                  {t('registration.motherPhone')}: <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="tel"
@@ -321,7 +323,7 @@ const StudentRegistrationForm = () => {
                   value={formData.motherPhone}
                   onChange={handleChange}
                   className={`w-full p-2 border ${validationErrors.motherPhone ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
-                  placeholder="Ex: 06XXXXXXXX"
+                  placeholder={t('placeholders.phoneExample')}
                 />
                 {validationErrors.motherPhone && (
                   <p className="text-red-500 text-xs mt-1">{validationErrors.motherPhone}</p>
@@ -329,11 +331,11 @@ const StudentRegistrationForm = () => {
               </div>
             </div>
 
-            <h2 className="text-lg font-semibold text-gray-700 border-b pb-2 mt-8">Adresse et situation familiale</h2>
+            <h2 className="text-lg font-semibold text-gray-700 border-b pb-2 mt-8">{t('registration.addressAndFamily')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Adresse de résidence: <span className="text-red-500">*</span>
+                  {t('registration.address')}: <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   name="address"
@@ -349,24 +351,24 @@ const StudentRegistrationForm = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  État civil: <span className="text-red-500">*</span>
+                  {t('registration.civilStatus1')}: <span className="text-red-500">*</span>
                 </label>
                 <select
-                  name="civilStatus"
+                  name="civilStatus1"
                   value={formData.civilStatus}
                   onChange={handleChange}
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 >
-                  <option value="together">Parents ensemble</option>
-                  <option value="divorced">Parents divorcés</option>
-                  <option value="orphan">Orphelin</option>
+                  <option value="together">{t('civilStatus1.together')}</option>
+                  <option value="divorced">{t('civilStatus1.divorced')}</option>
+                  <option value="orphan">{t('civilStatus1.orphan')}</option>
                 </select>
               </div>
 
               {formData.civilStatus === 'orphan' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Date de décès du père: <span className="text-red-500">*</span>
+                    {t('registration.deathDate')}: <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="date"
@@ -384,7 +386,7 @@ const StudentRegistrationForm = () => {
 
             <div className="mt-6">
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Notes additionnelles:
+                {t('registration.additionalNotes')}:
               </label>
               <textarea
                 name="additionalNotes"
@@ -392,7 +394,7 @@ const StudentRegistrationForm = () => {
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 rows="3"
-                placeholder="Informations supplémentaires que vous souhaitez partager"
+                placeholder={t('placeholders.additionalNotes')}
               ></textarea>
             </div>
 
@@ -408,26 +410,26 @@ const StudentRegistrationForm = () => {
                 onClick={() => navigate('/')}
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
               >
-                Annuler
+                {t('buttons.cancel')}
               </button>
               <button
                 type="submit"
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
                 disabled={isLoading}
               >
-                {isLoading ? 'Traitement...' : 'Soumettre'}
+                {isLoading ? t('buttons.processing') : t('buttons.submit')}
               </button>
             </div>
           </form>
         ) : (
           <div className="text-center">
             <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-              <p className="font-bold">Inscription réussie!</p>
-              <p>Votre formulaire d'inscription a été soumis avec succès.</p>
+              <p className="font-bold">{t('success.registrationSuccess')}</p>
+              <p>{t('success.formSubmitted')}</p>
             </div>
             
             <div className="mb-6">
-              <h3 className="text-md font-medium mb-2">Options de téléchargement:</h3>
+              <h3 className="text-md font-medium mb-2">{t('download.options')}:</h3>
               <div className="flex justify-center gap-4 mb-4">
                 <label className="inline-flex items-center">
                   <input 
@@ -438,7 +440,7 @@ const StudentRegistrationForm = () => {
                     onChange={() => setPdfOption('standard')}
                     className="form-radio h-4 w-4 text-blue-600"
                   />
-                  <span className="ml-2">Version standard</span>
+                  <span className="ml-2">{t('download.standardVersion')}</span>
                 </label>
                 {/* <label className="inline-flex items-center">
                   <input 
@@ -449,7 +451,7 @@ const StudentRegistrationForm = () => {
                     onChange={() => setPdfOption('mpdf')}
                     className="form-radio h-4 w-4 text-blue-600"
                   />
-                  <span className="ml-2">Version améliorée</span>
+                  <span className="ml-2">{t('download.enhancedVersion')}</span>
                 </label> */}
               </div>
             </div>
@@ -460,7 +462,7 @@ const StudentRegistrationForm = () => {
                 className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center disabled:opacity-50"
                 disabled={isLoading}
               >
-                {isLoading ? 'Génération...' : 'Télécharger PDF'}
+                {isLoading ? t('buttons.generating') : t('buttons.downloadPDF')}
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
@@ -469,7 +471,7 @@ const StudentRegistrationForm = () => {
                 onClick={() => navigate('/')}
                 className="px-6 py-3 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
               >
-                Retour à l'accueil
+                {t('buttons.backToHome')}
               </button>
             </div>
           </div>

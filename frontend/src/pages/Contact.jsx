@@ -1,18 +1,20 @@
+import React from "react";
 import ContactForm from "../components/ContactForm";
 import { MapPin, Phone, Mail, Clock } from "react-feather";
+import { useTranslation } from 'react-i18next';
 
 export default function Contact({ schoolInfo }) {
-  const { name, address, phone,fax, email, operatingHours } = schoolInfo;
+  const { t } = useTranslation();
+  const { name, address, phone, fax, email, operatingHours } = schoolInfo;
 
   return (
     <main className="flex-grow">
       {/* Header Banner */}
       <section className="bg-[#18bebc] text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-2">Contact Us</h1>
+          <h1 className="text-3xl font-bold mb-2">{t('contact.title')}</h1>
           <p className="text-lg">
-            We'd love to hear from you. Reach out to {name} with any questions
-            or inquiries.
+            {t('contact.subtitle', { name })}
           </p>
         </div>
       </section>
@@ -23,7 +25,7 @@ export default function Contact({ schoolInfo }) {
             {/* Contact Information */}
             <div>
               <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                Get In Touch
+                {t('contact.getInTouch')}
               </h2>
 
               <div className="space-y-6">
@@ -32,7 +34,7 @@ export default function Contact({ schoolInfo }) {
                     <MapPin size={20} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-800">Our Location</h3>
+                    <h3 className="font-bold text-gray-800">{t('contact.ourLocation')}</h3>
                     <p className="text-gray-600">{address}</p>
                   </div>
                 </div>
@@ -42,7 +44,7 @@ export default function Contact({ schoolInfo }) {
                     <Phone size={20} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-800">Phone</h3>
+                    <h3 className="font-bold text-gray-800">{t('contact.phone')}</h3>
                     <p className="text-gray-600">{phone}</p>
                   </div>
                 </div>
@@ -52,7 +54,7 @@ export default function Contact({ schoolInfo }) {
                     <Phone size={20} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-800">Fax</h3>
+                    <h3 className="font-bold text-gray-800">{t('contact.fax')}</h3>
                     <p className="text-gray-600">{fax}</p>
                   </div>
                 </div>
@@ -62,7 +64,7 @@ export default function Contact({ schoolInfo }) {
                     <Mail size={20} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-800">Email</h3>
+                    <h3 className="font-bold text-gray-800">{t('contact.email')}</h3>
                     <p className="text-gray-600">{email}</p>
                   </div>
                 </div>
@@ -72,11 +74,11 @@ export default function Contact({ schoolInfo }) {
                     <Clock size={20} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-800">Operating Hours</h3>
+                    <h3 className="font-bold text-gray-800">{t('contact.operatingHours')}</h3>
                     <p className="text-gray-600">
-                      Monday - sturday: {operatingHours}
+                      {t('contact.mondayToSaturday', { hours: operatingHours })}
                     </p>
-                    <p className="text-gray-600">sunday: Closed</p>
+                    <p className="text-gray-600">{t('contact.sunday')}</p>
                   </div>
                 </div>
               </div>
@@ -91,6 +93,7 @@ export default function Contact({ schoolInfo }) {
                   allowFullScreen=""
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
+                  title={t('contact.mapTitle')}
                 ></iframe>
               </div>
             </div>
@@ -98,7 +101,7 @@ export default function Contact({ schoolInfo }) {
             {/* Contact Form */}
             <div>
               <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                Send Us a Message
+                {t('contact.sendMessage')}
               </h2>
               <ContactForm schoolEmail={email} />
             </div>
@@ -110,47 +113,43 @@ export default function Contact({ schoolInfo }) {
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-            Frequently Asked Questions
+            {t('contact.faqTitle')}
           </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-gray-50 p-6 rounded-lg">
               <h3 className="font-bold text-gray-800 mb-2">
-                What are the school hours?
+                {t('contact.faq.schoolHours.question')}
               </h3>
               <p className="text-gray-600">
-                Our regular school hours are {operatingHours}, Monday through
-                Friday.
+                {t('contact.faq.schoolHours.answer', { hours: operatingHours })}
               </p>
             </div>
 
             <div className="bg-gray-50 p-6 rounded-lg">
               <h3 className="font-bold text-gray-800 mb-2">
-                How can I schedule a school tour?
+                {t('contact.faq.tour.question')}
               </h3>
               <p className="text-gray-600">
-                You can schedule a tour by contacting our admissions office
-                through this form or calling us directly.
+                {t('contact.faq.tour.answer')}
               </p>
             </div>
 
             <div className="bg-gray-50 p-6 rounded-lg">
               <h3 className="font-bold text-gray-800 mb-2">
-                When is the enrollment period?
+                {t('contact.faq.enrollment.question')}
               </h3>
               <p className="text-gray-600">
-                General enrollment for the next academic year begins in January
-                and ends in April.
+                {t('contact.faq.enrollment.answer')}
               </p>
             </div>
 
             <div className="bg-gray-50 p-6 rounded-lg">
               <h3 className="font-bold text-gray-800 mb-2">
-                How can I check my child's academic progress?
+                {t('contact.faq.progress.question')}
               </h3>
               <p className="text-gray-600">
-                Parents can access academic reports through our parent portal or
-                schedule a meeting with teachers.
+                {t('contact.faq.progress.answer')}
               </p>
             </div>
           </div>

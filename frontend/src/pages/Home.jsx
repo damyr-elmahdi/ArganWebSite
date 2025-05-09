@@ -5,10 +5,11 @@ import RegistrationCTA from '../components/RegistrationCTA';
 import ClubsSection from '../components/ClubsSection';
 import OutstandingStudentsSection from '../components/OutstandingStudentsSection';
 import argan from "../assets/argan.png";
-
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
 export default function Home({ schoolInfo }) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
 
   // Simulate loading for demonstration purposes
@@ -24,9 +25,9 @@ export default function Home({ schoolInfo }) {
       <div className="flex-grow flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4">
-            <img src={argan} alt="Argan High School" className="w-full h-full object-contain animate-pulse" />
+            <img src={argan} alt={t('common.schoolName')} className="w-full h-full object-contain animate-pulse" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-700">Loading...</h2>
+          <h2 className="text-xl font-semibold text-gray-700">{t('common.loading')}</h2>
         </div>
       </div>
     );
@@ -38,7 +39,7 @@ export default function Home({ schoolInfo }) {
       <div className="bg-[#165b9f] text-white text-center py-2 px-4">
         <div className="container mx-auto">
           <p className="text-sm font-medium">
-          Welcome to Argane High School in Tiznit — where knowledge, values, and ambition come together to shape a brighter future.
+            {t('home.banner.welcome')}
           </p>
         </div>
       </div>
@@ -54,33 +55,27 @@ export default function Home({ schoolInfo }) {
               <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden shadow-md">
                 {/* This would be a school video or image */}
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-teal-100 to-teal-200">
-                  <img src={argan} alt="Argan High School" className="w-90 h-80 object-contain" />
+                  <img src={argan} alt={t('common.schoolName')} className="w-90 h-80 object-contain" />
                 </div>
               </div>
             </div>
             <div className="w-full lg:w-1/2">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">A Tradition of Excellence</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('home.welcome.title')}</h2>
               <p className="text-gray-600 mb-4">
-                Since {schoolInfo.foundedYear}, {schoolInfo.name} has been committed to providing 
-                quality education that prepares students for success in their academic 
-                and professional journeys. Our dedicated faculty and comprehensive curriculum 
-                ensure that every student receives the attention and resources they need to excel.
+                {t('home.welcome.description', { year: schoolInfo.foundedYear, name: schoolInfo.name })}
               </p>
               <p className="text-gray-600 mb-6">
-                We foster a supportive learning environment where creativity, critical thinking, 
-                and character development are prioritized alongside academic achievement.
+                {t('home.welcome.environment')}
               </p>
-              <div className="grid grid-cols-2 gap-4 text-center">
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div className="bg-[#18bebc] bg-opacity-20 p-4 rounded-lg">
                   <div className="text-3xl font-bold text-[#165b9f]">95%</div>
-                  <div className="text-sm text-gray-600">Graduation Rate</div>
+                  <div className="text-sm text-gray-600">{t('home.stats.graduationRate')}</div>
                 </div>
                 <div className="bg-[#18bebc] bg-opacity-20 p-4 rounded-lg">
                   <div className="text-3xl font-bold text-[#165b9f]">85%</div>
-                  <div className="text-sm text-gray-600">University Acceptance</div>
+                  <div className="text-sm text-gray-600">{t('home.stats.universityAcceptance')}</div>
                 </div>
-              </div>
               </div>
             </div>
           </div>

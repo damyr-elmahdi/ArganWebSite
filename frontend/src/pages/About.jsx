@@ -119,7 +119,7 @@ export default function About() {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('about.history.title')}</h2>
             <div className="relative">
-              {/* Timeline */}
+              {/* Timeline. */}
               <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-teal-200"></div>
               
               {/* Timeline events */}

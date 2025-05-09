@@ -8,8 +8,10 @@ import {
   ClockIcon,
 } from "@heroicons/react/24/outline";
 import { getImageUrl } from "../utils/imageUtils";
+import { useTranslation } from 'react-i18next';
 
 export default function Events() {
+  const { t } = useTranslation();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,7 +31,7 @@ export default function Events() {
       setEvents(response.data);
       setLoading(false);
     } catch (err) {
-      setError("Failed to load events. Please try again later.");
+      setError(t('events.errorLoading'));
       setLoading(false);
     }
   };
@@ -84,12 +86,12 @@ export default function Events() {
 
   return (
     <main className="flex-grow container mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">School Events</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">{t('events.title1')}</h1>
 
       {/* Improved Date Range Filter */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-8">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Filter Events by Date Range
+          {t('events.filterTitle')}
         </h2>
         <form onSubmit={applyFilter} className="flex flex-wrap gap-4 items-end">
           <div className="flex flex-col flex-1 min-w-[200px]">
@@ -97,7 +99,7 @@ export default function Events() {
               htmlFor="startDate"
               className="text-sm font-medium text-gray-700 mb-1"
             >
-              Start Date
+              {t('events.startDate')}
             </label>
             <input
               type="date"
@@ -114,7 +116,7 @@ export default function Events() {
               htmlFor="endDate"
               className="text-sm font-medium text-gray-700 mb-1"
             >
-              End Date
+              {t('events.endDate')}
             </label>
             <input
               type="date"
@@ -131,7 +133,7 @@ export default function Events() {
               type="submit"
               className="bg-[#18bebc] text-white px-6 py-2 rounded-md hover:bg-teal-700 transition-colors"
             >
-              Apply Filter
+              {t('events.applyFilter')}
             </button>
             {(startDate || endDate) && (
               <button
@@ -139,7 +141,7 @@ export default function Events() {
                 onClick={resetFilter}
                 className="bg-gray-200 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-300 transition-colors"
               >
-                Clear
+                {t('events.clear')}
               </button>
             )}
           </div>
@@ -156,22 +158,23 @@ export default function Events() {
       ) : events.length === 0 ? (
         <div className="bg-gray-100 p-8 rounded-lg text-center">
           <h3 className="text-xl font-semibold text-gray-700">
-            No events found
+            {t('events.noEventsFound')}
           </h3>
           <p className="text-gray-600 mt-2">
             {startDate && endDate
-              ? `No events between ${format(
-                  new Date(startDate),
-                  "MMMM d, yyyy"
-                )} and ${format(new Date(endDate), "MMMM d, yyyy")}`
+              ? t('events.noEventsBetween', {
+                  startDate: format(new Date(startDate), "MMMM d, yyyy"),
+                  endDate: format(new Date(endDate), "MMMM d, yyyy")
+                })
               : startDate
-              ? `No events from ${format(
-                  new Date(startDate),
-                  "MMMM d, yyyy"
-                )} onwards`
+              ? t('events.noEventsFrom', {
+                  startDate: format(new Date(startDate), "MMMM d, yyyy")
+                })
               : endDate
-              ? `No events until ${format(new Date(endDate), "MMMM d, yyyy")}`
-              : "Check back later for upcoming events."}
+              ? t('events.noEventsUntil', {
+                  endDate: format(new Date(endDate), "MMMM d, yyyy")
+                })
+              : t('events.checkBackLater')}
           </p>
         </div>
       ) : (
@@ -233,7 +236,7 @@ export default function Events() {
                       to={`/events/${event.id}`}
                       className="text-blue-600 hover:underline"
                     >
-                      View details
+                      {t('events.viewDetails')}
                     </Link>
                   </div>
                 </div>

@@ -14,12 +14,34 @@
     "remove": "Remove",
     "loading": "Loading...",
     "close": "Close",
-    "errors": {
-      "generic": "Something went wrong. Please try again."
-    },
     "students": "Students",
     "view_details": "View Details",
-    "try_again": "Try Again"
+    "try_again": "Try Again",
+    "schoolName": "Argan High School",
+    "returnHome": "Return to Home",
+    "backToHome": "Back to Home",
+    "status": "Status",
+    "logout": "Logout",
+    "editProfile": "Edit Profile",
+    "notSpecified": "Not specified",
+    "notAssigned": "Not assigned",
+    "accessDenied": "Access Denied",
+    "refreshData": "Refresh Data",
+    "na": "N/A",
+    "save": "Save",
+    "create": "Create",
+    "submit": "Submit",
+    "back": "Back",
+    "saving": "Saving...",
+    "saveChanges": "Save Changes",
+    "deleting": "Deleting...",
+    "required": "Required",
+    "optional": "Optional",
+    "yes": "Yes",
+    "no": "No",
+    "unknown": "Unknown",
+    "success": "Success",
+    "error": "Error"
   },
   "nav": {
     "home": "Home",
@@ -65,9 +87,37 @@
     "copyright": "© {{year}} {{name}}. All rights reserved."
   },
   "contact": {
+    "title": "Contact Us",
+    "subtitle": "We'd love to hear from you. Reach out to {{name}} with any questions or inquiries.",
+    "getInTouch": "Get In Touch",
+    "ourLocation": "Our Location",
     "phone": "Phone",
     "fax": "Fax",
     "email": "Email",
+    "operatingHours": "Operating Hours",
+    "mondayToSaturday": "Monday - Saturday: {{hours}}",
+    "sunday": "Sunday: Closed",
+    "mapTitle": "School Location Map",
+    "sendMessage": "Send Us a Message",
+    "faqTitle": "Frequently Asked Questions",
+    "faq": {
+      "schoolHours": {
+        "question": "What are the school hours?",
+        "answer": "Our regular school hours are {{hours}}, Monday through Friday."
+      },
+      "tour": {
+        "question": "How can I schedule a school tour?",
+        "answer": "You can schedule a tour by contacting our admissions office through this form or calling us directly."
+      },
+      "enrollment": {
+        "question": "When is the enrollment period?",
+        "answer": "General enrollment for the next academic year begins in January and ends in April."
+      },
+      "progress": {
+        "question": "How can I check my child's academic progress?",
+        "answer": "Parents can access academic reports through our parent portal or schedule a meeting with teachers."
+      }
+    },
     "form": {
       "name": "Your Name",
       "email": "Email Address",
@@ -119,9 +169,6 @@
       "result": "Result",
       "viewResults": "View Results"
     },
-    "errors": {
-      "loadFailed": "Failed to load quiz history."
-    },
     "teacher": {
       "yourQuizzes": "Your Quizzes",
       "loading": "Loading quizzes...",
@@ -136,7 +183,119 @@
         "createdOn": "Created On",
         "attempts": "Attempts",
         "actions": "Actions"
-      }
+      },
+      "createNew": "Create New Quiz"
+    },
+    "loading": "Loading quiz...",
+    "questionProgress": "Question {{current}}/{{total}}",
+    "timeRemaining": "{{seconds}}s",
+    "score": "Score: {{current}}/{{total}}",
+    "feedback": {
+      "correct": "Correct! Well done.",
+      "incorrect": "Incorrect. The correct answer is highlighted.",
+      "timeUp": "Time's up! The correct answer is highlighted."
+    },
+    "violations": {
+      "warning": "Warning: Attempting to leave the quiz is not allowed.",
+      "status": "Violation {{current}}/{{max}}",
+      "count": "Violation {{current}}/{{max}}",
+      "autoSubmitWarning": "Your quiz will be automatically submitted after {{max}} violations.",
+      "autoSubmitAlert": "Multiple attempts to leave the quiz detected. Your quiz will be submitted automatically.",
+      "tabSwitched": "Tab switched",
+      "windowUnfocused": "Window unfocused",
+      "keyboardShortcut": "Keyboard shortcut attempt"
+    },
+    "warnings": {
+      "answerMismatch": "Client/server mismatch in answer correctness",
+      "leavingPage": "Are you sure you want to leave? Your quiz will be submitted automatically."
+    },
+    "results": {
+      "title": "Results",
+      "loading": "Loading results...",
+      "completed_on": "Completed on {{date}}",
+      "question_review": "Question Review",
+      "question_number": "Question {{number}}",
+      "time_expired": "Time Expired",
+      "correct": "Correct",
+      "incorrect": "Incorrect",
+      "question_not_available": "Question not available",
+      "options_not_available": "Options not available",
+      "time_expired_message": "You ran out of time on this question. No option was selected.",
+      "print_results": "Print Results",
+      "score_excellent": "Excellent!",
+      "score_good": "Good job!",
+      "score_not_bad": "Not bad!",
+      "score_keep_practicing": "Keep practicing!"
+    },
+    "results_viewer": {
+      "results": "Results",
+      "loading_results": "Loading quiz results...",
+      "back_to_quizzes": "Back to Quizzes",
+      "view_all_attempts": "View all student attempts for this quiz",
+      "no_attempts": "No students have attempted this quiz yet.",
+      "student_attempts": "Student Attempts",
+      "loading_attempt_details": "Loading attempt details...",
+      "student_answers": "{{name}}'s Answers",
+      "answer_legend": "Answer Legend",
+      "correct_answer": "Correct Answer",
+      "incorrect_answer": "Incorrect Answer",
+      "time_expired_missed": "Time Expired (Missed)",
+      "select_attempt": "Select a student attempt to view details"
+    },
+    "editor": {
+      "title": "Edit Quiz",
+      "loading": "Loading quiz...",
+      "quizTitle": "Quiz Title",
+      "enterQuizTitle": "Enter quiz title",
+      "subject": "Subject",
+      "selectSubject": "Select a subject",
+      "questions": "Questions",
+      "addQuestion": "Add Question",
+      "questionNumber": "Question {{number}}",
+      "remove": "Remove",
+      "questionText": "Question Text",
+      "enterQuestion": "Enter question",
+      "options": "Options",
+      "addOption": "Add Option",
+      "optionPlaceholder": "Option {{number}}"
+    },
+    "list": {
+      "loading": "Loading quizzes...",
+      "noQuizzes": "No quizzes available",
+      "checkBackLater": "Check back later for new quizzes.",
+      "availableQuizzes": "Available Quizzes",
+      "questionCount": "{{count}} questions",
+      "questionCount_plural": "{{count}} questions",
+      "time": "Time: {{seconds}} seconds",
+      "startQuiz": "Start Quiz"
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "loadFailed": "Failed to load quiz history.",
+      "failedToLoad": "Failed to load quiz. Please try again.",
+      "failedToSubmitAnswer": "Failed to submit answer. Please try again.",
+      "failedToComplete": "Failed to complete quiz. Please try again.",
+      "noQuestions": "Quiz not found or has no questions.",
+      "error_loading": "Failed to load quiz results. Please try again.",
+      "no_data": "No results data received",
+      "quiz_not_available": "Quiz data not available",
+      "quiz_not_loaded": "The quiz information could not be loaded",
+      "no_answers": "No answers recorded for this quiz",
+      "no_answers_completed": "The quiz may have been completed without submitting answers",
+      "anticheat_detected": "Quiz Submitted Due to Anti-Cheat Detection",
+      "error_loading_quiz": "Failed to load quiz information. Please try again.",
+      "error_loading_attempt": "Failed to load attempt details. Please try again.",
+      "failedToLoadQuiz": "Failed to load quiz. Please try again.",
+      "failedToUpdateQuiz": "Failed to update quiz. Please try again.",
+      "failedToLoadQuizzes": "Failed to load quizzes. Please try again.",
+      "minimumOneQuestion": "You need at least one question in the quiz.",
+      "maximumFourOptions": "Maximum 4 options allowed per question.",
+      "minimumThreeOptions": "Minimum 3 options required per question.",
+      "titleRequired": "Quiz title is required.",
+      "subjectRequired": "Please select a subject.",
+      "questionTextRequired": "Question {{number}} text is required.",
+      "optionRequired": "Option {{optionNumber}} for Question {{questionNumber}} is required.",
+      "selectCorrectOption": "Please select a correct option for Question {{number}}."
     }
   },
   "clubs": {
@@ -204,6 +363,41 @@
         "memberRemoveFailed": "Failed to remove member",
         "selectUser": "Please select a valid user from the suggestions"
       }
+    },
+    "heading": "Student Clubs",
+    "seeMore": "See More",
+    "fetchError": "Failed to load clubs. Using sample data.",
+    "scienceClub": {
+      "name": "Science Club",
+      "description": "Explore the wonders of science through experiments, discussions, and field trips.",
+      "activities": "Lab experiments, Science fairs, Guest lectures"
+    },
+    "debateClub": {
+      "name": "Debate Club",
+      "description": "Develop critical thinking and public speaking skills through structured debates.",
+      "activities": "Weekly debates, Regional competitions, Public speaking workshops"
+    },
+    "artClub": {
+      "name": "Art Club",
+      "description": "Express creativity through various art forms and techniques.",
+      "activities": "Art exhibitions, Creative workshops, Museum visits"
+    },
+    "details": {
+      "loading": "Loading club details...",
+      "fetchError": "Failed to load club details. Please try again later.",
+      "activitiesHeading": "Activities",
+      "scheduleHeading": "Meeting Schedule",
+      "membersHeading": "Club Members",
+      "nameColumn": "Name",
+      "roleColumn": "Role",
+      "noMembers": "No members in this club yet.",
+      "fallbackActivities": "Our activities include weekly lab experiments where members get hands-on experience with scientific concepts. We participate in local and regional science fairs to showcase our projects. We also invite guest lecturers to share their expertise and inspire our members.",
+      "fallbackSchedule": "Every Tuesday and Thursday, 3:30 PM - 5:00 PM",
+      "roles": {
+        "leader": "Leader",
+        "assistant": "Assistant",
+        "member": "Member"
+      }
     }
   },
   "subjects": {
@@ -214,7 +408,13 @@
     "french": "French",
     "english": "English",
     "islamicEducation": "Islamic Education",
-    "philosophies": "Philosophies"
+    "philosophies": "Philosophies",
+    "svt": "SVT",
+    "physics_chemistry": "Physics & Chemistry",
+    "history_geography": "History and Geography",
+    "science": "Science",
+    "history": "History",
+    "computerScience": "Computer Science"
   },
   "resourceViewer": {
     "title": "Browse Educational Resources",
@@ -227,9 +427,6 @@
     "exitFullScreen": "Exit Full Screen",
     "noResourcesFound": "No resources found matching the selected filters.",
     "alloSchool": "AlloSchool",
-    "errors": {
-      "loadFailed": "Failed to load resources. Please try again later."
-    },
     "filters": {
       "subject": "Subject",
       "yearLevel": "Year Level",
@@ -248,6 +445,9 @@
       "specialization": "Specialization",
       "uploaded": "Uploaded",
       "actions": "Actions"
+    },
+    "errors": {
+      "loadFailed": "Failed to load resources. Please try again later."
     }
   },
   "locale": "en-US",
@@ -689,5 +889,584 @@
   },
   "confirmations": {
     "deleteStudent": "Are you sure you want to remove {{name}} from outstanding students?"
+  },
+  "registration": {
+    "heading": "Ready to Join {{schoolName}}?",
+    "description": "Take the first step towards a bright future with our comprehensive educational programs.",
+    "studentButton": "Register as New Student",
+    "title": "Registration Form",
+    "studentInfo": "Student Information",
+    "studentName": "Student Full Name",
+    "academicLevel": "Academic Level",
+    "previousSchool": "Previous School",
+    "studentPhone": "Student Phone Number",
+    "parentInfo": "Parent/Guardian Information",
+    "parentName": "Father or Guardian Full Name",
+    "parentProfession": "Father or Guardian Profession",
+    "fatherPhone": "Father's Phone Number",
+    "motherPhone": "Mother's Phone Number",
+    "addressAndFamily": "Address and Family Situation",
+    "address": "Residential Address",
+    "civilStatus": "Civil Status",
+    "deathDate": "Father's Date of Death",
+    "additionalNotes": "Additional Notes",
+    "buttons": {
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "processing": "Processing...",
+      "generating": "Generating...",
+      "downloadPDF": "Download PDF",
+      "backToHome": "Back to Home"
+    },
+    "placeholders": {
+      "phoneExample": "Ex: 06XXXXXXXX",
+      "additionalNotes": "Additional information you would like to share"
+    },
+    "download": {
+      "options": "Download Options",
+      "standardVersion": "Standard Version",
+      "enhancedVersion": "Enhanced Version"
+    },
+    "success": {
+      "registrationSuccess": "Registration Successful!",
+      "formSubmitted": "Your registration form has been successfully submitted."
+    },
+    "errors": {
+      "submissionError": "An error occurred while submitting the form. Please try again.",
+      "pdfDownloadError": "Error downloading PDF. Please try again."
+    },
+    "validation": {
+      "studentNameRequired": "Student name is required",
+      "academicLevelRequired": "Academic level is required",
+      "parentNameRequired": "Parent name is required",
+      "parentProfessionRequired": "Parent profession is required",
+      "fatherPhoneRequired": "Father's phone number is required",
+      "motherPhoneRequired": "Mother's phone number is required",
+      "invalidPhone": "Invalid phone number",
+      "addressRequired": "Address is required",
+      "deathDateRequired": "Date of death is required for orphans"
+    },
+    "academicLevels": {
+      "tcSciences": "TC - Sciences",
+      "tcHumanities": "TC - Humanities and Social Sciences",
+      "1bacSciExp": "1BAC - Experimental Sciences",
+      "1bacHumanities": "1BAC - Humanities and Social Sciences",
+      "2bacPhysicsChem": "2BAC - PC (Physics-Chemistry)",
+      "2bacLifeSciences": "2BAC - SVT (Life and Earth Sciences)",
+      "2bacHumanities": "2BAC - Humanities",
+      "2bacLiterature": "2BAC - Literature"
+    },
+    "civilStatus1": {
+      "together": "Parents together",
+      "divorced": "Parents divorced",
+      "orphan": "Orphan"
+    }
+  },
+  "yearLevels": {
+    "all": "All Years",
+    "tc": "TC (Tronc Commun)",
+    "1bac": "1BAC (First Year)",
+    "2bac": "2BAC (Second Year)"
+  },
+  "specializations": {
+    "all": "General (All Specializations)",
+    "science": "Science",
+    "letter": "Letter",
+    "se": "SE (Sciences Expérimentales)",
+    "sm": "SM (Sciences Mathématiques)",
+    "sh": "SH (Sciences Humaines)",
+    "spc": "SPC (Sciences Physiques et Chimiques)",
+    "svt": "SVT (Sciences de la Vie et de la Terre)",
+    "smb1": "SMB1 (Sciences Mathématiques B1)",
+    "smb2": "SMB2 (Sciences Mathématiques B2)",
+    "al": "AL (Arabic et Lettres)"
+  },
+  "resourceUploader": {
+    "title": "Manage Educational Resources",
+    "form": {
+      "title": "Resource Title",
+      "subject": "Subject",
+      "selectSubject": "Select a subject",
+      "yearLevel": "Year Level",
+      "specialization": "Specialization",
+      "pdfFile": "PDF File",
+      "pdfOnly": "Only PDF files are accepted"
+    },
+    "preview": {
+      "title": "PDF Preview",
+      "iframeTitle": "PDF Preview",
+      "close": "Close preview"
+    },
+    "uploading": "Uploading",
+    "buttons": {
+      "upload": "Upload Resource",
+      "uploading": "Uploading...",
+      "clear": "Clear",
+      "view": "View",
+      "delete": "Delete"
+    },
+    "resourcesList": {
+      "title": "Uploaded Resources",
+      "loading": "Loading resources...",
+      "empty": "No resources uploaded yet.",
+      "columns": {
+        "title": "Title",
+        "subject": "Subject",
+        "yearLevel": "Year Level",
+        "specialization": "Specialization",
+        "actions": "Actions"
+      }
+    },
+    "confirmations": {
+      "deleteResource": "Are you sure you want to delete this resource?"
+    },
+    "success": {
+      "uploadComplete": "Resource uploaded successfully!",
+      "deleteComplete": "Resource deleted successfully!"
+    },
+    "errors": {
+      "invalidPdf": "Please select a valid PDF file.",
+      "missingFields": "Please fill all required fields and select a PDF file.",
+      "uploadFailed": "Failed to upload resource. Please try again.",
+      "fetchFailed": "Failed to load resources. Please try again later.",
+      "deleteFailed": "Failed to delete resource. Please try again.",
+      "errorPrefix": "Error"
+    }
+  },
+  "resourcesSection": {
+    "title": "Educational Resources"
+  },
+  "dateFormat": {
+    "long": "MMMM d, yyyy",
+    "longWithTime": "MMMM d, yyyy • h:mm a"
+  },
+  "comments": {
+    "title": "Comments",
+    "leaveComment": "Leave a comment",
+    "placeholder": "Share your thoughts...",
+    "post": "Post Comment",
+    "posting": "Posting...",
+    "reply": "Reply",
+    "anonymous": "Anonymous",
+    "noComments": "No comments yet. Be the first to share your thoughts!",
+    "confirmDelete": "Are you sure you want to delete this comment?",
+    "pleaseLogin": {
+      "before": "Please",
+      "loginLink": "log in",
+      "after": "to leave a comment."
+    },
+    "errors": {
+      "loadFailed": "Failed to load comments",
+      "addFailed": "Failed to add comment",
+      "deleteFailed": "Failed to delete comment",
+      "replyFailed": "Failed to add reply",
+      "tooShort": "Comment must be at least 3 characters",
+      "submitFailed": "Failed to submit comment. Please try again."
+    }
+  },
+  "replies": {
+    "placeholder": "Write your reply...",
+    "reply": "Reply",
+    "posting": "Posting...",
+    "cancel": "Cancel",
+    "errors": {
+      "tooShort": "Reply must be at least 3 characters",
+      "submitFailed": "Failed to submit reply. Please try again."
+    }
+  },
+  "news": {
+    "latestNews": "Latest News",
+    "viewAllNews": "View All News",
+    "readMore": "Read more",
+    "noImageAvailable": "No Image Available",
+    "title": "News Management",
+    "subtitle": "Create and manage school news.",
+    "loading": "Loading news items...",
+    "noItems": "No news items created yet.",
+    "noImage": "No img",
+    "confirmDelete": "Are you sure you want to delete this news item?",
+    "scheduledDate": "Scheduled: {{date}}",
+    "byAuthor": "By {{author}}",
+    "backToAllNews": "← Back to all news",
+    "paginationLabel": "Pagination",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "buttons": {
+      "create": "Create News",
+      "cancel": "Cancel",
+      "cancelEdit": "Cancel Edit",
+      "save": "Save News Item",
+      "update": "Update News Item",
+      "edit": "Edit",
+      "delete": "Delete",
+      "publishNow": "Publish Now"
+    },
+    "form": {
+      "title": "Title",
+      "content": "Content",
+      "image": "News Image",
+      "imageWithNote": "News Image - Leave empty to keep current image",
+      "preview": "Preview",
+      "imageKeepNotice": "Current image will be kept",
+      "publishImmediately": "Publish immediately",
+      "scheduleTime": "Schedule Publication Time (if not publishing now)",
+      "scheduleHint": "Leave empty to save as draft without scheduling"
+    },
+    "table": {
+      "image": "Image",
+      "title": "Title",
+      "date": "Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "published": "Published",
+      "scheduled": "Scheduled",
+      "draft": "Draft"
+    },
+    "errors": {
+      "loadFailed": "Failed to load news items",
+      "createFailed": "Failed to create news item",
+      "updateFailed": "Failed to update news item",
+      "deleteFailed": "Failed to delete news item",
+      "publishFailed": "Failed to publish news item",
+      "failedToLoadArticle": "Failed to load the news article. Please try again later."
+    }
+  },
+  "events": {
+    "title": "School Events",
+    "filterTitle": "Filter Events by Date Range",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "applyFilter": "Apply Filter",
+    "clear": "Clear",
+    "upcomingEvents": "Upcoming Events",
+    "viewAllEvents": "View All Events",
+    "viewDetails": "View details",
+    "errorLoading": "Failed to load events. Please try again later.",
+    "noEventsFound": "No events found",
+    "noEventsBetween": "No events between {{startDate}} and {{endDate}}",
+    "noEventsFrom": "No events from {{startDate}} onwards",
+    "noEventsUntil": "No events until {{endDate}}",
+    "checkBackLater": "Check back later for upcoming events.",
+    "title1": "Events Management",
+    "subtitle": "Create and manage school events.",
+    "createButton": "Create Event",
+    "confirmDelete": "Are you sure you want to delete this event?",
+    "noEvents": "No events created yet.",
+    "form": {
+      "title2": "Title",
+      "description": "Description",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "location": "Location",
+      "eventImage": "Event Image",
+      "imagePreview": "Preview",
+      "saveButton": "Save Event"
+    },
+    "table": {
+      "image": "Image",
+      "title": "Title",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "location": "Location",
+      "actions": "Actions"
+    },
+    "errors": {
+      "loadFailed": "Failed to load events",
+      "createFailed": "Failed to create event",
+      "deleteFailed": "Failed to delete event"
+    },
+    "fallback": {
+      "parentTeacher": {
+        "title": "Parent-Teacher Conferences",
+        "location": "Main Hall"
+      },
+      "scienceFair": {
+        "title": "Science Fair",
+        "location": "Gymnasium"
+      },
+      "workshop": {
+        "title": "Higher Education Workshop",
+        "location": "Auditorium"
+      }
+    }
+  },
+  "eventDetail": {
+    "errorLoading": "Failed to load event details. Please try again later.",
+    "notFound": "Event not found.",
+    "backToEvents": "← Back to all events"
+  },
+  "absenceManagement": {
+    "title": "Teacher Absence Management",
+    "subtitle": "Announce and manage teacher absences",
+    "announceNew": "Announce New Absence",
+    "announceButton": "Announce Absence",
+    "confirmDelete": "Are you sure you want to delete this absence announcement?",
+    "loadingData": "Loading absence data...",
+    "noAbsences": "No absence announcements found.",
+    "form": {
+      "teacher": "Teacher",
+      "selectTeacher": "Select a teacher",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "reason": "Reason (Optional)",
+      "reasonPlaceholder": "Enter reason for absence"
+    },
+    "table": {
+      "teacher": "Teacher",
+      "duration": "Duration",
+      "reason": "Reason",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "errors": {
+      "loadFailed": "Failed to load absence data. Please try again.",
+      "createFailed": "Failed to announce absence. Please try again.",
+      "deleteFailed": "Failed to delete absence. Please try again."
+    }
+  },
+  "library": {
+    "title": "Library",
+    "tabs": {
+      "catalog": "Book Catalog",
+      "addBook": "Add New Book"
+    },
+    "showing": "Showing {{count}} of {{total}} books",
+    "noBooks": "No books found matching your search criteria.",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "newBook": {
+      "title": "Add New Book",
+      "addBook": "Add Book",
+      "addingBook": "Adding Book...",
+      "imagePreview": "Image Preview",
+      "imagePreviewAlt": "Preview",
+      "fields": {
+        "title": "Title",
+        "author": "Author",
+        "category": "Category",
+        "quantity": "Quantity",
+        "inventoryNumber": "Inventory Number",
+        "image": "Book Image",
+        "description": "Description"
+      },
+      "errors": {
+        "addBookFailed": "Failed to add new book"
+      }
+    },
+    "bookCard": {
+      "noImage": "No image available",
+      "byAuthor": "by {{author}}",
+      "inventory": "{{count}} in inventory",
+      "outOfStock": "Out of stock",
+      "noDescription": "No description available.",
+      "showDetails": "Show Details",
+      "hideDetails": "Hide Details",
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "deleteModal": {
+        "title": "Confirm Deletion",
+        "confirmMessage": "Are you sure you want to delete \"{{title}}\"? This action cannot be undone."
+      },
+      "form": {
+        "changeImage": "Change Image",
+        "newImagePreview": "New image preview:",
+        "preview": "Preview",
+        "currentImage": "Current image:",
+        "title": "Title",
+        "author": "Author",
+        "category": "Category",
+        "quantity": "Quantity",
+        "inventoryNumber": "Inventory Number",
+        "description": "Description"
+      },
+      "messages": {
+        "updateSuccess": "Book updated successfully!"
+      },
+      "errors": {
+        "updateFailure": "Error updating book",
+        "deleteFailure": "Failed to delete book"
+      }
+    }
+  },
+  "login": {
+    "title": "Login",
+    "subtitle": "Access your Argan High School account",
+    "form": {
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "email@example.com",
+      "passwordLabel": "Password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "signIn": "Sign in",
+      "signingIn": "Signing in..."
+    },
+    "noAccount": "Don't have an account?",
+    "registerHere": "Register here",
+    "errors": {
+      "generic": "An error occurred during login. Please try again."
+    }
+  },
+  "dashboard": {
+    "loading": "Loading your dashboard...",
+    "redirecting": "Redirecting to login page...",
+    "errors": {
+      "failedToLoad": "Failed to load dashboard. Please try logging in again."
+    },
+    "tabs": {
+      "profile": "Profile",
+      "classes": "Classes",
+      "quizzes": "Quizzes",
+      "resources": "Resources",
+      "news": "News",
+      "events": "Events"
+    }
+  },
+  "teacher": {
+    "dashboard": {
+      "title": "Teacher Dashboard"
+    },
+    "profile": {
+      "title": "Teacher Information",
+      "subtitle": "Personal details and professional information.",
+      "fullName": "Full name",
+      "email": "Email address",
+      "employeeId": "Employee ID",
+      "department": "Department",
+      "position": "Position",
+      "specialization": "Specialization",
+      "hireDate": "Hire Date"
+    },
+    "classes": {
+      "title": "Your Classes",
+      "subtitle": "Courses you're teaching.",
+      "noClassesYet": "No classes assigned yet."
+    }
+  },
+  "librarian": {
+    "dashboard": {
+      "title": "Book Management Dashboard"
+    },
+    "stats": {
+      "booksRequested": "Books Requested",
+      "booksReturned": "Books Returned"
+    },
+    "tabs": {
+      "requestedBooks": "Requested Books",
+      "returnHistory": "Return History"
+    },
+    "empty": {
+      "noRequestedBooks": {
+        "title": "No requested books",
+        "message": "There are no books requested by students."
+      },
+      "noReturnedBooks": {
+        "title": "No returned books",
+        "message": "No return history to display."
+      }
+    },
+    "table": {
+      "headers": {
+        "student": "Student",
+        "book": "Book",
+        "requestDate": "Request Date",
+        "status": "Status",
+        "returnDate": "Return Date",
+        "actions": "Actions"
+      },
+      "bookBy": "by {{author}}",
+      "inventoryNumber": "Inventory #: {{number}}"
+    },
+    "status": {
+      "waitingForReturn": "Waiting for Return"
+    },
+    "actions": {
+      "markReturned": "Mark as Returned"
+    },
+    "alerts": {
+      "bookReturned": "Book marked as returned successfully. Inventory updated."
+    },
+    "errors": {
+      "failedToLoad": "Failed to load book requests. {{message}}",
+      "returnFailed": "Failed to mark book as returned",
+      "noPermission": "You do not have permission to access the Librarian Dashboard."
+    }
+  },
+  "home": {
+    "banner": {
+      "welcome": "Welcome to Argane High School in Tiznit — where knowledge, values, and ambition come together to shape a brighter future."
+    },
+    "welcome": {
+      "title": "A Tradition of Excellence",
+      "description": "Since {{year}}, {{name}} has been committed to providing quality education that prepares students for success in their academic and professional journeys. Our dedicated faculty and comprehensive curriculum ensure that every student receives the attention and resources they need to excel.",
+      "environment": "We foster a supportive learning environment where creativity, critical thinking, and character development are prioritized alongside academic achievement."
+    },
+    "stats": {
+      "graduationRate": "Graduation Rate",
+      "universityAcceptance": "University Acceptance"
+    }
+  },
+  "admin": {
+    "loading": "Loading your dashboard...",
+    "redirecting": "Redirecting to login page...",
+    "error": {
+      "failedToLoad": "Failed to load dashboard. Please try logging in again.",
+      "failedToUpdateRegistration": "Failed to update registration status."
+    },
+    "dashboard": {
+      "title": "Administrator Dashboard"
+    },
+    "tabs": {
+      "profile": "Profile",
+      "userManagement": "User Management",
+      "registrations": "Registrations",
+      "newsManagement": "News Management",
+      "eventsManagement": "Events Management",
+      "examManagement": "Exam Management",
+      "teacherAbsences": "Teacher Absences",
+      "clubs": "Clubs",
+      "outstandingStudents": "Outstanding Students"
+    },
+    "profile": {
+      "title": "Administrator Information",
+      "subtitle": "Personal details and role information.",
+      "fullName": "Full name",
+      "emailAddress": "Email address",
+      "adminLevel": "Admin Level",
+      "department": "Department",
+      "basic": "Basic",
+      "general": "General"
+    },
+    "registrations": {
+      "title": "Recent Registrations",
+      "subtitle": "Pending student registration requests.",
+      "noRegistrations": "No pending registrations.",
+      "table": {
+        "name": "Name",
+        "studentPhone": "Student Phone",
+        "registrationDate": "Registration Date",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "processed": "Processed",
+        "pending": "Pending"
+      },
+      "actions": {
+        "downloadPacket": "Download Packet",
+        "markProcessed": "Mark Processed"
+      }
+    }
   }
 }

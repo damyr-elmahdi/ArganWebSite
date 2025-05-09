@@ -63,7 +63,7 @@ export default function ContactForm({ schoolEmail }) {
     setSubmitError(null);
     
     try {
-      // Send data to Laravel backend API endpoint
+      // Send data to Laravel backend API endpoint.
       const response = await axios.post('/api/contact', {
         name: formData.name,
         email: formData.email,

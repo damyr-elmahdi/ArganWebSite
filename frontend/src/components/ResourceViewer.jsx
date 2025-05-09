@@ -541,7 +541,7 @@ export default function ResourceViewer() {
         </div>
       </div>
 
-      {/* AlloSchool Links Section */}
+      {/* AlloSchool Links Section: */}
       <div className="mb-6 bg-blue-50 p-4 rounded-md">
         <h3 className="text-lg font-medium text-blue-800 mb-3">
           {t("resourceViewer.alloSchoolResources")}

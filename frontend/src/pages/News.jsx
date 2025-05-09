@@ -4,9 +4,11 @@ import { format } from "date-fns";
 import { useParams, Link } from "react-router-dom";
 import { getImageUrl } from "../utils/imageUtils";
 import CommentSection from "../components/CommentSection";
-import ImageModal from "../components/ImageModal"; // Import the new component
+import ImageModal from "../components/ImageModal";
+import { useTranslation } from "react-i18next"; // Import useTranslation hook
 
 export default function News() {
+  const { t } = useTranslation(); // Initialize the translation function
   const [newsItems, setNewsItems] = useState([]);
   const [currentNews, setCurrentNews] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -36,7 +38,7 @@ export default function News() {
       setTotalPages(response.last_page || 1);
       setLoading(false);
     } catch (err) {
-      setError("Failed to load news. Please try again later.");
+      setError(t('news.errors.failedToLoad'));
       setLoading(false);
     }
   };
@@ -48,7 +50,7 @@ export default function News() {
       setCurrentNews(response);
       setLoading(false);
     } catch (err) {
-      setError("Failed to load the news article. Please try again later.");
+      setError(t('news.errors.failedToLoadArticle'));
       setLoading(false);
     }
   };
@@ -105,7 +107,7 @@ export default function News() {
               <>
                 <span className="mx-2">•</span>
                 <span className="text-sm text-gray-500">
-                  By {currentNews.author.name}
+                  {t('news.byAuthor', { author: currentNews.author.name })}
                 </span>
               </>
             )}
@@ -128,7 +130,7 @@ export default function News() {
 
           <div className="mt-8 pt-4 border-t border-gray-200">
             <Link to="/news" className="text-[#18bebc] hover:underline">
-              ← Back to all news
+              {t('news.backToAllNews')}
             </Link>
           </div>
         </div>
@@ -146,17 +148,16 @@ export default function News() {
 
   // The rest of the News component remains unchanged
   const renderNewsList = () => {
-
     return (
       <>
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">School News</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">{t('news.title')}</h1>
 
         {newsItems.length === 0 ? (
           <div className="bg-gray-100 p-8 rounded-lg text-center">
             <h3 className="text-xl font-semibold text-gray-700">
-              No news articles found
+              {t('news.noArticlesFound')}
             </h3>
-            <p className="text-gray-600 mt-2">Check back later for updates.</p>
+            <p className="text-gray-600 mt-2">{t('news.checkBackLater')}</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -207,7 +208,7 @@ export default function News() {
                     to={`/news/${news.id}`}
                     className="text-[#18bebc] hover:underline"
                   >
-                    Read more
+                    {t('news.readMore')}
                   </Link>
                 </div>
               </div>
@@ -220,7 +221,7 @@ export default function News() {
           <div className="flex justify-center mt-8">
             <nav
               className="inline-flex rounded-md shadow-sm -space-x-px"
-              aria-label="Pagination"
+              aria-label={t('news.paginationLabel')}
             >
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
@@ -231,7 +232,7 @@ export default function News() {
                     : "text-gray-500 hover:bg-gray-50"
                 }`}
               >
-                Previous
+                {t('news.pagination.previous')}
               </button>
 
               {[...Array(totalPages)].map((_, i) => (
@@ -257,7 +258,7 @@ export default function News() {
                     : "text-gray-500 hover:bg-gray-50"
                 }`}
               >
-                Next
+                {t('news.pagination.next')}
               </button>
             </nav>
           </div>

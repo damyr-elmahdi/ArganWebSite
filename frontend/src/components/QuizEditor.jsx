@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 
 export default function QuizEditor() {
   const navigate = useNavigate();
   const { quizId } = useParams();
+  const { t } = useTranslation();
+  
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
   const [questions, setQuestions] = useState([]);
@@ -12,11 +15,11 @@ export default function QuizEditor() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [subjects, setSubjects] = useState([
-    { id: 1, name: "Mathematics" },
-    { id: 2, name: "Science" },
-    { id: 3, name: "History" },
-    { id: 4, name: "English" },
-    { id: 5, name: "Computer Science" },
+    { id: 1, name: t("subjects.mathematics") },
+    { id: 2, name: t("subjects.science") },
+    { id: 3, name: t("subjects.history") },
+    { id: 4, name: t("subjects.english") },
+    { id: 5, name: t("subjects.computerScience") },
   ]);
 
   useEffect(() => {
@@ -41,13 +44,13 @@ export default function QuizEditor() {
         setLoading(false);
       } catch (err) {
         console.error("Error fetching quiz:", err);
-        setError("Failed to load quiz. Please try again.");
+        setError(t("errors.failedToLoadQuiz"));
         setLoading(false);
       }
     };
 
     fetchQuiz();
-  }, [quizId]);
+  }, [quizId, t]);
 
   // Add a new question
   const addQuestion = () => {
@@ -67,7 +70,7 @@ export default function QuizEditor() {
   // Remove a question
   const removeQuestion = (index) => {
     if (questions.length === 1) {
-      setError("You need at least one question in the quiz.");
+      setError(t("errors.minimumOneQuestion"));
       return;
     }
 
@@ -86,7 +89,7 @@ export default function QuizEditor() {
   // Add an option to a question
   const addOption = (questionIndex) => {
     if (questions[questionIndex].options.length >= 4) {
-      setError("Maximum 4 options allowed per question.");
+      setError(t("errors.maximumFourOptions"));
       return;
     }
 
@@ -101,7 +104,7 @@ export default function QuizEditor() {
   // Remove an option from a question
   const removeOption = (questionIndex, optionIndex) => {
     if (questions[questionIndex].options.length <= 3) {
-      setError("Minimum 3 options required per question.");
+      setError(t("errors.minimumThreeOptions"));
       return;
     }
 
@@ -129,24 +132,29 @@ export default function QuizEditor() {
   // Form validation
   const validateForm = () => {
     if (!title.trim()) {
-      setError("Quiz title is required.");
+      setError(t("errors.titleRequired"));
       return false;
     }
 
     if (!subject) {
-      setError("Please select a subject.");
+      setError(t("errors.subjectRequired"));
       return false;
     }
 
     for (let i = 0; i < questions.length; i++) {
       if (!questions[i].question_text.trim()) {
-        setError(`Question ${i + 1} text is required.`);
+        setError(t("errors.questionTextRequired", { number: i + 1 }));
         return false;
       }
 
       for (let j = 0; j < questions[i].options.length; j++) {
         if (!questions[i].options[j].option_text.trim()) {
-          setError(`Option ${j + 1} for Question ${i + 1} is required.`);
+          setError(
+            t("errors.optionRequired", { 
+              optionNumber: j + 1, 
+              questionNumber: i + 1 
+            })
+          );
           return false;
         }
       }
@@ -156,7 +164,7 @@ export default function QuizEditor() {
         (option) => option.is_correct
       );
       if (!hasCorrectOption) {
-        setError(`Please select a correct option for Question ${i + 1}.`);
+        setError(t("errors.selectCorrectOption", { number: i + 1 }));
         return false;
       }
     }
@@ -183,11 +191,10 @@ export default function QuizEditor() {
       });
 
       setSaving(false);
-      // Change this line to navigate to the teacher dashboard instead
       navigate("/teacher-dashboard");
     } catch (err) {
       console.error("Error updating quiz:", err);
-      setError("Failed to update quiz. Please try again.");
+      setError(t("errors.failedToUpdateQuiz"));
       setSaving(false);
     }
   };
@@ -196,7 +203,7 @@ export default function QuizEditor() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <h2 className="text-xl font-semibold">Loading quiz...</h2>
+          <h2 className="text-xl font-semibold">{t("quizEditor.loading")}</h2>
         </div>
       </div>
     );
@@ -204,7 +211,7 @@ export default function QuizEditor() {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-6">Edit Quiz</h2>
+      <h2 className="text-2xl font-bold mb-6">{t("quizEditor.title")}</h2>
 
       {error && (
         <div
@@ -223,7 +230,7 @@ export default function QuizEditor() {
               htmlFor="title"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Quiz Title
+              {t("quizEditor.quizTitle")}
             </label>
             <input
               type="text"
@@ -231,7 +238,7 @@ export default function QuizEditor() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
-              placeholder="Enter quiz title"
+              placeholder={t("quizEditor.enterQuizTitle")}
               required
             />
           </div>
@@ -241,7 +248,7 @@ export default function QuizEditor() {
               htmlFor="subject"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Subject
+              {t("quizEditor.subject")}
             </label>
             <select
               id="subject"
@@ -250,7 +257,7 @@ export default function QuizEditor() {
               className="w-full border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
               required
             >
-              <option value="">Select a subject</option>
+              <option value="">{t("quizEditor.selectSubject")}</option>
               {subjects.map((subj) => (
                 <option key={subj.id} value={subj.id}>
                   {subj.name}
@@ -263,39 +270,41 @@ export default function QuizEditor() {
         {/* Questions */}
         <div className="space-y-6 mb-8">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Questions</h3>
+            <h3 className="text-lg font-medium">{t("quizEditor.questions")}</h3>
             <button
               type="button"
               onClick={addQuestion}
               className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-teal-600 hover:bg-teal-700"
             >
-              Add Question
+              {t("quizEditor.addQuestion")}
             </button>
           </div>
 
           {questions.map((question, qIndex) => (
             <div key={qIndex} className="border border-gray-300 rounded-lg p-4">
               <div className="flex justify-between items-center mb-4">
-                <h4 className="font-medium">Question {qIndex + 1}</h4>
+                <h4 className="font-medium">
+                  {t("quizEditor.questionNumber", { number: qIndex + 1 })}
+                </h4>
                 <button
                   type="button"
                   onClick={() => removeQuestion(qIndex)}
                   className="text-red-600 hover:text-red-800 text-sm"
                 >
-                  Remove
+                  {t("quizEditor.remove")}
                 </button>
               </div>
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Question Text
+                  {t("quizEditor.questionText")}
                 </label>
                 <input
                   type="text"
                   value={question.question_text}
                   onChange={(e) => updateQuestionText(qIndex, e.target.value)}
                   className="w-full border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
-                  placeholder="Enter question"
+                  placeholder={t("quizEditor.enterQuestion")}
                   required
                 />
               </div>
@@ -303,7 +312,7 @@ export default function QuizEditor() {
               <div className="mb-2">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-gray-700">
-                    Options
+                    {t("quizEditor.options")}
                   </span>
                   {question.options.length < 4 && (
                     <button
@@ -311,7 +320,7 @@ export default function QuizEditor() {
                       onClick={() => addOption(qIndex)}
                       className="text-xs text-teal-600 hover:text-teal-800"
                     >
-                      Add Option
+                      {t("quizEditor.addOption")}
                     </button>
                   )}
                 </div>
@@ -334,7 +343,7 @@ export default function QuizEditor() {
                           updateOptionText(qIndex, oIndex, e.target.value)
                         }
                         className="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-teal-400 focus:border-teal-400"
-                        placeholder={`Option ${oIndex + 1}`}
+                        placeholder={t("quizEditor.optionPlaceholder", { number: oIndex + 1 })}
                         required
                       />
                       {question.options.length > 3 && (
@@ -370,14 +379,14 @@ export default function QuizEditor() {
             onClick={() => navigate("/teacher-dashboard")}
             className="mr-3 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             type="submit"
             disabled={saving}
             className="px-4 py-2 text-sm font-medium text-white bg-teal-500 border border-transparent rounded-md shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400 disabled:opacity-50"
           >
-            {saving ? "Saving..." : "Save Changes"}
+            {saving ? t("common.saving") : t("common.saveChanges")}
           </button>
         </div>
       </form>

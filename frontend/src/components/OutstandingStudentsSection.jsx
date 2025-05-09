@@ -35,7 +35,7 @@ export default function OutstandingStudentsSection() {
   const [studentsByGrade, setStudentsByGrade] = useState({});
   const [expandedGrades, setExpandedGrades] = useState({});
 
-  // Grade grouping and labeling
+  // Grade grouping and labeling.
   const gradeOptions = [
     { value: "TC-S", label: t('grades.tc_sciences') },
     { value: "TC-LSH", label: t('grades.tc_letters') },

@@ -345,7 +345,7 @@ export default function Academics() {
         </div>
       </section>
 
-      {/* Call-to-action */}
+      {/* Call-to-action .*/}
       <section className="py-12 bg-blue-600 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">{t('academics.cta.title')}</h2>

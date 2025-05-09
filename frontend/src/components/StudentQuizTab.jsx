@@ -29,7 +29,7 @@ export default function StudentQuizTab() {
     <div className="space-y-6">
       <QuizList />
       
-      {/* Quiz History Section */}
+      {/* Quiz History Section . */}
       <div className="bg-white shadow-md rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-4">{t('quiz.student.history')}</h2>
         

@@ -464,7 +464,7 @@ export default function ClubManagement() {
         </div>
       </div>
 
-      {/* Modal for Create/Edit/Delete Club or Add Member */}
+      {/* Modal for Create/Edit/Delete Club or Add Member. */}
       {modalVisible && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
