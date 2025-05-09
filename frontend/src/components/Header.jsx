@@ -49,10 +49,18 @@ export default function Header({ schoolName, ministry, tagline }) {
     }
   };
 
+  // Determine if the interface is in RTL mode (Arabic)
+  const isRTL = i18n.language === 'ar';
+  
+  // Adjusted space class that works for both LTR and RTL
+  const navSpaceClass = isRTL ? 'space-x-reverse space-x-6' : 'space-x-6';
+  const logoSpaceClass = isRTL ? 'space-x-reverse space-x-4' : 'space-x-4';
+  const ministrySpaceClass = isRTL ? 'space-x-reverse space-x-2' : 'space-x-2';
+
   return (
     <header className="bg-white shadow-md">
       <div className="mx-auto px-4 py-4 flex justify-between items-center">
-        <div className="flex items-center space-x-4">
+        <div className={`flex items-center ${logoSpaceClass}`}>
           {/* School Logo - Made clickable with Link */}
           <Link to="/" className="flex items-center justify-center w-20 h-20">
             <img src={argan} alt={t('school.name', { schoolName })} className="w-full h-full object-contain" />
@@ -64,7 +72,7 @@ export default function Header({ schoolName, ministry, tagline }) {
         </div>
         
         {/* Ministry Logo */}
-        <div className="hidden md:flex items-center space-x-2">
+        <div className={`hidden md:flex items-center ${ministrySpaceClass}`}>
           <div className="flex items-center justify-center w-16 h-16">
             <img src={Ministry} alt={t('school.ministryLogoAlt')} className="w-full h-full object-contain" />
           </div>
@@ -88,8 +96,8 @@ export default function Header({ schoolName, ministry, tagline }) {
           )}
         </button>
 
-        {/* Desktop Navigation . */}
-        <nav className="hidden md:flex space-x-6 items-center">
+        {/* Desktop Navigation */}
+        <nav className={`hidden md:flex ${navSpaceClass} items-center`}>
           <Link to="/" className="text-gray-800 hover:text-[#18bebc] font-medium">{t('nav.home')}</Link>
           <Link to="/about" className="text-gray-800 hover:text-[#18bebc] font-medium">{t('nav.about')}</Link>
           <Link to="/academics" className="text-gray-800 hover:text-[#18bebc] font-medium">{t('nav.academics')}</Link>
@@ -242,7 +250,7 @@ export default function Header({ schoolName, ministry, tagline }) {
             </nav>
             
             {/* Ministry Logo (Mobile) */}
-            <div className="flex items-center space-x-2 mt-4 pt-3 border-t border-gray-200">
+            <div className={`flex items-center ${ministrySpaceClass} mt-4 pt-3 border-t border-gray-200`}>
               <div className="w-12 h-12">
                 <img src={Ministry} alt={t('school.ministryLogoAlt')} className="w-full h-full object-contain" />
               </div>

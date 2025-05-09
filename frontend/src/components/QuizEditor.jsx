@@ -16,10 +16,15 @@ export default function QuizEditor() {
   const [error, setError] = useState("");
   const [subjects, setSubjects] = useState([
     { id: 1, name: t("subjects.mathematics") },
-    { id: 2, name: t("subjects.science") },
-    { id: 3, name: t("subjects.history") },
+    { id: 2, name: t("subjects.physicsChemistry") },
+    { id: 3, name: t("subjects.historyGeography") },
     { id: 4, name: t("subjects.english") },
     { id: 5, name: t("subjects.computerScience") },
+    { id: 6, name: t("subjects.arabic") },
+    { id: 7, name: t("subjects.french") },
+    { id: 8, name: t("subjects.islamicEducation") },
+    { id: 9, name: t("subjects.philosophies") },
+    { id: 10, name: t("subjects.SVT") },
   ]);
 
   useEffect(() => {
@@ -248,7 +253,7 @@ export default function QuizEditor() {
                   id="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
+                  className="w-full h-8 border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
                   placeholder={t("quiz.editor.enterQuizTitle")}
                   required
                 />
@@ -265,7 +270,7 @@ export default function QuizEditor() {
                   id="subject"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
+                  className="w-full h-8 border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
                   required
                 >
                   <option value="">{t("quiz.editor.selectSubject")}</option>
@@ -321,7 +326,7 @@ export default function QuizEditor() {
                     type="text"
                     value={question.question_text}
                     onChange={(e) => updateQuestionText(qIndex, e.target.value)}
-                    className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
+                    className="w-full h-8 border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
                     placeholder={t("quiz.editor.enterQuestion")}
                     required
                   />
@@ -359,7 +364,7 @@ export default function QuizEditor() {
                           type="text"
                           value={option.option_text}
                           onChange={(e) => updateOptionText(qIndex, oIndex, e.target.value)}
-                          className="flex-1 border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
+                          className="flex-1 h-8 border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
                           placeholder={t("quiz.editor.optionPlaceholder", { number: oIndex + 1 })}
                           required
                         />

@@ -214,9 +214,7 @@ export default function TeacherDashboard() {
                     {t("teacher.profile.subtitle")}
                   </p>
                 </div>
-                <button className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#18bebc] hover:bg-teal-700">
-                  {t("common.editProfile")}
-                </button>
+
               </div>
               <div className="border-t border-gray-200">
                 <dl>

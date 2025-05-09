@@ -467,6 +467,7 @@
   },
   "subjects": {
     "mathematics": "Mathématiques",
+    "engineeringSciences": "Sciences de l'ingénierie",
     "physicsChemistry": "Physique & Chimie",
     "arabic": "Arabe",
     "historyGeography": "Histoire et Géographie",
@@ -479,7 +480,8 @@
     "history_geography": "Histoire et Géographie",
     "science": "Science",
     "history": "Histoire",
-    "computerScience": "Informatique"
+    "computerScience": "Informatique",
+    "SVT":"SVT"
   },
   "resourceViewer": {
     "title": "Parcourir les ressources éducatives",

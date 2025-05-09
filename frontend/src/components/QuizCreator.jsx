@@ -21,11 +21,16 @@ export default function QuizCreator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [subjects, setSubjects] = useState([
-    { id: 1, name: t('subjects.mathematics') },
-    { id: 2, name: t('subjects.science') },
-    { id: 3, name: t('subjects.history') },
-    { id: 4, name: t('subjects.english') },
-    { id: 5, name: t('subjects.computerScience') },
+    { id: 1, name: t("subjects.mathematics") },
+    { id: 2, name: t("subjects.physicsChemistry") },
+    { id: 3, name: t("subjects.historyGeography") },
+    { id: 4, name: t("subjects.english") },
+    { id: 5, name: t("subjects.computerScience") },
+    { id: 6, name: t("subjects.arabic") },
+    { id: 7, name: t("subjects.french") },
+    { id: 8, name: t("subjects.islamicEducation") },
+    { id: 9, name: t("subjects.philosophies") },
+    { id: 10, name: t("subjects.SVT") },
   ]);
 
   // Add a new question
@@ -193,7 +198,6 @@ export default function QuizCreator() {
         <form onSubmit={handleSubmit}>
           {/* Quiz Details */}
           <div className="mb-8 bg-gray-50 p-6 rounded-lg">
-            <h3 className="text-xl font-semibold mb-4 text-gray-700">{t('quizCreator.quizDetails')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
@@ -204,7 +208,7 @@ export default function QuizCreator() {
                   id="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
+                  className="w-full h-8 border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
                   placeholder={t('quizCreator.titlePlaceholder')}
                   required
                 />
@@ -218,7 +222,7 @@ export default function QuizCreator() {
                   id="subject"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
+                  className="w-full h-8 border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
                   required
                 >
                   <option value="">{t('quizCreator.selectSubject')}</option>
@@ -274,7 +278,7 @@ export default function QuizCreator() {
                     type="text"
                     value={question.question_text}
                     onChange={(e) => updateQuestionText(qIndex, e.target.value)}
-                    className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
+                    className="w-full h-8 border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
                     placeholder={t('quizCreator.questionPlaceholder')}
                     required
                   />
@@ -282,7 +286,7 @@ export default function QuizCreator() {
                 
                 <div className="mb-2">
                   <div className="flex justify-between items-center mb-3">
-                    <span className="text-sm font-medium text-gray-700">{t('quizCreator.options')}</span>
+                    <span className="text-sm  h-8 font-medium text-gray-700">{t('quizCreator.options')}</span>
                     {question.options.length < 4 && (
                       <button
                         type="button"
@@ -312,7 +316,7 @@ export default function QuizCreator() {
                           type="text"
                           value={option.option_text}
                           onChange={(e) => updateOptionText(qIndex, oIndex, e.target.value)}
-                          className="flex-1 border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
+                          className="flex-1 h-8 border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 transition duration-150"
                           placeholder={t('quizCreator.optionPlaceholder', { number: oIndex + 1 })}
                           required
                         />
