@@ -14,8 +14,14 @@ class SubjectsTableSeeder extends Seeder
     {
         $subjects = [
             ['name' => 'Mathematics', 'description' => 'Math-related quizzes'],
-            ['name' => 'Science', 'description' => 'Science-related quizzes'],
-            ['name' => 'History', 'description' => 'History-related quizzes'],
+            ['name' => 'Physics & Chemistry', 'description' => 'Physics & Chemistry-related quizzes'],
+            ['name' => 'SVT', 'description' => 'SVT-related quizzes'],
+            ['name' => 'History and Geography', 'description' => 'History and Geography-related quizzes'],
+            ['name' => 'Islamic Education', 'description' => 'Islamic Education-related quizzes'],
+            ['name' => 'Philosophies', 'description' => 'Philosophies-related quizzes'],
+            ['name' => 'English', 'description' => 'English language quizzes'],
+            ['name' => 'Franch', 'description' => 'Franch language quizzes'],
+            ['name' => 'Arabic', 'description' => 'Arabic language quizzes'],
             ['name' => 'English', 'description' => 'English language quizzes'],
             ['name' => 'Computer Science', 'description' => 'Computer science quizzes'],
         ];

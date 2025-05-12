@@ -27,7 +27,7 @@ export default function ClubDetails() {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching club details:', err);
-        setError(t('clubDetails.fetchError'));
+        setError(t('clubs.details.fetchError'));
         setLoading(false);
         
         // Fallback data for development or when API fails
@@ -36,8 +36,8 @@ export default function ClubDetails() {
             id: parseInt(id),
             name: t('clubs.scienceClub.name'),
             description: t('clubs.scienceClub.description'),
-            activities: t('clubDetails.fallbackActivities'),
-            meeting_schedule: t('clubDetails.fallbackSchedule')
+            activities: t('clubs.details.fallbackActivities'),
+            meeting_schedule: t('clubs.details.fallbackSchedule')
           });
           
           setMembers([
@@ -59,7 +59,7 @@ export default function ClubDetails() {
           <div className="w-16 h-16 mx-auto mb-4">
             <img src={argan} alt={t('common.schoolName')} className="w-full h-full object-contain animate-pulse" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-700">{t('clubDetails.loading')}</h2>
+          <h2 className="text-xl font-semibold text-gray-700">{t('clubs.details.loading')}</h2>
         </div>
       </div>
     );
@@ -85,7 +85,7 @@ export default function ClubDetails() {
     const normalizedRole = role.charAt(0).toUpperCase() + role.slice(1);
     
     // Map the role to a translation key and translate it
-    return t(`clubDetails.roles.${role}`, normalizedRole);
+    return t(`clubs.details.roles.${role}`, normalizedRole);
   };
 
   return (
@@ -108,19 +108,19 @@ export default function ClubDetails() {
             <p className="text-lg text-gray-600 mb-6">{club.description}</p>
             
             <div className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">{t('clubDetails.activitiesHeading')}</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">{t('clubs.details.activitiesHeading')}</h2>
               <p className="text-gray-600">{club.activities}</p>
             </div>
             
             {club.meeting_schedule && (
               <div className="mb-8 p-4 bg-teal-50 rounded-lg border border-teal-100">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">{t('clubDetails.scheduleHeading')}</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">{t('clubs.details.scheduleHeading')}</h3>
                 <p className="text-gray-600">{club.meeting_schedule}</p>
               </div>
             )}
             
             <div>
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">{t('clubDetails.membersHeading')}</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">{t('clubs.details.membersHeading')}</h2>
               
               {members.length > 0 ? (
                 <div className="overflow-x-auto">
@@ -128,10 +128,10 @@ export default function ClubDetails() {
                     <thead className="bg-gray-50">
                       <tr>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          {t('clubDetails.nameColumn')}
+                          {t('clubs.details.nameColumn')}
                         </th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          {t('clubDetails.roleColumn')}
+                          {t('clubs.details.roleColumn')}
                         </th>
                       </tr>
                     </thead>
@@ -158,7 +158,7 @@ export default function ClubDetails() {
                   </table>
                 </div>
               ) : (
-                <p className="text-gray-500 italic">{t('clubDetails.noMembers')}</p>
+                <p className="text-gray-500 italic">{t('clubs.details.noMembers')}</p>
               )}
             </div>
           </div>

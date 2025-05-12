@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\BookBorrowing;
+use App\Models\Club;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,8 +16,17 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            UserSeeder::class,
+            AdminSeeder::class,
+            StudentSeeder::class,
             TeacherSeeder::class,
+            LibrarianSeeder::class,
+            ClubSeeder::class,
+            BookBorrowingsSeeder::class,
+            EnglishQuizSeeder::class,
+            LibraryInventorySeeder::class,
+            OutstandingStudentsSeeder::class,
+            SubjectsTableSeeder::class,
+
         ]);
     }
 }
