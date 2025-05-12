@@ -7,17 +7,28 @@ export default function DevSignature() {
 
   // You can customize this information
   const devInfo = {
-    name: "Your Full Name",
+    name: "Elmahdi Damyr",
     role: "Full Stack Developer",
-    contact: "your.email@example.com",
-    githubProfile: "https://github.com/yourusername",
-    developmentPeriod: "2024",
-    technologies: [
+    contact: "mahdidamyr@gmail.com",
+    githubProfile: "https://github.com/damyr-elmahdi",
+    developmentPeriod: "2025",
+technologies: [
       "React",
       "Tailwind CSS", 
       "React Router", 
       "i18next",
-      "Axios"
+      "Axios",
+      "Laravel 12",
+      "Breeze",
+      "Sanctum",
+      "JWT",
+      "MySQL",
+      "PHP 8.1",
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "Rest API"
+
     ]
   };
 

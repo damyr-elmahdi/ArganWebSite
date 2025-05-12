@@ -15,7 +15,6 @@ import Events from "./pages/Events";
 import EventDetail from "./pages/EventDetail";
 import Library from "./pages/Library";
 import Login from "./pages/Login";
-// import Register from "./pages/Register";
 import StudentDashboard from "./pages/StudentDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -35,8 +34,8 @@ import ClubDetails from "./components/ClubDetails";
 import ExamRoutes from "./routes/ExamRoutes";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
-import "./i18n"; // Import i18n configuration
-
+import "./i18n"; 
+import DevSignature from "./components/DevSignature";
 
 axios.interceptors.request.use(
   config => {
@@ -56,7 +55,7 @@ axios.interceptors.response.use(
   error => {
     // Handle 401 (Unauthorized) responses
     if (error.response && error.response.status === 401) {
-      // Redirect to login or handle token expiration
+      
       console.log('Authentication failed - redirecting to login');
       localStorage.removeItem('token');
       window.location.href = '/login';
@@ -147,6 +146,7 @@ export default function App() {
             <Route path="/library" element={<Library />} />
             <Route path="/clubs/:id" element={<ClubDetails />} />
             <Route path="/login" element={<Login />} />
+               <Route path="/dev-signature" element={<DevSignature />} />
             <Route
               path="/contact"
               element={<Contact schoolInfo={schoolInfo} />}
