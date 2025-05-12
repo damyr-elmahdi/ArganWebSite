@@ -34,31 +34,30 @@ import ClubDetails from "./components/ClubDetails";
 import ExamRoutes from "./routes/ExamRoutes";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
-import "./i18n"; 
+import "./i18n";
 import DevSignature from "./components/DevSignature";
 
 axios.interceptors.request.use(
-  config => {
-    const token = localStorage.getItem('token');
+  (config) => {
+    const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  error => {
+  (error) => {
     return Promise.reject(error);
   }
 );
 
 axios.interceptors.response.use(
-  response => response,
-  error => {
+  (response) => response,
+  (error) => {
     // Handle 401 (Unauthorized) responses
     if (error.response && error.response.status === 401) {
-      
-      console.log('Authentication failed - redirecting to login');
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      console.log("Authentication failed - redirecting to login");
+      localStorage.removeItem("token");
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
@@ -110,19 +109,19 @@ function DashboardRedirect() {
 
 export default function App() {
   const { t } = useTranslation();
-  
+
   // School information as a central source of truth
   const schoolInfo = {
-    name: t('school.name'),
-    ministry: t('school.ministry'),
-    address: t('school.address'),
-    phone: t('school.phone'),
-    fax: t('school.fax'),
-    email: t('school.email'),
+    name: t("school.name"),
+    ministry: t("school.ministry"),
+    address: t("school.address"),
+    phone: t("school.phone"),
+    fax: t("school.fax"),
+    email: t("school.email"),
     currentYear: new Date().getFullYear(),
-    foundedYear: t('school.foundedYear'),
-    operatingHours: t('school.operatingHours'),
-    foundingDate: t('school.foundingDate'),
+    foundedYear: t("school.foundedYear"),
+    operatingHours: t("school.operatingHours"),
+    foundingDate: t("school.foundingDate"),
   };
 
   return (
@@ -132,7 +131,7 @@ export default function App() {
           <Header
             schoolName={schoolInfo.name}
             ministry={schoolInfo.ministry}
-            tagline={t('school.tagline')}
+            tagline={t("school.tagline")}
           />
           <Routes>
             {/* Public routes */}
@@ -146,7 +145,7 @@ export default function App() {
             <Route path="/library" element={<Library />} />
             <Route path="/clubs/:id" element={<ClubDetails />} />
             <Route path="/login" element={<Login />} />
-               <Route path="/dev-signature" element={<DevSignature />} />
+            <Route path="/dev-signature" element={<DevSignature />} />
             <Route
               path="/contact"
               element={<Contact schoolInfo={schoolInfo} />}
