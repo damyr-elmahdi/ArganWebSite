@@ -2,14 +2,15 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import argan from "../assets/argan.png";
 import Ministry from "../assets/Ministry.png";
+import DevSignature from './DevSignature';
 
 export default function Footer({ schoolInfo }) {
   const { name, ministry, address, phone, fax, email, currentYear } = schoolInfo;
   const schoolName = name || "Argane High School";
   const { t } = useTranslation();
-  //
+
   return (
-    <footer className="bg-[#72b8ff] text-black">
+    <footer className="bg-[#72b8ff] text-black relative">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-3 gap-8">
           <div>
@@ -89,6 +90,9 @@ export default function Footer({ schoolInfo }) {
           <p>{t('footer.copyright', { year: currentYear, name })}</p>
         </div>
       </div>
+      
+      {/* Add DevSignature component */}
+      <DevSignature />
     </footer>
   );
 }
