@@ -14,6 +14,7 @@
     "remove": "إزالة",
     "loading": "جاري التحميل...",
     "close": "إغلاق",
+   "date": "التاريخ",
     "students": "الطلاب",
     "view_details": "عرض التفاصيل",
     "try_again": "حاول مرة أخرى",
@@ -1023,7 +1024,7 @@
       "2bacHumanities": "الثانية باكالوريا - علوم إنسانية",
       "2bacLiterature": "الثانية باكالوريا - آداب"
     },
-    "civilStatus": {
+    "civilStatusType": {
       "together": "الوالدان معًا",
       "divorced": "الوالدان مطلقان",
       "orphan": "يتيم"

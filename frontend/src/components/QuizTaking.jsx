@@ -393,7 +393,7 @@ export default function QuizTaking() {
             onClick={() => navigate("/student-dashboard")}
             className="mt-4 px-4 py-2 bg-[#18bebc] text-white rounded hover:bg-teal-700"
           >
-            {t("common.returnToDashboard")}
+            {t("common.return_to_dashboard")}
           </button>
         </div>
       </div>
@@ -411,7 +411,7 @@ export default function QuizTaking() {
             onClick={() => navigate("/student-dashboard")}
             className="mt-4 px-4 py-2 bg-[#18bebc] text-white rounded hover:bg-teal-700"
           >
-            {t("common.returnToDashboard")}
+            {t("common.return_to_dashboard")}
           </button>
         </div>
       </div>

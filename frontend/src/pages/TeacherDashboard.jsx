@@ -145,7 +145,7 @@ export default function TeacherDashboard() {
             >
               {t("dashboard.tabs.profile")}
             </button>
-            <button
+            {/* <button
               className={`${
                 activeTab === "classes"
                   ? "border-teal-400 text-[#18bebc]"
@@ -154,7 +154,7 @@ export default function TeacherDashboard() {
               onClick={() => setActiveTab("classes")}
             >
               {t("dashboard.tabs.classes")}
-            </button>
+            </button> */}
             <button
               className={`${
                 activeTab === "quizzes"

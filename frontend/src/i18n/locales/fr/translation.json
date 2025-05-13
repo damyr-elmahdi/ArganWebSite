@@ -14,6 +14,7 @@
     "remove": "Retirer",
     "loading": "Chargement...",
     "close": "Fermer",
+     "date": "Date",
     "students": "Élèves",
     "view_details": "Voir les détails",
     "try_again": "Réessayer",
@@ -1023,7 +1024,7 @@
       "2bacHumanities": "2BAC - Sciences Humaines",
       "2bacLiterature": "2BAC - Littérature"
     },
-    "civilStatus": {
+    "civilStatusType": {
       "together": "Parents ensemble",
       "divorced": "Parents divorcés",
       "orphan": "Orphelin"
