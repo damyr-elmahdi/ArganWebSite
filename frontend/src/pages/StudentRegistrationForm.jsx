@@ -428,7 +428,7 @@ const StudentRegistrationForm = () => {
                   <span className="text-red-500">*</span>
                 </label>
                 <select
-                  name="civilStatusType"
+                  name="civilStatus"
                   value={formData.civilStatus}
                   onChange={handleChange}
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
